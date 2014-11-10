@@ -1,0 +1,3 @@
+C:\Users\Administrator\AppData\Roaming\LeagueSharp\Repositories\ACD2EC0F\trunk\YasuoSharpV2\obj\Release\YasuoSharpV2.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\AppData\Roaming\LeagueSharp\Repositories\ACD2EC0F\trunk\YasuoSharpV2\obj\Release\YasuoSharpV2.Properties.Resources.resources
+C:\Users\Administrator\AppData\Roaming\LeagueSharp\Repositories\ACD2EC0F\trunk\YasuoSharpV2\obj\Release\YasuoSharpV2.csproj.GenerateResource.Cache
