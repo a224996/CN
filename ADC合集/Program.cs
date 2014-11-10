@@ -138,7 +138,7 @@ namespace Marksman
                     Config.AddSubMenu(harass);
                 }
 
-                var laneclear = new Menu("LaneClear", "娓呯嚎");
+                var laneclear = new Menu("娓呯嚎", "LaneClear");
                 if (CClass.LaneClearMenu(laneclear))
                 {
                     Config.AddSubMenu(laneclear);
