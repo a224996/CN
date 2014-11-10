@@ -442,7 +442,7 @@ namespace LeagueSharp.Common
 
                 /* Delay sliders */
                 _config.AddItem(
-                    new MenuItem("ExtraWindup", "棰濆鐨勭粓姝㈡椂闂?").SetShared().SetValue(new Slider(80, 200, 0)));
+                    new MenuItem("ExtraWindup", "棰濆鐨勭粓姝㈡椂闂粹攤").SetShared().SetValue(new Slider(80, 200, 0)));
                 _config.AddItem(new MenuItem("FarmDelay", "琛ュ叺寤惰繜").SetShared().SetValue(new Slider(0, 200, 0)));
 
                 /*Load the menu*/
