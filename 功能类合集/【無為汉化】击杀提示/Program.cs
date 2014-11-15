@@ -100,8 +100,7 @@ namespace Killability
             _config.AddToMainMenu();
 
             InitDrawing();
-            _config.AddToMainMenu();
-			
+
             Game.PrintChat("Killability by h3h3 loaded.");
         }
 
