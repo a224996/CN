@@ -94,13 +94,12 @@ namespace Killability
             _config = new Menu("鍑绘潃鎻愮ず", "Killability", true);
             _config.AddItem(new MenuItem("icon", "鏄剧ず鍥炬爣").SetValue(true));
             _config.AddItem(new MenuItem("text", "鏄剧ず鏂囨湰").SetValue(true));
+			_config.AddItem(new MenuItem("by wuwei", "鐒＄偤姹夊寲"));
+			_config.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+            _config.AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
             _config.AddToMainMenu();
 
             InitDrawing();
-
-			_config = new Menu("鏃犱负姹夊寲", "by wuwei");
-            _config.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            _config.AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
             _config.AddToMainMenu();
 			
             Game.PrintChat("Killability by h3h3 loaded.");
