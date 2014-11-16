@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
@@ -81,7 +81,7 @@ namespace OriannaWreckingBalls
             menu.AddSubMenu(targetSelectorMenu);
 
             //Keys
-            menu.AddSubMenu(new Menu("鐑敭", "Keys"));
+            menu.AddSubMenu(new Menu("鎸夐敭璁剧疆", "Keys"));
             menu.SubMenu("Keys")
                 .AddItem(
                     new MenuItem("ComboActive", "杩炴嫑").SetValue(
@@ -177,7 +177,7 @@ namespace OriannaWreckingBalls
             menu.SubMenu("Misc").AddItem(new MenuItem("UseInt", "R鎵撴柇").SetValue(true));
             menu.SubMenu("Misc").AddItem(new MenuItem("packet", "灏佸寘").SetValue(true));
 
-            menu.SubMenu("Misc").AddSubMenu(new Menu("Auto use R on", "鎵撴柇"));
+            menu.SubMenu("Misc").AddSubMenu(new Menu("鑷姩R鎵撴柇", "intR"));
 
             foreach (Obj_AI_Hero enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team))
                 menu.SubMenu("Misc")
