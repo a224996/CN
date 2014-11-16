@@ -78,6 +78,7 @@
     <Compile Include="DamageBoostDatabase.cs" />
     <Compile Include="Evade\Collision.cs" />
     <Compile Include="Evade\Config.cs" />
+    <Compile Include="Plugins\Nunu.cs" />
     <Compile Include="Protector.cs" />
     <Compile Include="Evade\EvadeSpellData.cs" />
     <Compile Include="Evade\EvadeSpellDatabase.cs" />

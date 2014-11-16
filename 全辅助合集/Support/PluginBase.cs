@@ -93,6 +93,8 @@ namespace Support
             Orbwalking.AfterAttack += OnAfterAttack;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;
+            Game.OnGameSendPacket += OnSendPacket;
+            Game.OnGameProcessPacket += OnProcessPacket;
             OnLoad(new EventArgs());
         }
 
@@ -439,6 +441,28 @@ namespace Support
         public T ConfigValue<T>(string item)
         {
             return Config.Item(item + ChampionName).GetValue<T>();
+        }
+
+        /// <summary>
+        ///     OnProcessPacket
+        /// </summary>
+        /// <remarks>
+        ///     override to Implement OnProcessPacket logic
+        /// </remarks>
+        /// <param name="args"></param>
+        public virtual void OnProcessPacket(GamePacketEventArgs args)
+        {
+        }
+
+        /// <summary>
+        ///     OnSendPacket
+        /// </summary>
+        /// <remarks>
+        ///     override to Implement OnSendPacket logic
+        /// </remarks>
+        /// <param name="args"></param>
+        public virtual void OnSendPacket(GamePacketEventArgs args)
+        {
         }
 
         /// <summary>

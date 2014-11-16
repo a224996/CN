@@ -81,7 +81,7 @@ namespace Support.Plugins
             if (HarassMode)
             {
                 if (Q.CastCheck(Target, "Harass.Q") && R.IsReady() &&
-                    Q.GetPrediction(Target).Hitchance >= HitChance.High && 
+                    Q.GetPrediction(Target).Hitchance >= HitChance.High &&
                     Q.GetPrediction(Target).CollisionObjects.Count == 0 &&
                     Q.GetPrediction(Target).UnitPosition.CountEnemysInRange(250) >=
                     ConfigValue<Slider>("Misc.Q.Count").Value)
