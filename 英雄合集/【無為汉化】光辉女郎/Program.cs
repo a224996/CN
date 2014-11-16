@@ -107,13 +107,8 @@ namespace LightningLux
 			Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));	
 
             Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
-<<<<<<< HEAD
 			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
 			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
-=======
-			Config.SubMenu("Drawings").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-			Config.SubMenu("Drawings").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
->>>>>>> parent of 25ec6ae... 修复光辉
 			Config.AddToMainMenu();       
 			
 			Game.PrintChat("Lightning Lux v1.1 loaded!");
