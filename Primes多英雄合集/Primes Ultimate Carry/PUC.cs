@@ -24,8 +24,8 @@ namespace Primes_Ultimate_Carry
 
 			Game.PrintChat("<font color=\"#00BFFF\">====== 鎴愬姛杞藉叆:銆愮劇鐐烘眽鍖栥€戙劎Primes澶氳嫳闆勫悎闆嗐劎 ======</font>");
 			Game.PrintChat("<font color=\"#00BFFF\">====== 鐗堟湰: v 0.15====== </font>");
-			Game.PrintChat("<font color=\"#FFFF00\">銊у墤榄斻劎寰疯幈鏂囥劎浼婃辰鐟炲皵銊х撼灏斻劎閲戝厠鏂劎璺タ瀹夈劎鍙戞潯銊ч敜鐭炽劎</font>");
-			Game.PrintChat("<font color=\"#FF0000\">鏇村姹夊寲鑴氭湰璇峰姞: L#姹夊寲缇わ細386289593</font>");
+			Game.PrintChat("<font color=\"#00BFFF\">銊у墤榄斻劎寰疯幈鏂囥劎浼婃辰鐟炲皵銊х撼灏斻劎閲戝厠鏂劎璺タ瀹夈劎鍙戞潯銊ч敜鐭炽劎</font>");
+			Game.PrintChat("<font color=\"#00BFFF\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");
 
 			Player = ObjectManager.Player;
 			Menu = new Menu("銆愮劇鐐烘眽鍖栥€戝鑻遍泟鍚堥泦", Player.ChampionName + "UltimateCarry", true);
