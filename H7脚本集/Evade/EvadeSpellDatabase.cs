@@ -1,4 +1,4 @@
-﻿// Copyright 2014 - 2014 Esk0r
+// Copyright 2014 - 2014 Esk0r
 // EvadeSpellDatabase.cs is part of Evade.
 // 
 // Evade is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Sivir")
             {
-                spell = new ShieldData("Sivir E", SpellSlot.E, 100, 1, true);
+                spell = new ShieldData("鎴樹簤濂崇 E", SpellSlot.E, 100, 1, true);
                 Spells.Add(spell);
             }
 
@@ -50,7 +50,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Nocturne")
             {
-                spell = new ShieldData("Nocturne E", SpellSlot.E, 100, 1, true);
+                spell = new ShieldData("姊﹂瓟 E", SpellSlot.E, 100, 1, true);
                 Spells.Add(spell);
             }
 
@@ -59,7 +59,7 @@ namespace Evade
             #endregion
 
             //Walking.
-            spell = new EvadeSpellData("Walking", 1);
+            spell = new EvadeSpellData("姝ヨ", 1);
             Spells.Add(spell);
 
             #region Champion MoveSpeed buffs
@@ -69,7 +69,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Blitzcrank")
             {
                 spell = new MoveBuffData(
-                    "Blitzcrank W", SpellSlot.W, 100, 3,
+                    "鏈哄櫒 W", SpellSlot.W, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.12f + 0.04f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level));
@@ -80,10 +80,10 @@ namespace Evade
 
             #region Draven
 
-            if (ObjectManager.Player.ChampionName == "Draven")
+           if (ObjectManager.Player.ChampionName == "Draven")
             {
                 spell = new MoveBuffData(
-                    "Draven W", SpellSlot.W, 100, 3,
+                    "寰疯幈鏂囥劎 W", SpellSlot.W, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.35f + 0.05f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level));
@@ -97,7 +97,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Evelynn")
             {
                 spell = new MoveBuffData(
-                    "Evelynn W", SpellSlot.W, 100, 3,
+                    "瀵″ W", SpellSlot.W, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.2f + 0.1f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level));
@@ -110,7 +110,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Garen")
             {
-                spell = new MoveBuffData("Garen Q", SpellSlot.Q, 100, 3, () => ObjectManager.Player.MoveSpeed * (1.35f));
+                spell = new MoveBuffData("鐩栦鸡 Q", SpellSlot.Q, 100, 3, () => ObjectManager.Player.MoveSpeed * (1.35f));
                 Spells.Add(spell);
             }
 
@@ -121,7 +121,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Katarina")
             {
                 spell = new MoveBuffData(
-                    "Katarina W", SpellSlot.W, 100, 3,
+                    "鍗＄壒 W", SpellSlot.W, 100, 3,
                     () =>
                         ObjectManager.Get<Obj_AI_Hero>().Any(h => h.IsValidTarget(375))
                             ? ObjectManager.Player.MoveSpeed *
@@ -137,7 +137,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Karma")
             {
                 spell = new MoveBuffData(
-                    "Karma E", SpellSlot.E, 100, 3,
+                    "澶╁惎鑰呫劎 E", SpellSlot.E, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.35f + 0.05f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).Level));
@@ -150,7 +150,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Kennen")
             {
-                spell = new MoveBuffData("Kennen E", SpellSlot.E, 100, 3, () => 200 + ObjectManager.Player.MoveSpeed);
+                spell = new MoveBuffData("鍑崡 E", SpellSlot.E, 100, 3, () => 200 + ObjectManager.Player.MoveSpeed);
                 //Actually it should be +335 but ingame you only gain +230, rito plz
                 Spells.Add(spell);
             }
@@ -161,7 +161,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Khazix")
             {
-                spell = new MoveBuffData("Khazix R", SpellSlot.R, 100, 5, () => ObjectManager.Player.MoveSpeed * 1.4f);
+                spell = new MoveBuffData("鍗″吂鍏嬨劎 R", SpellSlot.R, 100, 5, () => ObjectManager.Player.MoveSpeed * 1.4f);
                 Spells.Add(spell);
             }
 
@@ -172,7 +172,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Lulu")
             {
                 spell = new MoveBuffData(
-                    "Lulu W", SpellSlot.W, 100, 5,
+                    "闇查湶 W", SpellSlot.W, 100, 5,
                     () => ObjectManager.Player.MoveSpeed * (1.3f + ObjectManager.Player.FlatMagicDamageMod / 100 * 0.1f));
                 Spells.Add(spell);
             }
@@ -184,7 +184,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Nunu")
             {
                 spell = new MoveBuffData(
-                    "Nunu W", SpellSlot.W, 100, 3,
+                    "鍔姫 W", SpellSlot.W, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.1f + 0.01f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level));
@@ -197,7 +197,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Ryze")
             {
-                spell = new MoveBuffData("Ryze R", SpellSlot.R, 100, 5, () => 80 + ObjectManager.Player.MoveSpeed);
+                spell = new MoveBuffData("鐟炲吂 R", SpellSlot.R, 100, 5, () => 80 + ObjectManager.Player.MoveSpeed);
                 Spells.Add(spell);
             }
 
@@ -207,7 +207,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Sivir")
             {
-                spell = new MoveBuffData("Sivir R", SpellSlot.R, 100, 5, () => ObjectManager.Player.MoveSpeed * (1.6f));
+                spell = new MoveBuffData("鎴樹簤濂崇 R", SpellSlot.R, 100, 5, () => ObjectManager.Player.MoveSpeed * (1.6f));
                 Spells.Add(spell);
             }
 
@@ -218,7 +218,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Shyvana")
             {
                 spell = new MoveBuffData(
-                    "Shyvana W", SpellSlot.W, 100, 4,
+                    "榫欏コ W", SpellSlot.W, 100, 4,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.25f + 0.05f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level));
@@ -233,7 +233,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Sona")
             {
                 spell = new MoveBuffData(
-                    "Sona E", SpellSlot.E, 100, 3,
+                    "鐞村コ E", SpellSlot.E, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.12f + 0.01f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).Level +
@@ -249,7 +249,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Teemo")
             {
                 spell = new MoveBuffData(
-                    "Teemo W", SpellSlot.W, 100, 3,
+                    "鎻愯帿 W", SpellSlot.W, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.06f + 0.04f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level));
@@ -263,7 +263,7 @@ namespace Evade
             if (ObjectManager.Player.ChampionName == "Udyr")
             {
                 spell = new MoveBuffData(
-                    "Udyr E", SpellSlot.E, 100, 3,
+                    "涔岃开灏斻劎 E", SpellSlot.E, 100, 3,
                     () =>
                         ObjectManager.Player.MoveSpeed *
                         (1 + 0.1f + 0.05f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).Level));
@@ -276,7 +276,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Zilean")
             {
-                spell = new MoveBuffData("Zilean E", SpellSlot.E, 100, 3, () => ObjectManager.Player.MoveSpeed * 1.55f);
+                spell = new MoveBuffData("鏃跺厜 E", SpellSlot.E, 100, 3, () => ObjectManager.Player.MoveSpeed * 1.55f);
                 Spells.Add(spell);
             }
 
@@ -290,7 +290,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Aatrox")
             {
-                spell = new DashData("Aatrox Q", SpellSlot.Q, 650, false, 400, 3000, 3);
+                spell = new DashData("鍓戦瓟 Q", SpellSlot.Q, 650, false, 400, 3000, 3);
                 spell.Invert = true;
                 Spells.Add(spell);
             }
@@ -301,7 +301,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Akali")
             {
-                spell = new DashData("Akali R", SpellSlot.R, 800, false, 100, 2461, 3);
+                spell = new DashData("闃垮崱涓姐劎 R", SpellSlot.R, 800, false, 100, 2461, 3);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
             }
@@ -312,7 +312,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Alistar")
             {
-                spell = new DashData("Alistar W", SpellSlot.W, 650, false, 100, 1900, 3);
+                spell = new DashData("鐗涘ご W", SpellSlot.W, 650, false, 100, 1900, 3);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
             }
@@ -323,7 +323,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Caitlyn")
             {
-                spell = new DashData("Caitlyn E", SpellSlot.E, 490, true, 250, 1000, 3);
+                spell = new DashData("濂宠 E", SpellSlot.E, 490, true, 250, 1000, 3);
                 spell.Invert = true;
                 Spells.Add(spell);
             }
@@ -334,7 +334,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Corki")
             {
-                spell = new DashData("Corki W", SpellSlot.W, 790, false, 250, 1044, 3);
+                spell = new DashData("椋炴満 W", SpellSlot.W, 790, false, 250, 1044, 3);
                 Spells.Add(spell);
             }
 
@@ -344,7 +344,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Fizz")
             {
-                spell = new DashData("Fizz Q", SpellSlot.Q, 550, true, 100, 1400, 4);
+                spell = new DashData("灏忛奔浜恒劎 Q", SpellSlot.Q, 550, true, 100, 1400, 4);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyMinions, SpellValidTargets.EnemyChampions };
                 Spells.Add(spell);
             }
@@ -355,7 +355,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Gragas")
             {
-                spell = new DashData("Gragas E", SpellSlot.E, 600, true, 250, 911, 3);
+                spell = new DashData("閰掓《 E", SpellSlot.E, 600, true, 250, 911, 3);
                 Spells.Add(spell);
             }
 
@@ -365,7 +365,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Gnar")
             {
-                spell = new DashData("Gnar E", SpellSlot.E, 50, false, 0, 900, 3);
+                spell = new DashData("绾冲皵 E", SpellSlot.E, 50, false, 0, 900, 3);
                 spell.CheckSpellName = "GnarE";
                 Spells.Add(spell);
             }
@@ -376,7 +376,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Graves")
             {
-                spell = new DashData("Graves E", SpellSlot.E, 425, true, 100, 1223, 3);
+                spell = new DashData("槌勯奔 E", SpellSlot.E, 425, true, 100, 1223, 3);
                 Spells.Add(spell);
             }
 
@@ -386,7 +386,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Irelia")
             {
-                spell = new DashData("Irelia Q", SpellSlot.Q, 650, false, 100, 2200, 3);
+                spell = new DashData("濂冲垁閿嬨劎 Q", SpellSlot.Q, 650, false, 100, 2200, 3);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
             }
@@ -397,7 +397,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Jax")
             {
-                spell = new DashData("Jax Q", SpellSlot.Q, 700, false, 100, 1400, 3);
+                spell = new DashData("姝﹀櫒 Q", SpellSlot.Q, 700, false, 100, 1400, 3);
                 spell.ValidTargets = new[]
                 {
                     SpellValidTargets.EnemyWards, SpellValidTargets.AllyWards, SpellValidTargets.AllyMinions,
@@ -412,14 +412,14 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "LeBlanc")
             {
-                spell = new DashData("LeBlanc W1", SpellSlot.W, 600, false, 100, 1621, 3);
+                spell = new DashData("濡栧К W1", SpellSlot.W, 600, false, 100, 1621, 3);
                 spell.CheckSpellName = "LeblancSlide";
                 Spells.Add(spell);
             }
 
             if (ObjectManager.Player.ChampionName == "LeBlanc")
             {
-                spell = new DashData("LeBlanc RW", SpellSlot.R, 600, false, 100, 1621, 3);
+                spell = new DashData("濡栧К RW", SpellSlot.R, 600, false, 100, 1621, 3);
                 spell.CheckSpellName = "LeblancSlideM";
                 Spells.Add(spell);
             }
@@ -443,7 +443,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Lucian")
             {
-                spell = new DashData("Lucian E", SpellSlot.E, 425, false, 100, 1350, 2);
+                spell = new DashData("鍗㈤敗瀹夈劎 W", SpellSlot.E, 425, false, 100, 1350, 2);
                 Spells.Add(spell);
             }
 
@@ -453,7 +453,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Nidalee")
             {
-                spell = new DashData("Nidalee W", SpellSlot.W, 375, true, 250, 943, 3);
+                spell = new DashData("濂跺ぇ鍔涖劎 W", SpellSlot.W, 375, true, 250, 943, 3);
                 spell.CheckSpellName = "Pounce";
                 Spells.Add(spell);
             }
@@ -464,7 +464,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Pantheon")
             {
-                spell = new DashData("Pantheon W", SpellSlot.W, 600, false, 100, 1000, 3);
+                spell = new DashData("娼樻． W", SpellSlot.W, 600, false, 100, 1000, 3);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
             }
@@ -475,11 +475,11 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Riven")
             {
-                spell = new DashData("Riven Q", SpellSlot.Q, 222, true, 250, 560, 3);
+                spell = new DashData("鐟炴枃 Q", SpellSlot.Q, 222, true, 250, 560, 3);
                 spell.RequiresPreMove = true;
                 Spells.Add(spell);
 
-                spell = new DashData("Riven E", SpellSlot.E, 250, false, 250, 1200, 3);
+                spell = new DashData("鐟炴枃 E", SpellSlot.E, 250, false, 250, 1200, 3);
                 Spells.Add(spell);
             }
 
@@ -487,9 +487,9 @@ namespace Evade
 
             #region Tristana
 
-            if (ObjectManager.Player.ChampionName == "Tristana")
+             if (ObjectManager.Player.ChampionName == "Tristana")
             {
-                spell = new DashData("Tristana W", SpellSlot.W, 900, true, 300, 800, 5);
+                spell = new DashData("灏忕偖 W", SpellSlot.W, 900, true, 300, 800, 5);
                 Spells.Add(spell);
             }
 
@@ -499,7 +499,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Tryndamere")
             {
-                spell = new DashData("Tryndamere E", SpellSlot.E, 650, true, 250, 900, 3);
+                spell = new DashData("铔帇 E", SpellSlot.E, 650, true, 250, 900, 3);
                 Spells.Add(spell);
             }
 
@@ -509,7 +509,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Vayne")
             {
-                spell = new DashData("Vayne Q", SpellSlot.Q, 300, true, 100, 910, 2);
+                spell = new DashData("钖囨仼 Q", SpellSlot.Q, 300, true, 100, 910, 2);
                 Spells.Add(spell);
             }
 
@@ -519,7 +519,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "MonkeyKing")
             {
-                spell = new DashData("Wukong E", SpellSlot.E, 650, false, 100, 1400, 3);
+                spell = new DashData("鎮熺┖ E", SpellSlot.E, 650, false, 100, 1400, 3);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
             }
@@ -534,7 +534,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Ezreal")
             {
-                spell = new BlinkData("Ezreal E", SpellSlot.E, 450, 350, 3);
+                spell = new BlinkData("EZ E", SpellSlot.E, 450, 350, 3);
                 Spells.Add(spell);
             }
 
@@ -544,7 +544,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Kassadin")
             {
-                spell = new BlinkData("Kassadin R", SpellSlot.R, 700, 200, 5);
+                spell = new BlinkData("鍗¤惃涓併劎 R", SpellSlot.R, 700, 200, 5);
                 Spells.Add(spell);
             }
 
@@ -554,7 +554,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Katarina")
             {
-                spell = new BlinkData("Katarina E", SpellSlot.E, 700, 200, 3);
+                spell = new BlinkData("鍗＄壒 E", SpellSlot.E, 700, 200, 3);
                 spell.ValidTargets = new[]
                 {
                     SpellValidTargets.AllyChampions, SpellValidTargets.AllyMinions, SpellValidTargets.AllyWards,
@@ -569,7 +569,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Shaco")
             {
-                spell = new BlinkData("Shaco Q", SpellSlot.Q, 400, 350, 3);
+                spell = new BlinkData("灏忎笐 Q", SpellSlot.Q, 400, 350, 3);
                 Spells.Add(spell);
             }
 
@@ -579,7 +579,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Talon")
             {
-                spell = new BlinkData("Talon E", SpellSlot.E, 700, 100, 3);
+                spell = new BlinkData("娉伴殕 E", SpellSlot.E, 700, 100, 3);
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
             }
@@ -594,7 +594,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Elise")
             {
-                spell = new InvulnerabilityData("Elise E", SpellSlot.E, 250, 3);
+                spell = new InvulnerabilityData("铚樿洓 E", SpellSlot.E, 250, 3);
                 spell.CheckSpellName = "EliseSpiderEInitial";
                 spell.SelfCast = true;
                 Spells.Add(spell);
@@ -606,7 +606,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Vladimir")
             {
-                spell = new InvulnerabilityData("Vladimir W", SpellSlot.W, 250, 3);
+                spell = new InvulnerabilityData("鍚歌楝笺劎 W", SpellSlot.W, 250, 3);
                 spell.SelfCast = true;
                 Spells.Add(spell);
             }
@@ -617,7 +617,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Fizz")
             {
-                spell = new InvulnerabilityData("Fizz E", SpellSlot.E, 250, 3);
+                spell = new InvulnerabilityData("灏忛奔浜恒劎 E", SpellSlot.E, 250, 3);
                 Spells.Add(spell);
             }
 
@@ -627,7 +627,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "MasterYi")
             {
-                spell = new InvulnerabilityData("MasterYi Q", SpellSlot.Q, 250, 3);
+                spell = new InvulnerabilityData("鍓戝湥 Q", SpellSlot.Q, 250, 3);
                 spell.MaxRange = 600;
                 spell.ValidTargets = new[] { SpellValidTargets.EnemyChampions, SpellValidTargets.EnemyMinions };
                 Spells.Add(spell);
@@ -640,12 +640,12 @@ namespace Evade
             //Flash
             if (ObjectManager.Player.GetSpellSlot("SummonerFlash") != SpellSlot.Unknown)
             {
-                spell = new BlinkData("Flash", ObjectManager.Player.GetSpellSlot("SummonerFlash"), 400, 100, 5, true);
+                spell = new BlinkData("闂幇", ObjectManager.Player.GetSpellSlot("SummonerFlash"), 400, 100, 5, true);
                 Spells.Add(spell);
             }
 
             //Zhonyas
-            spell = new EvadeSpellData("Zhonyas", 5);
+            spell = new EvadeSpellData("涓簹", 5);
             Spells.Add(spell);
 
             #region Champion Shields
@@ -706,7 +706,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Karma")
             {
-                spell = new ShieldData("Karma E", SpellSlot.E, 100, 2);
+                spell = new ShieldData("澶╁惎鑰呫劎 E", SpellSlot.E, 100, 2);
                 spell.CanShieldAllies = true;
                 spell.MaxRange = 800;
                 Spells.Add(spell);
@@ -718,7 +718,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Janna")
             {
-                spell = new ShieldData("Janna E", SpellSlot.E, 100, 1);
+                spell = new ShieldData("椋庡コ E", SpellSlot.E, 100, 1);
                 spell.CanShieldAllies = true;
                 spell.MaxRange = 800;
                 Spells.Add(spell);
@@ -730,7 +730,7 @@ namespace Evade
 
             if (ObjectManager.Player.ChampionName == "Morgana")
             {
-                spell = new ShieldData("Morgana E", SpellSlot.E, 100, 3);
+                spell = new ShieldData("鑾敇濞溿劎 E", SpellSlot.E, 100, 3);
                 spell.CanShieldAllies = true;
                 spell.MaxRange = 750;
                 Spells.Add(spell);

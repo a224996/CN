@@ -520,7 +520,7 @@ namespace LeagueSharp.Common
                 new MenuItem("SelTColor", "閫変腑鐩爣棰滆壊").SetShared()
                     .SetValue(new Circle(true, System.Drawing.Color.Red)));
             Config.AddItem(new MenuItem("Sep", "").SetShared());
-            var autoPriorityItem = new MenuItem("AutoPriority", "鑷姩鎺掑垪浼樺厛绾?").SetShared().SetValue(false);
+            var autoPriorityItem = new MenuItem("AutoPriority", "鑷姩鎺掑垪浼樺厛鐩爣").SetShared().SetValue(false);
             autoPriorityItem.ValueChanged += autoPriorityItem_ValueChanged;
 
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.Team != ObjectManager.Player.Team)

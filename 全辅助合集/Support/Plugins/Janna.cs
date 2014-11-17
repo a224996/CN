@@ -111,7 +111,7 @@ namespace Support.Plugins
                 var spell = args.SData.Name;
                 var caster = (Obj_AI_Hero) sender;
 
-                if (DamageBoostDatabase.Spells.Any(s => s.Spell == spell) && caster.CountEnemysInRange(800) > 0)
+                if (DamageBoostDatabase.Spells.Any(s => s.Spell == spell) && caster.CountEnemysInRange(2000) > 0)
                 {
                     switch (ConfigValue<Slider>("Misc.E.Spell." + args.SData.Name).Value) // prio 0 = disabled
                     {

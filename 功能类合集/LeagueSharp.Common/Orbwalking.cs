@@ -436,13 +436,13 @@ namespace LeagueSharp.Common
                 var misc = new Menu("鏉傞」", "Misc");
                 misc.AddItem(
                     new MenuItem("HoldPosRadius", "淇濇寔鍗婂緞浣嶇疆").SetShared().SetValue(new Slider(0, 150, 0)));
-                misc.AddItem(new MenuItem("PriorizeFarm", "浼樺厛琛ュ叺鍐嶉獨鎵?").SetShared().SetValue(true));
+                misc.AddItem(new MenuItem("PriorizeFarm", "浼樺厛琛ュ叺").SetShared().SetValue(true));
                 _config.AddSubMenu(misc);
 
 
                 /* Delay sliders */
                 _config.AddItem(
-                    new MenuItem("ExtraWindup", "棰濆鐨勭粓姝㈡椂闂粹攤").SetShared().SetValue(new Slider(80, 200, 0)));
+                    new MenuItem("ExtraWindup", "缁堢粨鏃堕棿").SetShared().SetValue(new Slider(80, 200, 0)));
                 _config.AddItem(new MenuItem("FarmDelay", "琛ュ叺寤惰繜").SetShared().SetValue(new Slider(0, 200, 0)));
 
                 /*Load the menu*/
