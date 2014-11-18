@@ -43,8 +43,8 @@ namespace Support.Plugins
             if (args.PacketData[0] == Packet.S2C.PlayEmote.Header &&
                 ConfigValue<StringList>("Misc.Laugh").SelectedIndex == 2)
             {
-                var p = Packet.S2C.PlayEmote.Decoded(args.PacketData);
-                if (p.NetworkId == Player.NetworkId && p.EmoteId == (byte) Packet.Emotes.Laugh)
+                var packet = Packet.S2C.PlayEmote.Decoded(args.PacketData);
+                if (packet.NetworkId == Player.NetworkId && packet.EmoteId == (byte) Packet.Emotes.Laugh)
                     args.Process = false;
             }
         }
@@ -106,7 +106,7 @@ namespace Support.Plugins
             }
 
             // most import part!!!
-            if (Environment.TickCount > LastLaugh + 4000 && Target.IsValidTarget(2000) &&
+            if (Environment.TickCount > LastLaugh + 4200 && Player.CountEnemysInRange(2000) > 0 &&
                 ConfigValue<StringList>("Misc.Laugh").SelectedIndex > 0)
             {
                 Packet.C2S.Emote.Encoded(new Packet.C2S.Emote.Struct((byte) Packet.Emotes.Laugh)).Send();
@@ -122,6 +122,9 @@ namespace Support.Plugins
             if (E.CastCheck(gapcloser.Sender, "Gapcloser.E"))
             {
                 E.CastOnUnit(gapcloser.Sender, UsePackets);
+
+                if(W.IsReady()) 
+                    W.CastOnUnit(Player, UsePackets);
             }
         }
 
