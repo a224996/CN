@@ -118,9 +118,9 @@ namespace Evade
             Menu.AddSubMenu(shielding);
 
             var collision = new Menu("纰版挒", "Collision");
-            collision.AddItem(new MenuItem("MinionCollision", "灏忓叺鐨勭鎾炩埗").SetValue(false));
-            collision.AddItem(new MenuItem("HeroCollision", "鑻遍泟鐨勭鎾炩埗").SetValue(false));
-            collision.AddItem(new MenuItem("YasuoCollision", "浜氱储鐨勯澧欑鎾炩埗").SetValue(true));
+            collision.AddItem(new MenuItem("MinionCollision", "灏忓叺").SetValue(false));
+            collision.AddItem(new MenuItem("HeroCollision", "鑻遍泟").SetValue(false));
+            collision.AddItem(new MenuItem("YasuoCollision", "浜氱储W").SetValue(true));
             collision.AddItem(new MenuItem("EnableCollision", "鍚敤").SetValue(true));
             //TODO add mode.
             Menu.AddSubMenu(collision);
@@ -129,7 +129,7 @@ namespace Evade
             drawings.AddItem(new MenuItem("EnabledColor", "鍚敤娉曟湳棰滆壊").SetValue(Color.White));
             drawings.AddItem(new MenuItem("DisabledColor", "绂佺敤娉曟湳棰滆壊").SetValue(Color.Red));
             drawings.AddItem(new MenuItem("MissileColor", "瀵煎脊棰滆壊").SetValue(Color.LimeGreen));
-            drawings.AddItem(new MenuItem("Border", "棰濆杈规瀹藉害").SetValue(new Slider(1, 5, 1)));
+            drawings.AddItem(new MenuItem("Border", "杈规瀹藉害").SetValue(new Slider(1, 5, 1)));
 
             drawings.AddItem(new MenuItem("EnableDrawings", "鍚敤").SetValue(true));
             Menu.AddSubMenu(drawings);
@@ -142,7 +142,7 @@ namespace Evade
                 new MenuItem("Enabled", "鍚敤").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true)));
 
             Menu.AddItem(
-                new MenuItem("OnlyDangerous", "鍙翰閬垮嵄闄╂妧鑳解埗").SetValue(new KeyBind(32, KeyBindType.Press)));
+                new MenuItem("OnlyDangerous", "鍙湁鍗遍櫓鏃惰翰閬縷").SetValue(new KeyBind(32, KeyBindType.Press)));
 
             Menu.AddToMainMenu();
         }
