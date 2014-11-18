@@ -91,7 +91,7 @@ namespace Ultimate_Carry_Prevolution
 
 		private void LoadBasics()
 		{
-			Menu = new Menu("xSLx20英雄合一", MyHero.ChampionName + "_UCP", true);
+			Menu = new Menu("xSLx20鑻遍泟鍚堜竴", MyHero.ChampionName + "_UCP", true);
 
 			//the Team
 			Menu.AddSubMenu(new Menu("鍒朵綔鍥㈤槦", "Credits"));
