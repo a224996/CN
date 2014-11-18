@@ -750,7 +750,7 @@ namespace MasterActivator
 
         private void createMenu()
         {
-            Config = new Menu("MActivator", "masterActivator", true);
+            Config = new Menu("銆愯秴绁炴眽鍖栥€戞椿鍖栧墏", "masterActivator", true);
 
             Config.AddSubMenu(new Menu("鐗╁搧", "purifiers"));
             createMenuItem(qss, 100, "purifiers", false, false);
@@ -863,7 +863,6 @@ namespace MasterActivator
 
 			Config.AddSubMenu(new Menu("瓒呯姹夊寲", "by weilai"));
 				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
 		
             Config.AddToMainMenu();
         }
