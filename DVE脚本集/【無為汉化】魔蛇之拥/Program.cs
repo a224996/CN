@@ -787,9 +787,9 @@ namespace DevCassio
             Config.AddSubMenu(new Menu("鏉傞」", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("PacketCast", "鏁版嵁鍖呮暣鍚堢殑").SetValue(true));
 
-            Config.AddSubMenu(new Menu("杩欎釜鍚堟硶! :)", "Legit"));
-            Config.SubMenu("Legit").AddItem(new MenuItem("PlayLegit", "鐜╃湡 :)").SetValue(false));
-            Config.SubMenu("Legit").AddItem(new MenuItem("DisableNFE", "绂佺敤 No-Face 寮€鍙戝寘").SetValue(true));
+            Config.AddSubMenu(new Menu("鏈哄叧鏋壂灏勨埗)", "Legit"));
+            Config.SubMenu("Legit").AddItem(new MenuItem("PlayLegit", "鍚敤鏈哄叧鏋壂灏勨埗").SetValue(false));
+            Config.SubMenu("Legit").AddItem(new MenuItem("DisableNFE", "绂佺敤寮€鍙戝寘").SetValue(true));
             Config.SubMenu("Legit").AddItem(new MenuItem("LegitCastDelay", "璁剧疆 E 寤惰繜").SetValue(new Slider(500, 0, 1000)));
 
             Config.AddSubMenu(new Menu("澶ф嫑", "Ultimate"));
@@ -809,7 +809,6 @@ namespace DevCassio
             Config.SubMenu("Drawings").AddItem(new MenuItem("EDamage", "鏄剧ずE浼ゆ崯").SetValue(true));
 			Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
 				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
 
             skinManager.AddToMenu(ref Config);
 
