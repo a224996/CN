@@ -137,6 +137,8 @@ namespace Evade
             var misc = new Menu("鏉傞」", "Misc");
             misc.AddItem(new MenuItem("DisableFow", "绂佺敤鎴樹簤杩烽浘闂幇").SetValue(false));
             Menu.AddSubMenu(misc);
+			var misc = new Menu("鐒＄偤姹夊寲", "by wuwei"));
+			misc.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
 
             Menu.AddItem(
                 new MenuItem("Enabled", "鍚敤").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true)));
