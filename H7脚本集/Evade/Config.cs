@@ -137,8 +137,6 @@ namespace Evade
             var misc = new Menu("杂项", "Misc");
             misc.AddItem(new MenuItem("DisableFow", "禁用战争迷雾闪现").SetValue(false));
             Menu.AddSubMenu(misc);
-			var misc = new Menu("無為汉化", "by wuwei"));
-			misc.AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
             Menu.AddItem(
                 new MenuItem("Enabled", "启用").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true)));
