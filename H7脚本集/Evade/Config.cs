@@ -118,9 +118,9 @@ namespace Evade
             Menu.AddSubMenu(shielding);
 
             var collision = new Menu("碰撞", "Collision");
-            collision.AddItem(new MenuItem("MinionCollision", "小兵的碰�?").SetValue(false));
-            collision.AddItem(new MenuItem("HeroCollision", "英雄的碰�?").SetValue(false));
-            collision.AddItem(new MenuItem("YasuoCollision", "亚索的风墙碰�?").SetValue(true));
+            collision.AddItem(new MenuItem("MinionCollision", "小兵").SetValue(false));
+            collision.AddItem(new MenuItem("HeroCollision", "英雄").SetValue(false));
+            collision.AddItem(new MenuItem("YasuoCollision", "亚索风墙").SetValue(true));
             collision.AddItem(new MenuItem("EnableCollision", "启用").SetValue(true));
             //TODO add mode.
             Menu.AddSubMenu(collision);
@@ -128,8 +128,8 @@ namespace Evade
             var drawings = new Menu("范围显示", "Drawings");
             drawings.AddItem(new MenuItem("EnabledColor", "启用法术颜色").SetValue(Color.White));
             drawings.AddItem(new MenuItem("DisabledColor", "禁用法术颜色").SetValue(Color.Red));
-            drawings.AddItem(new MenuItem("MissileColor", "导弹的颜�?").SetValue(Color.LimeGreen));
-            drawings.AddItem(new MenuItem("Border", "边框的宽�?").SetValue(new Slider(1, 5, 1)));
+            drawings.AddItem(new MenuItem("MissileColor", "导弹颜色").SetValue(Color.LimeGreen));
+            drawings.AddItem(new MenuItem("Border", "边框宽度").SetValue(new Slider(1, 5, 1)));
 
             drawings.AddItem(new MenuItem("EnableDrawings", "启用").SetValue(true));
             Menu.AddSubMenu(drawings);
@@ -137,12 +137,14 @@ namespace Evade
             var misc = new Menu("杂项", "Misc");
             misc.AddItem(new MenuItem("DisableFow", "禁用战争迷雾闪现").SetValue(false));
             Menu.AddSubMenu(misc);
+			var misc = new Menu("無為汉化", "by wuwei"));
+			misc.AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
             Menu.AddItem(
                 new MenuItem("Enabled", "启用").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true)));
 
             Menu.AddItem(
-                new MenuItem("OnlyDangerous", "只有危险的时候躲�?").SetValue(new KeyBind(32, KeyBindType.Press)));
+                new MenuItem("OnlyDangerous", "只躲避危险技能∶").SetValue(new KeyBind(32, KeyBindType.Press)));
 
             Menu.AddToMainMenu();
         }
