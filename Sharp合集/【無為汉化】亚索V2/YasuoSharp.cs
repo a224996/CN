@@ -58,7 +58,7 @@ namespace YasuoSharpV2
                 try
                 {
 
-                    Config = new Menu("鐤鹃鍓戣豹-浜氱储", "Yasuo", true);
+                    Config = new Menu("銊х劇鐐烘眽鍖栥劎鐤鹃鍓戣豹-浜氱储", "Yasuo", true);
                     //Orbwalker
                     Config.AddSubMenu(new Menu("璧扮爫", "Orbwalker"));
                     Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalker"));
@@ -122,6 +122,10 @@ namespace YasuoSharpV2
                     Config.SubMenu("debug").AddItem(new MenuItem("saveDash", "saveDashd")).SetValue(new KeyBind('O', KeyBindType.Press, false));
                     Config.SubMenu("debug").AddItem(new MenuItem("exportDash", "export dashes")).SetValue(new KeyBind('P', KeyBindType.Press, false));
                     Config.SubMenu("debug").AddItem(new MenuItem("deleteDash", "deleteLastDash")).SetValue(new KeyBind('I', KeyBindType.Press, false));
+					
+					Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
+				    Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+				    Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細158994507"));
 
                     Config.AddToMainMenu();
                     Drawing.OnDraw += onDraw;

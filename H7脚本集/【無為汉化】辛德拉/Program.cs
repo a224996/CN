@@ -187,7 +187,7 @@ namespace Syndra
 
 			Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
 				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細158994507"));
 				
             //Add the events we are going to use:
             Game.OnGameUpdate += Game_OnGameUpdate;
