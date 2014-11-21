@@ -58,7 +58,7 @@ namespace YasuoSharpV2
                 try
                 {
 
-                    Config = new Menu("銊х劇鐐烘眽鍖栥劎鐤鹃鍓戣豹-浜氱储", "Yasuo", true);
+                    Config = new Menu("鐒＄偤姹夊寲-浜氱储", "Yasuo", true);
                     //Orbwalker
                     Config.AddSubMenu(new Menu("璧扮爫", "Orbwalker"));
                     Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalker"));
