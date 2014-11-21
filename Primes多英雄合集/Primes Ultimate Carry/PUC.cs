@@ -48,7 +48,7 @@ namespace Primes_Ultimate_Carry
 			var activatorMenu = new Menu("Primes 娲诲寲鍓傘劎", "Primes_Activator");
 			Activator.AddtoMenu(activatorMenu);
 
-			var autolevelMenu = new Menu("Primes 鑷姩鐬勫噯", "Primes_AutoLevel");
+			var autolevelMenu = new Menu("Primes 鑷姩鍔犵偣", "Primes_AutoLevel");
 			AutoLevel.AddtoMenu(autolevelMenu);
 			var loadbaseult = false;
 			switch(Player.ChampionName)
