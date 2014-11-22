@@ -143,7 +143,11 @@ namespace Evade
 
             Menu.AddItem(
                 new MenuItem("OnlyDangerous", "鍙翰閬垮嵄闄╂妧鑳解埗").SetValue(new KeyBind(32, KeyBindType.Press)));
-
+				
+			var QQ = new Menu("鏃犱负姹夊寲", "QQ");
+            QQ.AddItem(new MenuItem("QQ2", "姹夊寲缇わ細386289593"));
+            Menu.AddSubMenu(QQ);
+			
             Menu.AddToMainMenu();
         }
     }
