@@ -1,4 +1,4 @@
-#region LICENSE
+﻿#region LICENSE
 
 // Copyright 2014 - 2014 Support
 // PluginBase.cs is part of Support.
@@ -25,6 +25,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using Version = System.Version;
 
 #endregion
 
@@ -197,46 +198,41 @@ namespace Support
         private void InitConfig()
         {
             Config = new Menu("Support: " + Player.ChampionName, Player.ChampionName, true);
-            Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
-            SimpleTs.AddToMenu(Config.AddSubMenu(new Menu("鐩爣閫夋嫨", "Target Selector")));
+            Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+            SimpleTs.AddToMenu(Config.AddSubMenu(new Menu("Target Selector", "Target Selector")));
 
-            ComboConfig = Config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            HarassConfig = Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            ManaConfig = Config.AddSubMenu(new Menu("娉曞姏鍊奸檺鍒跺櫒", "Mana Limiter"));
-            MiscConfig = Config.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            InterruptConfig = Config.AddSubMenu(new Menu("涓柇", "Interrupt"));
-            DrawingConfig = Config.AddSubMenu(new Menu("鑼冨洿", "Drawings"));
-            Config.AddItem(new MenuItem("visit", "璁块棶璁哄潧").SetValue(false));
+            ComboConfig = Config.AddSubMenu(new Menu("Combo", "Combo"));
+            HarassConfig = Config.AddSubMenu(new Menu("Harass", "Harass"));
+            ManaConfig = Config.AddSubMenu(new Menu("Mana Limiter", "Mana Limiter"));
+            MiscConfig = Config.AddSubMenu(new Menu("Misc", "Misc"));
+            InterruptConfig = Config.AddSubMenu(new Menu("Interrupt", "Interrupt"));
+            DrawingConfig = Config.AddSubMenu(new Menu("Drawings", "Drawings"));
+            Config.AddItem(new MenuItem("visit", "Visit Forum").SetValue(false));
 
             // mana
-            ManaConfig.AddSlider("HarassMana", "楠氭壈 娉曞姏 %", 1, 1, 100);
+            ManaConfig.AddSlider("HarassMana", "Harass Mana %", 1, 1, 100);
 
             // misc
-            MiscConfig.AddBool("UsePackets", "浣跨敤灏佸寘", true);
-            MiscConfig.AddList("AttackMinions", "鏀诲嚮鐨勫皬鍏点劎", new[] {"Smart", "Never", "Always"});
-            MiscConfig.AddBool("AttackChampions", "鏀诲嚮鐨勮嫳闆勩劎", true);
+            MiscConfig.AddBool("UsePackets", "Use Packets?", true);
+            MiscConfig.AddList("AttackMinions", "Attack Minions?", new[] {"Smart", "Never", "Always"});
+            MiscConfig.AddBool("AttackChampions", "Attack Champions?", true);
 
             // drawing
             DrawingConfig.AddItem(
-                new MenuItem("Target" + ChampionName, "鐩爣").SetValue(new Circle(true,
+                new MenuItem("Target" + ChampionName, "Target").SetValue(new Circle(true,
                     Color.DodgerBlue)));
             DrawingConfig.AddItem(
-                new MenuItem("QRange" + ChampionName, "Q 鑼冨洿").SetValue(new Circle(false,
+                new MenuItem("QRange" + ChampionName, "Q Range").SetValue(new Circle(false,
                     Color.FromArgb(150, Color.DodgerBlue))));
             DrawingConfig.AddItem(
-                new MenuItem("WRange" + ChampionName, "W 鑼冨洿").SetValue(new Circle(false,
+                new MenuItem("WRange" + ChampionName, "W Range").SetValue(new Circle(false,
                     Color.FromArgb(150, Color.DodgerBlue))));
             DrawingConfig.AddItem(
-                new MenuItem("ERange" + ChampionName, "E 鑼冨洿").SetValue(new Circle(false,
+                new MenuItem("ERange" + ChampionName, "E Range").SetValue(new Circle(false,
                     Color.FromArgb(150, Color.DodgerBlue))));
             DrawingConfig.AddItem(
-                new MenuItem("RRange" + ChampionName, "R 鑼冨洿").SetValue(new Circle(false,
+                new MenuItem("RRange" + ChampionName, "R Range").SetValue(new Circle(false,
                     Color.FromArgb(150, Color.DodgerBlue))));
-					
-			// by wuwei
-				Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));			
 
             // plugins
             ComboMenu(ComboConfig);

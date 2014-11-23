@@ -1,4 +1,4 @@
-#region LICENSE
+﻿#region LICENSE
 
 // Copyright 2014 - 2014 Support
 // Janna.cs is part of Support.
@@ -32,7 +32,7 @@ namespace Support.Plugins
 
         public Janna()
         {
-            Q = new Spell(SpellSlot.Q, 1100);
+            Q = new Spell(SpellSlot.Q, 1200);
             W = new Spell(SpellSlot.W, 600);
             E = new Spell(SpellSlot.E, 800);
             R = new Spell(SpellSlot.R, 550);

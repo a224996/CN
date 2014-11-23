@@ -1,4 +1,4 @@
-#region LICENSE
+﻿#region LICENSE
 
 // Copyright 2014 - 2014 Support
 // Nunu.cs is part of Support.
@@ -123,7 +123,7 @@ namespace Support.Plugins
             {
                 E.CastOnUnit(gapcloser.Sender, UsePackets);
 
-                if(W.IsReady()) 
+                if (W.IsReady())
                     W.CastOnUnit(Player, UsePackets);
             }
         }
@@ -147,7 +147,7 @@ namespace Support.Plugins
         public override void MiscMenu(Menu config)
         {
             config.AddList("Misc.Laugh", "绗戠殑鍔ㄤ綔", new[] { "OFF", "ON", "ON + Mute" });
-            config.AddBool("Misc.E.NoFace", "E NoFace寮€鍙戙劎NoFace Exploit", false);
+            config.AddBool("Misc.E.NoFace", "E 寮€鍙戙劎", false);
         }
 
         public override void InterruptMenu(Menu config)

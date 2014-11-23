@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using Version = System.Version;
 
 #endregion
 

@@ -110,7 +110,9 @@ namespace Support
             new DamageBoostSpell {Champion = "Riven", Spell = "RivenFengShuiEngine", Slot = "R", Priority = 3},
             new DamageBoostSpell {Champion = "MonkeyKing", Spell = "MonkeyKingDoubleAttack", Slot = "Q", Priority = 1},
             new DamageBoostSpell {Champion = "MonkeyKing", Spell = "MonkeyKingNimbus", Slot = "E", Priority = 2},
-            new DamageBoostSpell {Champion = "MonkeyKing", Spell = "MonkeyKingSpinToWin", Slot = "R", Priority = 3}
+            new DamageBoostSpell {Champion = "MonkeyKing", Spell = "MonkeyKingSpinToWin", Slot = "R", Priority = 3},
+            new DamageBoostSpell {Champion = "Kalista", Spell = "KalistaMysticShot", Slot = "Q", Priority = 2},
+            new DamageBoostSpell {Champion = "Kalista", Spell = "KalistaExpungeWrapper", Slot = "E", Priority = 3}
         };
     }
 }
