@@ -49,7 +49,7 @@ namespace Assemblies {
                                 (rawVersion);
                         if (match.Success) {
                             var gitVersion =
-                                new System.Version.(string.Format("{0}.{1}.{2}.{3}", match.Groups[1], match.Groups[2],
+                                new System.Version(string.Format("{0}.{1}.{2}.{3}", match.Groups[1], match.Groups[2],
                                     match.Groups[3],
                                     match.Groups[4]));
                             if (gitVersion > Version) {
