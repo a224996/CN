@@ -9,7 +9,7 @@ using LeagueSharp.Common;
 namespace Assemblies {
     internal static class Program {
         private static Champion champion;
-        private static Version Version;
+        private static System.Version Version;
 
         private static void Main(string[] args) {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
