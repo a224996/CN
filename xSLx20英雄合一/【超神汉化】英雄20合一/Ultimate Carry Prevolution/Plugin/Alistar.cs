@@ -200,14 +200,14 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				return;
 			if(mode)
 			{
-				var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
+				var target = SimpleTs.GetTarget(Q.Range * 2, SimpleTs.DamageType.Magical);
 				if(target == null || !target.IsValidTarget(Q.Range))
 					return;
-					Q.Cast();
+				Q.Cast();
 			}
 			else
 			{
-				if(MinionManager.GetMinions(MyHero.Position, Q.Range).Count >= Menu.Item("LaneClear_useQ_minHit").GetValue<Slider>().Value)
+				if(MinionManager.GetMinions(MyHero.Position, Q.Range * 2).Count >= Menu.Item("LaneClear_useQ_minHit").GetValue<Slider>().Value)
 					Q.Cast();
 				foreach(var minion in MinionManager.GetMinions(MyHero.ServerPosition, Q.Range, MinionTypes.All,
 					MinionTeam.Neutral, MinionOrderTypes.MaxHealth).Where(minion => MyHero.Distance(minion) <= Q.Range))
@@ -269,8 +269,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					if (target.IsValidTarget( W.Range))
 					{
 						W.Cast(target, UsePackets());
-						var jumpTime = Math.Max(1, 1000 * MyHero.Distance(target) / 2500) ;
-						//var jumpTime = Math.Max(0, MyHero.Distance(target) - 500) * 10 / 25 + 25;
+						//var jumpTime = Math.Max(1, 1000 * MyHero.Distance(target) / 2500) ;
+						var jumpTime = Math.Max(0, MyHero.Distance(target) - 500) * 10 / 25 + 25 ;
 						Utility.DelayAction.Add((int)jumpTime, () => Q.Cast());
 						_qonDelay = true;
 						return;
@@ -287,7 +287,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 			}
 			if(Q.IsReady() && !W.IsReady())
 			{
-				var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
+				var target = SimpleTs.GetTarget(Q.Range*2, SimpleTs.DamageType.Magical);
 				Q.Cast();			
 			}
 		}
@@ -339,14 +339,14 @@ namespace Ultimate_Carry_Prevolution.Plugin
 						AllHerosFriend.Where(
 							hero =>
 								GetHealthPercent(hero) < Menu.Item("Misc_useE_Health").GetValue<Slider>().Value &&
-								hero.Distance(MyHero) < W.Range && hero.IsValid))
+								hero.Distance(MyHero) < E.Range && hero.IsValid))
 				{
 					E.Cast();
 				}
 			}
 			else
 			{
-				if (GetHealthPercent() < Menu.Item("Misc_useE_Health").GetValue<Slider>().Value)
+				if (GetHealthPercent(MyHero) < Menu.Item("Misc_useE_Health").GetValue<Slider>().Value)
 					E.Cast();
 			}
 		}

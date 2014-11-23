@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq; 
+using System.Windows.Forms.VisualStyles; 
 using System.Xml.Xsl;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -179,9 +181,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             xSLxOrbwalker.ForcedTarget = null;
 
-            int minion = MinionManager.GetMinions(MyHero.ServerPosition, xSLxOrbwalker.GetAutoAttackRange()).Count;
+            int minion = MinionManager.GetMinions(MyHero.ServerPosition, xSLxOrbwalker.GetAutoAttackRange(),MinionTypes.All,MinionTeam.NotAlly).Count;
 
-            if (IsSpellActive("Q") && ManaManagerAllowCast() && minion > 0)
+            if (IsSpellActive("Q") && ManaManagerAllowCast() && minion > 1 )
                 Q.Cast(Game.CursorPos);
         }
 
@@ -223,22 +225,30 @@ namespace Ultimate_Carry_Prevolution.Plugin
             Menu.Item("Misc_E_Next").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle));
         }
 
-        private void Cast_E()
-        {
-            var pushDistance = Menu.Item("Misc_Push_Distance").GetValue<Slider>().Value;
-            var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
+		private bool IsCollisionE(Obj_AI_Base unit)
+		{
+			for(var i = 50; i <= Menu.Item("Misc_Push_Distance").GetValue<Slider>().Value; i += 50)
+			{
+				var endpos = E.GetPrediction(unit).UnitPosition.To2D().Extend(MyHero.ServerPosition.To2D(),-i)  .To3D();
+				if(NavMesh.GetCollisionFlags(endpos) == CollisionFlags.Wall ||
+					NavMesh.GetCollisionFlags(endpos) == CollisionFlags.Building)
+					return true;
+			}
+			return false;
+		}
 
-            if (MyHero.Distance(target) < 50)
-                E.Cast(target, UsePackets());
+		private void Cast_E()
+		{
+			if(!E.IsReady())
+				return;
+			foreach(var enemy in AllHerosEnemy.Where(hero => hero.IsValidTarget(E.Range)).Where(enemy => IsCollisionE(enemy)))
+			{
+				E.Cast(enemy, UsePackets());
+				return;
+			}
+		}
 
-            var targetPred = E.GetPrediction(target);
-            var targetPredPos = targetPred.UnitPosition + Vector3.Normalize(targetPred.UnitPosition - MyHero.ServerPosition)*(pushDistance+target.BoundingRadius);
-
-            if (IsPassWall(targetPred.UnitPosition, targetPredPos))
-                E.Cast(target, UsePackets());
-        }
-
-        private void Cast_R()
+	    private void Cast_R()
         {
 	        var target = xSLxOrbwalker.GetPossibleTarget();
 			var dmg = GetComboDamage(target) + MyHero.GetAutoAttackDamage(target) * 6;
