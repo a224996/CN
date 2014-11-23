@@ -84,6 +84,8 @@ namespace DevCassio
                         break;
                 }
 
+                if (Config.Item("HarassToggle").GetValue<KeyBind>().Active)
+                    Harass();
                 
                 UseUltUnderTower();
 
@@ -319,7 +321,7 @@ namespace DevCassio
                 var allMinionsQ = MinionManager.GetMinions(Player.Position, Q.Range + Q.Width, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health).ToList();
                 var allMinionsQNonPoisoned = allMinionsQ.Where(x => !x.HasBuffOfType(BuffType.Poison)).ToList();
 
-                if (allMinionsQNonPoisoned.Count > 0)
+                if (allMinionsQNonPoisoned.Any())
                 {
                     var farmNonPoisoned = Q.GetCircularFarmLocation(allMinionsQNonPoisoned, Q.Width * 0.8f);
                     if (farmNonPoisoned.MinionsHit >= 3)
@@ -330,7 +332,7 @@ namespace DevCassio
                     }
                 }
 
-                if (allMinionsQ.Count > 0)
+                if (allMinionsQ.Any())
                 {
                     var farmAll = Q.GetCircularFarmLocation(allMinionsQ, Q.Width * 0.8f);
                     if (farmAll.MinionsHit >= 2 || allMinionsQ.Count == 1)
@@ -347,7 +349,7 @@ namespace DevCassio
                 var allMinionsW = MinionManager.GetMinions(Player.ServerPosition, W.Range + W.Width, MinionTypes.All).ToList();
                 var allMinionsWNonPoisoned = allMinionsW.Where(x => !x.HasBuffOfType(BuffType.Poison)).ToList();
 
-                if (allMinionsWNonPoisoned.Count > 0)
+                if (allMinionsWNonPoisoned.Any())
                 {
                     var farmNonPoisoned = W.GetCircularFarmLocation(allMinionsWNonPoisoned, W.Width * 0.8f);
                     if (farmNonPoisoned.MinionsHit >= 3)
@@ -357,7 +359,7 @@ namespace DevCassio
                     }
                 }
 
-                if (allMinionsW.Count > 0)
+                if (allMinionsW.Any())
                 {
                     var farmAll = W.GetCircularFarmLocation(allMinionsW, W.Width * 0.8f);
                     if (farmAll.MinionsHit >= 2 || allMinionsW.Count == 1)
@@ -372,15 +374,15 @@ namespace DevCassio
             {
                 MinionList = MinionManager.GetMinions(Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health);
 
-                foreach (var minion in MinionList.Where(x => x.HasBuffOfType(BuffType.Poison)).ToList())
+                foreach (var minion in MinionList.Where(x => x.HasBuffOfType(BuffType.Poison)))
                 {
                     var buffEndTime = GetPoisonBuffEndTime(minion);
-
-                    if (buffEndTime > (Game.Time + E.Delay))
+                    if (buffEndTime > Game.Time + E.Delay)
                     {
                         if (UseELastHitLaneClear)
                         {
-                            if (Player.GetSpellDamage(minion, SpellSlot.E) * 0.9d > HealthPrediction.LaneClearHealthPrediction(minion, (int)E.Delay * 1000))
+                            //var landTime = Q.Delay + 1000 * Player.Distance(minion) / 1400;
+                            if (GetEDamageToMinion(minion) * 0.9 > minion.Health)
                             {
                                 CastE(minion);
                             }
@@ -390,8 +392,41 @@ namespace DevCassio
                             CastE(minion);
                         }
                     }
+                    else
+                    {
+                        if (mustDebug)
+                            Game.PrintChat("DONT CAST : buffEndTime " + buffEndTime);
+                    }
                 }
             }
+        }
+
+        private static double GetEDamageToMinion(Obj_AI_Base minion)
+        {
+            // Workaround cause DamageLib does not have the correct values for Cassio
+            var damageSpell = new DamageSpell { Slot = SpellSlot.E, DamageType = LeagueSharp.Common.Damage.DamageType.Magical, Damage = (source, target, level) => new double[] { 45, 85, 120, 155, 190 }[level] + (0.55 * source.FlatMagicDamageMod) };
+            var rawDamage = damageSpell.Damage(Player, minion, Math.Max(1, Math.Min(Player.Spellbook.GetSpell(SpellSlot.Q).Level - 1, 6)));
+
+            return CalcMagicDamage(Player, minion, rawDamage);
+        }
+
+        private static double CalcMagicDamage(Obj_AI_Base source, Obj_AI_Base target, double amount)
+        {
+            var magicResist = (target.SpellBlock * source.PercentMagicPenetrationMod) - source.FlatMagicPenetrationMod;
+
+            double k;
+            if (magicResist < 0)
+            {
+                k = 2 - 100 / (100 - magicResist);
+            }
+            else
+            {
+                k = 100 / (100 + magicResist);
+            }
+
+            k = k * (1 - target.PercentMagicReduction) * (1 + target.PercentMagicDamageMod);
+
+            return k * amount;
         }
 
         private static float GetPoisonBuffEndTime(Obj_AI_Base target)
@@ -407,7 +442,7 @@ namespace DevCassio
         {
             MinionList = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health);
 
-            if (MinionList.Count == 0)
+            if (!MinionList.Any())
                 return;
 
             var packetCast = Config.Item("PacketCast").GetValue<bool>();
@@ -421,7 +456,7 @@ namespace DevCassio
 
                     if (E.IsReady() && buffEndTime > (Game.Time + E.Delay) && minion.IsValidTarget(E.Range))
                     {
-                        if (Player.GetSpellDamage(minion, SpellSlot.E) * 0.9d > HealthPrediction.LaneClearHealthPrediction(minion, (int)E.Delay * 1000))
+                        if (GetEDamageToMinion(minion) * 0.9 > minion.Health)
                         {
                             CastE(minion);
                         }
@@ -435,7 +470,7 @@ namespace DevCassio
         {
             var mobs = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
-            if (mobs.Count == 0)
+            if (!mobs.Any())
                 return;
 
             var UseQJungleClear = Config.Item("UseQJungleClear").GetValue<bool>();
@@ -585,8 +620,10 @@ namespace DevCassio
         {
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                var useAA = Config.Item("UseAACombo").GetValue<bool>();
-                args.Process = useAA;
+                args.Process = Config.Item("UseAACombo").GetValue<bool>();
+
+                if (E.IsReady() && args.Target.HasBuffOfType(BuffType.Poison) && args.Target.IsValidTarget(E.Range))
+                    args.Process = false;
             }
         }
 
@@ -760,10 +797,10 @@ namespace DevCassio
             Config.SubMenu("Combo").AddItem(new MenuItem("UseRSaveYourselfMinHealth", "淇濈暀澶熸硶鍔涘€间娇鐢≧").SetValue(new Slider(25, 0, 100)));
 
             Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("HarassToggle", "楠氭壈 (鍒囨崲)").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Toggle)));
             Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "浣跨敤 Q").SetValue(true));
             Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "浣跨敤 W").SetValue(false));
             Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "浣跨敤 E").SetValue(true));
-            
 
             Config.AddSubMenu(new Menu("琛ュ叺", "Freeze"));
             Config.SubMenu("Freeze").AddItem(new MenuItem("UseEFreeze", "浣跨敤 E").SetValue(true));
@@ -790,7 +827,7 @@ namespace DevCassio
             Config.AddSubMenu(new Menu("鏈哄叧鏋壂灏勨埗)", "Legit"));
             Config.SubMenu("Legit").AddItem(new MenuItem("PlayLegit", "鍚敤鏈哄叧鏋壂灏勨埗").SetValue(false));
             Config.SubMenu("Legit").AddItem(new MenuItem("DisableNFE", "绂佺敤寮€鍙戝寘").SetValue(true));
-            Config.SubMenu("Legit").AddItem(new MenuItem("LegitCastDelay", "璁剧疆 E 寤惰繜").SetValue(new Slider(500, 0, 1000)));
+            Config.SubMenu("Legit").AddItem(new MenuItem("LegitCastDelay", "璁剧疆 E 寤惰繜").SetValue(new Slider(500, 0, 1500)));
 
             Config.AddSubMenu(new Menu("澶ф嫑", "Ultimate"));
             Config.SubMenu("Ultimate").AddItem(new MenuItem("UseAssistedUlt", "浣跨敤杈呭姪澶ф嫑").SetValue(true));
@@ -807,7 +844,7 @@ namespace DevCassio
             Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E 鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
             Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R 鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
             Config.SubMenu("Drawings").AddItem(new MenuItem("EDamage", "鏄剧ずE浼ゆ崯").SetValue(true));
-			Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
+						Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
 				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
 
             skinManager.AddToMenu(ref Config);
