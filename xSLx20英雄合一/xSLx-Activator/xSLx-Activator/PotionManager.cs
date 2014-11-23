@@ -83,12 +83,12 @@ namespace xSLx_Activator
 					}
 				};
 
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep0", "====== 鐢熷懡"));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPotion", "= 绾㈣嵂").SetValue(true));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPercent", "= HP<%").SetValue(new Slider(30)));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep1", "====== 钃濋噺"));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPotion", "钃濊嵂").SetValue(true));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPercent", "MP<%").SetValue(new Slider(30)));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep0", "====== Health"));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPotion", "= Use Health Potion").SetValue(true));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPercent", "= HP Trigger Percent").SetValue(new Slider(30)));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep1", "====== Mana"));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPotion", "Use Mana Potion").SetValue(true));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPercent", "MP Trigger Percent").SetValue(new Slider(30)));
 
 			Game.OnGameUpdate += OnGameUpdate;
 		}

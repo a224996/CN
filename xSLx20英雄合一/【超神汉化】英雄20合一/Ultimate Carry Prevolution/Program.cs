@@ -85,12 +85,12 @@ namespace Ultimate_Carry_Prevolution
 			_xSprite.Draw(_xTexture, new ColorBGRA(255, 255, 255, 255), null, null, new Vector3(10, 120, 0));
 			_xSprite.End();
 
-			Drawing.DrawText(10, 200, Color.White, "Current Donation State : 23E");
+			Drawing.DrawText(10, 200, Color.White, "Current Donation State : 33E");
 			Drawing.DrawText(10, 220, Color.White, "Next Goal :              60E");
 			Drawing.DrawText(10, 250, Color.White, "Reason: xSalice got Banned and need");
 			Drawing.DrawText(10, 270, Color.White, "new Account, lvl 30 all champions");
 
-			Drawing.DrawText(10, 300, Color.White, "Total Amount of Donation : 23E");
+			Drawing.DrawText(10, 300, Color.White, "Total Amount of Donation : 33E");
 
 			Drawing.DrawText(10, 340, Color.White, "Paypal : team-xslx@hotmail.com");
 			Drawing.DrawText(10, 360, Color.White, "Forum: xSLx Signatur - Donate");
@@ -98,11 +98,11 @@ namespace Ultimate_Carry_Prevolution
 			Drawing.DrawText(10, 400, Color.White, "or just click > Space < in Loadscreen");
 
 			Drawing.DrawText(10, 430, Color.White, "Top 10 Donators ");
-			Drawing.DrawText(10, 460, Color.White, "E2Slayer     8E");
-			Drawing.DrawText(10, 480, Color.White, "mtsdenis     5E");
-			Drawing.DrawText(10, 500, Color.White, "Luca Lilly   5E");
-			Drawing.DrawText(10, 520, Color.White, "Xionlunix    5E");
-			Drawing.DrawText(10, 540, Color.White, "   ...   ");
+			Drawing.DrawText(10, 460, Color.White, "keldeo      10E");
+			Drawing.DrawText(10, 480, Color.White, "E2Slayer     8E");
+			Drawing.DrawText(10, 500, Color.White, "mtsdenis     5E");
+			Drawing.DrawText(10, 520, Color.White, "Luca Lilly   5E");
+			Drawing.DrawText(10, 540, Color.White, "Xionlunix    5E");
 			Drawing.DrawText(10, 560, Color.White, "   ...   ");
 			Drawing.DrawText(10, 580, Color.White, "   ...   ");
 			Drawing.DrawText(10, 600, Color.White, "   ...   ");

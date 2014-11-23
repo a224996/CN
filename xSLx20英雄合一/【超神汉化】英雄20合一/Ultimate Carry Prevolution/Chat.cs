@@ -21,7 +21,6 @@ namespace Ultimate_Carry_Prevolution
 			Game.PrintChat(
 				"<font color ='{0}'>Version </font> <font color ='{1}'>1.0." + Loader.VersionNumber +
 				"</font> <font color ='{0}'>Loading</font>",
-			
 				HtmlColor.Cyan, HtmlColor.Gold);
 			if (IsChampionSupported())
 			{
@@ -31,12 +30,8 @@ namespace Ultimate_Carry_Prevolution
 			Game.PrintChat("<font color=\"#FFFF00\">====== 鎴愬姛杞藉叆:銆愯秴绁炴眽鍖栥€憒xSLx鑻遍泟20鍚堜竴|=======</font>");
 			Game.PrintChat("<font color=\"#FFFF00\">====== 鐗堟湰: v 1.0.1.0====== </font>");
 			Game.PrintChat("<font color=\"#FFFF00\">|鍓戦瓟|鐙愮嫺|闃垮崱涓絴鐗涘ご|鏈ㄦ湪|鍑ゅ嚢|瀵掑啺|鐨囧笣|鏈哄櫒|濂宠|椋炴満|EZ|鍓戝К|绾冲皵|鍒€濡箌閲戝厠涓潀鏃ュコ|鍗㈣タ瀹墊鐙瓙鐙梶鐟炲吂|杈涘痉鎷墊钖囨仼|</font>");
-			Game.PrintChat("<font color=\"#FFFF00\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");
-				//// ContestMessage
-				//Game.PrintChat(
-				//	"<font color ='{0}'>Support us by Voting, a Vote is like a Donation for Free <font color ='{1}'> >>> </font> press F1 <font color ='{1}'> <<< </font></font>",
-				//	HtmlColor.Gold ,HtmlColor.Red );
-				//// end
+			Game.PrintChat("<font color=\"#FFFF00\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");		
+
 			}
 			else
 				Game.PrintChat(
@@ -49,8 +44,8 @@ namespace Ultimate_Carry_Prevolution
 		{
 			// A list of IngameNames ( i dont know if they use L# or not ) but i think so and if they do, they not have to use UCP
 			// till they changed the behavier.
-			if (ObjectManager.Player.Name == "Zourimi") // 13.11 ( 7 day banned )
-				return true;
+			//if (ObjectManager.Player.Name == "Zourimi") // 13.11 ( 7 day banned )
+			//	return true;
 			return false;
 		}
 

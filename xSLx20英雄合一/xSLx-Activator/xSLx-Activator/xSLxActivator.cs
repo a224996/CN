@@ -16,17 +16,17 @@ namespace xSLx_Activator
 
 		public static void AddToMenu(Menu menu)
 	    {
-			var menuPotions = new Menu("鑽按", "xSLxActivator_Potions");
+			var menuPotions = new Menu("Potion-Manager", "xSLxActivator_Potions");
 			// ReSharper disable once ObjectCreationAsStatement
 			new PotionManager(menuPotions);
 			menu.AddSubMenu(menuPotions);
 
-			var menuItems = new Menu("鐗╁搧", "xSLxActivator_Item");
+			var menuItems = new Menu("Item-Manager", "xSLxActivator_Item");
 			// ReSharper disable once ObjectCreationAsStatement
 			new ItemManager(menuItems);
 			menu.AddSubMenu(menuItems);
 
-			var menuSummoners = new Menu("鍙敜甯堟妧鑳絴", "xSLxActivator_Summoner");
+			var menuSummoners = new Menu("Summoner-Manager", "xSLxActivator_Summoner");
 			// ReSharper disable once ObjectCreationAsStatement
 			new SummonerManager(menuSummoners);
 			menu.AddSubMenu(menuSummoners);

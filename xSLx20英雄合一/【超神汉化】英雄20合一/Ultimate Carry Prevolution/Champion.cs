@@ -12,6 +12,8 @@ namespace Ultimate_Carry_Prevolution
 {
 	class Champion
 	{
+
+		private readonly bool _pluginLoaded ;
 		public Obj_AI_Hero MyHero = ObjectManager.Player;
 		public IEnumerable<Obj_AI_Hero> AllHeros = ObjectManager.Get<Obj_AI_Hero>();
 		public IEnumerable<Obj_AI_Hero> AllHerosFriend = ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsAlly);
@@ -34,9 +36,13 @@ namespace Ultimate_Carry_Prevolution
         public static SpellSlot Ignite = ObjectManager.Player.GetSpellSlot("SummonerDot");
 
 		public static Menu Menu;
-		//private int _lastsiteopend;
+
 		public Champion()
 		{
+			if (!_pluginLoaded)
+				_pluginLoaded = true;
+			else
+				return;
 
 			LoadBasics();
 
@@ -81,12 +87,6 @@ namespace Ultimate_Carry_Prevolution
 					break;
 			}
 			OnPassive();
-
-			//if ( Menu.Item( "vote").GetValue< KeyBind >().Active  && Environment.TickCount -_lastsiteopend  > 10000)
-			//{
-			//	_lastsiteopend = Environment.TickCount;
-			//	Process.Start("http://google.com");
-			//}
 		}
 
 		private void LoadBasics()
@@ -95,9 +95,9 @@ namespace Ultimate_Carry_Prevolution
 
 			//the Team
 			Menu.AddSubMenu(new Menu("鍒朵綔鍥㈤槦", "Credits"));
-			Menu.SubMenu("Credits").AddItem(new MenuItem("Lexxes", "Lexxes (婢冲ぇ鍒╀簹)"));
+			Menu.SubMenu("Credits").AddItem(new MenuItem("Lexxes", "婢冲ぇ鍒╀簹"));
 			Menu.SubMenu("Credits").AddItem(new MenuItem("xSalice", "xSalice (缇庡浗)"));
-			Menu.SubMenu("Credits").AddItem(new MenuItem("InjectionDev", "InjectionDev"));
+			Menu.SubMenu("Credits").AddItem(new MenuItem("InjectionDev", "InjectionDev (???)"));
 
 			//TargetSelector
 			var targetselectormenu = new Menu("鐩爣閫夋嫨", "Common_TargetSelector");
@@ -106,29 +106,26 @@ namespace Ultimate_Carry_Prevolution
 
 			//PacketMenu
 			Menu.AddSubMenu(new Menu("鏉傞」", "Packets"));
-			Menu.SubMenu("Packets").AddItem(new MenuItem("usePackets", "灏佸寘").SetValue(false));
+			Menu.SubMenu("Packets").AddItem(new MenuItem(MyHero.ChampionName + "usePackets", "灏佸寘").SetValue(false));
 
 			//xSLxActivator
-			var activatorMenu = new Menu("xSLx娲诲寲鍓倈", "xSLx_Activator");
+			var activatorMenu = new Menu("xSLx娲诲寲鍓倈", "Activatort1");
 			xSLxActivator.AddToMenu(activatorMenu);
 			Menu.AddSubMenu(activatorMenu);
 
 			//xSLxOrbwalker (Based on Common)
-			var orbwalkerMenu = new Menu("xSLx璧扮爫", "xSLx_Orbwalker");
+			var orbwalkerMenu = new Menu("xSLx璧扮爫", "Orbwalkert1");
 			xSLxOrbwalker.AddToMenu(orbwalkerMenu);
 			Menu.AddSubMenu(orbwalkerMenu);
-
 			
 			Menu.AddSubMenu(new Menu("瓒呯姹夊寲", "by welai"));
 				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
 				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
-				
-			//Menu.AddItem( new MenuItem( "vote"," Vote Pls for UCP").SetValue(new KeyBind(112, KeyBindType.Press)));
 		}
 
 		public bool UsePackets()
 		{
-			return Menu.Item("usePackets").GetValue<bool>();
+			return Menu.Item(MyHero.ChampionName + "usePackets").GetValue<bool>();
 		}
 
 	    public void Use_DFG(Obj_AI_Hero target)
@@ -204,15 +201,15 @@ namespace Ultimate_Carry_Prevolution
 		public void AddSpelltoMenu(Menu menu, string name, bool state, string alternativename = "")
 		{
 			if(alternativename == "")
-				alternativename = "浣跨敤" + name;
-			menu.AddItem(new MenuItem(menu.Name + "_" + name.Replace(" ", "_"), alternativename).SetValue(state));
+				alternativename = "Use " + name;
+			menu.AddItem(new MenuItem(MyHero.ChampionName +menu.Name + "_" + name.Replace(" ", "_"), alternativename).SetValue(state));
 		}
 
 		public bool IsSpellActive(string name)
 		{
 			try
 			{
-				return Menu.Item(xSLxOrbwalker.CurrentMode + "_" + name.Replace(" ", "_")).GetValue<bool>();
+				return Menu.Item(MyHero.ChampionName + xSLxOrbwalker.CurrentMode + "_" + name.Replace(" ", "_")).GetValue<bool>();
 			}
 			catch
 			{
@@ -222,14 +219,14 @@ namespace Ultimate_Carry_Prevolution
 
 		public void AddManaManagertoMenu(Menu menu, int standard)
 		{
-			menu.AddItem(new MenuItem(menu.Name + "_Manamanager", "钃濋噺鎺у埗").SetValue(new Slider(standard)));
+			menu.AddItem(new MenuItem(MyHero.ChampionName + menu.Name + "_Manamanager", "Mana-Manager").SetValue(new Slider(standard)));
 		}
 
 		public bool ManaManagerAllowCast()
 		{
 			try
 			{
-				if(GetManaPercent() < Menu.Item(xSLxOrbwalker.CurrentMode + "_Manamanager").GetValue<Slider>().Value)
+				if(GetManaPercent() < Menu.Item(MyHero.ChampionName + xSLxOrbwalker.CurrentMode + "_Manamanager").GetValue<Slider>().Value)
 					return false;
 			}
 			catch
