@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using xSLx_Orbwalker;
@@ -9,6 +8,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
 {
 	class Ryze : Champion 
 	{
+		// in progress
+
 		public Ryze()
 		{
 			SetSpells();
@@ -27,7 +28,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Ryze Plugin", "Ryze");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("Combo", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
@@ -35,7 +36,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddSpelltoMenu(comboMenu, "R", true);
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("Harass", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
@@ -43,26 +44,26 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("LaneClear", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "W", true);
 					AddManaManagertoMenu(laneClearMenu, 20);
 					champMenu.AddSubMenu(laneClearMenu);
 				}
-				var fleeMenu = new Menu("閫冭窇", "Flee");
+				var fleeMenu = new Menu("Flee", "Flee");
 				{
-					AddSpelltoMenu(fleeMenu, "W", true, "Use W to block enemy");
+					AddSpelltoMenu(fleeMenu, "Use W to block enemy", true);
 					champMenu.AddSubMenu(fleeMenu);
 				}
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "鏄剧ずQ").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "鏄剧ずW").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -154,7 +155,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnFlee()
 		{
-			if (IsSpellActive("W"))
+			if(IsSpellActive("Use W to block enemy"))
 				Cast_W();
 		}
 

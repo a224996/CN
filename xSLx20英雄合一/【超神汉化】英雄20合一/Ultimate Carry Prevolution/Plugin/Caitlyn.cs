@@ -33,18 +33,18 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             var champMenu = new Menu("Caitlyn Plugin", "Caitlyn");
             {
-                var comboMenu = new Menu("杩炴嫑", "Combo");
+                var comboMenu = new Menu("Combo", "Combo");
                 {
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "W", true);
-                    AddSpelltoMenu(comboMenu, "W_StunCombo", true, "W鐪╂檿");
-                    AddSpelltoMenu(comboMenu, "W_SlowCombo", true, "W鍑忛€熺殑|");
+                    AddSpelltoMenu(comboMenu, "W StunCombo", true);
+                    AddSpelltoMenu(comboMenu, "W SlowCombo", true);
                     AddSpelltoMenu(comboMenu, "E", true);
-                    comboMenu.AddItem(new MenuItem("R_Nearest_Killable", "R鎶㈠ご").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
+                    comboMenu.AddItem(new MenuItem("R_Nearest_Killable", "R Nearest Killable").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("楠氭壈", "Harass");
+                var harassMenu = new Menu("Harass", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
                     AddSpelltoMenu(harassMenu, "E", true);
@@ -52,38 +52,38 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+                var laneClearMenu = new Menu("LaneClear", "LaneClear");
                 {
                     AddSpelltoMenu(laneClearMenu, "Q", true);
                     AddManaManagertoMenu(laneClearMenu, 0);
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-				var fleeMenu = new Menu("閫冭窇", "Flee");
+				var fleeMenu = new Menu("Flee", "Flee");
 				{
-					AddSpelltoMenu(fleeMenu, "E", true, "鍚戦紶鏍嘐");
+					AddSpelltoMenu(fleeMenu, "Use E to Mouse", true);
 					champMenu.AddSubMenu(fleeMenu);
 				}
 
-                var miscMenu = new Menu("鏉傞」", "Misc");
+                var miscMenu = new Menu("Misc", "Misc");
                 {
-                    miscMenu.AddItem(new MenuItem("Cast_EQ", "EQ闄勮繎鐩爣").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
-                    miscMenu.AddItem(new MenuItem("W_Stun", "鑷姩W鍑绘檿").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("W_Slow", "鑷姩W鍑忛€焲").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("E_Gap_Closer", "E闃茬獊").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Cast_EQ", "Cast EQ nearest target").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                    miscMenu.AddItem(new MenuItem("W_Stun", "Auto W On Stun Enemy").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("W_Slow", "Auto W On Slow Enemy").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("E_Gap_Closer", "Use E On Gap Closer").SetValue(true));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-                var drawMenu = new Menu("鑼冨洿", "Drawing");
+                var drawMenu = new Menu("Drawing", "Drawing");
                 {
-                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-                    drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_R_Killable", "鏄剧ずR鍙潃").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+                    drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_R_Killable", "Draw R Mark on Killable").SetValue(true));
 
-                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
                     drawMenu.AddItem(drawComboDamageMenu);
                     Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
                     Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -162,7 +162,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
         public override void OnPassive()
         {
             //dynamic r range
-            if(R.IsReady())
+            if(R.IsReady() && R.Level > 0)
                 R.Range = 500 * R.Level + 1500;
 
             if (Menu.Item("R_Nearest_Killable").GetValue<KeyBind>().Active)
@@ -171,7 +171,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
             if (Menu.Item("Cast_EQ").GetValue<KeyBind>().Active)
                 Cast_EQ();
 
-            Cast_W(Menu.Item("W_Stun").GetValue<bool>(), Menu.Item("W_Slow").GetValue<bool>());
+            if(W.IsReady())
+                Cast_W(Menu.Item("W_Stun").GetValue<bool>(), Menu.Item("W_Slow").GetValue<bool>());
         }
 
         public override void OnCombo()
@@ -179,7 +180,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
             if (IsSpellActive("Q"))
                 Cast_BasicSkillshot_Enemy(Q, SimpleTs.DamageType.Physical);
             if (IsSpellActive("W"))
-                Cast_W(IsSpellActive("W_StunCombo"), IsSpellActive("W_SlowCombo"));
+                Cast_W(IsSpellActive("W StunCombo"), IsSpellActive("W SlowCombo"));
         }
 
         public override void OnHarass()
@@ -199,9 +200,10 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
         public override void OnFlee()
         {
-            if(IsSpellActive("E"))
+			if(IsSpellActive("Use E to Mouse"))
                 Cast_Inverted_E(Game.CursorPos);
         }
+
 
 		public override void OnGapClose(ActiveGapcloser gapcloser)
 		{
@@ -255,15 +257,15 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
             foreach (var unit in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(W.Range) && !x.IsDead && x.IsEnemy))
             {
-                if (stun && W.GetPrediction(unit).Hitchance == HitChance.Immobile)
+                if (stun && W.GetPrediction(unit).Hitchance == HitChance.Immobile && MyHero.Distance(unit) < W.Range)
                 {
-                    W.Cast(unit.ServerPosition, UsePackets());
+                    W.Cast(unit.ServerPosition);
                     return;
                 }
 
-                if (slow && unit.HasBuffOfType(BuffType.Slow))
+                if (slow && unit.HasBuffOfType(BuffType.Slow) && MyHero.Distance(unit) < W.Range)
                 {
-                    W.Cast(unit, UsePackets());
+                    W.Cast(unit.ServerPosition);
                     return;
                 }
             }

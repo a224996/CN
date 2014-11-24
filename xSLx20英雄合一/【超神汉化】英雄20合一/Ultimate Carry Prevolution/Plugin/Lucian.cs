@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 using xSLx_Orbwalker;
 using Color = System.Drawing.Color;
 
@@ -42,30 +38,31 @@ namespace Ultimate_Carry_Prevolution.Plugin
 			
 			R = new Spell(SpellSlot.R, 1400);
 			R.SetSkillshot(10, 110, 2800, true, SkillshotType.SkillshotLine);
+
 		}
 
 		private void LoadMenu()
 		{
 			var champMenu = new Menu("Lucian Plugin", "Lucian");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("Combo", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "E", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_Filler", "鏃犺摑浣跨敤R")).SetValue(true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_Kill", "鍙潃瓒呭嚭鑼冨洿浣跨敤R")).SetValue(true);
+					comboMenu.AddItem(new MenuItem("Combo_useR_Filler", "Use R if no Spells up")).SetValue(true);
+					comboMenu.AddItem(new MenuItem("Combo_useR_Kill", "Use R if out of Range could kill")).SetValue(true);
 					
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("Harass", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("LaneClear", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "W", true);
@@ -74,15 +71,15 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "鏄剧ずQ").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "鏄剧ずW").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -148,15 +145,6 @@ namespace Ultimate_Carry_Prevolution.Plugin
 			if(Menu.Item("Draw_R").GetValue<bool>())
 				if(R.Level > 0)
 					Utility.DrawCircle(MyHero.Position, R.Range, R.IsReady() ? Color.Green : Color.Red);
-		}
-		public override void OnProcessSpell(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs spell)
-		{
-			if(!unit.IsMe)
-				return;
-			if(spell.SData.Name != "LucianQ" && spell.SData.Name != "LucianW" && spell.SData.Name != "LucianE" &&
-				spell.SData.Name != "LucianR")
-				return;
-			UsedSkill();
 		}
 
 		public override void OnPassive()
@@ -230,15 +218,15 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnCombo()
 		{
-			if(IsSpellActive("E") && xSLxOrbwalker.GetNextAATime() < 400)
+			if(IsSpellActive("E") )
 				Cast_E(true);
-			if(IsSpellActive("Q") && xSLxOrbwalker.GetNextAATime() < 400)
+			if(IsSpellActive("Q") )
 				Cast_Q(true);
-			if(IsSpellActive("W") && xSLxOrbwalker.GetNextAATime() < 400)
+			if(IsSpellActive("W"))
 				Cast_W();
-			if(Menu.Item("Combo_useR_Filler").GetValue<bool>() && xSLxOrbwalker.GetNextAATime() < 400)
+			if(Menu.Item("Combo_useR_Filler").GetValue<bool>() )
 				Cast_R(1);
-			if(Menu.Item("Combo_useR_Kill").GetValue<bool>() && xSLxOrbwalker.GetNextAATime() < 400)
+			if(Menu.Item("Combo_useR_Kill").GetValue<bool>())
 				Cast_R(2);
 		}
 
@@ -292,8 +280,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				var qCollision = Q2.GetPrediction(target).CollisionObjects;
 				foreach(var qCollisionChar in qCollision.Where(qCollisionChar => qCollisionChar.IsValidTarget(Q.Range)))
 				{
-					Q.Cast(qCollisionChar, UsePackets());
 					UsedSkill();
+					Q.Cast(qCollisionChar, UsePackets());
 				}
 			}
 			else
@@ -305,6 +293,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				_passivTimer = Environment.TickCount;
 				Q.CastOnUnit(minion, UsePackets());
 			}
+
 		}
 
 		private void Cast_W()
@@ -316,16 +305,16 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				return;
 			if(target.IsValidTarget(W.Range) && W.GetPrediction(target).Hitchance >= HitChance.High)
 			{
-				W.Cast(target, UsePackets());
 				UsedSkill();
+				W.Cast(target, UsePackets());
 			}
 			else if(W.GetPrediction(target).Hitchance == HitChance.Collision)
 			{
 				var wCollision = W.GetPrediction(target).CollisionObjects;
 				foreach(var wCollisionChar in wCollision.Where(wCollisionChar => wCollisionChar.Distance(target) <= 100))
 				{
-					W.Cast(wCollisionChar.Position, UsePackets());
 					UsedSkill();
+					W.Cast(wCollisionChar.Position, UsePackets());
 				}
 			}
 		}
@@ -339,6 +328,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				if (target == null)
 					return;
 				_passivTimer = Environment.TickCount;
+				UsedSkill();
 				E.Cast(Game.CursorPos, UsePackets());
 			}
 			else
@@ -348,6 +338,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				if(!allMinions.Where(minion => minion != null).Any(minion => minion.IsValidTarget(1100) && E.IsReady()))
 					return;
 				_passivTimer = Environment.TickCount;
+				UsedSkill();
 				E.Cast(Game.CursorPos, UsePackets());
 			}
 
@@ -366,6 +357,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					if(target.IsValidTarget(R.Range))
 					{
 						_passivTimer = Environment.TickCount;
+						UsedSkill();
 						R.Cast(target, UsePackets());
 					}
 					break;
@@ -384,6 +376,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					if (target.Health < MyHero.GetSpellDamage(target, SpellSlot.R)*0.4)
 					{
 						_passivTimer = Environment.TickCount;
+						UsedSkill();
 						R.Cast(target, UsePackets());
 					}
 					break;

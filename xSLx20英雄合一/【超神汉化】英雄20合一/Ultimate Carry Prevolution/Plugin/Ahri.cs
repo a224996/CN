@@ -33,16 +33,16 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Ahri Plugin", "Ahri");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("Combo", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "E", true);
 					AddSpelltoMenu(comboMenu, "R", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_onUseActivate", "浣跨敤2-3R").SetValue(false));
+					comboMenu.AddItem(new MenuItem("Combo_useR_onUseActivate", "Use just Stack 2-3 R").SetValue(false));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("Harass", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
@@ -50,28 +50,28 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("LaneClear", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "W", true);
 					AddManaManagertoMenu(laneClearMenu, 20);
 					champMenu.AddSubMenu(laneClearMenu);
 				}
-				var fleeMenu = new Menu("閫冭窇", "Flee");
+				var fleeMenu = new Menu("Flee", "Flee");
 				{
-					AddSpelltoMenu(fleeMenu, "R", true, "浣跨敤R");
-					AddSpelltoMenu(fleeMenu, "E", true, "浣跨敤E");
+					AddSpelltoMenu(fleeMenu, "Use R to Mouse", true);
+					AddSpelltoMenu(fleeMenu, "Use E to charm Enemy", true);
 					champMenu.AddSubMenu(fleeMenu);
 				}
-				var drawMenu = new Menu("鑼冨洿", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -174,9 +174,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnFlee()
 		{
-			if(IsSpellActive("E"))
+			if(IsSpellActive("Use E to charm Enemy"))
 				Cast_BasicSkillshot_Enemy(E, SimpleTs.DamageType.Magical);
-			if(IsSpellActive("R"))
+			if(IsSpellActive("Use R to Mouse"))
 				if(Game.CursorPos.Distance(MyHero.Position) > R.Range && R.IsReady() && EnemysinRange(1500))
 				{
 					R.UpdateSourcePosition();

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -15,7 +12,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 	class Gnar : Champion
 	{
 
-		private GnarStage Stage = GnarStage.Normal ;
+		private GnarStage _stage = GnarStage.NORMAL ;
 		public Gnar()
         {
             SetSpells();
@@ -47,22 +44,22 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Gnar Plugin", "Gnar");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("Combo", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
-					comboMenu.AddItem(new MenuItem("Combo_useE_Mode", "浣跨敤E").SetValue(new StringList(new[] { "Off", "On", "Only in Mega" }, 2)));
+					comboMenu.AddItem(new MenuItem("Combo_useE_Mode", "Use E").SetValue(new StringList(new[] { "Off", "On", "Only in Mega" }, 2)));
 					AddSpelltoMenu(comboMenu, "R", true);
 					champMenu.AddSubMenu(comboMenu);
 				}
 
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("Harass", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("LaneClear", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "W", true);
@@ -70,28 +67,28 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var LasthitMenu = new Menu("琛ュ叺", "Lasthit");
+				var lasthitMenu = new Menu("Lasthit", "Lasthit");
 				{
-					AddSpelltoMenu(laneClearMenu, "Q", true);
+					AddSpelltoMenu(lasthitMenu, "Q", true);
 				}
 
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("Misc", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Misc_useR_ifcanKill", "鍙潃鐢≧").SetValue(false));
-					miscMenu.AddItem(new MenuItem("Misc_useR_ifStun", "鏅曞埌鐢≧").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useR_ifcanKill", "inCombo R if canKill").SetValue(false));
+					miscMenu.AddItem(new MenuItem("Misc_useR_ifStun", "inCombo R if Stun").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
 
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "鏄剧ずQ").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "鏄剧ずW").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R_Killable", "鏄剧ずR鍙潃").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R_Killable", "Draw R Mark on Killable").SetValue(true));
 
-					MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -152,9 +149,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		}
 		private enum GnarStage
 		{
-			Normal,
-			Transforming,
-			Mega,
+			NORMAL,
+			TRANSFORMING,
+			MEGA,
 		}
 
 		public override void OnPassive()
@@ -186,9 +183,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			if (IsSpellActive("Q"))
 				Cast_Q(false);
-			if (IsSpellActive("W") && Stage != GnarStage.Normal)
+			if (IsSpellActive("W") && _stage != GnarStage.NORMAL)
 				Cast_BasicSkillshot_AOE_Farm(W);
-			if(IsSpellActive("E") && Stage != GnarStage.Normal)
+			if(IsSpellActive("E") && _stage != GnarStage.NORMAL)
 				Cast_BasicSkillshot_AOE_Farm(E2);
 		}
 
@@ -200,7 +197,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		private void Cast_Q(bool mode)
 		{
-			var tempSpell = Stage == GnarStage.Normal ? Q : Q2;
+			var tempSpell = _stage == GnarStage.NORMAL ? Q : Q2;
 			if(!tempSpell.IsReady())
 				return;
 			if (mode)
@@ -213,7 +210,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				if(tempSpell.GetPrediction(target).Hitchance != HitChance.Collision)
 					return;
 				var qCollision = tempSpell.GetPrediction(target).CollisionObjects;
-				if((!qCollision.Exists(coll => coll.Distance(target) > 180 && Stage == GnarStage.Normal)) || (!qCollision.Exists(coll => coll.Distance(target) > 40)))
+				if((!qCollision.Exists(coll => coll.Distance(target) > 180 && _stage == GnarStage.NORMAL)) || (!qCollision.Exists(coll => coll.Distance(target) > 40)))
 					tempSpell.Cast(target.Position, UsePackets());			
 			}
 			else
@@ -252,9 +249,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		private void Cast_E()
 		{
 			if(xSLxOrbwalker.CurrentMode == xSLxOrbwalker.Mode.Combo)
-				if(Menu.Item("Combo_useE_Mode").GetValue<StringList>().SelectedIndex == 2 && Stage == GnarStage.Normal)
+				if(Menu.Item("Combo_useE_Mode").GetValue<StringList>().SelectedIndex == 2 && _stage == GnarStage.NORMAL)
 					return;
-			var tempSpell = Stage == GnarStage.Normal ? E : E2;
+			var tempSpell = _stage == GnarStage.NORMAL ? E : E2;
 			if(!tempSpell.IsReady())
 				return;
 
@@ -324,15 +321,15 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		}
 		private void CheckState()
 		{
-			var tempState = GnarStage.Normal;
+			var tempState = GnarStage.NORMAL;
 			foreach(var buff in MyHero.Buffs)
 			{
 				if(buff.Name == "gnartransformsoon")
-					tempState = GnarStage.Transforming ;
+					tempState = GnarStage.TRANSFORMING ;
 				if(buff.Name == "gnartransform")
-					tempState = GnarStage.Mega ;
+					tempState = GnarStage.MEGA ;
 			}
-			Stage = tempState;
+			_stage = tempState;
 		}
 	}
 }

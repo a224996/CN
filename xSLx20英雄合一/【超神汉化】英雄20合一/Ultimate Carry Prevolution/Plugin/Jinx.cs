@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -35,60 +34,60 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
 			var champMenu = new Menu("Jinx Plugin", "Jinx");
             {
-				var SpellMenu = new Menu("娉曟湳", "SpellMenu");
+				var spellMenu = new Menu("SpellMenu", "SpellMenu");
 				{
-					var qMenu = new Menu("Q", "QMenu");
+					var qMenu = new Menu("QMenu", "QMenu");
 					{
-						qMenu.AddItem(new MenuItem("Auto_Switch_Q", "瓒呭嚭鑼冨洿鍒囨崲Q").SetValue(true));
-						SpellMenu.AddSubMenu(qMenu);
+						qMenu.AddItem(new MenuItem("Auto_Switch_Q", "Switch if Out of Range").SetValue(true));
+						spellMenu.AddSubMenu(qMenu);
 					}
 
-					var wMenu = new Menu("W", "WMenu");
+					var wMenu = new Menu("WMenu", "WMenu");
 					{
-                        wMenu.AddItem(new MenuItem("W_Min_Range", "W Min鑼冨洿").SetValue(new Slider(300, 0, 1500)));
-						wMenu.AddItem(new MenuItem("Auto_W_Slow", "鑷姩W鍑忛€熺殑|").SetValue(true));
-						wMenu.AddItem(new MenuItem("Auto_W_Immobile", "鑷姩W闈欐").SetValue(true));
-						SpellMenu.AddSubMenu(wMenu);
+                        wMenu.AddItem(new MenuItem("W_Min_Range", "W Min Range Sliders").SetValue(new Slider(300, 0, 1500)));
+						wMenu.AddItem(new MenuItem("Auto_W_Slow", "Auto W Slow").SetValue(true));
+						wMenu.AddItem(new MenuItem("Auto_W_Immobile", "Auto W Immobile").SetValue(true));
+						spellMenu.AddSubMenu(wMenu);
 					}
 
-					var eMenu = new Menu("E", "EMenu");
+					var eMenu = new Menu("EMenu", "EMenu");
 					{
-						eMenu.AddItem(new MenuItem("Auto_E_Slow", "鑷姩E鍑忛€熺殑|").SetValue(true));
-						eMenu.AddItem(new MenuItem("Auto_E_Immobile", "鑷姩E闈欐").SetValue(true));
-						eMenu.AddItem(new MenuItem("E_Behind_Target", "E闄勮繎").SetValue(true));
-						eMenu.AddItem(new MenuItem("E_Behind_Distance", "E璺濈").SetValue(new Slider(200, 100, 300)));
-						SpellMenu.AddSubMenu(eMenu);
+						eMenu.AddItem(new MenuItem("Auto_E_Slow", "Auto E Slow").SetValue(true));
+						eMenu.AddItem(new MenuItem("Auto_E_Immobile", "Auto E Immobile").SetValue(true));
+						eMenu.AddItem(new MenuItem("E_Behind_Target", "E behind target In combo").SetValue(true));
+						eMenu.AddItem(new MenuItem("E_Behind_Distance", "E Distance Behind Target").SetValue(new Slider(200, 100, 300)));
+						spellMenu.AddSubMenu(eMenu);
 					}
 
-					var rMenu = new Menu("R", "RMenu");
+					var rMenu = new Menu("RMenu", "RMenu");
 					{
-						rMenu.AddItem(new MenuItem("R_Min_Range", "R Min鑼冨洿").SetValue(new Slider(300, 0, 1000)));
-                        rMenu.AddItem(new MenuItem("R_Max_Range", "R Max鑼冨洿").SetValue(new Slider(2000, 0, 4000)));
-						rMenu.AddItem(new MenuItem("R_Overkill_Check", "鍑绘潃鎻愮ず").SetValue(true));
+						rMenu.AddItem(new MenuItem("R_Min_Range", "R Min Range Sliders").SetValue(new Slider(300, 0, 1000)));
+                        rMenu.AddItem(new MenuItem("R_Max_Range", "R Max Range Sliders").SetValue(new Slider(2000, 0, 4000)));
+						rMenu.AddItem(new MenuItem("R_Overkill_Check", "Overkill Check").SetValue(true));
 
-						rMenu.AddSubMenu(new Menu("Don't use R on", "涓峈"));
+						rMenu.AddSubMenu(new Menu("Don't use R on", "Dont_R"));
 						foreach(var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != MyHero.Team)
 						)
                             rMenu.SubMenu("Dont_R")
 								.AddItem(new MenuItem("Dont_R" + enemy.BaseSkinName, enemy.BaseSkinName).SetValue(false));
 
-						SpellMenu.AddSubMenu(rMenu);
+						spellMenu.AddSubMenu(rMenu);
 					}
 
-				    champMenu.AddSubMenu(SpellMenu);
+				    champMenu.AddSubMenu(spellMenu);
 				}
 
-                var comboMenu = new Menu("杩炴嫑", "Combo");
+                var comboMenu = new Menu("Combo", "Combo");
                 {
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "W", true);
                     AddSpelltoMenu(comboMenu, "E", true);
                     AddSpelltoMenu(comboMenu, "R", true);
-                    comboMenu.AddItem(new MenuItem("R_Nearest_Killable", "R闄勮繎鍙潃").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
+                    comboMenu.AddItem(new MenuItem("R_Nearest_Killable", "R Nearest Killable").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("楠氭壈", "Harass");
+                var harassMenu = new Menu("Harass", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
                     AddSpelltoMenu(harassMenu, "W", true);
@@ -96,34 +95,34 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var fleeMenu = new Menu("閫冭窇", "Flee");
+                var fleeMenu = new Menu("Flee", "Flee");
                 {
-                    AddSpelltoMenu(fleeMenu, "E", true, "Use E In Front of Enemy");
+					AddSpelltoMenu(fleeMenu, "Use E In Front of Enemy", true);
                     champMenu.AddSubMenu(fleeMenu);
                 }
 
-                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+                var laneClearMenu = new Menu("LaneClear", "LaneClear");
                 {
-                    AddSpelltoMenu(laneClearMenu, "Q", true, "Switch back to Mini");
+					AddSpelltoMenu(laneClearMenu, "Switch back to Mini", true);
 
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-                var miscMenu = new Menu("鏉傞」", "Misc");
+                var miscMenu = new Menu("Misc", "Misc");
                 {
-                    miscMenu.AddItem(new MenuItem("E_Gap_Closer", "E绐佽繘").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("E_Gap_Closer", "Use E On Gap Closer").SetValue(true));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_W", "鏄剧ずW").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R_Killable", "鏄剧ずR鍙潃").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R_Killable", "Draw R Mark on Killable").SetValue(true));
 
-					MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -209,16 +208,16 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnCombo()
 		{
-            var W_Target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
+            var wTarget = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
             var minRange = Menu.Item("W_Min_Range").GetValue<Slider>().Value;
 
-		    if (W_Target != null)
+		    if (wTarget != null)
 		    {
-		        if (MyHero.Distance(W_Target) > minRange)
+		        if (MyHero.Distance(wTarget) > minRange)
 		        {
-		            var W_Pred = W.GetPrediction(W_Target);
-		            if (IsSpellActive("W") && W.IsReady() && W_Pred.Hitchance >= HitChance.High)
-		                W.Cast(W_Pred.CastPosition, UsePackets());
+		            var wPred = W.GetPrediction(wTarget);
+		            if (IsSpellActive("W") && W.IsReady() && wPred.Hitchance >= HitChance.High)
+		                W.Cast(wPred.CastPosition, UsePackets());
 		        }
 		    }
 
@@ -235,16 +234,16 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			if (ManaManagerAllowCast())
 			{
-                var W_Target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
+                var wTarget = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
                 var minRange = Menu.Item("W_Min_Range").GetValue<Slider>().Value;
 
-			    if (W_Target != null)
+			    if (wTarget != null)
 			    {
-			        if (MyHero.Distance(W_Target) > minRange)
+			        if (MyHero.Distance(wTarget) > minRange)
 			        {
-			            var W_Pred = W.GetPrediction(W_Target);
-			            if (IsSpellActive("W") && W.IsReady() && W_Pred.Hitchance >= HitChance.High)
-			                W.Cast(W_Pred.CastPosition, UsePackets());
+			            var wPred = W.GetPrediction(wTarget);
+			            if (IsSpellActive("W") && W.IsReady() && wPred.Hitchance >= HitChance.High)
+			                W.Cast(wPred.CastPosition, UsePackets());
 			        }
 			    }
 
@@ -255,13 +254,13 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnFlee()
 		{
-			if (IsSpellActive("E"))
+			if(IsSpellActive("Use E In Front of Enemy"))
 				Cast_E_Escape();
 		}
 
         public override void OnLaneClear()
         {
-            if (!IsFishBoneActive() && Q.IsReady() && IsSpellActive("Q"))
+			if(!IsFishBoneActive() && Q.IsReady() && IsSpellActive("Switch back to Mini"))
                 Q.Cast();
         }
 
@@ -281,32 +280,31 @@ namespace Ultimate_Carry_Prevolution.Plugin
 						.Where(x => x.IsValidTarget(E.Range) && !x.IsDead && x.IsEnemy)
 						.OrderBy(x => MyHero.Distance(x)))
 			{
-				var E_Pred = E.GetPrediction(unit);
-				var E_Behind_Vec = E_Pred.CastPosition - Vector3.Normalize(unit.ServerPosition - MyHero.ServerPosition) * 150;
+				var ePred = E.GetPrediction(unit);
+				var eBehindVec = ePred.CastPosition - Vector3.Normalize(unit.ServerPosition - MyHero.ServerPosition) * 150;
 
 				if (E.IsReady())
-				    E.Cast(E_Behind_Vec, UsePackets());
+				    E.Cast(eBehindVec, UsePackets());
 			}
 		}
 
         private void Q_Check()
         {
-            if (!Q.IsReady())
-                return;
+			if(!Q.IsReady())
+				return;
 
-            var Q_Range = 525 + (50+25*Q.Level);
-            var target = SimpleTs.GetTarget(Q_Range, SimpleTs.DamageType.Physical);
+			var qRange = 525 + (50 + 25 * Q.Level);
+			var target = SimpleTs.GetTarget(qRange, SimpleTs.DamageType.Physical);
 
-            if (target != null)
-            {
-                if (!IsFishBoneActive() && MyHero.Distance(target.ServerPosition) < 525 + MyHero.BoundingRadius + target.BoundingRadius)
-                {
-                    Q.Cast();
-                    return;
-                }
-                if (IsFishBoneActive() && MyHero.Distance(target.ServerPosition) > 25 + MyHero.BoundingRadius + target.BoundingRadius)
-                    Q.Cast();
-            }
+			if(target == null)
+				return;
+			if(!IsFishBoneActive() && MyHero.Distance(target.ServerPosition) < 525 + MyHero.BoundingRadius + target.BoundingRadius)
+			{
+				Q.Cast();
+				return;
+			}
+	        if (IsFishBoneActive() && MyHero.Distance(target.ServerPosition) > 25 + MyHero.BoundingRadius + target.BoundingRadius)
+		        Q.Cast();
         }
 
         private void Cast_R()
@@ -402,36 +400,26 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
                 if (slow && unit.HasBuffOfType(BuffType.Slow))
                 {
-                    var E_Pred_Slow = E.GetPrediction(unit);
-                    var E_Behind_Vec_Slow = E_Pred_Slow.CastPosition +
+                    var ePredSlow = E.GetPrediction(unit);
+                    var eBehindVecSlow = ePredSlow.CastPosition +
                                             Vector3.Normalize(unit.ServerPosition - MyHero.ServerPosition)*100;
-                    if (MyHero.Distance(E_Behind_Vec_Slow) < E.Range)
+                    if (MyHero.Distance(eBehindVecSlow) < E.Range)
                     {
-                        E.Cast(E_Behind_Vec_Slow, UsePackets());
+                        E.Cast(eBehindVecSlow, UsePackets());
                         return;
                     }
                 }
 
-                var E_Behind_Distance = Menu.Item("E_Behind_Distance").GetValue<Slider>().Value;
-                var E_Pred = E.GetPrediction(unit);
-                var E_Behind_Vec = E_Pred.CastPosition +
-                                   Vector3.Normalize(E_Pred.CastPosition - MyHero.ServerPosition) * E_Behind_Distance;
+                var eBehindDistance = Menu.Item("E_Behind_Distance").GetValue<Slider>().Value;
+                var ePred = E.GetPrediction(unit);
+                var eBehindVec = ePred.CastPosition +
+                                   Vector3.Normalize(ePred.CastPosition - MyHero.ServerPosition) * eBehindDistance;
 
-                if (E.IsReady() && behind && MyHero.Distance(E_Behind_Vec) < E.Range)
-                    E.Cast(E_Behind_Vec);
+                if (E.IsReady() && behind && MyHero.Distance(eBehindVec) < E.Range)
+                    E.Cast(eBehindVec);
             }
 
         }
-
-        private int CountAlliesNearTarget(Obj_AI_Base target, float range)
-		{
-			return
-				ObjectManager.Get<Obj_AI_Hero>()
-					.Count(
-						hero =>
-							hero.Team == ObjectManager.Player.Team &&
-							hero.ServerPosition.Distance(target.ServerPosition) <= range);
-		}
 
 		private bool IsFishBoneActive()
 		{

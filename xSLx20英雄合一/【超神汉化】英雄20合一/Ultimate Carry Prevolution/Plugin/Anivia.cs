@@ -12,6 +12,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
 	{
 		private GameObject _qShot;
 		private GameObject _rlocation;
+		private int _lastQCast;
+		
 		public Anivia()
 		{
 			SetSpells();
@@ -36,7 +38,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Anivia Plugin", "Anivia");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("Combo", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
@@ -44,7 +46,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddSpelltoMenu(comboMenu, "R", true);
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("Harass", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
@@ -53,7 +55,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("LaneClear", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "E", true);
@@ -62,25 +64,25 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("Misc", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Q_AutoDetonate", "鑷姩Q鐖嗙偢").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Q_Interrupt", "浣跨敤Q鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_AntiGapClose", "浣跨敤W闃茬獊").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_Interrupt", "浣跨敤W鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_killable", "鍙潃浣跨敤W").SetValue(true));
-					miscMenu.AddItem(new MenuItem("R_ActiveCheck", "鍏抽棴鑷姩R").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_AutoDetonate", "Detonate Q Automatic").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_Interrupt", "Use Q to Interrupt").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_AntiGapClose", "Use W Anti GapClose").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_Interrupt", "Use W to Interrupt").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_killable", "Use W if Killable").SetValue(true));
+					miscMenu.AddItem(new MenuItem("R_ActiveCheck", "Turn Off R Automatic").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("鑼冨洿", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -188,7 +190,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnCombo()
 		{
-			if(IsSpellActive("Q"))
+			if (IsSpellActive("Q") && Environment.TickCount - _lastQCast > 100)
 				Cast_Q(true);
 			if(IsSpellActive("R"))
 				Cast_R(true);
@@ -200,7 +202,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnHarass()
 		{
-			if(IsSpellActive("Q") && ManaManagerAllowCast())
+			if (IsSpellActive("Q") && Environment.TickCount - _lastQCast > 200 && ManaManagerAllowCast())
 				Cast_Q(true);
 			if(IsSpellActive("R") && ManaManagerAllowCast())
 				Cast_R(true);
@@ -212,8 +214,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnLaneClear()
 		{
-			if(IsSpellActive("Q") && ManaManagerAllowCast())
-				Cast_Q(false);
+			if (IsSpellActive("Q") && Environment.TickCount - _lastQCast > 200 && ManaManagerAllowCast())
+				Cast_Q(true);
 			if(IsSpellActive("R") && ManaManagerAllowCast())
 				Cast_R(false);
 			if(IsSpellActive("E") && ManaManagerAllowCast())
@@ -221,20 +223,26 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		}
 		private void Cast_Q(bool mode)
 		{
-			if(!Q.IsReady())
+			if(!Q.IsReady() || Environment.TickCount - _lastQCast < 200)
 				return;
 			if(mode)
 			{
 				var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
 				if(target == null)
 					return;
-				if(MyHero.Spellbook.GetSpell(SpellSlot.Q).ToggleState == 1)
+				if(MyHero.Spellbook.GetSpell(SpellSlot.Q).ToggleState == 1&& Environment.TickCount - _lastQCast >200)
+				{
+					_lastQCast = Environment.TickCount;
 					Q.Cast(target, UsePackets());
+				}
 			}
 			else
 			{
-				if(MyHero.Spellbook.GetSpell(SpellSlot.Q).ToggleState == 1)
+				if(MyHero.Spellbook.GetSpell(SpellSlot.Q).ToggleState == 1 && Environment.TickCount - _lastQCast > 200)
+				{
+					_lastQCast = Environment.TickCount;
 					Cast_BasicSkillshot_AOE_Farm(Q);
+				}
 			}
 		}
 
@@ -292,11 +300,11 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				return;
 			if(mode)
 			{
-				var target = SimpleTs.GetTarget(R.Range, SimpleTs.DamageType.Magical);
+				var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Magical);
 				if(target == null)
 					return;
-				if(MyHero.Spellbook.GetSpell(SpellSlot.R).ToggleState == 1)
-					R.Cast(target, UsePackets());
+				if (MyHero.Spellbook.GetSpell(SpellSlot.R).ToggleState == 1)
+					R.Cast(V3E(MyHero.Position, target.Position, R.Range), UsePackets());
 			}
 			else
 			{

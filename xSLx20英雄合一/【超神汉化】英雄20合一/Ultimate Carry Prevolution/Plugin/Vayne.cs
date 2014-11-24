@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq; 
-using System.Windows.Forms.VisualStyles; 
+using System.Linq;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Xsl;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -37,17 +37,17 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             var champMenu = new Menu("Vayne Plugin", "Vayne");
             {
-                var comboMenu = new Menu("杩炴嫑", "Combo");
+                var comboMenu = new Menu("Combo", "Combo");
                 {
-                    comboMenu.AddItem(new MenuItem("Focus_Target", "閿佸畾鐩爣").SetValue(true));
+                    comboMenu.AddItem(new MenuItem("Focus_Target", "Force Selected Target").SetValue(true));
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "E", true);
                     AddSpelltoMenu(comboMenu, "R", true);
-                    AddSpelltoMenu(comboMenu, "Botrk", true, "浣跨敤鐮磋触/灏忓集鍒€");
+                    AddSpelltoMenu(comboMenu, "Use Botrk", true);
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("楠氭壈", "Harass");
+                var harassMenu = new Menu("Harass", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
                     AddSpelltoMenu(harassMenu, "E", true);
@@ -55,29 +55,29 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+                var laneClearMenu = new Menu("LaneClear", "LaneClear");
                 {
                     AddSpelltoMenu(laneClearMenu, "Q", true);
                     AddManaManagertoMenu(laneClearMenu, 0);
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-                var miscMenu = new Menu("鏉傞」", "Misc");
+                var miscMenu = new Menu("Misc", "Misc");
                 {
-                    miscMenu.AddItem(new MenuItem("Misc_Q_Always", "Q+骞矨").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)).SetValue(false));
-                    miscMenu.AddItem(new MenuItem("Misc_useE_Gap_Closer", "E闃茬獊").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("Misc_useE_Interrupt", "E鎵撴柇").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("Misc_E_Next", "鑷姩E").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle)));
-                    miscMenu.AddItem(new MenuItem("Misc_Push_Distance", "E璺濈").SetValue(new Slider(300, 350, 400)));
+                    miscMenu.AddItem(new MenuItem("Misc_Q_Always", "Q Before AA Toggle").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)).SetValue(false));
+                    miscMenu.AddItem(new MenuItem("Misc_useE_Gap_Closer", "Use E On Gap Closer").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Misc_useE_Interrupt", "Use E To Interrupt").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Misc_E_Next", "E Next Auto").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle)));
+                    miscMenu.AddItem(new MenuItem("Misc_Push_Distance", "E Push Distance").SetValue(new Slider(300, 350, 400)));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-                var drawMenu = new Menu("鏄剧ず", "Drawing");
+                var drawMenu = new Menu("Drawing", "Drawing");
                 {
-                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-                    drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+                    drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
 
-                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
                     drawMenu.AddItem(drawComboDamageMenu);
                     Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
                     Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -158,7 +158,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
             var Q_Target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
             if (Q_Target != null)
             {
-                if (IsSpellActive("Botrk"))
+                if (IsSpellActive("Use Botrk"))
                 {
                     if (Bilge.IsReady() && (GetComboDamage(Q_Target) + MyHero.GetAutoAttackDamage(Q_Target) * 6 < Q_Target.Health || GetHealthPercent() < 35))
                         Use_Bilge(Q_Target);

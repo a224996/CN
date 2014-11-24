@@ -32,25 +32,25 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Annie Plugin", "Annie");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("Combo", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "E", true);
 					AddSpelltoMenu(comboMenu, "R", true);
-					comboMenu.AddItem(new MenuItem("R_StunCount", "鐪╂檿> 浣跨敤R").SetValue(new Slider(2, 1, 5)));
+					comboMenu.AddItem(new MenuItem("R_StunCount", "Use R if Stun # Enemys").SetValue(new Slider(2, 1, 5)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("Harass", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
-					harassMenu.AddItem(new MenuItem("Q_Lasthit_Harass", "浣跨敤Q琛ュ叺").SetValue(true));
-					harassMenu.AddItem(new MenuItem("Q_Lasthit_Harass_stun", "浣跨敤Q鍑绘檿").SetValue(false));
+					harassMenu.AddItem(new MenuItem("Q_Lasthit_Harass", "Use Q LastHit").SetValue(true));
+					harassMenu.AddItem(new MenuItem("Q_Lasthit_Harass_stun", "Use Q on minion if stun up").SetValue(false));
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("LaneClear", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "W", true);
@@ -58,34 +58,34 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var lasthitmenu = new Menu("琛ュ叺", "Lasthit");
+				var lasthitmenu = new Menu("Lasthit", "Lasthit");
 				{
-					lasthitmenu.AddItem(new MenuItem("Q_Lasthit_Lasthit", "浣跨敤Q琛ュ叺").SetValue(true));
-					lasthitmenu.AddItem(new MenuItem("Q_Lasthit_Lasthit_stun", "浣跨敤Q鍑绘檿").SetValue(true));
+					lasthitmenu.AddItem(new MenuItem("Q_Lasthit_Lasthit", "Use Q LastHit").SetValue(true));
+					lasthitmenu.AddItem(new MenuItem("Q_Lasthit_Lasthit_stun", "Use Q on minion if stun up").SetValue(true));
 					champMenu.AddSubMenu(lasthitmenu);
 				}
 
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("Misc", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("E_AgainAA", "E寮€鍚疉A").SetValue(true));
-					miscMenu.AddItem(new MenuItem("E_InBase", "E鏀掓檿").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Q_Interrupt", "浣跨敤Q鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_Interrupt", "浣跨敤W鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("R_Interrupt", "浣跨敤R鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Q_GapClose", "浣跨敤R闃茬獊").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_GapClose", "浣跨敤R闃茬獊").SetValue(true));
-					miscMenu.AddItem(new MenuItem("R_GapClose", "浣跨敤R闃茬獊").SetValue(true));
+					miscMenu.AddItem(new MenuItem("E_AgainAA", "Cast E Against AA").SetValue(true));
+					miscMenu.AddItem(new MenuItem("E_InBase", "Cast E while in Base").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_Interrupt", "Use Q/Stun Anti GapClose").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_Interrupt", "Use W/Stun Anti GapClose").SetValue(true));
+					miscMenu.AddItem(new MenuItem("R_Interrupt", "Use R/Stun Anti GapClose").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_GapClose", "Use Q/Stun Anti GapClose").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_GapClose", "Use W/Stun Anti GapClose").SetValue(true));
+					miscMenu.AddItem(new MenuItem("R_GapClose", "Use R/Stun Anti GapClose").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("鑼冨洿", "Drawing");
+				var drawMenu = new Menu("Drawing", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
