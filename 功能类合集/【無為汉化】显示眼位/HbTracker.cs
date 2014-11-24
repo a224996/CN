@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -45,11 +45,6 @@ namespace Tracker
 
         static HbTracker()
         {
-            if (!Game.Version.Contains("4.19"))
-            {
-                SummonerSpellSlots = new[] { SpellSlot.Q, SpellSlot.W };
-            }
-
             try
             {
                 foreach (var sName in SummonersNames)
@@ -89,10 +84,10 @@ namespace Tracker
 
         public static void AttachToMenu(Menu menu)
         {
-            Config = menu.AddSubMenu(new Menu("鏄剧ずCD", "CD Tracker"));
-            Config.AddItem(new MenuItem("TrackAllies", "闃熷弸CD").SetValue(true));
-            Config.AddItem(new MenuItem("TrackEnemies", "鏁屼汉CD").SetValue(true));
-            Config.AddItem(new MenuItem("TrackMe", "鎴戠殑CD").SetValue(false));
+            Config = menu.AddSubMenu(new Menu("CD Tracker", "CD Tracker"));
+            Config.AddItem(new MenuItem("TrackAllies", "Track allies").SetValue(true));
+            Config.AddItem(new MenuItem("TrackEnemies", "Track enemies").SetValue(true));
+            Config.AddItem(new MenuItem("TrackMe", "Track me").SetValue(false));
         }
 
         private static Texture GetSummonerTexture(string name)

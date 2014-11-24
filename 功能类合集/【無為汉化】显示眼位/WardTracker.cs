@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -389,9 +389,9 @@ namespace Tracker
 
         public static void AttachToMenu(Menu menu)
         {
-            Config = menu.AddSubMenu(new Menu("鐪间綅璺熻釜", "Ward Tracker"));
-            Config.AddItem(new MenuItem("Details", "鏄剧ず鏇村淇℃伅").SetValue(new KeyBind(16, KeyBindType.Press)));
-            Config.AddItem(new MenuItem("Enabled", "鍚敤").SetValue(true));
+            Config = menu.AddSubMenu(new Menu("Ward Tracker", "Ward Tracker"));
+            Config.AddItem(new MenuItem("Details", "Show more info").SetValue(new KeyBind(16, KeyBindType.Press)));
+            Config.AddItem(new MenuItem("Enabled", "Enabled").SetValue(true));
         }
 
         private static void ObjSpellMissileOnOnCreate(GameObject sender, EventArgs args)
@@ -439,10 +439,7 @@ namespace Tracker
             }
             var wardObject = (Obj_AI_Base) sender;
 
-            if (sender.IsAlly)
-            {
-                return;
-            }
+           
 
             foreach (var wardData in PosibleWards)
             {
