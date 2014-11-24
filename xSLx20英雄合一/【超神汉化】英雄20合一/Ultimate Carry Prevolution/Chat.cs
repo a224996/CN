@@ -27,10 +27,6 @@ namespace Ultimate_Carry_Prevolution
 				Game.PrintChat(
 					"<font color ='{0}'>Loaded Plugin for </font> <font color ='{1}'>" + ObjectManager.Player.ChampionName + "</font>",
 					HtmlColor.Cyan, HtmlColor.Gold);
-			Game.PrintChat("<font color=\"#FFFF00\">====== 鎴愬姛杞藉叆:銆愯秴绁炴眽鍖栥€憒xSLx鑻遍泟20鍚堜竴|=======</font>");
-			Game.PrintChat("<font color=\"#FFFF00\">====== 鐗堟湰: v 1.0.1.0====== </font>");
-			Game.PrintChat("<font color=\"#FFFF00\">|鍓戦瓟|鐙愮嫺|闃垮崱涓絴鐗涘ご|鏈ㄦ湪|鍑ゅ嚢|瀵掑啺|鐨囧笣|鏈哄櫒|濂宠|椋炴満|EZ|鍓戝К|绾冲皵|鍒€濡箌閲戝厠涓潀鏃ュコ|鍗㈣タ瀹墊鐙瓙鐙梶鐟炲吂|杈涘痉鎷墊钖囨仼|</font>");
-			Game.PrintChat("<font color=\"#FFFF00\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");		
 
 			}
 			else
@@ -54,9 +50,18 @@ namespace Ultimate_Carry_Prevolution
 			try 
 			{//sync, sync where?
 				// ReSharper disable once AssignNullToNotNullAttribute
-				var handle = Activator.CreateInstance(null , "Ultimate_Carry_Prevolution.Plugin." + ObjectManager.Player.ChampionName);
-				var champion = (Champion) handle.Unwrap();
-				return true;
+			    if (Loader.IsBetaTester && ObjectManager.Player.ChampionName == "Akali")
+			    {
+			        var handle = Activator.CreateInstance(null, "Ultimate_Carry_Prevolution.Plugin." + ObjectManager.Player.ChampionName + "_2");
+                    var champion = (Champion)handle.Unwrap();
+                    return true;
+			    }
+			    else
+			    {
+			        var handle = Activator.CreateInstance(null, "Ultimate_Carry_Prevolution.Plugin." + ObjectManager.Player.ChampionName);
+			        var champion = (Champion) handle.Unwrap();
+			        return true;
+			    }
 			}
 				// ReSharper disable once EmptyGeneralCatchClause
 			//catch (Exception ex)

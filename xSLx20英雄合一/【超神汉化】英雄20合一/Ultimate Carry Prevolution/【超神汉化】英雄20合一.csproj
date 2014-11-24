@@ -66,6 +66,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -87,6 +88,7 @@
     <Compile Include="Plugin\Aatrox.cs" />
     <Compile Include="Plugin\Ahri.cs" />
     <Compile Include="Plugin\Akali.cs" />
+    <Compile Include="Plugin\Akali_2.cs" />
     <Compile Include="Plugin\Alistar.cs" />
     <Compile Include="Plugin\Amumu.cs" />
     <Compile Include="Plugin\Anivia.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="Plugin\Rengar.cs" />
     <Compile Include="Plugin\Ryze.cs" />
     <Compile Include="Plugin\Syndra.cs" />
+    <Compile Include="Plugin\Thresh.cs" />
     <Compile Include="Plugin\Vayne.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
