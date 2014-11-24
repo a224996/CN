@@ -32,48 +32,48 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Aatrox Plugin", "Aatrox");
 			{
-				var comboMenu = new Menu("Combo", "Combo");
+				var comboMenu = new Menu("杩炴嫑", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "E", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_onAmount", "R on Enemys in Range").SetValue(new Slider(2, 5, 0)));
-					comboMenu.AddItem(new MenuItem("Combo_useR_onEnemyHealth", "R on Enemy %Health <").SetValue(new Slider(60, 100, 0)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_onAmount", "R鍑讳腑").SetValue(new Slider(2, 5, 0)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_onEnemyHealth", "R HP<%").SetValue(new Slider(60, 100, 0)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("Harass", "Harass");
+				var harassMenu = new Menu("楠氭壈", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
-					AddSpelltoMenu(harassMenu, "Q Danger", true);
+					AddSpelltoMenu(harassMenu, "Q_Danger", true,"Q inside Dangerzone");
 					AddSpelltoMenu(harassMenu, "E", true);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("LaneClear", "LaneClear");
+				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "E", true);
 					champMenu.AddSubMenu(laneClearMenu);
 				}
-				var fleeMenu = new Menu("Flee", "Flee");
+				var fleeMenu = new Menu("閫冭窇", "Flee");
 				{
-					AddSpelltoMenu(fleeMenu, "Q to mouse", true);
-					AddSpelltoMenu(fleeMenu, "E to slow ENemy", true);
+					AddSpelltoMenu(fleeMenu, "Q", true, "鍚戦紶鏍嘠 ");
+					AddSpelltoMenu(fleeMenu, "E", true, "浣跨敤E");
 					champMenu.AddSubMenu(fleeMenu);
 				}
-				var miscMenu = new Menu("Misc", "Misc");
+				var miscMenu = new Menu("鏉傞」", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch", "Switch W Automatic").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_health", "Use E to slow Enemy").SetValue(new Slider(60, 100, 0)));
-					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_priorityhealth", "Heal Priority farming").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch", "鑷姩鍒囨崲").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_health", "HP<").SetValue(new Slider(60, 100, 0)));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_priorityhealth", "浼樺厛娌荤枟鑷韩").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("Drawing", "Drawing");
+				var drawMenu = new Menu("鑼冨洿", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
 					
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);			
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);			
 					drawMenu.AddItem(drawComboDamageMenu);
 						Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -163,9 +163,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 		public override void OnFlee()
 		{
-			if(IsSpellActive("Q to mouse"))
+			if(IsSpellActive("E"))
 				Cast_E();
-			if(IsSpellActive("E to slow ENemy"))
+			if(IsSpellActive("Q"))
 				if(Game.CursorPos.Distance(MyHero.Position) > Q.Range && Q.IsReady())
 				{
 					Q.UpdateSourcePosition();
@@ -232,7 +232,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					break;
 				case xSLxOrbwalker.Mode.Harass:
 					if(target != null && !xSLxOrbwalker.InAutoAttackRange(target))
-						if(!IsSpellActive("Q Danger"))
+						if(!IsSpellActive("Q_Danger"))
 						{
 							if(!IsInsideEnemyTower(Q.GetPrediction(target).CastPosition))
 								Cast_BasicSkillshot_Enemy(Q, SimpleTs.DamageType.Physical);

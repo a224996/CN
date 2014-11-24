@@ -48,36 +48,36 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Azir Plugin", "Azir");
 			{
-				var spellMenu = new Menu("SpellMenu", "SpellMenu");
+				var spellMenu = new Menu("娉曟湳", "SpellMenu");
 				{
 					//Q Menu
-					spellMenu.AddSubMenu(new Menu("QSpell", "QSpell"));
-					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_Out_Of_Range", "Only When Enemy out of Range").SetValue(true));
-					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Use_Q_Extend", "Use Extended Q Range").SetValue(true));
-					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_Behind_Target", "Try to Q Behind target").SetValue(true));
-					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_If_Multi_Slave", "Q if 2+ Soilder").SetValue(true));
-					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_Hitchance", "Q HitChance").SetValue(new Slider(3, 1, 3)));
+					spellMenu.AddSubMenu(new Menu("Q", "QSpell"));
+					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_Out_Of_Range", "瓒呭嚭鑼冨洿浣跨敤").SetValue(true));
+					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Use_Q_Extend", "浣跨敤max Q").SetValue(true));
+					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_Behind_Target", "鐩爣韬悗").SetValue(true));
+					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_If_Multi_Slave", "澶氫釜澹叺").SetValue(true));
+					spellMenu.SubMenu("QSpell").AddItem(new MenuItem("Q_Hitchance", "Q鍑讳腑").SetValue(new Slider(3, 1, 3)));
 					//W Menu
-					spellMenu.AddSubMenu(new Menu("WSpell", "WSpell"));
-					spellMenu.SubMenu("WSpell").AddItem(new MenuItem("AutoAA_W_Range", "Always Atk Enemy").SetValue(true));
-					spellMenu.SubMenu("WSpell").AddItem(new MenuItem("Use_W_Q_Poke", "Use WQ Poke").SetValue(true));
-					spellMenu.SubMenu("WSpell").AddItem(new MenuItem("Use_W_Tower", "Auto W Tower if 2+ Stacks").SetValue(true));
+					spellMenu.AddSubMenu(new Menu("W", "WSpell"));
+					spellMenu.SubMenu("WSpell").AddItem(new MenuItem("AutoAA_W_Range", "鑷姩鏀诲嚮").SetValue(true));
+					spellMenu.SubMenu("WSpell").AddItem(new MenuItem("Use_W_Q_Poke", "浣跨敤WQ").SetValue(true));
+					spellMenu.SubMenu("WSpell").AddItem(new MenuItem("Use_W_Tower", "鑷姩W濉攟").SetValue(true));
 					//E Menu
-					spellMenu.AddSubMenu(new Menu("ESpell", "ESpell"));
-					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("Use_E_As_Gapcloser", "GapClose if out of Q Range").SetValue(false));
-					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("Use_E_If_Killable", "If Killable Combo").SetValue(true));
-					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("Always_E_To_Knockup", "Always Knockup/DMG").SetValue(false));
-					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("E_If_HP_Above", "if HP >").SetValue(new Slider(70)));
+					spellMenu.AddSubMenu(new Menu("E", "ESpell"));
+					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("Use_E_As_Gapcloser", "瓒呭嚭Q鑼冨洿").SetValue(false));
+					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("Use_E_If_Killable", "鍙潃").SetValue(true));
+					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("Always_E_To_Knockup", "E鍑婚").SetValue(false));
+					spellMenu.SubMenu("ESpell").AddItem(new MenuItem("E_If_HP_Above", "HP >").SetValue(new Slider(70)));
 					//R Menu
-					spellMenu.AddSubMenu(new Menu("RSpell", "RSpell"));
-					spellMenu.SubMenu("RSpell").AddItem(new MenuItem("R_If_Hp_Below", "if HP <").SetValue(new Slider(20)));
-					spellMenu.SubMenu("RSpell").AddItem(new MenuItem("R_If_Hit", "If Hit >= Target").SetValue(new Slider(3, 0, 5)));
-					spellMenu.SubMenu("RSpell").AddItem(new MenuItem("R_Enemy_Into_Wall", "R Enemy Into Wall").SetValue(true));
+					spellMenu.AddSubMenu(new Menu("R", "RSpell"));
+					spellMenu.SubMenu("RSpell").AddItem(new MenuItem("R_If_Hp_Below", "HP <").SetValue(new Slider(20)));
+					spellMenu.SubMenu("RSpell").AddItem(new MenuItem("R_If_Hit", "鍑讳腑>=").SetValue(new Slider(3, 0, 5)));
+					spellMenu.SubMenu("RSpell").AddItem(new MenuItem("R_Enemy_Into_Wall", "R鏁屼汉鍒板").SetValue(true));
 
 					champMenu.AddSubMenu(spellMenu);
 				}
 
-				var comboMenu = new Menu("Combo", "Combo");
+				var comboMenu = new Menu("杩炴嫑", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
@@ -85,7 +85,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddSpelltoMenu(comboMenu, "R", true);
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("Harass", "Harass");
+				var harassMenu = new Menu("楠氭壈", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
@@ -93,7 +93,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("LaneClear", "LaneClear");
+				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "W", true);
@@ -101,24 +101,24 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var miscMenu = new Menu("Misc", "Misc");
+				var miscMenu = new Menu("鏉傞」", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Misc_useER_Interrupt", "Use E/R interrupt").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_Escape", "Escape").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
-					miscMenu.AddItem(new MenuItem("Misc_Insec", "Insec Selected target").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
-					miscMenu.AddItem(new MenuItem("Misc_QE_Combo", "Q->E stun Nearest target").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
+					miscMenu.AddItem(new MenuItem("Misc_useER_Interrupt", "浣跨敤 E/R 鎵撴柇").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_Escape", "閫冭窇").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+					miscMenu.AddItem(new MenuItem("Misc_Insec", "鐩爣閫夋嫨").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
+					miscMenu.AddItem(new MenuItem("Misc_QE_Combo", "Q->E").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("Drawing", "Drawing");
+				var drawMenu = new Menu("鑼冨洿", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_QExtend", "Draw Q Extended").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_QExtend", "Q Max鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

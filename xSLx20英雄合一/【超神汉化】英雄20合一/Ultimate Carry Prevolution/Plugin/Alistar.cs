@@ -36,48 +36,48 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Alistar Plugin", "Alistar");
 			{
-				var comboMenu = new Menu("Combo", "Combo");
+				var comboMenu = new Menu("杩炴嫑", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "R", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_enemyCount", "Use R if x Enemys Arround")).SetValue(new Slider(2, 1, 5));
-					comboMenu.AddItem(new MenuItem("Combo_useR_Health", "Use R if health below").SetValue(new Slider(70)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_enemyCount", "X鏁屼汉浣跨敤R")).SetValue(new Slider(2, 1, 5));
+					comboMenu.AddItem(new MenuItem("Combo_useR_Health", "HP<% 浣跨敤R").SetValue(new Slider(70)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("Harass", "Harass");
+				var harassMenu = new Menu("楠氭壈", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("LaneClear", "LaneClear");
+				var laneClearMenu = new Menu("QX ", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
-					laneClearMenu.AddItem(new MenuItem("LaneClear_useQ_minHit", "Use Q if min. hit").SetValue(new Slider(2, 1, 6)));
+					laneClearMenu.AddItem(new MenuItem("LaneClear_useQ_minHit", "鍑讳腑>").SetValue(new Slider(2, 1, 6)));
 					AddManaManagertoMenu(laneClearMenu, 20);
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var miscMenu = new Menu("Misc", "Misc");
+				var miscMenu = new Menu("鏉傞」", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Misc_useE_Health", "Use E Heal at ").SetValue(new Slider(70)));
-					miscMenu.AddItem(new MenuItem("Misc_useE_Friends", "Use E for Friends").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useQ_AntiGapClose", "Use Q for AntiGapClose").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useQ_Interrupt", "Use Q for Interrupt").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useW_AntiGapClose", "Use W for AntiGapClose").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useW_Interrupt", "Use W for Interrupt").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useE_Health", "浣跨敤E娌荤枟 ").SetValue(new Slider(70)));
+					miscMenu.AddItem(new MenuItem("Misc_useE_Friends", "E闃熷弸").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useQ_AntiGapClose", "Q鏁屼汉").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useQ_Interrupt", "Q鎵撴柇").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_AntiGapClose", "W鏁屼汉").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Interrupt", "W鎵撴柇").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("Drawing", "Drawing");
+				var drawMenu = new Menu("鑼冨洿", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -154,7 +154,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 			if(Menu.Item("Draw_Q").GetValue<bool>())
 				if(Q.Level > 0)
-					Utility.DrawCircle(MyHero.Position, Q.Range * 2, Q.IsReady() ? Color.Green : Color.Red);
+					Utility.DrawCircle(MyHero.Position, Q.Range, Q.IsReady() ? Color.Green : Color.Red);
 
 			if(Menu.Item("Draw_W").GetValue<bool>())
 				if(W.Level > 0)
@@ -162,7 +162,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 
 			if(Menu.Item("Draw_E").GetValue<bool>())
 				if(E.Level > 0)
-					Utility.DrawCircle(MyHero.Position, E.Range*2, E.IsReady() ? Color.Green : Color.Red);
+					Utility.DrawCircle(MyHero.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
 		}
 
 		public override void OnCombo()
@@ -200,14 +200,14 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				return;
 			if(mode)
 			{
-				var target = SimpleTs.GetTarget(Q.Range * 2, SimpleTs.DamageType.Magical);
+				var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
 				if(target == null || !target.IsValidTarget(Q.Range))
 					return;
-				Q.Cast();
+					Q.Cast();
 			}
 			else
 			{
-				if(MinionManager.GetMinions(MyHero.Position, Q.Range * 2).Count >= Menu.Item("LaneClear_useQ_minHit").GetValue<Slider>().Value)
+				if(MinionManager.GetMinions(MyHero.Position, Q.Range).Count >= Menu.Item("LaneClear_useQ_minHit").GetValue<Slider>().Value)
 					Q.Cast();
 				foreach(var minion in MinionManager.GetMinions(MyHero.ServerPosition, Q.Range, MinionTypes.All,
 					MinionTeam.Neutral, MinionOrderTypes.MaxHealth).Where(minion => MyHero.Distance(minion) <= Q.Range))
@@ -269,8 +269,8 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					if (target.IsValidTarget( W.Range))
 					{
 						W.Cast(target, UsePackets());
-						//var jumpTime = Math.Max(1, 1000 * MyHero.Distance(target) / 2500) ;
-						var jumpTime = Math.Max(0, MyHero.Distance(target) - 500) * 10 / 25 + 25 ;
+						var jumpTime = Math.Max(1, 1000 * MyHero.Distance(target) / 2500) ;
+						//var jumpTime = Math.Max(0, MyHero.Distance(target) - 500) * 10 / 25 + 25;
 						Utility.DelayAction.Add((int)jumpTime, () => Q.Cast());
 						_qonDelay = true;
 						return;
@@ -287,7 +287,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 			}
 			if(Q.IsReady() && !W.IsReady())
 			{
-				var target = SimpleTs.GetTarget(Q.Range*2, SimpleTs.DamageType.Magical);
+				var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
 				Q.Cast();			
 			}
 		}
@@ -339,14 +339,14 @@ namespace Ultimate_Carry_Prevolution.Plugin
 						AllHerosFriend.Where(
 							hero =>
 								GetHealthPercent(hero) < Menu.Item("Misc_useE_Health").GetValue<Slider>().Value &&
-								hero.Distance(MyHero) < E.Range && hero.IsValid))
+								hero.Distance(MyHero) < W.Range && hero.IsValid))
 				{
 					E.Cast();
 				}
 			}
 			else
 			{
-				if (GetHealthPercent(MyHero) < Menu.Item("Misc_useE_Health").GetValue<Slider>().Value)
+				if (GetHealthPercent() < Menu.Item("Misc_useE_Health").GetValue<Slider>().Value)
 					E.Cast();
 			}
 		}

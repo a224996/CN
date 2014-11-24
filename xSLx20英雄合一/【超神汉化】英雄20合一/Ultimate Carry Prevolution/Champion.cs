@@ -12,8 +12,6 @@ namespace Ultimate_Carry_Prevolution
 {
 	class Champion
 	{
-
-		private readonly bool _pluginLoaded ;
 		public Obj_AI_Hero MyHero = ObjectManager.Player;
 		public IEnumerable<Obj_AI_Hero> AllHeros = ObjectManager.Get<Obj_AI_Hero>();
 		public IEnumerable<Obj_AI_Hero> AllHerosFriend = ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsAlly);
@@ -32,18 +30,13 @@ namespace Ultimate_Carry_Prevolution
         public static Items.Item DFG = Utility.Map.GetMap()._MapType == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
 	    public static Items.Item Botrk = new Items.Item(3153, 450);
         public static Items.Item Bilge = new Items.Item(3144, 450);
-        public static Items.Item Hex = new Items.Item(3146, 700);
 
         public static SpellSlot Ignite = ObjectManager.Player.GetSpellSlot("SummonerDot");
 
 		public static Menu Menu;
-
+		//private int _lastsiteopend;
 		public Champion()
 		{
-			if (!_pluginLoaded)
-				_pluginLoaded = true;
-			else
-				return;
 
 			LoadBasics();
 
@@ -88,6 +81,12 @@ namespace Ultimate_Carry_Prevolution
 					break;
 			}
 			OnPassive();
+
+			//if ( Menu.Item( "vote").GetValue< KeyBind >().Active  && Environment.TickCount -_lastsiteopend  > 10000)
+			//{
+			//	_lastsiteopend = Environment.TickCount;
+			//	Process.Start("http://google.com");
+			//}
 		}
 
 		private void LoadBasics()
@@ -96,9 +95,9 @@ namespace Ultimate_Carry_Prevolution
 
 			//the Team
 			Menu.AddSubMenu(new Menu("鍒朵綔鍥㈤槦", "Credits"));
-			Menu.SubMenu("Credits").AddItem(new MenuItem("Lexxes", "婢冲ぇ鍒╀簹"));
+			Menu.SubMenu("Credits").AddItem(new MenuItem("Lexxes", "Lexxes (婢冲ぇ鍒╀簹)"));
 			Menu.SubMenu("Credits").AddItem(new MenuItem("xSalice", "xSalice (缇庡浗)"));
-			Menu.SubMenu("Credits").AddItem(new MenuItem("InjectionDev", "InjectionDev (???)"));
+			Menu.SubMenu("Credits").AddItem(new MenuItem("InjectionDev", "InjectionDev"));
 
 			//TargetSelector
 			var targetselectormenu = new Menu("鐩爣閫夋嫨", "Common_TargetSelector");
@@ -107,49 +106,47 @@ namespace Ultimate_Carry_Prevolution
 
 			//PacketMenu
 			Menu.AddSubMenu(new Menu("鏉傞」", "Packets"));
-			Menu.SubMenu("Packets").AddItem(new MenuItem(MyHero.ChampionName + "usePackets", "灏佸寘").SetValue(false));
+			Menu.SubMenu("Packets").AddItem(new MenuItem("usePackets", "灏佸寘").SetValue(false));
 
 			//xSLxActivator
-			var activatorMenu = new Menu("xSLx娲诲寲鍓倈", "Activatort1");
+			var activatorMenu = new Menu("xSLx娲诲寲鍓倈", "xSLx_Activator");
 			xSLxActivator.AddToMenu(activatorMenu);
 			Menu.AddSubMenu(activatorMenu);
 
 			//xSLxOrbwalker (Based on Common)
-			var orbwalkerMenu = new Menu("xSLx璧扮爫", "Orbwalkert1");
+			var orbwalkerMenu = new Menu("xSLx璧扮爫", "xSLx_Orbwalker");
 			xSLxOrbwalker.AddToMenu(orbwalkerMenu);
 			Menu.AddSubMenu(orbwalkerMenu);
+
 			
 			Menu.AddSubMenu(new Menu("瓒呯姹夊寲", "by welai"));
 				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
 				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+				
+			//Menu.AddItem( new MenuItem( "vote"," Vote Pls for UCP").SetValue(new KeyBind(112, KeyBindType.Press)));
 		}
 
 		public bool UsePackets()
 		{
-			return Menu.Item(MyHero.ChampionName + "usePackets").GetValue<bool>();
+			return Menu.Item("usePackets").GetValue<bool>();
 		}
 
 	    public void Use_DFG(Obj_AI_Hero target)
 	    {
-            if (target != null && MyHero.Distance(target) < 750 && Items.CanUseItem(DFG.Id))
-                Items.UseItem(DFG.Id, target);
+	        if(target != null && DFG.IsReady() && MyHero.Distance(target) < 750)
+                DFG.Cast(target);
 	    }
 
-        public void Use_Hex(Obj_AI_Hero target)
-        {
-            if (target != null && MyHero.Distance(target) < 450 && Items.CanUseItem(Hex.Id))
-                Items.UseItem(Hex.Id, target);
-        }
         public void Use_Botrk(Obj_AI_Hero target)
         {
-            if (target != null && MyHero.Distance(target) < 450 && Items.CanUseItem(Botrk.Id))
-                Items.UseItem(Botrk.Id, target);
+            if (target != null && Botrk.IsReady() && MyHero.Distance(target) < 450)
+                Botrk.Cast(target);
         }
 
 	    public void Use_Bilge(Obj_AI_Hero target)
 	    {
-            if (target != null && Bilge.IsReady() && MyHero.Distance(target) < 450 && Items.CanUseItem(Bilge.Id))
-                Items.UseItem(Bilge.Id, target);
+	        if(target != null && Bilge.IsReady() && MyHero.Distance(target) < 450)
+                Bilge.Cast(target);
 	    }
 	    public void Use_Ignite(Obj_AI_Hero target)
 	    {
@@ -157,27 +154,15 @@ namespace Ultimate_Carry_Prevolution
 	                MyHero.SummonerSpellbook.CanUseSpell(Ignite) == SpellState.Ready && MyHero.Distance(target) < 650)
 	            MyHero.SummonerSpellbook.CastSpell(Ignite, target);
 	    }
-		public void Cast_Shield_onFriend(Spell spell, int percent, bool skillshot = false)
-		{
-			if(!spell.IsReady())
-				return;
-			foreach(var friend in AllHerosFriend.Where(hero => hero.Distance(MyHero) <= spell.Range).Where(friend => friend.Health / friend.MaxHealth * 100 <= percent && EnemysinRange(600, 1, friend)))
-			{
-				if(skillshot)
-					spell.Cast(spell.GetPrediction(friend).CastPosition, UsePackets());
-				else
-					spell.CastOnUnit(friend, UsePackets());
-				return;
-			}
-		}
-		public Obj_AI_Hero Cast_BasicSkillshot_Enemy(Spell spell, SimpleTs.DamageType prio = SimpleTs.DamageType.True, float extrarange = 0,HitChance hitchance = HitChance.Medium)
+
+		public Obj_AI_Hero Cast_BasicSkillshot_Enemy(Spell spell, SimpleTs.DamageType prio = SimpleTs.DamageType.True, float extrarange = 0)
 		{
 			if(!spell.IsReady())
 				return null;
 			var target = SimpleTs.GetTarget(spell.Range + extrarange, prio);
 			if(target == null)
 				return null;
-			if(!target.IsValidTarget(spell.Range + extrarange) || spell.GetPrediction(target).Hitchance < hitchance)
+			if(!target.IsValidTarget(spell.Range + extrarange) || spell.GetPrediction(target).Hitchance < HitChance.Medium)
 				return null;
 			spell.UpdateSourcePosition();
 			spell.Cast(target, UsePackets());
@@ -216,52 +201,18 @@ namespace Ultimate_Carry_Prevolution
 									.Any(tower => tower.IsEnemy && tower.Health > 0 && tower.Position.Distance(position) < 775);
 		}
 
-		public void AddSpelltoMenu(Menu menu, string name, bool state)
+		public void AddSpelltoMenu(Menu menu, string name, bool state, string alternativename = "")
 		{
-			var showname = name;
-			if(name == "Q" || name == "W" || name == "E" || name == "R")
-				showname = "Use " + name;
-			menu.AddItem(new MenuItem(MyHero.ChampionName + menu.Name + "_" + name.Replace(" ", "_").Replace("%", "pct"), showname).SetValue(state));
+			if(alternativename == "")
+				alternativename = "浣跨敤" + name;
+			menu.AddItem(new MenuItem(menu.Name + "_" + name.Replace(" ", "_"), alternativename).SetValue(state));
 		}
 
-		public void AddSpelltoMenu(Menu menu, string name, int value, int minValue = 0, int maxValue = 100)
-		{
-			menu.AddItem(new MenuItem(MyHero.ChampionName + menu.Name + "_" + name.Replace(" ", "_").Replace("%", "pct"), name).SetValue(new Slider(value, minValue, maxValue)));
-		}
-
-		public int GetValue(string name)
-		{
-			try
-			{
-				return Menu.Item(MyHero.ChampionName + xSLxOrbwalker.CurrentMode + "_" + name.Replace(" ", "_").Replace("%", "pct")).GetValue<Slider>().Value;
-			}
-			catch
-			{
-				return 0;
-			}
-		}
 		public bool IsSpellActive(string name)
 		{
 			try
 			{
-				return Menu.Item(MyHero.ChampionName + xSLxOrbwalker.CurrentMode + "_" + name.Replace(" ", "_").Replace("%", "pct")).GetValue<bool>();
-			}
-			catch
-			{
-				return false;
-			}
-		}
-
-		public void AddMisc(Menu menu, string name, bool state)
-		{
-			menu.AddItem(new MenuItem(MyHero.ChampionName + menu.Name + "_" + name.Replace(" ", "_").Replace("%", "pct"), name).SetValue(state));
-		}
-
-		public bool GetMiscBool(string name)
-		{
-			try
-			{
-				return Menu.Item(MyHero.ChampionName + "Misc_" + name.Replace(" ", "_").Replace("%", "pct")).GetValue<bool>();
+				return Menu.Item(xSLxOrbwalker.CurrentMode + "_" + name.Replace(" ", "_")).GetValue<bool>();
 			}
 			catch
 			{
@@ -271,14 +222,14 @@ namespace Ultimate_Carry_Prevolution
 
 		public void AddManaManagertoMenu(Menu menu, int standard)
 		{
-			menu.AddItem(new MenuItem(MyHero.ChampionName + menu.Name + "_Manamanager", "Mana-Manager").SetValue(new Slider(standard)));
+			menu.AddItem(new MenuItem(menu.Name + "_Manamanager", "钃濋噺鎺у埗").SetValue(new Slider(standard)));
 		}
 
 		public bool ManaManagerAllowCast()
 		{
 			try
 			{
-				if(GetManaPercent() < Menu.Item(MyHero.ChampionName + xSLxOrbwalker.CurrentMode + "_Manamanager").GetValue<Slider>().Value)
+				if(GetManaPercent() < Menu.Item(xSLxOrbwalker.CurrentMode + "_Manamanager").GetValue<Slider>().Value)
 					return false;
 			}
 			catch
@@ -286,12 +237,6 @@ namespace Ultimate_Carry_Prevolution
 				return true;
 			}
 			return true;
-		}
-		public Vector3 GetReversePosition(Vector3 positionMe, Vector3 positionEnemy)
-		{
-			var x = positionMe.X - positionEnemy.X;
-			var y = positionMe.Y - positionEnemy.Y;
-			return new Vector3(positionMe.X + x, positionMe.Y + y, positionMe.Z);
 		}
 
 		public float GetManaPercent(Obj_AI_Hero unit =null)

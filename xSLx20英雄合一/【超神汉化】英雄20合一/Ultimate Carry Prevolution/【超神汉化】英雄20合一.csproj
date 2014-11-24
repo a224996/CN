@@ -60,13 +60,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\LeagueSharp\\System\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\LeagueSharp\\System\SharpDX.Direct3D9.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -88,7 +84,6 @@
     <Compile Include="Plugin\Aatrox.cs" />
     <Compile Include="Plugin\Ahri.cs" />
     <Compile Include="Plugin\Akali.cs" />
-    <Compile Include="Plugin\Akali_2.cs" />
     <Compile Include="Plugin\Alistar.cs" />
     <Compile Include="Plugin\Amumu.cs" />
     <Compile Include="Plugin\Anivia.cs" />
@@ -103,19 +98,18 @@
     <Compile Include="Plugin\Gnar.cs" />
     <Compile Include="Plugin\Irelia.cs" />
     <Compile Include="Plugin\Jinx.cs" />
-    <Compile Include="Plugin\Kalista.cs" />
     <Compile Include="Plugin\Leona.cs" />
     <Compile Include="Plugin\Lucian.cs" />
     <Compile Include="Plugin\Rengar.cs" />
     <Compile Include="Plugin\Ryze.cs" />
     <Compile Include="Plugin\Syndra.cs" />
-    <Compile Include="Plugin\Thresh.cs" />
     <Compile Include="Plugin\Vayne.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -133,10 +127,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Informations.txt" />
-    <Content Include="Keys.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -12,17 +12,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
 {
 	class Rengar : Champion
 	{
-		// in progress
-
 		private int _LastQCast;
 		public Rengar()
 		{
-			if(!Loader.IsBetaTester)
-			{
-				Game.PrintChat("Rengar is Currently just Available for BetaTester");
-				return;
-			}
-			Game.PrintChat("BetaTester: Rengar not finished and sucks.");
 			SetSpells();
 			LoadMenu();
 		}
@@ -43,7 +35,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Rengar Plugin", "Rengar");
 			{
-				var comboMenu = new Menu("Combo", "Combo");
+				var comboMenu = new Menu("杩炴嫑", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
@@ -51,26 +43,26 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddSpelltoMenu(comboMenu, "R", true);
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("Harass", "Harass");
+				var harassMenu = new Menu("楠氭壈", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("LaneClear", "LaneClear");
+				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var drawMenu = new Menu("Drawing", "Drawing");
+				var drawMenu = new Menu("鏄剧ず", "Drawing");
 				{
 					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Draw Q").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "鏄剧ずQ").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "鏄剧ずW").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
 
 					//var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					//drawMenu.AddItem(drawComboDamageMenu);
@@ -81,7 +73,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					//	Utility.HpBarDamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
 					//};
 
-					//champMenu.AddSubMenu(drawMenu);
+					champMenu.AddSubMenu(drawMenu);
 				}
 			}
 
@@ -103,13 +95,13 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				if (Q.Level > 0)
 					Utility.DrawCircle(MyHero.Position, xSLxOrbwalker.GetAutoAttackRange() + 10, Q.IsReady() ? Color.Green : Color.Red);
 
-			//if(Menu.Item("Draw_E").GetValue<bool>())
-			//	if(E.Level > 0)
-			//		Utility.DrawCircle(MyHero.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
+		//	if(Menu.Item("Draw_E").GetValue<bool>())
+		//		if(E.Level > 0)
+		//			Utility.DrawCircle(MyHero.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
 
-			//if(Menu.Item("Draw_R").GetValue<bool>())
-			//	if(R.Level > 0)
-			//		Utility.DrawCircle(MyHero.Position, R.Range, R.IsReady() ? Color.Green : Color.Red);
+		//	if(Menu.Item("Draw_R").GetValue<bool>())
+		//		if(R.Level > 0)
+		//			Utility.DrawCircle(MyHero.Position, R.Range, R.IsReady() ? Color.Green : Color.Red);
 		}
 
 		public override void OnAfterAttack(Obj_AI_Base unit, Obj_AI_Base target)

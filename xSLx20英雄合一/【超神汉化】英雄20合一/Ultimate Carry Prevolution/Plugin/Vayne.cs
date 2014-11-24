@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms.VisualStyles;
 using System.Xml.Xsl;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -37,17 +35,17 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             var champMenu = new Menu("Vayne Plugin", "Vayne");
             {
-                var comboMenu = new Menu("Combo", "Combo");
+                var comboMenu = new Menu("杩炴嫑", "Combo");
                 {
-                    comboMenu.AddItem(new MenuItem("Focus_Target", "Force Selected Target").SetValue(true));
+                    comboMenu.AddItem(new MenuItem("Focus_Target", "閿佸畾鐩爣").SetValue(true));
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "E", true);
                     AddSpelltoMenu(comboMenu, "R", true);
-                    AddSpelltoMenu(comboMenu, "Use Botrk", true);
+                    AddSpelltoMenu(comboMenu, "Botrk", true, "浣跨敤鐮磋触/灏忓集鍒€");
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("Harass", "Harass");
+                var harassMenu = new Menu("楠氭壈", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
                     AddSpelltoMenu(harassMenu, "E", true);
@@ -55,29 +53,29 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var laneClearMenu = new Menu("LaneClear", "LaneClear");
+                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
                 {
                     AddSpelltoMenu(laneClearMenu, "Q", true);
                     AddManaManagertoMenu(laneClearMenu, 0);
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-                var miscMenu = new Menu("Misc", "Misc");
+                var miscMenu = new Menu("鏉傞」", "Misc");
                 {
-                    miscMenu.AddItem(new MenuItem("Misc_Q_Always", "Q Before AA Toggle").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)).SetValue(false));
-                    miscMenu.AddItem(new MenuItem("Misc_useE_Gap_Closer", "Use E On Gap Closer").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("Misc_useE_Interrupt", "Use E To Interrupt").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("Misc_E_Next", "E Next Auto").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle)));
-                    miscMenu.AddItem(new MenuItem("Misc_Push_Distance", "E Push Distance").SetValue(new Slider(300, 350, 400)));
+                    miscMenu.AddItem(new MenuItem("Misc_Q_Always", "Q+骞矨").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)).SetValue(false));
+                    miscMenu.AddItem(new MenuItem("Misc_useE_Gap_Closer", "E闃茬獊").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Misc_useE_Interrupt", "E鎵撴柇").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Misc_E_Next", "鑷姩E").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle)));
+                    miscMenu.AddItem(new MenuItem("Misc_Push_Distance", "E璺濈").SetValue(new Slider(300, 350, 400)));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-                var drawMenu = new Menu("Drawing", "Drawing");
+                var drawMenu = new Menu("鏄剧ず", "Drawing");
                 {
-                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
-                    drawMenu.AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
+                    drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
 
-                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
+                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
                     drawMenu.AddItem(drawComboDamageMenu);
                     Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
                     Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();
@@ -158,7 +156,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
             var Q_Target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
             if (Q_Target != null)
             {
-                if (IsSpellActive("Use Botrk"))
+                if (IsSpellActive("Botrk"))
                 {
                     if (Bilge.IsReady() && (GetComboDamage(Q_Target) + MyHero.GetAutoAttackDamage(Q_Target) * 6 < Q_Target.Health || GetHealthPercent() < 35))
                         Use_Bilge(Q_Target);
@@ -181,9 +179,9 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             xSLxOrbwalker.ForcedTarget = null;
 
-            int minion = MinionManager.GetMinions(MyHero.ServerPosition, xSLxOrbwalker.GetAutoAttackRange(),MinionTypes.All,MinionTeam.NotAlly).Count;
+            int minion = MinionManager.GetMinions(MyHero.ServerPosition, xSLxOrbwalker.GetAutoAttackRange()).Count;
 
-            if (IsSpellActive("Q") && ManaManagerAllowCast() && minion > 1 )
+            if (IsSpellActive("Q") && ManaManagerAllowCast() && minion > 0)
                 Q.Cast(Game.CursorPos);
         }
 
@@ -225,30 +223,22 @@ namespace Ultimate_Carry_Prevolution.Plugin
             Menu.Item("Misc_E_Next").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle));
         }
 
-		private bool IsCollisionE(Obj_AI_Base unit)
-		{
-			for(var i = 50; i <= Menu.Item("Misc_Push_Distance").GetValue<Slider>().Value; i += 50)
-			{
-				var endpos = E.GetPrediction(unit).UnitPosition.To2D().Extend(MyHero.ServerPosition.To2D(),-i)  .To3D();
-				if(NavMesh.GetCollisionFlags(endpos) == CollisionFlags.Wall ||
-					NavMesh.GetCollisionFlags(endpos) == CollisionFlags.Building)
-					return true;
-			}
-			return false;
-		}
+        private void Cast_E()
+        {
+            var pushDistance = Menu.Item("Misc_Push_Distance").GetValue<Slider>().Value;
+            var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
 
-		private void Cast_E()
-		{
-			if(!E.IsReady())
-				return;
-			foreach(var enemy in AllHerosEnemy.Where(hero => hero.IsValidTarget(E.Range)).Where(enemy => IsCollisionE(enemy)))
-			{
-				E.Cast(enemy, UsePackets());
-				return;
-			}
-		}
+            if (MyHero.Distance(target) < 50)
+                E.Cast(target, UsePackets());
 
-	    private void Cast_R()
+            var targetPred = E.GetPrediction(target);
+            var targetPredPos = targetPred.UnitPosition + Vector3.Normalize(targetPred.UnitPosition - MyHero.ServerPosition)*(pushDistance+target.BoundingRadius);
+
+            if (IsPassWall(targetPred.UnitPosition, targetPredPos))
+                E.Cast(target, UsePackets());
+        }
+
+        private void Cast_R()
         {
 	        var target = xSLxOrbwalker.GetPossibleTarget();
 			var dmg = GetComboDamage(target) + MyHero.GetAutoAttackDamage(target) * 6;
