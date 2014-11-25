@@ -21,7 +21,7 @@ namespace Marksman
         {
             Utils.PrintMessage("KogMaw loaded.");
 
-            Q = new Spell(SpellSlot.Q, 1200f);
+            Q = new Spell(SpellSlot.Q, 1000f);
             W = new Spell(SpellSlot.W, float.MaxValue);
             E = new Spell(SpellSlot.E, 1360f);
             R = new Spell(SpellSlot.R, float.MaxValue);
@@ -178,6 +178,11 @@ namespace Marksman
         {
 
             return true;
+        }
+        public override bool LaneClearMenu(Menu config)
+        {
+
+             return true;
         }
 
     }

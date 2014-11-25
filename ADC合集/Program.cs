@@ -13,6 +13,8 @@ namespace Marksman
         public static Menu QuickSilverMenu;
         public static Champion CClass;
         public static Activator AActivator;
+        public static double ActivatorTime;
+        
         private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
@@ -55,6 +57,9 @@ namespace Marksman
                 case "jinx":
                     CClass = new Jinx();
                     break;
+                case "kalista":
+                    CClass = new Kalista();
+                    break;
                 case "kogmaw":
                     CClass = new Kogmaw();
                     break;
@@ -78,6 +83,9 @@ namespace Marksman
                     break;
                 case "twitch":
                     CClass = new Twitch();
+                    break;
+                case "urgot":
+                    CClass = new Urgot();
                     break;
                 case "vayne":
                     CClass = new Vayne();
@@ -141,6 +149,8 @@ namespace Marksman
                 var laneclear = new Menu("娓呯嚎", "LaneClear");
                 if (CClass.LaneClearMenu(laneclear))
                 {
+                    laneclear.AddItem(
+                        new MenuItem("LaneClearMana", "Min. Mana Percent").SetValue(new Slider(50, 100, 0)));
                     Config.AddSubMenu(laneclear);
                 }
 
@@ -203,11 +213,16 @@ namespace Marksman
             //Update the combo and harass values.
             CClass.ComboActive = CClass.Config.Item("Orbwalk").GetValue<KeyBind>().Active;
             
-            var existsMana = ObjectManager.Player.MaxMana/100*Config.Item("HarassMana").GetValue<Slider>().Value;
+            var harassExistsMana = ObjectManager.Player.MaxMana/100*Config.Item("HarassMana").GetValue<Slider>().Value;
             CClass.HarassActive = CClass.Config.Item("Farm").GetValue<KeyBind>().Active &&
-                                  ObjectManager.Player.Mana >= existsMana;
+                                  ObjectManager.Player.Mana >= harassExistsMana;
+
+            CClass.ToggleActive = ObjectManager.Player.Mana >= harassExistsMana;
+
+            var laneExistsMana = ObjectManager.Player.MaxMana/100*Config.Item("LaneClearMana").GetValue<Slider>().Value;
+            CClass.LaneClearActive = CClass.Config.Item("LaneClear").GetValue<KeyBind>().Active &
+                                     ObjectManager.Player.Mana >= laneExistsMana;
                                   
-            CClass.LaneClearActive = CClass.Config.Item("LaneClear").GetValue<KeyBind>().Active;
             CClass.Game_OnGameUpdate(args);
 
             var useItemModes = Config.Item("UseItemsMode").GetValue<StringList>().SelectedIndex;
@@ -223,6 +238,8 @@ namespace Marksman
 
             var botrk = Config.Item("BOTRK").GetValue<bool>();
             var ghostblade = Config.Item("GHOSTBLADE").GetValue<bool>();
+            var sword = Config.Item("SWORD").GetValue<bool>();
+            var igniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
             var target = CClass.Orbwalker.GetTarget();
 
             if (botrk)
@@ -244,8 +261,24 @@ namespace Marksman
             }
 
             if (ghostblade && target != null && target.Type == ObjectManager.Player.Type &&
-                Orbwalking.InAutoAttackRange(target))
+                 !ObjectManager.Player.HasBuff("ItemSoTD", true) /*if Sword of the divine is not active */ 
+                 && Orbwalking.InAutoAttackRange(target)) 
                 Items.UseItem(3142);
+
+            if (sword && target != null && target.Type == ObjectManager.Player.Type &&
+                !ObjectManager.Player.HasBuff("spectralfury", true) /*if ghostblade is not active*/ 
+                && Orbwalking.InAutoAttackRange(target)) 
+                Items.UseItem(3131);
+                
+            if (target != null && igniteSlot != SpellSlot.Unknown &&
+                ObjectManager.Player.SummonerSpellbook.CanUseSpell(igniteSlot) == SpellState.Ready)
+            {
+                if (ObjectManager.Player.Distance(target) < 650 &&
+                    ObjectManager.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite) >= target.Health)
+                {
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(igniteSlot, target);
+                }
+            }    
         }
         
         private static void CheckChampionBuff()
@@ -256,11 +289,28 @@ namespace Marksman
                 {
                     if (QuickSilverMenu.Item(t.Name).GetValue<bool>())
                     {
+                        if (t1.Name.ToLower().Contains(t.Name.ToLower()))
                         {
-                            if (t1.Name.ToLower().Contains(t.Name.ToLower()))
+                            foreach (var bx in AActivator.BuffList.Where(bx => bx.BuffName == t1.Name))
+                            {
+                                if (bx.Delay > 0)
+                        {
+                                    if (ActivatorTime + bx.Delay < (int) Game.Time)
+                                        ActivatorTime = (int) Game.Time;
+
+                                    if (ActivatorTime + bx.Delay <= (int) Game.Time)
+                                    {
+                                        if (Items.HasItem(3139)) Items.UseItem(3139);
+                                        if (Items.HasItem(3140)) Items.UseItem(3140);
+                                        ActivatorTime = (int) Game.Time;
+                                    }
+                                }
+                                else
                             {
                                 if (Items.HasItem(3139)) Items.UseItem(3139); 
                                 if (Items.HasItem(3140)) Items.UseItem(3140);
+                            }
+
                             }
                         }
                     }
