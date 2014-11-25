@@ -10,7 +10,7 @@ using Color = System.Drawing.Color;
 
 namespace Marksman
 {
-    internal class Caitlyn : Champion // Base done by xQx, Drawings and improvements added by Dibes.
+    internal class Caitlyn : Champion // Base done by Chulbul-Pandey, Drawings and improvements added by Dibes.
     {
         public Spell E;
         public Spell Q;
@@ -184,11 +184,6 @@ namespace Marksman
         {
 
             return true;
-        }
-        public override bool LaneClearMenu(Menu config)
-        {
-
-             return true;
         }
     }
 }

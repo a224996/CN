@@ -92,9 +92,8 @@ namespace Marksman
 
         private void OnGameUpdate(EventArgs args)
         {
-            if(ObjectManager.Player.HasBuff("Recall") || Utility.InFountain() && Utility.InShopRange())
+            if (ObjectManager.Player.HasBuff("Recall") && Utility.InFountain())
                 return;
-                
             try
             {
                 if (ExtrasMenu.Item("HealthPotion").GetValue<bool>())

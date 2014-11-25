@@ -78,41 +78,28 @@ namespace Marksman
             }
         }
 
-        public override bool ComboMenu(Menu config)
+        public override void ComboMenu(Menu config)
         {
             config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
             config.AddItem(new MenuItem("UseWC" + Id, "Use W").SetValue(true));
-            return true;
         }
 
-        public override bool HarassMenu(Menu config)
+        public override void HarassMenu(Menu config)
         {
             config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(false));
             config.AddItem(new MenuItem("UseWH" + Id, "Use W").SetValue(false));
-            return true;
         }
 
-        public override bool DrawingMenu(Menu config)
+        public override void DrawingMenu(Menu config)
         {
             config.AddItem(
                 new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
 
             config.AddItem(
                 new MenuItem("DrawW" + Id, "W range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+ 
             config.AddItem(
                 new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
-            return true;
-        }
-        public override bool ExtrasMenu(Menu config)
-        {
-
-            return true;
-        }
-
-        public override bool LaneClearMenu(Menu config)
-        {
-
-             return true;
-        }
         }
     }
+}
