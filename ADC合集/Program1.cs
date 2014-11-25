@@ -99,22 +99,21 @@ namespace Marksman
             CClass.Id = ObjectManager.Player.BaseSkinName;
             CClass.Config = Config;
 
-            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
+            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
-            var orbwalking = Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+            var orbwalking = Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
             CClass.Orbwalker = new Orbwalking.Orbwalker(orbwalking);
 
-            var items = Config.AddSubMenu(new Menu("Items", "Items"));
-            items.AddItem(new MenuItem("BOTRK", "BOTRK").SetValue(true));
-            items.AddItem(new MenuItem("GHOSTBLADE", "Ghostblade").SetValue(true));
-            items.AddItem(new MenuItem("SWORD", "Sword of the Divine").SetValue(true));
-            QuickSilverMenu = new Menu("QSS", "QuickSilverSash");
+            var items = Config.AddSubMenu(new Menu("鐗╁搧", "Items"));
+            items.AddItem(new MenuItem("BOTRK", "鐮磋触").SetValue(true));
+            items.AddItem(new MenuItem("GHOSTBLADE", "灏忓集鍒€").SetValue(true));
+            QuickSilverMenu = new Menu("姘撮摱鑵板甫", "QuickSilverSash");
             items.AddSubMenu(QuickSilverMenu);
-            QuickSilverMenu.AddItem(new MenuItem("AnyStun", "Any Stun").SetValue(true));
-            QuickSilverMenu.AddItem(new MenuItem("AnySnare", "Any Snare").SetValue(true));
-            QuickSilverMenu.AddItem(new MenuItem("AnyTaunt", "Any Taunt").SetValue(true));
+            QuickSilverMenu.AddItem(new MenuItem("AnyStun", "鐪╂檿").SetValue(true));
+            QuickSilverMenu.AddItem(new MenuItem("AnySnare", "澶瑰瓙").SetValue(true));
+            QuickSilverMenu.AddItem(new MenuItem("AnyTaunt", "鍢茶").SetValue(true));
             foreach (var t in AActivator.BuffList)
             {
                 foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsEnemy))
@@ -124,8 +123,8 @@ namespace Marksman
                 }
             }
             items.AddItem(
-                new MenuItem("UseItemsMode", "Use items on").SetValue(
-                    new StringList(new[] {"No", "Mixed mode", "Combo mode", "Both"}, 2)));
+                new MenuItem("UseItemsMode", "浣跨敤鐗╁搧").SetValue(
+                    new StringList(new[] {"no", "娣峰悎", "杩炴嫑", "鍏ㄩ儴"}, 2)));
 
             
             //var Extras = Config.AddSubMenu(new Menu("Extras", "Extras"));
@@ -134,20 +133,20 @@ namespace Marksman
             // If Champion is supported draw the extra menus
             if (BaseType != CClass.GetType())
             {
-                var combo = new Menu("Combo", "Combo");
+                var combo = new Menu("杩炴嫑", "Combo");
                 if (CClass.ComboMenu(combo))
                 {
                     Config.AddSubMenu(combo);
                 }
 
-                var harass = new Menu("Harass", "Harass");
+                var harass = new Menu("楠氭壈", "Harass");
                 if (CClass.HarassMenu(harass))
                 {
-                    harass.AddItem(new MenuItem("HarassMana", "Min. Mana Percent").SetValue(new Slider(50, 100, 0)));
+                    harass.AddItem(new MenuItem("HarassMana", "min钃濋噺%").SetValue(new Slider(50, 100, 0)));
                     Config.AddSubMenu(harass);
                 }
 
-                var laneclear = new Menu("LaneClear", "LaneClear");
+                var laneclear = new Menu("娓呯嚎", "LaneClear");
                 if (CClass.LaneClearMenu(laneclear))
                 {
                     laneclear.AddItem(
@@ -155,24 +154,28 @@ namespace Marksman
                     Config.AddSubMenu(laneclear);
                 }
 
-                var misc = new Menu("Misc", "Misc");
+                var misc = new Menu("鏉傞」", "Misc");
                 if (CClass.MiscMenu(misc))
                 {
                     Config.AddSubMenu(misc);
                 }
 
-                var extras = new Menu("Extras", "Extras");
+                var extras = new Menu("闄勫姞", "Extras");
                 if (CClass.ExtrasMenu(extras))
                 {
                     new PotionManager(extras);
                     Config.AddSubMenu(extras);
                 }
 
-                var drawing = new Menu("Drawings", "Drawings");
+                var drawing = new Menu("鏄剧ず", "Drawings");
                 if (CClass.DrawingMenu(drawing))
                 {
                     Config.AddSubMenu(drawing);
                 }
+				
+				Config.AddSubMenu(new Menu("瓒呯姹夊寲", "by weilai"));
+				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
             }
 
 
@@ -219,7 +222,7 @@ namespace Marksman
             var laneExistsMana = ObjectManager.Player.MaxMana/100*Config.Item("LaneClearMana").GetValue<Slider>().Value;
             CClass.LaneClearActive = CClass.Config.Item("LaneClear").GetValue<KeyBind>().Active &
                                      ObjectManager.Player.Mana >= laneExistsMana;
-
+                                  
             CClass.Game_OnGameUpdate(args);
 
             var useItemModes = Config.Item("UseItemsMode").GetValue<StringList>().SelectedIndex;
@@ -291,7 +294,7 @@ namespace Marksman
                             foreach (var bx in AActivator.BuffList.Where(bx => bx.BuffName == t1.Name))
                             {
                                 if (bx.Delay > 0)
-                                {
+                        {
                                     if (ActivatorTime + bx.Delay < (int) Game.Time)
                                         ActivatorTime = (int) Game.Time;
 
@@ -303,10 +306,10 @@ namespace Marksman
                                     }
                                 }
                                 else
-                                {
-                                    if (Items.HasItem(3139)) Items.UseItem(3139);
-                                    if (Items.HasItem(3140)) Items.UseItem(3140);
-                                }
+                            {
+                                if (Items.HasItem(3139)) Items.UseItem(3139); 
+                                if (Items.HasItem(3140)) Items.UseItem(3140);
+                            }
 
                             }
                         }
@@ -330,9 +333,11 @@ namespace Marksman
                         if (Items.HasItem(3139)) Items.UseItem(3139);
                         if (Items.HasItem(3140)) Items.UseItem(3140);
                     }
+
                 }
-            }           
+            }
         }
+
         private static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
         {
             CClass.Orbwalking_AfterAttack(unit, target);
