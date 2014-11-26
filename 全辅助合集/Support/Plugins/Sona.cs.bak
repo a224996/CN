@@ -46,11 +46,11 @@ namespace Support.Plugins
                     Q.Cast();
                 }
 
-                //if (Target.IsValidTarget(AttackRange) &&
-                //    (Player.HasBuff("sonaqprocattacker") || Player.HasBuff("sonaqprocattacker")))
-                //{
-                //    Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
-                //}
+                if (Target.IsValidTarget(AttackRange) &&
+                    (Player.HasBuff("sonaqprocattacker") || Player.HasBuff("sonaqprocattacker")))
+                {
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
+                }
 
                 var allyW = Helpers.AllyBelowHp(ConfigValue<Slider>("ComboHealthW").Value, W.Range);
                 if (W.CastCheck(allyW, "ComboW", true, false))
@@ -76,11 +76,11 @@ namespace Support.Plugins
                     Q.Cast();
                 }
 
-                //if (Target.IsValidTarget(AttackRange) &&
-                //    (Player.HasBuff("sonaqprocattacker") || Player.HasBuff("sonaqprocattacker")))
-                //{
-                //    Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
-                //}
+                if (Target.IsValidTarget(AttackRange) &&
+                    (Player.HasBuff("sonaqprocattacker") || Player.HasBuff("sonaqprocattacker")))
+                {
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
+                }
 
                 var allyW = Helpers.AllyBelowHp(ConfigValue<Slider>("HarassHealthW").Value, W.Range);
                 if (W.CastCheck(allyW, "HarassW", true, false))
