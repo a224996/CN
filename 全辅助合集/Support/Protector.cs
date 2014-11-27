@@ -43,7 +43,7 @@ namespace Support
 
         public bool IsActive(Obj_AI_Hero hero)
         {
-            return Protector.Menu.SubMenu("Spells").SubMenu(Name).Item(hero.ChampionName).GetValue<bool>();
+            return Protector.Menu.Item("Spells." + Name + "." + hero.ChampionName).GetValue<bool>();
         }
     }
 
@@ -57,7 +57,7 @@ namespace Support
 
         public bool IsActive(Obj_AI_Hero hero)
         {
-            return Protector.Menu.SubMenu("Items").SubMenu(Name).Item(hero.ChampionName).GetValue<bool>();
+            return Protector.Menu.Item("Items." + Name + "." + hero.ChampionName).GetValue<bool>();
         }
     }
 
@@ -125,7 +125,7 @@ namespace Support
                 //OnSkillshotProtection += Protector_OnSkillshotProtection;
                 //OnTargetedProtection += Protector_OnTargetedProtection;
 
-                Helpers.PrintMessage(string.Format("<font color=\"#00BFFF\">Protector by h3h3 loaded!</font>"));
+                Helpers.PrintMessage(string.Format("Protector by h3h3 loaded!"));
                 Console.WriteLine("Protector Init Complete");
                 _isInitComplete = true;
             }
@@ -133,21 +133,17 @@ namespace Support
 
         private static void CreateMenu()
         {
-			Game.PrintChat("<font color=\"#00BFFF\">====== 鎴愬姛杞藉叆:銆愮劇鐐烘眽鍖栥€戝叏杈呭姪鍚堥泦 ======</font>");
-			Game.PrintChat("<font color=\"#00BFFF\">====== 鍖呭惈鑻遍泟====== </font>");
-			Game.PrintChat("<font color=\"#00BFFF\">銊х墰澶淬劎鏈哄櫒浜恒劎甯冮殕銊ф湯鏃ャ劎椋庡コ銊уぉ鍚€呫劎鏇欏厜銊ч湶闇层劎鑾敇濞溿劎濞滅編銊х惔濂炽劎瀹濈煶銊ч敜鐭炽劎鏃跺厜銊у鎷夈劎</font>");
-			Game.PrintChat("<font color=\"#00BFFF\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");
-            Menu = new Menu("Support: 鏀寔宸ュ叿", "Protector", true);
+            Menu = new Menu("Support: Protector", "Protector", true);
 
             // detector
-            var detector = Menu.AddSubMenu(new Menu("鎺㈡祴鍣ㄣ劎", "Detector"));
+            var detector = Menu.AddSubMenu(new Menu("Detector", "Detector"));
 
             // detector targeted
-            var targeted = detector.AddSubMenu(new Menu("閽堝", "Targeted"));
-            targeted.AddItem(new MenuItem("TargetedActive", "鍚敤").SetValue(true));
+            var targeted = detector.AddSubMenu(new Menu("Targeted", "Targeted"));
+            targeted.AddItem(new MenuItem("TargetedActive", "Active").SetValue(true));
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly))
             {
-                targeted.AddItem(new MenuItem(ally.ChampionName, ally.ChampionName).SetValue(true));
+                targeted.AddItem(new MenuItem("Detector.Targeted." + ally.ChampionName, ally.ChampionName).SetValue(true));
             }
 
             // detector skillshots
@@ -156,7 +152,7 @@ namespace Support
             skillshot.AddItem(new MenuItem("IsAboutToHitTime", "鏃堕棿寤惰繜").SetValue(new Slider(200, 0, 400)));
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly))
             {
-                skillshot.AddItem(new MenuItem(ally.ChampionName, ally.ChampionName).SetValue(true));
+                skillshot.AddItem(new MenuItem("Detector.Skillshots." + ally.ChampionName, ally.ChampionName).SetValue(true));
             }
 
             // spells
@@ -166,7 +162,7 @@ namespace Support
                 var spellMenu = spells.AddSubMenu(new Menu(spell.Name, spell.Name));
                 foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly))
                 {
-                    spellMenu.AddItem(new MenuItem(ally.ChampionName, ally.ChampionName).SetValue(true));
+                    spellMenu.AddItem(new MenuItem("Spells." + spell.Name + "." + ally.ChampionName, ally.ChampionName).SetValue(true));
                 }
             }
 
@@ -177,7 +173,7 @@ namespace Support
                 var itemsMenu = items.AddSubMenu(new Menu(item.Name, item.Name));
                 foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly))
                 {
-                    itemsMenu.AddItem(new MenuItem(ally.ChampionName, ally.ChampionName).SetValue(true));
+                    itemsMenu.AddItem(new MenuItem("Items." + item.Name + "." + ally.ChampionName, ally.ChampionName).SetValue(true));
                 }
             }
 
@@ -210,30 +206,37 @@ namespace Support
 
         private static void CcCheck(EventArgs args)
         {
-            var mikael = ProtectorItems.First(); // TODO: ugly shit + check if is in range
-
-            if (!mikael.Item.IsReady() || ObjectManager.Player.IsDead ||
-                ObjectManager.Player.IsChannelingImportantSpell())
-                return;
-
-            foreach (
-                var hero in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(h => h.IsAlly && !h.IsDead)
-                        .OrderByDescending(h => h.FlatPhysicalDamageMod)
-                        .Where(mikael.Item.IsInRange))
+            try
             {
-                foreach (var buff in CcTypes)
+                var mikael = ProtectorItems.First(); // TODO: ugly shit + check if is in range
+
+                if (!mikael.Item.IsReady() || ObjectManager.Player.IsDead ||
+                    ObjectManager.Player.IsChannelingImportantSpell())
+                    return;
+
+                foreach (
+                    var hero in
+                        ObjectManager.Get<Obj_AI_Hero>()
+                            .Where(h => h.IsAlly && !h.IsDead)
+                            .OrderByDescending(h => h.FlatPhysicalDamageMod)
+                            .Where(mikael.Item.IsInRange))
                 {
-                    if (hero.HasBuffOfType(buff) && Menu.SubMenu("CC").Item(buff.ToString()).GetValue<bool>())
+                    foreach (var buff in CcTypes)
                     {
-                        if (mikael.IsActive(hero) && hero.CountEnemysInRange(800) > 0)
+                        if (hero.HasBuffOfType(buff) && Menu.SubMenu("CC").Item(buff.ToString()).GetValue<bool>())
                         {
-                            mikael.Item.Cast(hero);
-                            Console.WriteLine("Cast CC: " + mikael.Name + " -> " + hero.ChampionName + "(" + buff + ")");
+                            if (mikael.IsActive(hero) && hero.CountEnemysInRange(800) > 0)
+                            {
+                                mikael.Item.Cast(hero);
+                                Console.WriteLine("Cast CC: " + mikael.Name + " -> " + hero.ChampionName + "(" + buff + ")");
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
@@ -303,10 +306,10 @@ namespace Support
                 if (sender.IsAlly)
                     return;
 
-                var caster = (Obj_AI_Turret) sender;
-                var target = (Obj_AI_Hero) args.Target;
+                var caster = (Obj_AI_Turret)sender;
+                var target = (Obj_AI_Hero)args.Target;
 
-                if (Menu.SubMenu("Detector").SubMenu("Targeted").Item(target.ChampionName).GetValue<bool>())
+                if (Menu.SubMenu("Detector").SubMenu("Targeted").Item("Detector.Targeted." + target.ChampionName).GetValue<bool>())
                 {
                     if (OnTargetedProtection != null)
                     {
@@ -336,10 +339,10 @@ namespace Support
                 if (!args.Target.IsValid<Obj_AI_Hero>() || args.Target.IsEnemy)
                     return;
 
-                var caster = (Obj_AI_Hero) sender;
-                var target = (Obj_AI_Hero) args.Target;
+                var caster = (Obj_AI_Hero)sender;
+                var target = (Obj_AI_Hero)args.Target;
 
-                if (Menu.SubMenu("Detector").SubMenu("Targeted").Item(target.ChampionName).GetValue<bool>())
+                if (Menu.SubMenu("Detector").SubMenu("Targeted").Item("Detector.Targeted." + target.ChampionName).GetValue<bool>())
                 {
                     if (OnTargetedProtection != null)
                     {
@@ -363,7 +366,7 @@ namespace Support
                 if (!Menu.Item("TargetedActive").GetValue<bool>())
                     return;
 
-                var missile = (Obj_SpellMissile) sender;
+                var missile = (Obj_SpellMissile)sender;
 
                 if (!missile.SpellCaster.IsValid<Obj_AI_Hero>() || !missile.SpellCaster.IsEnemy)
                     return;
@@ -371,10 +374,10 @@ namespace Support
                 if (!missile.Target.IsValid<Obj_AI_Hero>() || !missile.Target.IsAlly)
                     return;
 
-                var caster = (Obj_AI_Hero) missile.SpellCaster;
-                var target = (Obj_AI_Hero) missile.Target;
+                var caster = (Obj_AI_Hero)missile.SpellCaster;
+                var target = (Obj_AI_Hero)missile.Target;
 
-                if (Menu.SubMenu("Detector").SubMenu("Targeted").Item(target.ChampionName).GetValue<bool>())
+                if (Menu.SubMenu("Detector").SubMenu("Targeted").Item("Detector.Targeted." + target.ChampionName).GetValue<bool>())
                 {
                     if (OnTargetedProtection != null)
                     {
@@ -415,7 +418,7 @@ namespace Support
 
                     if (!allySafeResult.IsSafe && IsAboutToHit(ally, IsAboutToHitTime))
                     {
-                        if (Menu.SubMenu("Detector").SubMenu("Skillshots").Item(ally.ChampionName).GetValue<bool>())
+                        if (Menu.SubMenu("Detector").SubMenu("Skillshots").Item("Detector.Skillshots." + ally.ChampionName).GetValue<bool>())
                         {
                             if (OnSkillshotProtection != null)
                             {
@@ -463,7 +466,7 @@ namespace Support
 
                 //Check if the skillshot is too far away.
                 if (skillshot.Start.Distance(ObjectManager.Player.ServerPosition.To2D()) >
-                    (skillshot.SpellData.Range + skillshot.SpellData.Radius + 1000)*1.5)
+                    (skillshot.SpellData.Range + skillshot.SpellData.Radius + 1000) * 1.5)
                 {
                     return;
                 }
@@ -479,13 +482,13 @@ namespace Support
                         {
                             var originalDirection = skillshot.Direction;
 
-                            for (var i = -(skillshot.SpellData.MultipleNumber - 1)/2;
-                                i <= (skillshot.SpellData.MultipleNumber - 1)/2;
+                            for (var i = -(skillshot.SpellData.MultipleNumber - 1) / 2;
+                                i <= (skillshot.SpellData.MultipleNumber - 1) / 2;
                                 i++)
                             {
                                 var end = skillshot.Start +
-                                          skillshot.SpellData.Range*
-                                          originalDirection.Rotated(skillshot.SpellData.MultipleAngle*i);
+                                          skillshot.SpellData.Range *
+                                          originalDirection.Rotated(skillshot.SpellData.MultipleAngle * i);
                                 var skillshotToAdd = new Skillshot(
                                     skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, skillshot.Start,
                                     end,
@@ -498,13 +501,13 @@ namespace Support
 
                         if (skillshot.SpellData.SpellName == "UFSlash")
                         {
-                            skillshot.SpellData.MissileSpeed = 1600 + (int) skillshot.Unit.MoveSpeed;
+                            skillshot.SpellData.MissileSpeed = 1600 + (int)skillshot.Unit.MoveSpeed;
                         }
 
                         if (skillshot.SpellData.Invert)
                         {
                             var newDirection = -(skillshot.End - skillshot.Start).Normalized();
-                            var end = skillshot.Start + newDirection*skillshot.Start.Distance(skillshot.End);
+                            var end = skillshot.Start + newDirection * skillshot.Start.Distance(skillshot.End);
                             var skillshotToAdd = new Skillshot(
                                 skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, skillshot.Start, end,
                                 skillshot.Unit);
@@ -514,8 +517,8 @@ namespace Support
 
                         if (skillshot.SpellData.Centered)
                         {
-                            var start = skillshot.Start - skillshot.Direction*skillshot.SpellData.Range;
-                            var end = skillshot.Start + skillshot.Direction*skillshot.SpellData.Range;
+                            var start = skillshot.Start - skillshot.Direction * skillshot.SpellData.Range;
+                            var end = skillshot.Start + skillshot.Direction * skillshot.SpellData.Range;
                             var skillshotToAdd = new Skillshot(
                                 skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, start, end,
                                 skillshot.Unit);
@@ -528,8 +531,8 @@ namespace Support
                             var angle = 60;
                             var edge1 =
                                 (skillshot.End - skillshot.Unit.ServerPosition.To2D()).Rotated(
-                                    -angle/2*(float) Math.PI/180);
-                            var edge2 = edge1.Rotated(angle*(float) Math.PI/180);
+                                    -angle / 2 * (float)Math.PI / 180);
+                            var edge2 = edge1.Rotated(angle * (float)Math.PI / 180);
 
                             foreach (var minion in ObjectManager.Get<Obj_AI_Minion>())
                             {
@@ -555,8 +558,8 @@ namespace Support
 
                         if (skillshot.SpellData.SpellName == "AlZaharCalloftheVoid")
                         {
-                            var start = skillshot.End - skillshot.Direction.Perpendicular()*400;
-                            var end = skillshot.End + skillshot.Direction.Perpendicular()*400;
+                            var start = skillshot.End - skillshot.Direction.Perpendicular() * 400;
+                            var end = skillshot.End + skillshot.Direction.Perpendicular() * 400;
                             var skillshotToAdd = new Skillshot(
                                 skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, start, end,
                                 skillshot.Unit);
@@ -567,20 +570,20 @@ namespace Support
                         if (skillshot.SpellData.SpellName == "ZiggsQ")
                         {
                             var d1 = skillshot.Start.Distance(skillshot.End);
-                            var d2 = d1*0.4f;
-                            var d3 = d2*0.69f;
+                            var d2 = d1 * 0.4f;
+                            var d3 = d2 * 0.69f;
 
 
                             var bounce1SpellData = SpellDatabase.GetByName("ZiggsQBounce1");
                             var bounce2SpellData = SpellDatabase.GetByName("ZiggsQBounce2");
 
-                            var bounce1Pos = skillshot.End + skillshot.Direction*d2;
-                            var bounce2Pos = bounce1Pos + skillshot.Direction*d3;
+                            var bounce1Pos = skillshot.End + skillshot.Direction * d2;
+                            var bounce2Pos = bounce1Pos + skillshot.Direction * d3;
 
                             bounce1SpellData.Delay =
-                                (int) (skillshot.SpellData.Delay + d1*1000f/skillshot.SpellData.MissileSpeed + 500);
+                                (int)(skillshot.SpellData.Delay + d1 * 1000f / skillshot.SpellData.MissileSpeed + 500);
                             bounce2SpellData.Delay =
-                                (int) (bounce1SpellData.Delay + d2*1000f/bounce1SpellData.MissileSpeed + 500);
+                                (int)(bounce1SpellData.Delay + d2 * 1000f / bounce1SpellData.MissileSpeed + 500);
 
                             var bounce1 = new Skillshot(
                                 skillshot.DetectionType, bounce1SpellData, skillshot.StartTick, skillshot.End,
@@ -597,7 +600,7 @@ namespace Support
                         if (skillshot.SpellData.SpellName == "ZiggsR")
                         {
                             skillshot.SpellData.Delay =
-                                (int) (1500 + 1500*skillshot.End.Distance(skillshot.Start)/skillshot.SpellData.Range);
+                                (int)(1500 + 1500 * skillshot.End.Distance(skillshot.Start) / skillshot.SpellData.Range);
                         }
 
                         if (skillshot.SpellData.SpellName == "JarvanIVDragonStrike")
@@ -626,7 +629,7 @@ namespace Support
                                 return;
                             }
 
-                            skillshot.End = endPos + 200*(endPos - skillshot.Start).Normalized();
+                            skillshot.End = endPos + 200 * (endPos - skillshot.Start).Normalized();
                             skillshot.Direction = (skillshot.End - skillshot.Start).Normalized();
                         }
                     }
@@ -664,7 +667,7 @@ namespace Support
         /// </summary>
         public static IsSafeResult IsSafe(Vector2 point)
         {
-            var result = new IsSafeResult {SkillshotList = new List<Skillshot>()};
+            var result = new IsSafeResult { SkillshotList = new List<Skillshot>() };
 
             foreach (var skillshot in DetectedSkillshots)
             {
