@@ -378,60 +378,60 @@ namespace Ziggs
             menu = new Menu(champName, champName, true);
 
             // Target selector
-            Menu targetSelector = new Menu("|鍒濊姹夊寲-鐩爣閫夋嫨|", "ts");
+            Menu targetSelector = new Menu("|初见汉化-目标选择|", "ts");
             SimpleTs.AddToMenu(targetSelector);
             menu.AddSubMenu(targetSelector);
 
             // Orbwalker
-            Menu orbwalker = new Menu("|鍒濊姹夊寲-璧扮爫|", "orbwalker");
+            Menu orbwalker = new Menu("|初见汉化-走砍|", "orbwalker");
             SOW = new Orbwalking.Orbwalker(orbwalker);
             menu.AddSubMenu(orbwalker);
 
             // Combo
-            Menu combo = new Menu("|鍒濊姹夊寲-杩炴嫑|", "combo");
+            Menu combo = new Menu("|初见汉化-连招|", "combo");
             menu.AddSubMenu(combo);
-            combo.AddItem(new MenuItem("UseQ", "浣跨敤 Q").SetValue(true));
-            combo.AddItem(new MenuItem("UseW", "浣跨敤 W").SetValue(true));
-            combo.AddItem(new MenuItem("UseE", "浣跨敤 E").SetValue(true));
-            combo.AddItem(new MenuItem("UseR", "浣跨敤 R").SetValue(true));
-            combo.AddItem(new MenuItem("Active", "杩炴嫑").SetValue<KeyBind>(new KeyBind(32, KeyBindType.Press)));
+            combo.AddItem(new MenuItem("UseQ", "使用 Q").SetValue(true));
+            combo.AddItem(new MenuItem("UseW", "使用 W").SetValue(true));
+            combo.AddItem(new MenuItem("UseE", "使用 E").SetValue(true));
+            combo.AddItem(new MenuItem("UseR", "使用 R").SetValue(true));
+            combo.AddItem(new MenuItem("Active", "连招").SetValue<KeyBind>(new KeyBind(32, KeyBindType.Press)));
 
             // Harass
-            Menu harass = new Menu("|鍒濊姹夊寲-楠氭壈|", "harass");
+            Menu harass = new Menu("|初见汉化-骚扰|", "harass");
             menu.AddSubMenu(harass);
-            harass.AddItem(new MenuItem("UseQ", "浣跨敤 Q").SetValue(true));
-            harass.AddItem(new MenuItem("UseE", "浣跨敤 E").SetValue(true));
-            harass.AddItem(new MenuItem("Active", "楠氭壈").SetValue<KeyBind>(new KeyBind('C', KeyBindType.Press)));
+            harass.AddItem(new MenuItem("UseQ", "使用 Q").SetValue(true));
+            harass.AddItem(new MenuItem("UseE", "使用 E").SetValue(true));
+            harass.AddItem(new MenuItem("Active", "骚扰").SetValue<KeyBind>(new KeyBind('C', KeyBindType.Press)));
 
             // Wave clear
-            Menu waveClear = new Menu("|鍒濊姹夊寲-娓呯嚎|", "waveClear");
+            Menu waveClear = new Menu("|初见汉化-清线|", "waveClear");
             menu.AddSubMenu(waveClear);
-            waveClear.AddItem(new MenuItem("UseQ", "浣跨敤 Q").SetValue(true));
+            waveClear.AddItem(new MenuItem("UseQ", "使用 Q").SetValue(true));
             //waveClear.AddItem(new MenuItem("UseW", "Use W").SetValue(true));
-            waveClear.AddItem(new MenuItem("UseE", "浣跨敤 E").SetValue(true));
-            waveClear.AddItem(new MenuItem("waveNum", "浣跨敤灏忓叺鏁伴噺銆€").SetValue<Slider>(new Slider(3, 1, 10)));
-            waveClear.AddItem(new MenuItem("Active", "娓呯嚎").SetValue<KeyBind>(new KeyBind('V', KeyBindType.Press)));
+            waveClear.AddItem(new MenuItem("UseE", "使用 E").SetValue(true));
+            waveClear.AddItem(new MenuItem("waveNum", "使用小兵数量　").SetValue<Slider>(new Slider(3, 1, 10)));
+            waveClear.AddItem(new MenuItem("Active", "清线").SetValue<KeyBind>(new KeyBind('V', KeyBindType.Press)));
 
             // Drawings
-            Menu misc = new Menu("|鍒濊姹夊寲-鏉傞」|", "misc");
+            Menu misc = new Menu("|初见汉化-杂项|", "misc");
             menu.AddSubMenu(misc);
-            misc.AddItem(new MenuItem("interrupt", "鎵撴柇娉曟湳").SetValue(true));
+            misc.AddItem(new MenuItem("interrupt", "打断法术").SetValue(true));
             //misc.AddItem(new MenuItem("interruptLevel", "Interrupt only with danger level").SetValue<InterruptableDangerLevel>(InterruptableDangerLevel.Medium));
-            misc.AddItem(new MenuItem("antigapcloser", "闃茬獊杩涖€€").SetValue(true));
-            misc.AddItem(new MenuItem("GETOVERHERE", "璇曠潃鎵斿湪鏁屼汉鎺ヨ繎").SetValue(true));
-            misc.AddItem(new MenuItem("MAKEMETHEHELLOUTTAHEREMAN", "鏅鸿兘 W").SetValue<KeyBind>(new KeyBind('G', KeyBindType.Press)));
+            misc.AddItem(new MenuItem("antigapcloser", "防突进　").SetValue(true));
+            misc.AddItem(new MenuItem("GETOVERHERE", "试着扔在敌人接近").SetValue(true));
+            misc.AddItem(new MenuItem("MAKEMETHEHELLOUTTAHEREMAN", "智能 W").SetValue<KeyBind>(new KeyBind('G', KeyBindType.Press)));
 
             //Ultimate settings
-            Menu ulti = new Menu("|鍒濊姹夊寲-澶ф嫑璁剧疆|", "ulti");
+            Menu ulti = new Menu("|初见汉化-大招设置|", "ulti");
             menu.AddSubMenu(ulti);
-            ulti.AddItem(new MenuItem("forceR", "寮哄埗澶ф嫑").SetValue<KeyBind>(new KeyBind('T', KeyBindType.Press)));
-            ulti.AddItem(new MenuItem("forceRPrediction", "浠讳綍鍛戒腑鎶曟幏").SetValue(true));
-            ulti.AddItem(new MenuItem("ultiOnKillable", "澶ф嫑鍦ㄨ兘鏉€(鍑绘潃)").SetValue(true));
-            ulti.AddItem(new MenuItem("AOE", "鑳藉ぇ鍒颁汉鏁颁娇鐢ㄥぇ").SetValue(true));
-            ulti.AddItem(new MenuItem("enemiesToHit", "鑷姩浣跨敤澶т汉鏁般€€").SetValue<Slider>(new Slider(3, 1, 5)));
+            ulti.AddItem(new MenuItem("forceR", "强制大招").SetValue<KeyBind>(new KeyBind('T', KeyBindType.Press)));
+            ulti.AddItem(new MenuItem("forceRPrediction", "任何命中投掷").SetValue(true));
+            ulti.AddItem(new MenuItem("ultiOnKillable", "大招在能杀(击杀)").SetValue(true));
+            ulti.AddItem(new MenuItem("AOE", "能大到人数使用大").SetValue(true));
+            ulti.AddItem(new MenuItem("enemiesToHit", "自动使用大人数　").SetValue<Slider>(new Slider(3, 1, 5)));
 
             //Stolen from Honda7's code, cause i'm lazy fuck ( -_-)
-            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "缁樺埗鎹熶激").SetValue(true);
+            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "绘制损伤").SetValue(true);
             Utility.HpBarDamageIndicator.DamageToUnit += hero => (float)CalculateDamage(hero);
             Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
             dmgAfterComboItem.ValueChanged += delegate(object sender, OnValueChangeEventArgs eventArgs)
@@ -439,16 +439,16 @@ namespace Ziggs
                 Utility.HpBarDamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
             };
             // Drawings
-            Menu drawings = new Menu("|鍒濊姹夊寲-鎶€鑳借寖鍥撮€夐」|", "drawings");
+            Menu drawings = new Menu("|初见汉化-技能范围选项|", "drawings");
             menu.AddSubMenu(drawings);
-            drawings.AddItem(new MenuItem("Qrange", "Q 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(150, Color.IndianRed))));
-            drawings.AddItem(new MenuItem("Wrange", "W 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(150, Color.IndianRed))));
-            drawings.AddItem(new MenuItem("Erange", "E 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(150, Color.DarkRed))));
+            drawings.AddItem(new MenuItem("Qrange", "Q 范围").SetValue(new Circle(true, Color.FromArgb(150, Color.IndianRed))));
+            drawings.AddItem(new MenuItem("Wrange", "W 范围").SetValue(new Circle(true, Color.FromArgb(150, Color.IndianRed))));
+            drawings.AddItem(new MenuItem("Erange", "E 范围").SetValue(new Circle(false, Color.FromArgb(150, Color.DarkRed))));
             drawings.AddItem(dmgAfterComboItem);
-			drawings.AddItem(new MenuItem("UsePacket","浣跨敤灏佸寘").SetValue(true));
-            drawings.AddSubMenu(new Menu("|鍒濊姹夊寲-缇ゅ彿|", "by chujian"));
-            drawings.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            drawings.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "浜ゆ祦缇わ細333399"));
+			drawings.AddItem(new MenuItem("UsePacket","使用封包").SetValue(true));
+            drawings.AddSubMenu(new Menu("|初见汉化-群号|", "by chujian"));
+            drawings.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            drawings.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
             // Finalize menu
             menu.AddToMainMenu();
             Console.WriteLine("Menu finalized");

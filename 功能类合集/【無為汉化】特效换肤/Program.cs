@@ -27,9 +27,9 @@ namespace Skin_Changer
             {
                 pSkins = GetSkins(ObjectManager.Player.ChampionName);
 
-                Config = new Menu("銆愮劇鐐烘眽鍖栥€戠壒鏁堟崲鑲ゃ劎", "Skin Changer", true);
+                Config = new Menu("【無為汉化】特效换肤", "Skin Changer", true);
                 var SelectedSkin = Config.AddItem(new MenuItem("currentSkin", " ").SetValue(new StringList(pSkins.Select(item => item.Value).ToArray())).DontSave());
-                var SwitchSkin = Config.AddItem(new MenuItem("keySwitch", "寮€鍏崇毊鑲ゃ劎").SetValue(new KeyBind("9".ToCharArray()[0], KeyBindType.Press)));
+                var SwitchSkin = Config.AddItem(new MenuItem("keySwitch", "开关皮肤").SetValue(new KeyBind("9".ToCharArray()[0], KeyBindType.Press)));
 
                 SelectedSkin.ValueChanged += (object sender, OnValueChangeEventArgs vcArgs) =>
                 {

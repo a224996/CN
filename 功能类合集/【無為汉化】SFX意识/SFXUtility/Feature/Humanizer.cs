@@ -60,7 +60,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鐒＄偤姹夊寲鈹€浜虹墿"; }
+            get { return "無為汉化─人物"; }
         }
 
         #endregion
@@ -75,13 +75,13 @@ namespace SFXUtility.Feature
 
                 Menu = new Menu(Name, Name);
 
-                var delayMenu = new Menu("寤惰繜", Name + "Delay");
-                delayMenu.AddItem(new MenuItem(Name + "DelaySpells", "娉曟湳").SetValue(new Slider(50, 0, 250)));
-                delayMenu.AddItem(new MenuItem(Name + "DelayMovement", "鍔ㄤ綔").SetValue(new Slider(50, 0, 250)));
+                var delayMenu = new Menu("延迟", Name + "Delay");
+                delayMenu.AddItem(new MenuItem(Name + "DelaySpells", "法术").SetValue(new Slider(50, 0, 250)));
+                delayMenu.AddItem(new MenuItem(Name + "DelayMovement", "动作").SetValue(new Slider(50, 0, 250)));
 
                 Menu.AddSubMenu(delayMenu);
 
-                var eMenuItem = new MenuItem(Name + "Enabled", "鍚敤").SetValue(true);
+                var eMenuItem = new MenuItem(Name + "Enabled", "启用").SetValue(true);
 
                 Menu.AddItem(eMenuItem);
 

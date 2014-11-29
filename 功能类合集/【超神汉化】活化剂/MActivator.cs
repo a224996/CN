@@ -20,56 +20,56 @@ namespace MasterActivator
         TargetSelector ts = new TargetSelector(600, TargetSelector.TargetingMode.AutoPriority);
 
         // leagueoflegends.wikia.com/
-        MItem qss = new MItem("Quicksilver Sash", "姘撮摱鑵板甫", "qss", 3140, ItemTypeId.Purifier);
-        MItem mercurial = new MItem("Mercurial Scimitar", "姘撮摱寮垁", "mercurial", 3139, ItemTypeId.Purifier);
-        MItem bilgewater = new MItem("Bilgewater Cutlass", "灏忓集鍒€", "bilge", 3144, ItemTypeId.Offensive, 450);
-        MItem king = new MItem("Blade of the Ruined King", "鐮磋触", "king", 3153, ItemTypeId.Offensive, 450);
-        MItem youmus = new MItem("Youmuu's Ghostblade", "骞芥ⅵ", "youmus", 3142, ItemTypeId.Offensive);
-        MItem tiamat = new MItem("Tiamat", "鎻愪簹椹壒", "Tiamat", 3077, ItemTypeId.Offensive, 400);
-        MItem hydra = new MItem("Ravenous Hydra", "涔濆ご", "hydra", 3074, ItemTypeId.Offensive, 400);
-        MItem dfg = new MItem("Deathfire Grasp", "鍐ョ伀", "dfg", 3128, ItemTypeId.Offensive, 750);
-        MItem divine = new MItem("Sword of the Divine", "绁炲湥涔嬪墤", "divine", 3131, ItemTypeId.Offensive);
-        MItem hextech = new MItem("Hextech Gunblade", "娴峰厠鏂灙", "hextech", 3146, ItemTypeId.Offensive, 700);
-        MItem muramana = new MItem("Muramana", "鍒╁垉", "muramana", 3042, ItemTypeId.Buff);
-        MItem seraph = new MItem("Seraph's Embrace", "鐐藉ぉ涔嬫嫢", "seraph", 3040, ItemTypeId.Deffensive);
-        MItem zhonya = new MItem("Zhonya's Hourglass", "涓簹", "zhonya", 3157, ItemTypeId.Deffensive);
+        MItem qss = new MItem("Quicksilver Sash", "水银腰带", "qss", 3140, ItemTypeId.Purifier);
+        MItem mercurial = new MItem("Mercurial Scimitar", "水银弯刀", "mercurial", 3139, ItemTypeId.Purifier);
+        MItem bilgewater = new MItem("Bilgewater Cutlass", "小弯刀", "bilge", 3144, ItemTypeId.Offensive, 450);
+        MItem king = new MItem("Blade of the Ruined King", "破败", "king", 3153, ItemTypeId.Offensive, 450);
+        MItem youmus = new MItem("Youmuu's Ghostblade", "幽梦", "youmus", 3142, ItemTypeId.Offensive);
+        MItem tiamat = new MItem("Tiamat", "提亚马特", "Tiamat", 3077, ItemTypeId.Offensive, 400);
+        MItem hydra = new MItem("Ravenous Hydra", "九头", "hydra", 3074, ItemTypeId.Offensive, 400);
+        MItem dfg = new MItem("Deathfire Grasp", "冥火", "dfg", 3128, ItemTypeId.Offensive, 750);
+        MItem divine = new MItem("Sword of the Divine", "神圣之剑", "divine", 3131, ItemTypeId.Offensive);
+        MItem hextech = new MItem("Hextech Gunblade", "海克斯枪", "hextech", 3146, ItemTypeId.Offensive, 700);
+        MItem muramana = new MItem("Muramana", "利刃", "muramana", 3042, ItemTypeId.Buff);
+        MItem seraph = new MItem("Seraph's Embrace", "炽天之拥", "seraph", 3040, ItemTypeId.Deffensive);
+        MItem zhonya = new MItem("Zhonya's Hourglass", "中亚", "zhonya", 3157, ItemTypeId.Deffensive);
         //Item banner = new Item("Randuin's Omen", "Randuin's", "randuin", 3143, 500);
         //Item banner = new Item("Banner of Command", "BoCommand", "banner", 3060); // falta range
-        MItem mountain = new MItem("Face of the Mountain", "灞卞渤涔嬪", "mountain", 3401, ItemTypeId.Deffensive, 700); // falta range
+        MItem mountain = new MItem("Face of the Mountain", "山岳之容", "mountain", 3401, ItemTypeId.Deffensive, 700); // falta range
         //Item frost = new Item("Frost Queen's Claim", "Frost Queen's", "frost", 3092, 850);
-        MItem solari = new MItem("Locket of the Iron Solari", "楦熺浘", "solari", 3190, ItemTypeId.Deffensive, 600);
-        MItem mikael = new MItem("Mikael's Crucible", "鍧╁煔", "mikael", 3222, ItemTypeId.Purifier, 750);
+        MItem solari = new MItem("Locket of the Iron Solari", "鸟盾", "solari", 3190, ItemTypeId.Deffensive, 600);
+        MItem mikael = new MItem("Mikael's Crucible", "坩埚", "mikael", 3222, ItemTypeId.Purifier, 750);
         //Item talisman = new Item("Talisman of Ascension", "Talisman", "talisman", 3069, 600);
         //Item shadows = new Item("Twin Shadows", "Shadows", "shadows", 3023, 750); //2700
         //Item ohmwrecker = new Item("Ohmwrecker", "Ohmwrecker", "ohmwrecker", 3056, 775); // tower atk range Utility.UnderTurret
-        MItem hpPot = new MItem("Health Potion", "绾㈣嵂", "hpPot", 2003, ItemTypeId.HPRegenerator);
-        MItem manaPot = new MItem("Mana Potion", "钃濊嵂", "manaPot", 2004, ItemTypeId.ManaRegenerator);
-        MItem biscuit = new MItem("Total Biscuit of Rejuvenation", "楗煎共", "biscuit", 2010, ItemTypeId.HPRegenerator);
+        MItem hpPot = new MItem("Health Potion", "红药", "hpPot", 2003, ItemTypeId.HPRegenerator);
+        MItem manaPot = new MItem("Mana Potion", "蓝药", "manaPot", 2004, ItemTypeId.ManaRegenerator);
+        MItem biscuit = new MItem("Total Biscuit of Rejuvenation", "饼干", "biscuit", 2010, ItemTypeId.HPRegenerator);
 
         // Heal prioritizes the allied champion closest to the cursor at the time the ability is cast.
         // If no allied champions are near the cursor, Heal will target the most wounded allied champion in range.
-        MItem heal = new MItem("Heal", "娌荤枟", "SummonerHeal", 0, ItemTypeId.DeffensiveSpell, 700); // 300? www.gamefaqs.com/pc/954437-league-of-legends/wiki/3-1-summoner-spells
-        MItem barrier = new MItem("Barrier", "灞忛殰", "SummonerBarrier", 0, ItemTypeId.DeffensiveSpell);
-        MItem cleanse = new MItem("Cleanse", "娣ㄥ寲", "SummonerBoost", 0, ItemTypeId.PurifierSpell);
-        MItem clarity = new MItem("Clarity", "娓呮櫚", "SummonerMana", 0, ItemTypeId.ManaRegeneratorSpell, 600);
-        MItem ignite = new MItem("Ignite", "鐐圭噧", "SummonerDot", 0, ItemTypeId.OffensiveSpell, 600);
-        MItem smite = new MItem("Smite", "鎵撳紑", "SummonerSmite", 0, ItemTypeId.OffensiveSpell, 750);
+        MItem heal = new MItem("Heal", "治疗", "SummonerHeal", 0, ItemTypeId.DeffensiveSpell, 700); // 300? www.gamefaqs.com/pc/954437-league-of-legends/wiki/3-1-summoner-spells
+        MItem barrier = new MItem("Barrier", "屏障", "SummonerBarrier", 0, ItemTypeId.DeffensiveSpell);
+        MItem cleanse = new MItem("Cleanse", "淨化", "SummonerBoost", 0, ItemTypeId.PurifierSpell);
+        MItem clarity = new MItem("Clarity", "清晰", "SummonerMana", 0, ItemTypeId.ManaRegeneratorSpell, 600);
+        MItem ignite = new MItem("Ignite", "点燃", "SummonerDot", 0, ItemTypeId.OffensiveSpell, 600);
+        MItem smite = new MItem("Smite", "打开", "SummonerSmite", 0, ItemTypeId.OffensiveSpell, 750);
         //SummonerExhaust  
 
         // Auto shields 
-        MItem blackshield = new MItem("BlackShield", "鍫曡惤澶╀娇", "bShield", 0, ItemTypeId.Ability, 750, SpellSlot.E);
-        MItem unbreakable = new MItem("BraumE", "甯冮殕E", "unbreak", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
-        MItem palecascade = new MItem("DianaOrbs", "鐨庢湀", "cascade", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem bulwark = new MItem("GalioBulwark", "鍝ㄥ叺", "bulwark", 0, ItemTypeId.Ability, 800, SpellSlot.W);
-        MItem courage = new MItem("GarenW", "鐩栦鸡", "courage", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem eyeofstorm = new MItem("EyeOfTheStorm", "椋庡コ", "storm", 0, ItemTypeId.Ability, 800, SpellSlot.E);
-        MItem inspire = new MItem("KarmaSolKimShield", "澶╁惎", "inspire", 0, ItemTypeId.Ability, 800, SpellSlot.E);
-        MItem helppix = new MItem("LuluE", "闇查湶", "pix", 0, ItemTypeId.Ability, 650, SpellSlot.E);
-        MItem prismaticbarrier = new MItem("LuxPrismaticWave", "鍏夎緣", "pBarrier", 0, ItemTypeId.Ability, 1075, SpellSlot.W);
-        MItem titanswraith = new MItem("NautilusPiercingGaze", "娉板潶", "tWraith", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem commandprotect = new MItem("OrianaRedactCommand", "鍙戞潯", "cProt", 0, ItemTypeId.Ability, 1100, SpellSlot.E);
-        MItem feint = new MItem("feint", "鏆厜涔嬬溂", "feint", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem spellshield = new MItem("SivirE", "鎴樹簤濂崇", "sShield", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
+        MItem blackshield = new MItem("BlackShield", "堕落天使", "bShield", 0, ItemTypeId.Ability, 750, SpellSlot.E);
+        MItem unbreakable = new MItem("BraumE", "布隆E", "unbreak", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
+        MItem palecascade = new MItem("DianaOrbs", "皎月", "cascade", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
+        MItem bulwark = new MItem("GalioBulwark", "哨兵", "bulwark", 0, ItemTypeId.Ability, 800, SpellSlot.W);
+        MItem courage = new MItem("GarenW", "盖伦", "courage", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
+        MItem eyeofstorm = new MItem("EyeOfTheStorm", "风女", "storm", 0, ItemTypeId.Ability, 800, SpellSlot.E);
+        MItem inspire = new MItem("KarmaSolKimShield", "天启", "inspire", 0, ItemTypeId.Ability, 800, SpellSlot.E);
+        MItem helppix = new MItem("LuluE", "露露", "pix", 0, ItemTypeId.Ability, 650, SpellSlot.E);
+        MItem prismaticbarrier = new MItem("LuxPrismaticWave", "光辉", "pBarrier", 0, ItemTypeId.Ability, 1075, SpellSlot.W);
+        MItem titanswraith = new MItem("NautilusPiercingGaze", "泰坦", "tWraith", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
+        MItem commandprotect = new MItem("OrianaRedactCommand", "发条", "cProt", 0, ItemTypeId.Ability, 1100, SpellSlot.E);
+        MItem feint = new MItem("feint", "暮光之眼", "feint", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
+        MItem spellshield = new MItem("SivirE", "战争女神", "sShield", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
 
         public MActivator()
         {
@@ -337,7 +337,7 @@ namespace MasterActivator
             if (useOn)
             {
 
-                Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "UseOnPercent", "浣庝簬 " + (mana == false ? "%HP" : "%钃濋噺"))).SetValue(new Slider(defaultValue, 0, 100));
+                Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "UseOnPercent", "低于 " + (mana == false ? "%HP" : "%蓝量"))).SetValue(new Slider(defaultValue, 0, 100));
             }
         }
 
@@ -349,11 +349,11 @@ namespace MasterActivator
                 Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable, item.menuName)).SetValue(true);
                 if (useOn)
                 {
-                    Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "MinHpPct", "min浼ゅ%")).SetValue(new Slider(10, 0, 100));
+                    Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "MinHpPct", "min伤害%")).SetValue(new Slider(10, 0, 100));
                     Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "UseOnPercent", "HP %")).SetValue(new Slider(defaultValue, 0, 100));
                     if (useMana)
                     {
-                        Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "UseManaPct", "min钃濋噺%")).SetValue(new Slider(minManaPct, 0, 100));
+                        Config.SubMenu(parent).AddItem(new MenuItem(item.menuVariable + "UseManaPct", "min蓝量%")).SetValue(new Slider(minManaPct, 0, 100));
                     }
 
                 }
@@ -750,55 +750,55 @@ namespace MasterActivator
 
         private void createMenu()
         {
-            Config = new Menu("銆愯秴绁炴眽鍖栥€戞椿鍖栧墏", "masterActivator", true);
+            Config = new Menu("【超神汉化】活化剂", "masterActivator", true);
 
-            Config.AddSubMenu(new Menu("鐗╁搧", "purifiers"));
+            Config.AddSubMenu(new Menu("物品", "purifiers"));
             createMenuItem(qss, 100, "purifiers", false, false);
             createMenuItem(mercurial, 100, "purifiers", false, false);
             createMenuItem(cleanse, 100, "purifiers", false, false);
             createMenuItem(mikael, 100, "purifiers", false, false);
-            Config.SubMenu("purifiers").AddItem(new MenuItem("defJustOnCombo", "杩炴嫑浣跨敤")).SetValue(true);
+            Config.SubMenu("purifiers").AddItem(new MenuItem("defJustOnCombo", "连招使用")).SetValue(true);
 
-            Config.AddSubMenu(new Menu("瑙ｉ櫎鎺у埗", "purify"));
-            Config.SubMenu("purify").AddItem(new MenuItem("blind", "鑷寸洸")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("charm", "榄呮儜")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("fear", "鎭愭儳")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("flee", "铏氬急")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("snare", "闄烽槺")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("taunt", "鍢茶")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("suppression", "鍘嬪埗")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("stun", "鐪╂檿")).SetValue(true);
-            Config.SubMenu("purify").AddItem(new MenuItem("polymorph", "鍙樺舰")).SetValue(false);
-            Config.SubMenu("purify").AddItem(new MenuItem("silence", "娌夐粯")).SetValue(false);
+            Config.AddSubMenu(new Menu("解除控制", "purify"));
+            Config.SubMenu("purify").AddItem(new MenuItem("blind", "致盲")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("charm", "魅惑")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("fear", "恐惧")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("flee", "虚弱")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("snare", "陷阱")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("taunt", "嘲讽")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("suppression", "压制")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("stun", "眩晕")).SetValue(true);
+            Config.SubMenu("purify").AddItem(new MenuItem("polymorph", "变形")).SetValue(false);
+            Config.SubMenu("purify").AddItem(new MenuItem("silence", "沉默")).SetValue(false);
 
-            Config.AddSubMenu(new Menu("鎯╂垝", "smiteCfg"));
+            Config.AddSubMenu(new Menu("惩戒", "smiteCfg"));
             createMenuItem(smite, 100, "smiteCfg", false, false);
 
             if (Utility.Map.GetMap()._MapType.Equals(Utility.Map.MapType.TwistedTreeline))
             {
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_Spiderboss", "铚樿洓")).SetValue(true);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_NWraith", "骞界伒")).SetValue(false);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_NGolem", "鐭冲儚")).SetValue(true);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_NWolf", "涓夌嫾")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_Spiderboss", "蜘蛛")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_NWraith", "幽灵")).SetValue(false);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_NGolem", "石像")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("TT_NWolf", "三狼")).SetValue(true);
             }
             else
             {
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("AncientGolem", "钃漛uff")).SetValue(true);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("LizardElder", "钃漛uff")).SetValue(true);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Dragon", "灏忛緳")).SetValue(true);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Worm", "澶ч緳")).SetValue(true);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("GreatWraith", "楝奸瓊")).SetValue(false);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Wraith", "骞界伒")).SetValue(false);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Golem", "鐭冲儚")).SetValue(false);
-                Config.SubMenu("smiteCfg").AddItem(new MenuItem("GiantWolf", "涓夌嫾")).SetValue(false);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("AncientGolem", "蓝buff")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("LizardElder", "蓝buff")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Dragon", "小龙")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Worm", "大龙")).SetValue(true);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("GreatWraith", "鬼魂")).SetValue(false);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Wraith", "幽灵")).SetValue(false);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("Golem", "石像")).SetValue(false);
+                Config.SubMenu("smiteCfg").AddItem(new MenuItem("GiantWolf", "三狼")).SetValue(false);
 
             }
-            Config.SubMenu("smiteCfg").AddItem(new MenuItem("dSmite", "鏄剧ず")).SetValue(true);
+            Config.SubMenu("smiteCfg").AddItem(new MenuItem("dSmite", "显示")).SetValue(true);
             Config.SubMenu("smiteCfg").AddItem(new MenuItem("justAS", "Just ON")).SetValue(false);
 
-            Config.AddSubMenu(new Menu("杩涙敾", "offensive"));
+            Config.AddSubMenu(new Menu("进攻", "offensive"));
             createMenuItem(ignite, 100, "offensive", false, false);
-            Config.SubMenu("offensive").AddItem(new MenuItem("overIgnite", "閲嶅鐐圭噧")).SetValue(false);
+            Config.SubMenu("offensive").AddItem(new MenuItem("overIgnite", "重复点燃")).SetValue(false);
             createMenuItem(youmus, 100, "offensive");
             createMenuItem(bilgewater, 60, "offensive");
             createMenuItem(king, 60, "offensive");
@@ -809,15 +809,15 @@ namespace MasterActivator
             createMenuItem(hextech, 80, "offensive");
             createMenuItem(muramana, 80, "offensive");
 
-            Config.AddSubMenu(new Menu("闃插畧", "deffensive"));
+            Config.AddSubMenu(new Menu("防守", "deffensive"));
             createMenuItem(barrier, 35, "deffensive");
             createMenuItem(seraph, 45, "deffensive");
             createMenuItem(zhonya, 35, "deffensive");
-            Config.SubMenu("deffensive").AddItem(new MenuItem("justPred", "棰勫垽浼ゅ")).SetValue(true);
+            Config.SubMenu("deffensive").AddItem(new MenuItem("justPred", "预判伤害")).SetValue(true);
             createMenuItem(solari, 45, "deffensive");
             createMenuItem(mountain, 45, "deffensive");
 
-            Config.AddSubMenu(new Menu("鎶ょ浘", "autoshield"));
+            Config.AddSubMenu(new Menu("护盾", "autoshield"));
             createMenuSpell(blackshield, 90, "autoshield", 40, true);
             createMenuSpell(unbreakable, 90, "autoshield", 40, true);
             createMenuSpell(bulwark, 90, "autoshield", 40, true);
@@ -831,7 +831,7 @@ namespace MasterActivator
             createMenuSpell(feint, 90, "autoshield", 0, false);
             createMenuSpell(spellshield, 90, "autoshield", 0, false);
 
-            Config.AddSubMenu(new Menu("娌荤枟", "regenerators"));
+            Config.AddSubMenu(new Menu("治疗", "regenerators"));
             createMenuItem(heal, 35, "regenerators");
             //Config.SubMenu("regenerators").AddItem(new MenuItem("useWithHealDebuff", "With debuff")).SetValue(true);
             createMenuItem(clarity, 25, "regenerators", true);
@@ -839,7 +839,7 @@ namespace MasterActivator
             createMenuItem(manaPot, 55, "regenerators", true);
             createMenuItem(biscuit, 55, "regenerators");
 
-            Config.AddSubMenu(new Menu("鍥㈤槦浣跨敤", "teamUseOn"));
+            Config.AddSubMenu(new Menu("团队使用", "teamUseOn"));
 
             var allyHeros = from hero in ObjectManager.Get<Obj_AI_Hero>()
                             where hero.IsAlly == true
@@ -851,18 +851,18 @@ namespace MasterActivator
             }
 
             // Combo mode
-            Config.AddSubMenu(new Menu("杩炴嫑妯″紡", "combo"));
-            Config.SubMenu("combo").AddItem(new MenuItem("comboModeActive", "鎵撳紑")).SetValue(new KeyBind(32, KeyBindType.Press, true));
+            Config.AddSubMenu(new Menu("连招模式", "combo"));
+            Config.SubMenu("combo").AddItem(new MenuItem("comboModeActive", "打开")).SetValue(new KeyBind(32, KeyBindType.Press, true));
 
             // Target selector
-            Config.AddSubMenu(new Menu("鐩爣閫夋嫨", "targetSelector"));
+            Config.AddSubMenu(new Menu("目标选择", "targetSelector"));
             Config.SubMenu("targetSelector").AddItem(new MenuItem("targetMode", "")).SetValue(new StringList(new[] { "LowHP", "MostAD", "MostAP", "Closest", "NearMouse", "AutoPriority", "LessAttack", "LessCast" }, 0));
 
-            Config.AddItem(new MenuItem("predict", "棰勬祴")).SetValue(true);
-            Config.AddItem(new MenuItem("enabled", "鍚敤")).SetValue(true);
+            Config.AddItem(new MenuItem("predict", "预测")).SetValue(true);
+            Config.AddItem(new MenuItem("enabled", "启用")).SetValue(true);
 
-			Config.AddSubMenu(new Menu("瓒呯姹夊寲", "by weilai"));
-				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+			Config.AddSubMenu(new Menu("超神汉化", "by weilai"));
+				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 		
             Config.AddToMainMenu();
         }

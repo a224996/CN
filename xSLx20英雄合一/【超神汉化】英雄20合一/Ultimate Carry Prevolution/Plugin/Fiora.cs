@@ -36,23 +36,23 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Fiora Plugin", "Fiora");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("连招", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "E", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_enemyHitCount", "R鍑讳腑>").SetValue(new Slider(2, 0, 5)));
-					comboMenu.AddItem(new MenuItem("Combo_useR_enemyKillCount", "鍙潃> 浣跨敤R").SetValue(new Slider(1, 0, 5)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_enemyHitCount", "R击中>").SetValue(new Slider(2, 0, 5)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_enemyKillCount", "可杀大于使用R").SetValue(new Slider(1, 0, 5)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("骚扰", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "W", true);
 					AddSpelltoMenu(harassMenu, "E", true);
 					AddManaManagertoMenu(harassMenu, 30);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("清线", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "E", true);
@@ -60,20 +60,20 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("杂项", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("W_AgainstAA", "鏁屼汉骞矨浣跨敤W").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_AfterAttack", "鏀诲嚮鍚庝娇鐢╓").SetValue(true));
-					miscMenu.AddItem(new MenuItem("E_AfterAttack", "鏀诲嚮鍚庝娇鐢‥").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_AgainstAA", "敌人平A使用W").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_AfterAttack", "攻击后使用W").SetValue(true));
+					miscMenu.AddItem(new MenuItem("E_AfterAttack", "攻击后使用E").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("显示", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Q范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "R范围").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

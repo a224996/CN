@@ -86,45 +86,45 @@ namespace TheHatinEvelynn
             #region
             Menu = new Menu(ChampionName, ChampionName, true);
 
-            var targetSelectorMenu = new Menu("|鐩爣閫夋嫨|", "Target Selector");
+            var targetSelectorMenu = new Menu("|目标选择|", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Menu.AddSubMenu(targetSelectorMenu);
 
-            Menu.AddSubMenu(new Menu("|璧扮爫|", "Orbwalker Menu"));
+            Menu.AddSubMenu(new Menu("|走砍|", "Orbwalker Menu"));
             Orbwalker = new Orbwalking.Orbwalker(Menu.SubMenu("Orbwalker Menu"));
             #endregion
 
             //Add Combo SubMenu
             #region
-            Menu.AddSubMenu(new Menu("|杩炴嫑|", "Combo"));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "浣跨敤 Q").SetValue(true));
-            //Menu.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "浣跨敤 W").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "浣跨敤 E").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "浣跨敤 R").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("UseItemsCombo", "|浣跨敤閫夐」|").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("UseIgniteCombo", "浣跨敤鐐圭噧").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "杩炴嫑").SetValue(new KeyBind(32, KeyBindType.Press)));
+            Menu.AddSubMenu(new Menu("|连招|", "Combo"));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用 Q").SetValue(true));
+            //Menu.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用 W").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用 E").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用 R").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("UseItemsCombo", "|使用选项|").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("UseIgniteCombo", "使用点燃").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "连招").SetValue(new KeyBind(32, KeyBindType.Press)));
             #endregion
 
             //Add LaneClear SubMenu
             #region
-            Menu.AddSubMenu(new Menu("|娓呯嚎|", "LaneClear"));
-            Menu.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "浣跨敤 Q").SetValue(true));
-            Menu.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "浣跨敤 E").SetValue(false));
-            Menu.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearActive", "娓呯嚎").SetValue(new KeyBind("V".ToArray()[0], KeyBindType.Press)));
+            Menu.AddSubMenu(new Menu("|清线|", "LaneClear"));
+            Menu.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "使用 Q").SetValue(true));
+            Menu.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "使用 E").SetValue(false));
+            Menu.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearActive", "清线").SetValue(new KeyBind("V".ToArray()[0], KeyBindType.Press)));
             #endregion
 
             //Add JungleFarm SubMenu
             #region
-            Menu.AddSubMenu(new Menu("|娓呴噹|", "JungleFarm"));
-            Menu.SubMenu("JungleFarm").AddItem(new MenuItem("UseQJungleFarm", "浣跨敤 Q").SetValue(true));
-            Menu.SubMenu("JungleFarm").AddItem(new MenuItem("UseEJungleFarm", "浣跨敤 E").SetValue(true));
-            Menu.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmActive", "娓呴噹").SetValue(new KeyBind("V".ToArray()[0], KeyBindType.Press)));
+            Menu.AddSubMenu(new Menu("|清野|", "JungleFarm"));
+            Menu.SubMenu("JungleFarm").AddItem(new MenuItem("UseQJungleFarm", "使用 Q").SetValue(true));
+            Menu.SubMenu("JungleFarm").AddItem(new MenuItem("UseEJungleFarm", "使用 E").SetValue(true));
+            Menu.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmActive", "清野").SetValue(new KeyBind("V".ToArray()[0], KeyBindType.Press)));
             #endregion
 
             //Add Items SubMenu
             #region
-            Menu.AddSubMenu(new Menu("|鑷姩鐗╁搧閫夐」榛樿鍗冲彲|", "Items"));
+            Menu.AddSubMenu(new Menu("|自动物品选项默认即可|", "Items"));
             Menu.SubMenu("Items").AddItem(new MenuItem("UseDFGItems", "Use DFG").SetValue(true));
             Menu.SubMenu("Items").AddItem(new MenuItem("UseBotRKItems", "Use BotRK").SetValue(true));
             Menu.SubMenu("Items").AddItem(new MenuItem("UseHexGunBladeItems", "Use Hextech Gunblade").SetValue(true));
@@ -134,27 +134,27 @@ namespace TheHatinEvelynn
 
             //Add Drawing SubMenu
             #region
-            Menu.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "Drawings"));
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawQ", "Q鑼冨洿").SetValue(new Circle(true, Color.FromArgb(255, 0, 255, 0))));
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawE", "E鑼冨洿").SetValue(new Circle(true, Color.FromArgb(255, 0, 255, 0))));
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawR", "R鑼冨洿").SetValue(new Circle(true, Color.FromArgb(255, 0, 255, 0))));
+            Menu.AddSubMenu(new Menu("技能范围选项", "Drawings"));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawQ", "Q范围").SetValue(new Circle(true, Color.FromArgb(255, 0, 255, 0))));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawE", "E范围").SetValue(new Circle(true, Color.FromArgb(255, 0, 255, 0))));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawR", "R范围").SetValue(new Circle(true, Color.FromArgb(255, 0, 255, 0))));
             #endregion
 
             //Add Misc SubMenu
             #region
-            Menu.AddSubMenu(new Menu("|鏉傞」|", "Misc"));
-            Menu.SubMenu("Misc").AddItem(new MenuItem("UsePackets", "|浣跨敤灏佸寘|").SetValue(true));
-            Menu.SubMenu("Misc").AddItem(new MenuItem("SmartW", "|鏅鸿兘W|").SetValue(true));
+            Menu.AddSubMenu(new Menu("|杂项|", "Misc"));
+            Menu.SubMenu("Misc").AddItem(new MenuItem("UsePackets", "|使用封包|").SetValue(true));
+            Menu.SubMenu("Misc").AddItem(new MenuItem("SmartW", "|智能W|").SetValue(true));
             Menu.SubMenu("Misc").AddSubMenu(new Menu("Smart Quicksilver Sash", "SQS"));
             Menu.SubMenu("Misc").SubMenu("SQS").AddItem(new MenuItem("ActiveQSS", "Active").SetValue(true));
             Menu.SubMenu("Misc").SubMenu("SQS").AddItem(new MenuItem("Quick%Poison", "On % HP when poisoned").SetValue(new Slider(10, 1, 100)));
             //Menu.SubMenu("SmartQuickS1").AddItem(new MenuItem("Quick%Poison", "On % HP when poisoned").SetValue(10));
             #endregion
             Menu.AddItem(new MenuItem("by Da'ath.", "by Da'ath"));
-Menu.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+Menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             //Make visable
             Menu.AddToMainMenu();
 

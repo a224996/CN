@@ -22,7 +22,7 @@ namespace SkinHax
         {
             new Thread(() =>
             {
-                Config = new Menu("鏇存崲鑻遍泟鐨偆", "SkinHax", true);
+                Config = new Menu("【無為汉化】更换皮肤", "SkinHax", true);
                 String versionJson = new WebClient().DownloadString(DataDragonBase + "realms/na.json");
                 String gameVersion = (String)((Dictionary<String, Object>)new JavaScriptSerializer().Deserialize<Dictionary<String, Object>>(versionJson)["n"])["champion"];
                 foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
@@ -46,9 +46,9 @@ namespace SkinHax
                         };
                     }
                     Config.AddSubMenu(champMenu);
-					Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+					Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
+				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
                 }
                 Config.AddToMainMenu();
             }).Start();

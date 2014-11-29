@@ -100,18 +100,18 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "浣跨敤R").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "浣跨敤W").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用R").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWH" + Id, "浣跨敤W").SetValue(false));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(false));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "浣跨敤Q (閿佸畾)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用Q (锁定)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));           
             
             return true;
@@ -120,7 +120,7 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q鑼冨洿").SetValue(new Circle(true,
+                new MenuItem("DrawQ" + Id, "Q范围").SetValue(new Circle(true,
                     System.Drawing.Color.FromArgb(100, 255, 0, 255))));
             return true;
         }

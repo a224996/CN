@@ -75,116 +75,115 @@ namespace FuckingAwesomeLeeSin
             R = new Spell(SpellSlot.R, 375);
             Q.SetSkillshot(Q.Instance.SData.SpellCastTime, Q.Instance.SData.LineWidth, Q.Instance.SData.MissileSpeed,true,SkillshotType.SkillshotLine);
             //Base menu
-            Menu = new Menu("|鍒濊姹夊寲-鏉庨潚|", ChampName, true);
+            Menu = new Menu("|初见汉化-李青|", ChampName, true);
             //Orbwalker and menu
-            Menu.AddSubMenu(new Menu("|璧扮爫|", "Orbwalker"));
+            Menu.AddSubMenu(new Menu("|走砍|", "Orbwalker"));
             LXOrbwalker.AddToMenu(Menu.SubMenu("Orbwalker"));
             //Target selector and menu
-            var ts = new Menu("|鐩爣閫夋嫨|", "Target Selector");
+            var ts = new Menu("|目标选择|", "Target Selector");
             SimpleTs.AddToMenu(ts);
             Menu.AddSubMenu(ts);
             //Combo menu
-            Menu.AddSubMenu(new Menu("|杩炴嫑|", "Combo"));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ", "|浣跨敤| Q").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ2", "|浣跨敤| 浜屾Q").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useW", "|杩炴嫑浣跨敤椤虹溂|").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("dsjk", "椤虹溂濡傛灉: "));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("wMode", "> AA 鑼冨洿 || > Q 鑼冨洿").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useE", "|浣跨敤| E").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useR", "|浣跨敤| R").SetValue(false));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("ksR", "|鑳藉嚮鏉€浣跨敤|R").SetValue(false));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("starCombo", "|杩炴嫑|").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+            Menu.AddSubMenu(new Menu("|连招|", "Combo"));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ", "|使用| Q").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ2", "|使用| 二段Q").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useW", "|连招使用顺眼|").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("dsjk", "顺眼如果: "));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("wMode", "> AA 范围 || > Q 范围").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useE", "|使用| E").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useR", "|使用| R").SetValue(false));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("ksR", "|能击杀使用|R").SetValue(false));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("starCombo", "|连招|").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Menu.SubMenu("Combo").AddItem(new MenuItem("random2ejwej", "W->Q->R->Q2"));
 
-            var harassMenu = new Menu("|楠氭壈|", "Harass");
-            harassMenu.AddItem(new MenuItem("q1H", "|浣跨敤| Q").SetValue(true));
-            harassMenu.AddItem(new MenuItem("q2H", "|浣跨敤| 浜屾Q").SetValue(true));
-            harassMenu.AddItem(new MenuItem("wH", "椤虹溂/鏁屼汉闂幇(绂佺敤)").SetValue(false));
-            harassMenu.AddItem(new MenuItem("eH", "|浣跨敤| E").SetValue(true));
+            var harassMenu = new Menu("|骚扰|", "Harass");
+            harassMenu.AddItem(new MenuItem("q1H", "|使用| Q").SetValue(true));
+            harassMenu.AddItem(new MenuItem("q2H", "|使用| 二段Q").SetValue(true));
+            harassMenu.AddItem(new MenuItem("wH", "顺眼/敌人闪现(禁用)").SetValue(false));
+            harassMenu.AddItem(new MenuItem("eH", "|使用| E").SetValue(true));
             Menu.AddSubMenu(harassMenu);
 
             //Jung/Wave Clear
-            var waveclearMenu = new Menu("|娓呯嚎/娓呴噹|", "wjClear");
-            waveclearMenu.AddItem(new MenuItem("useQClear", "|浣跨敤| Q").SetValue(true));
-            waveclearMenu.AddItem(new MenuItem("useWClear", "|浣跨敤| W").SetValue(true));
-            waveclearMenu.AddItem(new MenuItem("useEClear", "|浣跨敤| E").SetValue(true));
+            var waveclearMenu = new Menu("|清线/清野|", "wjClear");
+            waveclearMenu.AddItem(new MenuItem("useQClear", "|使用| Q").SetValue(true));
+            waveclearMenu.AddItem(new MenuItem("useWClear", "|使用| W").SetValue(true));
+            waveclearMenu.AddItem(new MenuItem("useEClear", "|使用| E").SetValue(true));
             Menu.AddSubMenu(waveclearMenu);
 
             //InsecMenu
-            var insecMenu = new Menu("|澶ф嫑璁剧疆|锛堥噹鍖虹柉鐙楋級", "Insec");
-            insecMenu.AddItem(new MenuItem("InsecEnabled", "|鍥炴棆韪").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Press)));
-            insecMenu.AddItem(new MenuItem("rnshsasdhjk", "|澶ф嫑 妯″紡:|"));
-            insecMenu.AddItem(new MenuItem("insecMode", "宸﹂敭鍗曞嚮[寮€鍚痌 TS[鍏抽棴]").SetValue(true));
-            insecMenu.AddItem(new MenuItem("insecOrbwalk", "璺熼殢榧犳爣").SetValue(true));
-            insecMenu.AddItem(new MenuItem("flashInsec", "澶ф嫑浣跨敤闂幇").SetValue(false));
-            insecMenu.AddItem(new MenuItem("waitForQBuff", "绛夊緟Q鍥炲").SetValue(false));
-            insecMenu.AddItem(new MenuItem("22222222222222", "(鏇村揩鏇村鐨勪激瀹硘)"));
-            insecMenu.AddItem(new MenuItem("insec2champs", "|澶ф嫑鍚戠洘鍙媩").SetValue(true));
-            insecMenu.AddItem(new MenuItem("bonusRangeA", "|鐩熷弸鐨勫閲戣寖鍥磡").SetValue(new Slider(0, 0, 1000)));
-            insecMenu.AddItem(new MenuItem("insec2tower", "|澶ф嫑鍚戝|").SetValue(true));
-            insecMenu.AddItem(new MenuItem("bonusRangeT", "濉旂粰浜堣寖鍥磡e").SetValue(new Slider(0, 0, 1000)));
-            insecMenu.AddItem(new MenuItem("insec2orig", "|澶ф嫑鍚戝師濮嬩綅缃畖").SetValue(true));
+            var insecMenu = new Menu("|大招设置|（野区疯狗）", "Insec");
+            insecMenu.AddItem(new MenuItem("InsecEnabled", "|回旋踢|").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Press)));
+            insecMenu.AddItem(new MenuItem("rnshsasdhjk", "|大招 模式:|"));
+            insecMenu.AddItem(new MenuItem("insecMode", "左键单击[开启] TS[关闭]").SetValue(true));
+            insecMenu.AddItem(new MenuItem("insecOrbwalk", "跟随鼠标").SetValue(true));
+            insecMenu.AddItem(new MenuItem("flashInsec", "大招使用闪现").SetValue(false));
+            insecMenu.AddItem(new MenuItem("waitForQBuff", "等待Q回复").SetValue(false));
+            insecMenu.AddItem(new MenuItem("22222222222222", "(更快更多的伤害|)"));
+            insecMenu.AddItem(new MenuItem("insec2champs", "|大招向盟友|").SetValue(true));
+            insecMenu.AddItem(new MenuItem("bonusRangeA", "|盟友的奖金范围|").SetValue(new Slider(0, 0, 1000)));
+            insecMenu.AddItem(new MenuItem("insec2tower", "|大招向塔|").SetValue(true));
+            insecMenu.AddItem(new MenuItem("bonusRangeT", "塔给予范围|e").SetValue(new Slider(0, 0, 1000)));
+            insecMenu.AddItem(new MenuItem("insec2orig", "|大招向原始位置|").SetValue(true));
             insecMenu.AddItem(new MenuItem("22222222222", "--"));
-            insecMenu.AddItem(new MenuItem("instaFlashInsec1", "|鎵嬪姩R|"));
-            insecMenu.AddItem(new MenuItem("instaFlashInsec2", "|闂幇鍥炴棆韪㈠ぇ鎷涗綅缃畖"));
-            insecMenu.AddItem(new MenuItem("instaFlashInsec", "|绁為緳闂獆").SetValue(new KeyBind("P".ToCharArray()[0], KeyBindType.Toggle)));
+            insecMenu.AddItem(new MenuItem("instaFlashInsec1", "|手动R|"));
+            insecMenu.AddItem(new MenuItem("instaFlashInsec2", "|闪现回旋踢大招位置|"));
+            insecMenu.AddItem(new MenuItem("instaFlashInsec", "|神龙闪|").SetValue(new KeyBind("P".ToCharArray()[0], KeyBindType.Toggle)));
             Menu.AddSubMenu(insecMenu);
 
-            var autoSmiteSettings = new Menu("| 鎯╂垝璁剧疆|", "Auto Smite Settings");
-            autoSmiteSettings.AddItem(new MenuItem("smiteEnabled", "|浣跨敤鎯╂垝|").SetValue(new KeyBind("M".ToCharArray()[0], KeyBindType.Toggle)));
-            autoSmiteSettings.AddItem(new MenuItem("qqSmite", "Q->鎯╂垝->Q").SetValue(true));
-            autoSmiteSettings.AddItem(new MenuItem("normSmite", "|姝ｅ父鎯╂垝|").SetValue(true));
-            autoSmiteSettings.AddItem(new MenuItem("drawSmite", "|鎯╂垝鑼冨洿|").SetValue(true));
+            var autoSmiteSettings = new Menu("| 惩戒设置|", "Auto Smite Settings");
+            autoSmiteSettings.AddItem(new MenuItem("smiteEnabled", "|使用惩戒|").SetValue(new KeyBind("M".ToCharArray()[0], KeyBindType.Toggle)));
+            autoSmiteSettings.AddItem(new MenuItem("qqSmite", "Q->惩戒->Q").SetValue(true));
+            autoSmiteSettings.AddItem(new MenuItem("normSmite", "|正常惩戒|").SetValue(true));
+            autoSmiteSettings.AddItem(new MenuItem("drawSmite", "|惩戒范围|").SetValue(true));
             Menu.AddSubMenu(autoSmiteSettings);
 
             //SaveMe Menu
-            var SaveMeMenu = new Menu("|鎯╂垝淇濆瓨璁剧疆|", "Smite Save Settings");
-            SaveMeMenu.AddItem(new MenuItem("smiteSave", "|涓诲姩淇濆瓨鎯╂垝璁剧疆|").SetValue(true));
-            SaveMeMenu.AddItem(new MenuItem("hpPercentSM", "|WW鎯╁嚮鐨剕x%").SetValue(new Slider(10, 1)));
-            SaveMeMenu.AddItem(new MenuItem("param1", "鍑绘潃闄勮繎 濡傛灉琛€閲忋劎=x%")); // TBC
+            var SaveMeMenu = new Menu("|惩戒保存设置|", "Smite Save Settings");
+            SaveMeMenu.AddItem(new MenuItem("smiteSave", "|主动保存惩戒设置|").SetValue(true));
+            SaveMeMenu.AddItem(new MenuItem("hpPercentSM", "|WW惩击的|x%").SetValue(new Slider(10, 1)));
+            SaveMeMenu.AddItem(new MenuItem("param1", "击杀附近 如果血量ㄧ=x%")); // TBC
             SaveMeMenu.AddItem(new MenuItem("dBuffs", "Buffs").SetValue(true));// TBC
             SaveMeMenu.AddItem(new MenuItem("hpBuffs", "HP %").SetValue(new Slider(30, 1)));// TBC
-            SaveMeMenu.AddItem(new MenuItem("dEpics", "|鍙茶瘲|").SetValue(true));// TBC
+            SaveMeMenu.AddItem(new MenuItem("dEpics", "|史诗|").SetValue(true));// TBC
             SaveMeMenu.AddItem(new MenuItem("hpEpics", "HP %").SetValue(new Slider(10, 1)));// TBC
             Menu.AddSubMenu(SaveMeMenu);
             //Wardjump menu
-            var wardjumpMenu = new Menu("|椤虹溂璁剧疆|", "Wardjump");
+            var wardjumpMenu = new Menu("|顺眼设置|", "Wardjump");
             wardjumpMenu.AddItem(
-                new MenuItem("wjump", "|椤虹溂閿綅|").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
-            wardjumpMenu.AddItem(new MenuItem("maxRange", "|鎬绘槸椤虹溂鏈€澶ц寖鍥磡").SetValue(false));
-            wardjumpMenu.AddItem(new MenuItem("castInRange", "|鍙『鐪煎湪榧犳爣浣嶇疆|").SetValue(false));
-            wardjumpMenu.AddItem(new MenuItem("m2m", "|浣跨敤榧犳爣绉诲姩|").SetValue(true));
-            wardjumpMenu.AddItem(new MenuItem("j2m", "|璺冲悜鏈€寮辩殑浜簗").SetValue(true));
-            wardjumpMenu.AddItem(new MenuItem("j2c", "|璺冲悜鏈€寮虹殑浜簗").SetValue(true));
+                new MenuItem("wjump", "|顺眼键位|").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
+            wardjumpMenu.AddItem(new MenuItem("maxRange", "|总是顺眼最大范围|").SetValue(false));
+            wardjumpMenu.AddItem(new MenuItem("castInRange", "|只顺眼在鼠标位置|").SetValue(false));
+            wardjumpMenu.AddItem(new MenuItem("m2m", "|使用鼠标移动|").SetValue(true));
+            wardjumpMenu.AddItem(new MenuItem("j2m", "|跳向最弱的人|").SetValue(true));
+            wardjumpMenu.AddItem(new MenuItem("j2c", "|跳向最强的人|").SetValue(true));
             Menu.AddSubMenu(wardjumpMenu);
 
-            var drawMenu = new Menu("|鑼冨洿璁剧疆|", "Drawing");
-            drawMenu.AddItem(new MenuItem("DrawEnabled", "|杩炴嫑鑼冨洿|").SetValue(false));
-            drawMenu.AddItem(new MenuItem("WJDraw", "|椤虹溂鑼冨洿|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawQ", "|Q 鑼冨洿|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawW", "|W 鑼冨洿|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawE", "|E 鑼冨洿|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawR", "|R 鑼冨洿|").SetValue(true));
+            var drawMenu = new Menu("|范围设置|", "Drawing");
+            drawMenu.AddItem(new MenuItem("DrawEnabled", "|连招范围|").SetValue(false));
+            drawMenu.AddItem(new MenuItem("WJDraw", "|顺眼范围|").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawQ", "|Q 范围|").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawW", "|W 范围|").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawE", "|E 范围|").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawR", "|R 范围|").SetValue(true));
             Menu.AddSubMenu(drawMenu);
 
             //Exploits
-            var miscMenu = new Menu("鏉傞」璁剧疆", "Misc");
-            miscMenu.AddItem(new MenuItem("NFE", "浣跨敤灏佸寘").SetValue(true));
-            miscMenu.AddItem(new MenuItem("QHC", "Q |鍛戒腑鐜噟").SetValue(new StringList(new []{"浣巪", "姝ｅ父", "楂榺"}, 1)));
-            miscMenu.AddItem(new MenuItem("IGNks", "浣跨敤鐐圭噧").SetValue(true));
-            miscMenu.AddItem(new MenuItem("qSmite", "鎯╂垝 Q!").SetValue(true));
+            var miscMenu = new Menu("杂项设置", "Misc");
+            miscMenu.AddItem(new MenuItem("NFE", "使用封包").SetValue(true));
+            miscMenu.AddItem(new MenuItem("QHC", "Q |命中率|").SetValue(new StringList(new []{"低|", "正常", "高|"}, 1)));
+            miscMenu.AddItem(new MenuItem("IGNks", "使用点燃").SetValue(true));
+            miscMenu.AddItem(new MenuItem("qSmite", "惩戒 Q!").SetValue(true));
             Menu.AddSubMenu(miscMenu);
             //Make the menu visible
             Menu.AddToMainMenu();
-Menu.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+Menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             Drawing.OnDraw += Drawing_OnDraw; // Add onDraw
             Game.OnGameUpdate += Game_OnGameUpdate; // adds OnGameUpdate (Same as onTick in bol)
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
-
-            PrintMessage("鍔犺浇鎴愬姛锛乥y锛氬垵瑙佹眽鍖栵紒QQ|5011477|");
+         
         }
 
         public static double SmiteDmg()

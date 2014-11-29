@@ -47,68 +47,68 @@ namespace LightningLux
             
 			IgniteSlot = myHero.GetSpellSlot("SummonerDot");  
 			
-			Config = new Menu("鍏夎緣濂抽儙", "Lightning Lux", true);
-			var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+			Config = new Menu("【無為汉化】光辉女郎", "Lightning Lux", true);
+			var targetSelectorMenu = new Menu("目标选择", "Target Selector");
 			SimpleTs.AddToMenu(targetSelectorMenu);
 			Config.AddSubMenu(targetSelectorMenu);
 			
-            var orbwalkerMenu = new Menu("LX-璧扮爫", "LX-Orbwalker");
+            var orbwalkerMenu = new Menu("LX-走砍", "LX-Orbwalker");
             LXOrbwalker.AddToMenu(orbwalkerMenu);
             Config.AddSubMenu(orbwalkerMenu);
 			
-			Config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-			Config.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "杩炴嫑!").SetValue(new KeyBind(32, KeyBindType.Press)));
-			Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "浣跨敤 Q").SetValue(true));
-			Config.SubMenu("Combo").AddItem(new MenuItem("UseW", "浣跨敤 W").SetValue(true));
-			Config.SubMenu("Combo").AddItem(new MenuItem("UseE", "浣跨敤 E").SetValue(true));
-			Config.SubMenu("Combo").AddItem(new MenuItem("UseR", "浣跨敤 R 绉掓潃").SetValue(true));
-			Config.SubMenu("Combo").AddItem(new MenuItem("UseItems", "浣跨敤椤圭洰").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "浣跨敤鐐圭噧").SetValue(true));
+			Config.AddSubMenu(new Menu("连招", "Combo"));
+			Config.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "连招!").SetValue(new KeyBind(32, KeyBindType.Press)));
+			Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "使用 Q").SetValue(true));
+			Config.SubMenu("Combo").AddItem(new MenuItem("UseW", "使用 W").SetValue(true));
+			Config.SubMenu("Combo").AddItem(new MenuItem("UseE", "使用 E").SetValue(true));
+			Config.SubMenu("Combo").AddItem(new MenuItem("UseR", "使用 R 秒杀").SetValue(true));
+			Config.SubMenu("Combo").AddItem(new MenuItem("UseItems", "使用项目").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "使用点燃").SetValue(true));
             
-            Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("HarassActive", "楠氭壈!").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
-			Config.SubMenu("Harass").AddItem(new MenuItem("HQ", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("HE", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("骚扰", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("HarassActive", "骚扰!").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+			Config.SubMenu("Harass").AddItem(new MenuItem("HQ", "使用 Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("HE", "使用 E").SetValue(true));
             
-            Config.AddSubMenu(new Menu("娓呭叺", "Farm"));
-            Config.SubMenu("Farm").AddItem(new MenuItem("FarmActive", "娓呭叺!").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-            Config.SubMenu("Farm").AddItem(new MenuItem("JungSteal", "娓呴噹!").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
-			Config.SubMenu("Farm").AddItem(new MenuItem("FQ", "浣跨敤 Q").SetValue(true));
-			Config.SubMenu("Farm").AddItem(new MenuItem("FW", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("Farm").AddItem(new MenuItem("FE", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("Farm").AddItem(new MenuItem("FMP", "钃濋噺 %").SetValue(new Slider(15,100,0)));
+            Config.AddSubMenu(new Menu("清兵", "Farm"));
+            Config.SubMenu("Farm").AddItem(new MenuItem("FarmActive", "清兵!").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("Farm").AddItem(new MenuItem("JungSteal", "清野!").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
+			Config.SubMenu("Farm").AddItem(new MenuItem("FQ", "使用 Q").SetValue(true));
+			Config.SubMenu("Farm").AddItem(new MenuItem("FW", "使用 W").SetValue(true));
+            Config.SubMenu("Farm").AddItem(new MenuItem("FE", "使用 E").SetValue(true));
+            Config.SubMenu("Farm").AddItem(new MenuItem("FMP", "蓝量 %").SetValue(new Slider(15,100,0)));
             
-            Config.AddSubMenu(new Menu("绉掓潃", "KillSteal"));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KUseQ", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KUseE", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KUseR", "浣跨敤 R").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KIgnite", "浣跨敤鐐圭噧").SetValue(true));
+            Config.AddSubMenu(new Menu("秒杀", "KillSteal"));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KUseQ", "使用 Q").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KUseE", "使用 E").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KUseR", "使用 R").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KIgnite", "使用点燃").SetValue(true));
             
-            Config.AddSubMenu(new Menu("鑷姩W", "AutoShield"));
-            Config.SubMenu("AutoShield").AddItem(new MenuItem("WAllies", "鑷姩W闃熷弸").SetValue(true));
-            Config.SubMenu("AutoShield").AddItem(new MenuItem("AutoW", "鑷姩 W 鐩爣").SetValue(true));
-            Config.SubMenu("AutoShield").AddItem(new MenuItem("HP", "鍓╀綑琛€閲忋劎 %").SetValue(new Slider(60,100,0)));
-            Config.SubMenu("AutoShield").AddItem(new MenuItem("MP", "钃濋噺 %").SetValue(new Slider(30,100,0)));
+            Config.AddSubMenu(new Menu("自动W", "AutoShield"));
+            Config.SubMenu("AutoShield").AddItem(new MenuItem("WAllies", "自动W队友").SetValue(true));
+            Config.SubMenu("AutoShield").AddItem(new MenuItem("AutoW", "自动 W 目标").SetValue(true));
+            Config.SubMenu("AutoShield").AddItem(new MenuItem("HP", "剩余血量ㄧ %").SetValue(new Slider(60,100,0)));
+            Config.SubMenu("AutoShield").AddItem(new MenuItem("MP", "蓝量 %").SetValue(new Slider(30,100,0)));
                     
-            Config.AddSubMenu(new Menu("棰濆", "ExtraSettings"));
-            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("UseQE", "濡傛灉鐩爣琚洶浣跨敤E").SetValue(false));
-            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("AutoE2", "鑷姩E").SetValue(true));
-            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("UseQGap", "Q 闃茬獊杩涖劎").SetValue(true));
-            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("HitChance", "鍑讳腑鍑犵巼").SetValue(new StringList(new[] {"Low","Medium","High","Very High"},2)));
-            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("UsePacket", "浣跨敤灏佸寘").SetValue(true));
+            Config.AddSubMenu(new Menu("额外", "ExtraSettings"));
+            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("UseQE", "如果目标被困使用E").SetValue(false));
+            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("AutoE2", "自动E").SetValue(true));
+            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("UseQGap", "Q 防突进ㄧ").SetValue(true));
+            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("HitChance", "击中几率").SetValue(new StringList(new[] {"Low","Medium","High","Very High"},2)));
+            Config.SubMenu("ExtraSettings").AddItem(new MenuItem("UsePacket", "使用封包").SetValue(true));
             
-            Config.AddSubMenu(new Menu("澶ф嫑", "UltSettings"));
-            Config.SubMenu("UltSettings").AddItem(new MenuItem("RHit", "鑷姩R鍑讳腑浜烘暟").SetValue(new StringList(new[] {"None","2 target","3 target","4 target","5 target"},1)));
-            Config.SubMenu("UltSettings").AddItem(new MenuItem("RTrap", "鑷姩R琚洶鏁屼汉").SetValue(false));
+            Config.AddSubMenu(new Menu("大招", "UltSettings"));
+            Config.SubMenu("UltSettings").AddItem(new MenuItem("RHit", "自动R击中人数").SetValue(new StringList(new[] {"None","2 target","3 target","4 target","5 target"},1)));
+            Config.SubMenu("UltSettings").AddItem(new MenuItem("RTrap", "自动R被困敌人").SetValue(false));
             
-			Config.AddSubMenu(new Menu("缁樺埗", "Drawings"));
-			Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
-			Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
-			Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));	
+			Config.AddSubMenu(new Menu("绘制", "Drawings"));
+			Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q 范围").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+			Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W 范围").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+			Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E 范围").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));	
 
-            Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
-			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+            Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
+			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "娃娃群：13497795"));
 			Config.AddToMainMenu();       
 			
 			Game.PrintChat("Lightning Lux v1.1 loaded!");

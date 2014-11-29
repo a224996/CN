@@ -35,7 +35,7 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Rengar Plugin", "Rengar");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("连招", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
@@ -43,26 +43,26 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					AddSpelltoMenu(comboMenu, "R", true);
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("骚扰", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("清线", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("显示", "Drawing");
 				{
 					drawMenu.AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "鏄剧ずQ").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "鏄剧ずW").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "显示Q").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "显示W").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "显示E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "显示R").SetValue(true));
 
 					//var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "Draw Combo Damage").SetValue(true);
 					//drawMenu.AddItem(drawComboDamageMenu);

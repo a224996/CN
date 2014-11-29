@@ -16,14 +16,14 @@ namespace MakeMyMonsterGrow
         }
         static void Game_OnGameLoad(EventArgs args)
         {
-            Config = new Menu("让英雄变大只", "MakeMyMonsterGrow", true);
+            Config = new Menu("【無為汉化】让英雄变大", "MakeMyMonsterGrow", true);
             Game.OnGameSendPacket += Game_OnGameSendPacket;
-            Config.AddItem(new MenuItem("Size", "变大尺寸��").SetValue(new Slider(150, 50, 200)));
+            Config.AddItem(new MenuItem("Size", "变大尺寸").SetValue(new Slider(150, 50, 200)));
             Config.AddToMainMenu();
 			
 			Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
 				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "娃娃群：13497795"));
+				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
         }
         static void Game_OnGameSendPacket(GamePacketEventArgs args)
         {

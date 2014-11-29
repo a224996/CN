@@ -149,25 +149,25 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "浣跨敤E").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用E").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEH" + Id, "浣跨敤E").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseEH" + Id, "使用E").SetValue(true));
             return true;
         }
         public override bool MiscMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("UseET" + Id, "浣跨敤E (閿佸畾)").SetValue(
+                new MenuItem("UseET" + Id, "使用E (锁定)").SetValue(
                     new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
-            config.AddItem(new MenuItem("UseEInterrupt" + Id, "浣跨敤E (閿佸畾)").SetValue(true));
+            config.AddItem(new MenuItem("UseEInterrupt" + Id, "使用E (锁定)").SetValue(true));
             config.AddItem(
-                new MenuItem("PushDistance" + Id, "E璺濈").SetValue(new Slider(425, 475, 300)));
+                new MenuItem("PushDistance" + Id, "E距离").SetValue(new Slider(425, 475, 300)));
             return true;
         }
 
@@ -178,7 +178,7 @@ namespace Marksman
         }
         public override bool LaneClearMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQL" + Id, "Use Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQL" + Id, "使用 Q").SetValue(true));
             return true;
         }
 

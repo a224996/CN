@@ -249,45 +249,45 @@ namespace KurisuMorgana
 
         private void MorganaMenu()
         {
-            _config = new Menu("Kurisu: Morgana", "morgana", true);
-            var morgOrb = new Menu("璧扮爫", "orbwalker");
+            _config = new Menu("【超神汉化】Kurisu莫甘娜", "morgana", true);
+            var morgOrb = new Menu("走砍", "orbwalker");
             _orbwalker = new Orbwalking.Orbwalker(morgOrb);
             _config.AddSubMenu(morgOrb);
 
-            var morgTS = new Menu("鐩爣閫夋嫨", "target selecter");
+            var morgTS = new Menu("目标选择", "target selecter");
             SimpleTs.AddToMenu(morgTS);
             _config.AddSubMenu(morgTS);
             
-            var morgDraws = new Menu("鏄剧ず", "drawings");
+            var morgDraws = new Menu("显示", "drawings");
 
-            morgDraws.AddItem(new MenuItem("drawQ", "Q鑼冨洿")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
-            morgDraws.AddItem(new MenuItem("drawW", "W鑼冨洿")).SetValue(new Circle(false, Color.FromArgb(150, Color.White)));
-            morgDraws.AddItem(new MenuItem("drawE", "E鑼冨洿")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
-            morgDraws.AddItem(new MenuItem("drawR", "R鑼冨洿")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            morgDraws.AddItem(new MenuItem("drawQ", "Q范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            morgDraws.AddItem(new MenuItem("drawW", "W范围")).SetValue(new Circle(false, Color.FromArgb(150, Color.White)));
+            morgDraws.AddItem(new MenuItem("drawE", "E范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            morgDraws.AddItem(new MenuItem("drawR", "R范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
             _config.AddSubMenu(morgDraws);
 
             var morgBind = new Menu("Q", "bind");
-            morgBind.AddItem(new MenuItem("useq", "鎵撳紑")).SetValue(true);
-            morgBind.AddItem(new MenuItem("minuseq", "Min璺濈")).SetValue(new Slider(0, 0, 250));
-            morgBind.AddItem(new MenuItem("hitchance", "鍛戒腑鏈轰細")).SetValue(new StringList(new[] { "Low", "Medium", "High" }, 2));
+            morgBind.AddItem(new MenuItem("useq", "打开")).SetValue(true);
+            morgBind.AddItem(new MenuItem("minuseq", "Min距离")).SetValue(new Slider(0, 0, 250));
+            morgBind.AddItem(new MenuItem("hitchance", "命中机会")).SetValue(new StringList(new[] { "Low", "Medium", "High" }, 2));
             morgBind.AddItem(new MenuItem("", ""));
-            morgBind.AddItem(new MenuItem("qdash", "鑷姩Q绐佽繘")).SetValue(true);
-            morgBind.AddItem(new MenuItem("qimmobile", "鑷姩Q涓嶅姩")).SetValue(true);
-            morgBind.AddItem(new MenuItem("qgap", "鑷姩Q鎺ヨ繎")).SetValue(true);
+            morgBind.AddItem(new MenuItem("qdash", "自动Q突进")).SetValue(true);
+            morgBind.AddItem(new MenuItem("qimmobile", "自动Q不动")).SetValue(true);
+            morgBind.AddItem(new MenuItem("qgap", "自动Q接近")).SetValue(true);
             _config.AddSubMenu(morgBind);
 
             var morgSoil = new Menu("W", "soil");
-            morgSoil.AddItem(new MenuItem("usew", "鎵撳紑")).SetValue(true);
-            morgSoil.AddItem(new MenuItem("wimmobile", "鍙猈涓嶅姩")).SetValue(true);
+            morgSoil.AddItem(new MenuItem("usew", "打开")).SetValue(true);
+            morgSoil.AddItem(new MenuItem("wimmobile", "只W不动")).SetValue(true);
             _config.AddSubMenu(morgSoil);
 
             var morgShield = new Menu("E", "shield");
-            morgShield.AddItem(new MenuItem("usee", "鎵撳紑")).SetValue(true);
-            morgShield.AddItem(new MenuItem("delaye", "寤惰繜")).SetValue(new Slider(0, 0, 300));
-            morgShield.AddItem(new MenuItem("minshieldpct", "Min钃濋噺")).SetValue(new Slider(40));
+            morgShield.AddItem(new MenuItem("usee", "打开")).SetValue(true);
+            morgShield.AddItem(new MenuItem("delaye", "延迟")).SetValue(new Slider(0, 0, 300));
+            morgShield.AddItem(new MenuItem("minshieldpct", "Min蓝量")).SetValue(new Slider(40));
             morgShield.AddItem(new MenuItem("edangerous", "E")).SetValue(true);
             morgShield.AddItem(new MenuItem(" ", " "));
-            var supSpe = new Menu("杈呭姪娉曟湳", "suppspells");
+            var supSpe = new Menu("辅助法术", "suppspells");
             foreach (var e in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy))
             {
                 foreach (var s in KurisuLib.CCList)
@@ -306,14 +306,14 @@ namespace KurisuMorgana
                 morgShield.AddItem(new MenuItem("shield" + a, a)).SetValue(true);
             }
             _config.AddSubMenu(morgShield);
-            _config.AddItem(new MenuItem("usepackets", "灏佸寘")).SetValue(true);
-            _config.AddItem(new MenuItem("combokey", "杩炴嫑")).SetValue(new KeyBind(32, KeyBindType.Press));
+            _config.AddItem(new MenuItem("usepackets", "封包")).SetValue(true);
+            _config.AddItem(new MenuItem("combokey", "连招")).SetValue(new KeyBind(32, KeyBindType.Press));
             _config.AddToMainMenu();
 
 			
-			var morgQun = new Menu("瓒呯姹夊寲", "by weilai");
-            morgQun.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            morgQun.AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+			var morgQun = new Menu("超神汉化", "by weilai");
+            morgQun.AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            morgQun.AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 			
 			
             Game.PrintChat("<font color=\"#F2F2F2\">[Morgana]</font><font color=\"#D9D9D9\"> - <u>the Fallen Angel </u>  </font>- by Kurisu");

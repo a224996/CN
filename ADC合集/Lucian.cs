@@ -252,42 +252,42 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseQExtendedC" + Id, "浣跨敤 EQ").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQExtendedC" + Id, "使用 EQ").SetValue(true));
             config.AddItem(new MenuItem("Cx", ""));
-            config.AddItem(new MenuItem("UseWC" + Id, "浣跨敤W").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "浣跨敤E").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用E").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "浣跨敤Q (鍒囨崲)").SetValue(new KeyBind("T".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用Q (切换)").SetValue(new KeyBind("T".ToCharArray()[0],
                     KeyBindType.Toggle)));
             config.AddItem(new MenuItem("Cx",""));
-            config.AddItem(new MenuItem("UseQExtendedH" + Id, "浣跨敤鎵╁睍EQ").SetValue(true));
+            config.AddItem(new MenuItem("UseQExtendedH" + Id, "使用扩展EQ").SetValue(true));
             config.AddItem(
-                new MenuItem("UseQExtendedTH" + Id, "浣跨敤EQ (鍒囨崲").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQExtendedTH" + Id, "使用EQ (切换").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));
             config.AddItem(new MenuItem("Cx", ""));
-            config.AddItem(new MenuItem("UseWH" + Id, "浣跨敤W").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(true));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("Passive" + Id, "妫€鏌ヨ鍔ㄣ劎").SetValue(true));
+            config.AddItem(new MenuItem("Passive" + Id, "检查被动").SetValue(true));
             return true;
         }
        
         public override bool DrawingMenu(Menu config)
         {
-            config.AddItem(new MenuItem("DrawQ" + Id, "Q 鑼冨洿").SetValue(new Circle(true, Color.Gray)));
-            config.AddItem(new MenuItem("DrawQ2" + Id, "EQ 鑼冨洿").SetValue(new Circle(true, Color.Gray)));
-            config.AddItem(new MenuItem("DrawW" + Id, "W 鑼冨洿").SetValue(new Circle(false, Color.Gray)));
-            config.AddItem(new MenuItem("DrawE" + Id, "E 鑼冨洿").SetValue(new Circle(false, Color.Gray)));
+            config.AddItem(new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.Gray)));
+            config.AddItem(new MenuItem("DrawQ2" + Id, "EQ 范围").SetValue(new Circle(true, Color.Gray)));
+            config.AddItem(new MenuItem("DrawW" + Id, "W 范围").SetValue(new Circle(false, Color.Gray)));
+            config.AddItem(new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(false, Color.Gray)));
 
             return true;
         }

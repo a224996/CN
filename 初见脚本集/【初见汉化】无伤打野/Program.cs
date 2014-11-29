@@ -18,17 +18,17 @@ namespace JunglePosition
         private static void Game_OnGameLoad(EventArgs args)
         {
 
-            Config = new Menu("|鍒濊姹夊寲-鏃犱激鎵撻噹|", "JunglePosition", true);
-			Config.AddItem(new MenuItem("UsePacket","浣跨敤灏佸寘").SetValue(true));
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-缇ゅ彿|", "by chujian"));
-            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "浜ゆ祦缇わ細333399"));
+            Config = new Menu("|初见汉化-无伤打野|", "JunglePosition", true);
+			Config.AddItem(new MenuItem("UsePacket","使用封包").SetValue(true));
+            Config.AddSubMenu(new Menu("|初见汉化-群号|", "by chujian"));
+            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
             Config.AddItem(new MenuItem("Show", "Show").SetValue(new Circle(true, Color.GreenYellow)));
             Config.AddItem(new MenuItem("Range", "Circle Range").SetValue(new Slider(30, 100)));
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.PrintChat(
-                "<font color='#70DBDB'>鍒濊姹夊寲 </font><font color='#FFFFFF'>鏃犱激鎵撻噹</font> <font color='#70DBDB'> QQ藟5011477 !</font>");
+                "<font color='#70DBDB'>初见汉化 </font><font color='#FFFFFF'>无伤打野</font> <font color='#70DBDB'> QQˉ5011477 !</font>");
 
         }
 

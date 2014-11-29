@@ -14,6 +14,7 @@ namespace Marksman
         public static Champion CClass;
         public static Activator AActivator;
         public static double ActivatorTime;
+        private static Obj_AI_Hero xSelectedTarget;        
         
         private static void Main(string[] args)
         {
@@ -22,7 +23,7 @@ namespace Marksman
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            Config = new Menu("銆愯秴绁炴眽鍖栥€慉DC鍚堥泦", "Marksman", true);
+            Config = new Menu("【超神汉化】ADC合集", "Marksman", true);
             CClass = new Champion();
             AActivator = new Activator();
             
@@ -53,6 +54,9 @@ namespace Marksman
                     break;
                 case "graves":
                     CClass = new Graves();
+                    break;
+                case "gnar":
+                    CClass = new Gnar();
                     break;
                 case "jinx":
                     CClass = new Jinx();
@@ -99,21 +103,21 @@ namespace Marksman
             CClass.Id = ObjectManager.Player.BaseSkinName;
             CClass.Config = Config;
 
-            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var targetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
-            var orbwalking = Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            var orbwalking = Config.AddSubMenu(new Menu("走砍", "Orbwalking"));
             CClass.Orbwalker = new Orbwalking.Orbwalker(orbwalking);
 
-            var items = Config.AddSubMenu(new Menu("鐗╁搧", "Items"));
-            items.AddItem(new MenuItem("BOTRK", "鐮磋触").SetValue(true));
-            items.AddItem(new MenuItem("GHOSTBLADE", "灏忓集鍒€").SetValue(true));
-            QuickSilverMenu = new Menu("姘撮摱鑵板甫", "QuickSilverSash");
+            var items = Config.AddSubMenu(new Menu("物品", "Items"));
+            items.AddItem(new MenuItem("BOTRK", "破败").SetValue(true));
+            items.AddItem(new MenuItem("GHOSTBLADE", "小弯刀").SetValue(true));
+            QuickSilverMenu = new Menu("水银腰带", "QuickSilverSash");
             items.AddSubMenu(QuickSilverMenu);
-            QuickSilverMenu.AddItem(new MenuItem("AnyStun", "鐪╂檿").SetValue(true));
-            QuickSilverMenu.AddItem(new MenuItem("AnySnare", "澶瑰瓙").SetValue(true));
-            QuickSilverMenu.AddItem(new MenuItem("AnyTaunt", "鍢茶").SetValue(true));
+            QuickSilverMenu.AddItem(new MenuItem("AnyStun", "眩晕").SetValue(true));
+            QuickSilverMenu.AddItem(new MenuItem("AnySnare", "夹子").SetValue(true));
+            QuickSilverMenu.AddItem(new MenuItem("AnyTaunt", "嘲讽").SetValue(true));
             foreach (var t in AActivator.BuffList)
             {
                 foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsEnemy))
@@ -123,8 +127,8 @@ namespace Marksman
                 }
             }
             items.AddItem(
-                new MenuItem("UseItemsMode", "浣跨敤鐗╁搧").SetValue(
-                    new StringList(new[] {"no", "娣峰悎", "杩炴嫑", "鍏ㄩ儴"}, 2)));
+                new MenuItem("UseItemsMode", "使用物品").SetValue(
+                    new StringList(new[] {"no", "混合", "连招", "全部"}, 2)));
 
             
             //var Extras = Config.AddSubMenu(new Menu("Extras", "Extras"));
@@ -133,48 +137,55 @@ namespace Marksman
             // If Champion is supported draw the extra menus
             if (BaseType != CClass.GetType())
             {
-                var combo = new Menu("杩炴嫑", "Combo");
+                var combo = new Menu("连招", "Combo");
                 if (CClass.ComboMenu(combo))
                 {
                     Config.AddSubMenu(combo);
                 }
 
-                var harass = new Menu("楠氭壈", "Harass");
+                var harass = new Menu("骚扰", "Harass");
                 if (CClass.HarassMenu(harass))
                 {
-                    harass.AddItem(new MenuItem("HarassMana", "钃濋噺鎺у埗%").SetValue(new Slider(50, 100, 0)));
+                    harass.AddItem(new MenuItem("HarassMana", "蓝量控制%").SetValue(new Slider(50, 100, 0)));
                     Config.AddSubMenu(harass);
                 }
 
-                var laneclear = new Menu("娓呯嚎", "LaneClear");
+                var laneclear = new Menu("清线", "LaneClear");
                 if (CClass.LaneClearMenu(laneclear))
                 {
                     laneclear.AddItem(
-                        new MenuItem("LaneClearMana", "钃濋噺鎺у埗").SetValue(new Slider(50, 100, 0)));
+                        new MenuItem("LaneClearMana", "蓝量控制").SetValue(new Slider(50, 100, 0)));
                     Config.AddSubMenu(laneclear);
                 }
 
-                var misc = new Menu("鏉傞」", "Misc");
+                var misc = new Menu("杂项", "Misc");
                 if (CClass.MiscMenu(misc))
                 {
                     Config.AddSubMenu(misc);
                 }
 
-                var extras = new Menu("闄勫姞", "Extras");
+                var extras = new Menu("附加", "Extras");
                 if (CClass.ExtrasMenu(extras))
                 {
                     new PotionManager(extras);
                     Config.AddSubMenu(extras);
                 }
 
-                var drawing = new Menu("鏄剧ず", "Drawings");
+                var drawing = new Menu("显示", "Drawings");
                 if (CClass.DrawingMenu(drawing))
                 {
+                    drawing.AddItem(
+                        new MenuItem("drawMinionLastHit", "Minion Last Hit").SetValue(new Circle(false,
+                            System.Drawing.Color.GreenYellow)));
+                    drawing.AddItem(
+                        new MenuItem("drawMinionNearKill", "Minion Near Kill").SetValue(new Circle(false,
+                            System.Drawing.Color.Gray)));
+
                     Config.AddSubMenu(drawing);
                 }
 				
-				Config.AddSubMenu(new Menu("瓒呯姹夊寲", "by weilai"));
-				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));				
+				Config.AddSubMenu(new Menu("超神汉化", "by weilai"));
+				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));				
             }
 
 
@@ -186,11 +197,68 @@ namespace Marksman
             Game.OnGameUpdate += Game_OnGameUpdate;
             Orbwalking.AfterAttack += Orbwalking_AfterAttack;
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
+            //Game.OnWndProc += Game_OnWndProc;
+        }
+
+         private static void Game_OnWndProc(WndEventArgs args)
+        {
+            
+            if (args.Msg != 0x201)
+                return;
+
+                foreach (var objAiHero in from hero in ObjectManager.Get<Obj_AI_Hero>()
+                                          where hero.IsValidTarget()
+                                          select hero
+                                              into h
+                                              orderby h.Distance(Game.CursorPos) descending
+                                              select h
+                                                  into enemy
+                                                  where enemy.Distance(Game.CursorPos) < 150f
+                                                  select enemy)
+                {
+                    if (objAiHero != null && objAiHero != xSelectedTarget)
+                    {
+                        xSelectedTarget = objAiHero;
+                        SimpleTs.SetTarget(objAiHero);
+                        Utils.PrintMessage(string.Format("{0} selected.", objAiHero.BaseSkinName));
+                    }
+                }
+          
         }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            CClass.Drawing_OnDraw(args);
+           /* 
+           if (xSelectedTarget != null && xSelectedTarget.IsValidTarget())
+            {
+                Utility.DrawCircle(xSelectedTarget.Position, xSelectedTarget.BoundingRadius * 1.5f, System.Drawing.Color.Red);
+            }
+            */
+            var drawMinionLastHit = CClass.Config.SubMenu("Drawings").Item("drawMinionLastHit").GetValue<Circle>();
+            var drawMinionNearKill = CClass.Config.SubMenu("Drawings").Item("drawMinionNearKill").GetValue<Circle>();
+            if (drawMinionLastHit.Active || drawMinionNearKill.Active)
+            {
+                var xMinions =
+                    MinionManager.GetMinions(ObjectManager.Player.Position,
+                        ObjectManager.Player.AttackRange + ObjectManager.Player.BoundingRadius + 300, MinionTypes.All,
+                        MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
+
+                foreach (var xMinion in xMinions)
+                {
+                    if (drawMinionLastHit.Active && ObjectManager.Player.GetAutoAttackDamage(xMinion, true) >=
+                        xMinion.Health)
+                    {
+                        Utility.DrawCircle(xMinion.Position, xMinion.BoundingRadius, drawMinionLastHit.Color);
+                    }
+                    else if (drawMinionNearKill.Active &&
+                             ObjectManager.Player.GetAutoAttackDamage(xMinion, true) * 2 >= xMinion.Health) 
+                    {
+                        Utility.DrawCircle(xMinion.Position, xMinion.BoundingRadius, drawMinionNearKill.Color);
+                    }
+                }
+            }
+
+            CClass.Drawing_OnDraw(args); 
             return;
 
             var y = 10;
@@ -221,7 +289,7 @@ namespace Marksman
             var laneExistsMana = ObjectManager.Player.MaxMana/100*Config.Item("LaneClearMana").GetValue<Slider>().Value;
             CClass.LaneClearActive = CClass.Config.Item("LaneClear").GetValue<KeyBind>().Active &
                                      ObjectManager.Player.Mana >= laneExistsMana;
-                                  
+
             CClass.Game_OnGameUpdate(args);
 
             var useItemModes = Config.Item("UseItemsMode").GetValue<StringList>().SelectedIndex;
@@ -280,6 +348,16 @@ namespace Marksman
             }    
         }
         
+        private static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
+        {
+            CClass.Orbwalking_AfterAttack(unit, target);
+        }
+
+        private static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        {
+            CClass.Orbwalking_BeforeAttack(args);
+        }
+
         private static void CheckChampionBuff()
         {
             foreach (var t1 in ObjectManager.Player.Buffs)
@@ -293,7 +371,7 @@ namespace Marksman
                             foreach (var bx in AActivator.BuffList.Where(bx => bx.BuffName == t1.Name))
                             {
                                 if (bx.Delay > 0)
-                        {
+                                {
                                     if (ActivatorTime + bx.Delay < (int) Game.Time)
                                         ActivatorTime = (int) Game.Time;
 
@@ -305,15 +383,21 @@ namespace Marksman
                                     }
                                 }
                                 else
-                            {
-                                if (Items.HasItem(3139)) Items.UseItem(3139); 
-                                if (Items.HasItem(3140)) Items.UseItem(3140);
-                            }
+                                {
+                                    if (Items.HasItem(3139)) Items.UseItem(3139);
+                                    if (Items.HasItem(3140)) Items.UseItem(3140);
+                                }
 
                             }
                         }
                     }
 
+                    if (QuickSilverMenu.Item("AnySlow").GetValue<bool>() &&
+                        ObjectManager.Player.HasBuffOfType(BuffType.Slow))
+                    {
+                        if (Items.HasItem(3139)) Items.UseItem(3139);
+                        if (Items.HasItem(3140)) Items.UseItem(3140);
+                    }
                     if (QuickSilverMenu.Item("AnySnare").GetValue<bool>() &&
                         ObjectManager.Player.HasBuffOfType(BuffType.Snare))
                     {
@@ -332,19 +416,8 @@ namespace Marksman
                         if (Items.HasItem(3139)) Items.UseItem(3139);
                         if (Items.HasItem(3140)) Items.UseItem(3140);
                     }
-
                 }
-            }
-        }
-
-        private static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
-        {
-            CClass.Orbwalking_AfterAttack(unit, target);
-        }
-
-        private static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
-        {
-            CClass.Orbwalking_BeforeAttack(args);
+            }           
         }
     }
 }

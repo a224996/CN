@@ -257,9 +257,9 @@ namespace Marksman
         {
             config.AddItem(
                 new MenuItem("UseQC" + Id, "Q").SetValue(
-                    new StringList(new[] {"Off", "Everytime", "W Stack Value", "Max W Stack"}, 3)));
+                    new StringList(new[] {"Off", "每次", "W 层数", "最大W层数"}, 3)));
             config.AddItem(
-                new MenuItem("UseQMinChargeC" + Id, "Min. Q Charge").SetValue(new Slider(1000, 250, 1400)));
+                new MenuItem("UseQMinChargeC" + Id, "最小 Q 距离").SetValue(new Slider(1000, 250, 1400)));
             config.AddItem(new MenuItem("UseWC" + Id, "W").SetValue(new Slider(3, 1, 3)));
             config.AddItem(new MenuItem("UseEC" + Id, "E").SetValue(true));
 
@@ -270,11 +270,11 @@ namespace Marksman
         {
             config.AddItem(
                 new MenuItem("UseQH" + Id, "Q").SetValue(
-                    new StringList(new[] {"Off", "Everytime", "W Stack Value", "Max W Stack"}, 3)));
+                    new StringList(new[] {"Off", "每次", "W 层数", "最大W层数"}, 3)));
             config.AddItem(new MenuItem("UseWH" + Id, "W").SetValue(new Slider(3, 1, 3)));
             config.AddItem(new MenuItem("UseEH" + Id, "E").SetValue(true));
             config.AddItem(
-                new MenuItem("UseETH" + Id, "Use E (Toggle)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseETH" + Id, "使用 E (切换)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));             
 
             return true;
@@ -282,9 +282,9 @@ namespace Marksman
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("spellDelay" + Id, "Spell delay").SetValue(new Slider(500, 0, 3000)));
+            config.AddItem(new MenuItem("spellDelay" + Id, "法术延迟").SetValue(new Slider(500, 0, 3000)));
             config.AddItem(
-                new MenuItem("CastR" + Id, "Cast R").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("CastR" + Id, "投掷 R").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
 
             return true;
         }
@@ -294,8 +294,8 @@ namespace Marksman
             config.AddItem(new MenuItem("DrawQ" + Id, "Q").SetValue(new Circle(true, Color.DarkGray)));
             config.AddItem(new MenuItem("DrawE" + Id, "E").SetValue(new Circle(true, Color.DarkGray)));
             config.AddItem(new MenuItem("DrawR" + Id, "R").SetValue(new Circle(true, Color.DarkGray)));
-            config.AddItem(new MenuItem("DrawQC" + Id, "Min. Q Charge").SetValue(new Circle(true, Color.White)));
-            config.AddItem(new MenuItem("DrawRS" + Id, "R: Search Area").SetValue(new Circle(true, Color.White)));
+            config.AddItem(new MenuItem("DrawQC" + Id, "最小 Q 距离").SetValue(new Circle(true, Color.White)));
+            config.AddItem(new MenuItem("DrawRS" + Id, "R: 搜索区域").SetValue(new Circle(true, Color.White)));
 
             return true;
         }

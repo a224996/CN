@@ -54,55 +54,55 @@ namespace FedCaitlyn
 
             SpellList.AddRange(new[] { Q, W, E, R });
 
-            Config = new Menu("|鍒濊姹夊寲-濂宠|" + ChampionName, ChampionName, true);
+            Config = new Menu("|初见汉化-女警|" + ChampionName, ChampionName, true);
 
-            var targetSelectorMenu = new Menu("|鍒濊姹夊寲-鐩爣閫夋嫨|", "Target Selector");
+            var targetSelectorMenu = new Menu("|初见汉化-目标选择|", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-璧扮爫|", "Orbwalking"));
+            Config.AddSubMenu(new Menu("|初见汉化-走砍|", "Orbwalking"));
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-Q璁剧疆|", "Piltover"));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("QMin", "Q鍙湁AA鐨勮寖鍥淬€€").SetValue(true));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("UseQ", "浣跨敤Q妯″紡: ").SetValue(new StringList(new[] { "杩炴嫑", "楠氭壈", "涓や釜", "No" }, 1)));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("KillQ", "鑷姩Q鍑绘潃").SetValue(true));            
-            Config.SubMenu("Piltover").AddItem(new MenuItem("autoccQ", "鑷姩Q琚帶鍒剁殑鏁屼汉").SetValue(true));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("autoQMT", "鑷姩Q澶氫釜鐩爣").SetValue(true));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("minAutoQMT", "澶氬皯鐩爣").SetValue(new Slider(3, 2, 5)));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("UseQFarm", "鐢≦娓呯嚎").SetValue(true));
-            Config.SubMenu("Piltover").AddItem(new MenuItem("minMana", "娓呯嚎/鍐滃満娉曞姏 %").SetValue(new Slider(40, 100, 0)));
+            Config.AddSubMenu(new Menu("|初见汉化-Q设置|", "Piltover"));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("QMin", "Q只有AA的范围　").SetValue(true));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("UseQ", "使用Q模式: ").SetValue(new StringList(new[] { "连招", "骚扰", "两个", "No" }, 1)));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("KillQ", "自动Q击杀").SetValue(true));            
+            Config.SubMenu("Piltover").AddItem(new MenuItem("autoccQ", "自动Q被控制的敌人").SetValue(true));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("autoQMT", "自动Q多个目标").SetValue(true));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("minAutoQMT", "多少目标").SetValue(new Slider(3, 2, 5)));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("UseQFarm", "用Q清线").SetValue(true));
+            Config.SubMenu("Piltover").AddItem(new MenuItem("minMana", "清线/农场法力 %").SetValue(new Slider(40, 100, 0)));
 
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-闄烽槺璁剧疆|", "Trap"));
-            Config.SubMenu("Trap").AddItem(new MenuItem("autoccW", "琚帶鍒剁殑鑻遍泟鑷姩W闄烽槺").SetValue(true));
-            Config.SubMenu("Trap").AddItem(new MenuItem("autotpW", "浣跨敤W闄烽槺鍦═P").SetValue(true));
-            Config.SubMenu("Trap").AddItem(new MenuItem("autoRevW", "鑷姩W闄烽槺鍦ㄦ槬鍝ョ敳").SetValue(true));
-            Config.SubMenu("Trap").AddItem(new MenuItem("AGCtrap", "闃叉绐佽繘W").SetValue(true));
-            Config.SubMenu("Trap").AddItem(new MenuItem("casttrap", "闄烽槺瀵规渶杩戠殑鏁屼汉 - 寰呭姙浜嬮」鏃犳晥").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
+            Config.AddSubMenu(new Menu("|初见汉化-陷阱设置|", "Trap"));
+            Config.SubMenu("Trap").AddItem(new MenuItem("autoccW", "被控制的英雄自动W陷阱").SetValue(true));
+            Config.SubMenu("Trap").AddItem(new MenuItem("autotpW", "使用W陷阱在TP").SetValue(true));
+            Config.SubMenu("Trap").AddItem(new MenuItem("autoRevW", "自动W陷阱在春哥甲").SetValue(true));
+            Config.SubMenu("Trap").AddItem(new MenuItem("AGCtrap", "防止突进W").SetValue(true));
+            Config.SubMenu("Trap").AddItem(new MenuItem("casttrap", "陷阱对最近的敌人 - 待办事项无效").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
 
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-E鎶€鑳借缃畖", "90 Caliber"));
-            Config.SubMenu("90 Caliber").AddItem(new MenuItem("AGConoff", "琚帶鍒剁殑鑻遍泟鑷姩W闄烽槺").SetValue(true));
-            Config.SubMenu("90 Caliber").AddItem(new MenuItem("KillEQ", "鑷姩E-Q鍑绘潃銆€").SetValue(true));
-            Config.SubMenu("90 Caliber").AddItem(new MenuItem("UseEQC", "浣跨敤E-Q杩炴嫑").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
-            Config.SubMenu("90 Caliber").AddItem(new MenuItem("PeelE", "浣跨敤E闃插畧").SetValue(true));
-            Config.SubMenu("90 Caliber").AddItem(new MenuItem("JumpE", "浣跨敤E鍒伴紶鏍囨柟鍚戙€€").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+            Config.AddSubMenu(new Menu("|初见汉化-E技能设置|", "90 Caliber"));
+            Config.SubMenu("90 Caliber").AddItem(new MenuItem("AGConoff", "被控制的英雄自动W陷阱").SetValue(true));
+            Config.SubMenu("90 Caliber").AddItem(new MenuItem("KillEQ", "自动E-Q击杀　").SetValue(true));
+            Config.SubMenu("90 Caliber").AddItem(new MenuItem("UseEQC", "使用E-Q连招").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("90 Caliber").AddItem(new MenuItem("PeelE", "使用E防守").SetValue(true));
+            Config.SubMenu("90 Caliber").AddItem(new MenuItem("JumpE", "使用E到鼠标方向　").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
 
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-R璁剧疆|", "Ace Hole"));
-            Config.SubMenu("Ace Hole").AddItem(new MenuItem("rKill", "鎵嬪姩R鍑绘潃").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
-            Config.SubMenu("Ace Hole").AddItem(new MenuItem("AutoRKill", "鑷姩浣跨敤R鍑绘潃").SetValue(true));
-            Config.SubMenu("Ace Hole").AddItem(new MenuItem("pingkillable", "ping 鍙嚮鏉€鑻遍泟").SetValue(true));
+            Config.AddSubMenu(new Menu("|初见汉化-R设置|", "Ace Hole"));
+            Config.SubMenu("Ace Hole").AddItem(new MenuItem("rKill", "手动R击杀").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("Ace Hole").AddItem(new MenuItem("AutoRKill", "自动使用R击杀").SetValue(true));
+            Config.SubMenu("Ace Hole").AddItem(new MenuItem("pingkillable", "ping 可击杀英雄").SetValue(true));
 
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-鎶€鑳借寖鍥撮€夐」|", "Drawing"));
-            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_Disabled", "绂佺敤鎵€鏈夈€€").SetValue(false));
-            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_Q", "鑼冨洿 Q").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
-            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_W", "鑼冨洿 W").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
-            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_E", "鑼冨洿 E").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
-            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_R", "鑼冨洿 R").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
-            Config.SubMenu("Drawing").AddItem(new MenuItem("DrawRRangeM", "鐢籖鑼冨洿 (銆€灏忓湴鍥俱€€)").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
-            Config.AddItem(new MenuItem("UsePacket","浣跨敤灏佸寘").SetValue(true));
-            Config.AddSubMenu(new Menu("|鍒濊姹夊寲-缇ゅ彿|", "by chujian"));
-            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "浜ゆ祦缇わ細333399"));
+            Config.AddSubMenu(new Menu("|初见汉化-技能范围选项|", "Drawing"));
+            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_Disabled", "禁用所有　").SetValue(false));
+            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_Q", "范围 Q").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
+            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_W", "范围 W").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
+            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_E", "范围 E").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
+            Config.SubMenu("Drawing").AddItem(new MenuItem("Draw_R", "范围 R").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
+            Config.SubMenu("Drawing").AddItem(new MenuItem("DrawRRangeM", "画R范围 (　小地图　)").SetValue(new Circle(true, Color.FromArgb(150, Color.DodgerBlue))));
+            Config.AddItem(new MenuItem("UsePacket","使用封包").SetValue(true));
+            Config.AddSubMenu(new Menu("|初见汉化-群号|", "by chujian"));
+            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
 			Config.AddToMainMenu();
 
             Game.OnGameUpdate += Game_OnGameUpdate;
@@ -112,7 +112,7 @@ namespace FedCaitlyn
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             GameObject.OnCreate += Trap_OnCreate;
 
-            Game.PrintChat("<font color=\"#00BFFF\">鍒濊姹夊寲" + ChampionName + " -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛!QQ藟5011477 !</font>");
+            Game.PrintChat("<font color=\"#00BFFF\">初见汉化" + ChampionName + " -</font> <font color=\"#FFFFFF\">加载成功!QQˉ5011477 !</font>");
 
         }
 

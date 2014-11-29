@@ -84,28 +84,28 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseWC" + Id, "浣跨敤W").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "E灞傛暟").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "E层数").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseWH" + Id, "浣跨敤W").SetValue(false));
-            config.AddItem(new MenuItem("UseEH" + Id, "E灞傛暟").SetValue(false));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(false));
+            config.AddItem(new MenuItem("UseEH" + Id, "E层数").SetValue(false));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W鑼冨洿").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawW" + Id, "W范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseEM" + Id, "鍙潃鐢‥").SetValue(true));
+            config.AddItem(new MenuItem("UseEM" + Id, "可杀用E").SetValue(true));
             return true;
         }
 

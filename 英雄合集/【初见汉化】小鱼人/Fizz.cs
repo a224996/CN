@@ -39,15 +39,15 @@ namespace Assemblies {
         }
 
         private void loadMenu() {
-            menu.AddSubMenu(new Menu("杩炴嫑", "combo"));
-            menu.SubMenu("combo").AddItem(new MenuItem("useQC", "浣跨敤 Q").SetValue(true));
-            menu.SubMenu("combo").AddItem(new MenuItem("useWC", "浣跨敤 W").SetValue(true));
-            menu.SubMenu("combo").AddItem(new MenuItem("useEC", "浣跨敤 E").SetValue(true));
-            menu.SubMenu("combo").AddItem(new MenuItem("useRC", "浣跨敤 R").SetValue(true));
+            menu.AddSubMenu(new Menu("连招", "combo"));
+            menu.SubMenu("combo").AddItem(new MenuItem("useQC", "使用 Q").SetValue(true));
+            menu.SubMenu("combo").AddItem(new MenuItem("useWC", "使用 W").SetValue(true));
+            menu.SubMenu("combo").AddItem(new MenuItem("useEC", "使用 E").SetValue(true));
+            menu.SubMenu("combo").AddItem(new MenuItem("useRC", "使用 R").SetValue(true));
             menu.SubMenu("combo").AddItem(
-                new MenuItem("initR", "鍚姩R").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("initR", "启动R").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
 
-            MenuItem dmgAfterComboItem = new MenuItem("DamageAfterCombo", "鏄剧ず缁勫悎浼ゅ").SetValue(true);
+            MenuItem dmgAfterComboItem = new MenuItem("DamageAfterCombo", "显示组合伤害").SetValue(true);
             Utility.HpBarDamageIndicator.DamageToUnit = getComboDamage;
             Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
             dmgAfterComboItem.ValueChanged +=
@@ -57,42 +57,42 @@ namespace Assemblies {
 
             menu.SubMenu("combo").AddItem(dmgAfterComboItem);
 
-            menu.AddSubMenu(new Menu("楠氭壈", "harass"));
-            menu.SubMenu("harass").AddItem(new MenuItem("useQH", "浣跨敤 Q").SetValue(true));
-            menu.SubMenu("harass").AddItem(new MenuItem("useWH", "浣跨敤 W").SetValue(false));
-            menu.SubMenu("harass").AddItem(new MenuItem("eTower", "|鍥炲埌鏈€杩戠殑濉攟").SetValue(true));
+            menu.AddSubMenu(new Menu("骚扰", "harass"));
+            menu.SubMenu("harass").AddItem(new MenuItem("useQH", "使用 Q").SetValue(true));
+            menu.SubMenu("harass").AddItem(new MenuItem("useWH", "使用 W").SetValue(false));
+            menu.SubMenu("harass").AddItem(new MenuItem("eTower", "|回到最近的塔|").SetValue(true));
 
-            menu.AddSubMenu(new Menu("娓呯嚎", "laneclear"));
-            menu.SubMenu("laneclear").AddItem(new MenuItem("useQL", "浣跨敤 Q").SetValue(false));
-            menu.SubMenu("laneclear").AddItem(new MenuItem("useEL", "浣跨敤 E").SetValue(false));
+            menu.AddSubMenu(new Menu("清线", "laneclear"));
+            menu.SubMenu("laneclear").AddItem(new MenuItem("useQL", "使用 Q").SetValue(false));
+            menu.SubMenu("laneclear").AddItem(new MenuItem("useEL", "使用 E").SetValue(false));
 
-            menu.AddSubMenu(new Menu("鍑绘潃", "killsteal"));
-            menu.SubMenu("killsteal").AddItem(new MenuItem("useQKS", "浣跨敤 Q").SetValue(true));
-            menu.SubMenu("killsteal").AddItem(new MenuItem("useEKS", "浣跨敤 E").SetValue(false));
+            menu.AddSubMenu(new Menu("击杀", "killsteal"));
+            menu.SubMenu("killsteal").AddItem(new MenuItem("useQKS", "使用 Q").SetValue(true));
+            menu.SubMenu("killsteal").AddItem(new MenuItem("useEKS", "使用 E").SetValue(false));
 
-            menu.AddSubMenu(new Menu("閫冭窇", "flee"));
-            menu.SubMenu("flee").AddItem(new MenuItem("useQFlee", "浣跨敤 Q").SetValue(true));
-            menu.SubMenu("flee").AddItem(new MenuItem("useEFlee", "浣跨敤 E").SetValue(true));
+            menu.AddSubMenu(new Menu("逃跑", "flee"));
+            menu.SubMenu("flee").AddItem(new MenuItem("useQFlee", "使用 Q").SetValue(true));
+            menu.SubMenu("flee").AddItem(new MenuItem("useEFlee", "使用 E").SetValue(true));
 
-            menu.AddSubMenu(new Menu("鍋穊uff", "steal"));
+            menu.AddSubMenu(new Menu("偷buff", "steal"));
             menu.SubMenu("steal").AddItem(
-                new MenuItem("stealKey", "鍋烽緳").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("stealKey", "偷龙").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
 
-            menu.AddSubMenu(new Menu("鏉傞」", "misc"));
-            menu.SubMenu("misc").AddItem(new MenuItem("qWithR", "浣跨敤R鐨勫悓鏃朵娇鐢≦").SetValue(false));
-            menu.SubMenu("misc").AddItem(new MenuItem("castEGap", "浣跨敤E鎺ヨ繎").SetValue(false));
-            menu.SubMenu("misc").AddItem(new MenuItem("useDFG", "杩炴嫑浣跨敤鍐ョ伀").SetValue(true));
+            menu.AddSubMenu(new Menu("杂项", "misc"));
+            menu.SubMenu("misc").AddItem(new MenuItem("qWithR", "使用R的同时使用Q").SetValue(false));
+            menu.SubMenu("misc").AddItem(new MenuItem("castEGap", "使用E接近").SetValue(false));
+            menu.SubMenu("misc").AddItem(new MenuItem("useDFG", "连招使用冥火").SetValue(true));
 
-            menu.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "draw"));
+            menu.AddSubMenu(new Menu("技能范围选项", "draw"));
             menu.SubMenu("draw").AddItem(
-                new MenuItem("drawFlee", "|閫冭窇鐐箌").SetValue(new Circle(true, Color.Cyan)));
-            menu.SubMenu("draw").AddItem(new MenuItem("drawQ", "鑼冨洿 Q").SetValue(new Circle(true, Color.Red)));
-            menu.SubMenu("draw").AddItem(new MenuItem("drawE", "鑼冨洿 E").SetValue(new Circle(true, Color.Red)));
-            menu.SubMenu("draw").AddItem(new MenuItem("drawR", "鑼冨洿 R").SetValue(new Circle(true, Color.Red)));
-        menu.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+                new MenuItem("drawFlee", "|逃跑点|").SetValue(new Circle(true, Color.Cyan)));
+            menu.SubMenu("draw").AddItem(new MenuItem("drawQ", "范围 Q").SetValue(new Circle(true, Color.Red)));
+            menu.SubMenu("draw").AddItem(new MenuItem("drawE", "范围 E").SetValue(new Circle(true, Color.Red)));
+            menu.SubMenu("draw").AddItem(new MenuItem("drawR", "范围 R").SetValue(new Circle(true, Color.Red)));
+        menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 		}
 
         private void loadSpells() {

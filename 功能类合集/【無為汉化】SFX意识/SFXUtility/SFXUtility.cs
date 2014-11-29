@@ -41,12 +41,12 @@ namespace SFXUtility
             {
                 Menu = new Menu(Name, Name, true);
 
-                var miscMenu = new Menu("鐒＄偤姹夊寲鈹€鏉傞」", "Misc");
+                var miscMenu = new Menu("無為汉化─杂项", "Misc");
 
-                var infoMenu = new Menu("L#姹夊寲淇℃伅", "Info");
-                infoMenu.AddItem(new MenuItem("InfoVersion", string.Format("鐗堟湰: {0}", Version)));
-                infoMenu.AddItem(new MenuItem("InfoIRC", "浣滆€呪埗 Appril"));
-				infoMenu.AddItem(new MenuItem("qun", "L#姹夊寲缇も埗386289593"));
+                var infoMenu = new Menu("L#汉化信息", "Info");
+                infoMenu.AddItem(new MenuItem("InfoVersion", string.Format("版本: {0}", Version)));
+                infoMenu.AddItem(new MenuItem("InfoIRC", "作者∶ Appril"));
+				infoMenu.AddItem(new MenuItem("qun", "L#汉化群∶386289593"));
                 infoMenu.AddItem(new MenuItem("InfoGithub", "Github").SetValue(new StringList(new[]
                 {
                     "81199000",
@@ -56,7 +56,7 @@ namespace SFXUtility
 
                 miscMenu.AddSubMenu(infoMenu);
 
-                miscMenu.AddItem(new MenuItem("MiscCircleThickness", "绾垮湀鍘氬害").SetValue(new Slider(3, 10, 1)));
+                miscMenu.AddItem(new MenuItem("MiscCircleThickness", "线圈厚度").SetValue(new Slider(3, 10, 1)));
 
                 Menu.AddSubMenu(miscMenu);
                 AppDomain.CurrentDomain.DomainUnload += OnExit;
@@ -85,7 +85,7 @@ namespace SFXUtility
 
         public string Name
         {
-            get { return "鐒＄偤姹夊寲鈹€SFX鎰忚瘑"; }
+            get { return "無為汉化─SFX意识"; }
         }
 
         public System.Version Version

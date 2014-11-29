@@ -91,37 +91,37 @@ namespace Ultimate_Carry_Prevolution
 
 		private void LoadBasics()
 		{
-			Menu = new Menu("xSLx20鑻遍泟鍚堜竴", MyHero.ChampionName + "_UCP", true);
+			Menu = new Menu("xSLx20英雄合一", MyHero.ChampionName + "_UCP", true);
 
 			//the Team
-			Menu.AddSubMenu(new Menu("鍒朵綔鍥㈤槦", "Credits"));
-			Menu.SubMenu("Credits").AddItem(new MenuItem("Lexxes", "Lexxes (婢冲ぇ鍒╀簹)"));
-			Menu.SubMenu("Credits").AddItem(new MenuItem("xSalice", "xSalice (缇庡浗)"));
+			Menu.AddSubMenu(new Menu("制作团队", "Credits"));
+			Menu.SubMenu("Credits").AddItem(new MenuItem("Lexxes", "Lexxes (澳大利亚)"));
+			Menu.SubMenu("Credits").AddItem(new MenuItem("xSalice", "xSalice (美国)"));
 			Menu.SubMenu("Credits").AddItem(new MenuItem("InjectionDev", "InjectionDev"));
 
 			//TargetSelector
-			var targetselectormenu = new Menu("鐩爣閫夋嫨", "Common_TargetSelector");
+			var targetselectormenu = new Menu("目标选择", "Common_TargetSelector");
 			SimpleTs.AddToMenu(targetselectormenu);
 			Menu.AddSubMenu(targetselectormenu);
 
 			//PacketMenu
-			Menu.AddSubMenu(new Menu("鏉傞」", "Packets"));
-			Menu.SubMenu("Packets").AddItem(new MenuItem("usePackets", "灏佸寘").SetValue(false));
+			Menu.AddSubMenu(new Menu("杂项", "Packets"));
+			Menu.SubMenu("Packets").AddItem(new MenuItem("usePackets", "封包").SetValue(false));
 
 			//xSLxActivator
-			var activatorMenu = new Menu("xSLx娲诲寲鍓倈", "xSLx_Activator");
+			var activatorMenu = new Menu("xSLx活化剂", "xSLx_Activator");
 			xSLxActivator.AddToMenu(activatorMenu);
 			Menu.AddSubMenu(activatorMenu);
 
 			//xSLxOrbwalker (Based on Common)
-			var orbwalkerMenu = new Menu("xSLx璧扮爫", "xSLx_Orbwalker");
+			var orbwalkerMenu = new Menu("xSLx走砍", "xSLx_Orbwalker");
 			xSLxOrbwalker.AddToMenu(orbwalkerMenu);
 			Menu.AddSubMenu(orbwalkerMenu);
 
 			
-			Menu.AddSubMenu(new Menu("瓒呯姹夊寲", "by welai"));
-				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+			Menu.AddSubMenu(new Menu("超神汉化", "by welai"));
+				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+				Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao2", "娃娃群：13497795"));
 				
 			//Menu.AddItem( new MenuItem( "vote"," Vote Pls for UCP").SetValue(new KeyBind(112, KeyBindType.Press)));
 		}
@@ -204,7 +204,7 @@ namespace Ultimate_Carry_Prevolution
 		public void AddSpelltoMenu(Menu menu, string name, bool state, string alternativename = "")
 		{
 			if(alternativename == "")
-				alternativename = "浣跨敤" + name;
+				alternativename = "使用" + name;
 			menu.AddItem(new MenuItem(menu.Name + "_" + name.Replace(" ", "_"), alternativename).SetValue(state));
 		}
 
@@ -222,7 +222,7 @@ namespace Ultimate_Carry_Prevolution
 
 		public void AddManaManagertoMenu(Menu menu, int standard)
 		{
-			menu.AddItem(new MenuItem(menu.Name + "_Manamanager", "钃濋噺鎺у埗").SetValue(new Slider(standard)));
+			menu.AddItem(new MenuItem(menu.Name + "_Manamanager", "蓝量控制").SetValue(new Slider(standard)));
 		}
 
 		public bool ManaManagerAllowCast()

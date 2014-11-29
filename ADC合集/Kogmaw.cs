@@ -133,44 +133,44 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "浣跨敤W").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "浣跨敤E").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "浣跨敤R").SetValue(true));
-            config.AddItem(new MenuItem("RlimC" + Id, "R闄愬埗").SetValue(new Slider(3, 5, 1)));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用E").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用R").SetValue(true));
+            config.AddItem(new MenuItem("RlimC" + Id, "R限制").SetValue(new Slider(3, 5, 1)));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(false));
-            config.AddItem(new MenuItem("UseWH" + Id, "浣跨敤W").SetValue(false));
-            config.AddItem(new MenuItem("UseEH" + Id, "浣跨敤E").SetValue(false));
-            config.AddItem(new MenuItem("UseRH" + Id, "浣跨敤R").SetValue(true));
-            config.AddItem(new MenuItem("RlimH" + Id, "R闄愬埗").SetValue(new Slider(1, 5, 1)));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(false));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(false));
+            config.AddItem(new MenuItem("UseEH" + Id, "使用E").SetValue(false));
+            config.AddItem(new MenuItem("UseRH" + Id, "使用R").SetValue(true));
+            config.AddItem(new MenuItem("RlimH" + Id, "R限制").SetValue(new Slider(1, 5, 1)));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q鑼冨洿").SetValue(new Circle(true,
+                new MenuItem("DrawQ" + Id, "Q范围").SetValue(new Circle(true,
                     System.Drawing.Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W鑼冨洿").SetValue(new Circle(true,
+                new MenuItem("DrawW" + Id, "W范围").SetValue(new Circle(true,
                     System.Drawing.Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E鑼冨洿").SetValue(new Circle(false,
+                new MenuItem("DrawE" + Id, "E范围").SetValue(new Circle(false,
                     System.Drawing.Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawR" + Id, "R鑼冨洿").SetValue(new Circle(false,
+                new MenuItem("DrawR" + Id, "R范围").SetValue(new Circle(false,
                     System.Drawing.Color.FromArgb(100, 255, 0, 255))));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseRM" + Id, "鍙潃鐢≧").SetValue(true));
+            config.AddItem(new MenuItem("UseRM" + Id, "可杀用R").SetValue(true));
             return true;
         }
 

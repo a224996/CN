@@ -54,7 +54,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鐒＄偤姹夊寲鈹€鑷姩鍔犵偣"; }
+            get { return "無為汉化─自动加点"; }
         }
 
         #endregion
@@ -113,8 +113,8 @@ namespace SFXUtility.Feature
 
                 Menu = new Menu(Name, Name);
 
-                var patternMenu = new Menu("妯″紡", Name + "Pattern");
-                patternMenu.AddItem(new MenuItem(Name + "PatternEarly", "妯″紡").SetValue(new StringList(new[]
+                var patternMenu = new Menu("模式", Name + "Pattern");
+                patternMenu.AddItem(new MenuItem(Name + "PatternEarly", "模式").SetValue(new StringList(new[]
                 {
                     "x 2 3 1",
                     "x 2 1",
@@ -127,8 +127,8 @@ namespace SFXUtility.Feature
 
                 Menu.AddSubMenu(patternMenu);
 
-                Menu.AddItem(new MenuItem(Name + "OnlyR", "鍙姞 R").SetValue(false));
-                Menu.AddItem(new MenuItem(Name + "Enabled", "鍚敤").SetValue(false));
+                Menu.AddItem(new MenuItem(Name + "OnlyR", "只加 R").SetValue(false));
+                Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(false));
 
                 BaseMenu.AddSubMenu(Menu);
 

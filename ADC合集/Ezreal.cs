@@ -128,17 +128,17 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "浣跨敤W").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWH" + Id, "浣跨敤W").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(true));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "浣跨敤Q (閿佸畾)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用Q (锁定)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));
             return true;
         }
@@ -146,7 +146,7 @@ namespace Marksman
         public override bool MiscMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("CastR" + Id, "鍗婅嚜鍔≧(2000)").SetValue(new KeyBind("T".ToCharArray()[0],
+                new MenuItem("CastR" + Id, "半自动R(2000)").SetValue(new KeyBind("T".ToCharArray()[0],
                     KeyBindType.Press)));
             return true;
         }
@@ -154,9 +154,9 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q鑼冨洿").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawQ" + Id, "Q范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawW" + Id, "W范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
             return true;
         }
 

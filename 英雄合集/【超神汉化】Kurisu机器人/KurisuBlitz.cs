@@ -244,29 +244,29 @@ namespace KurisuBlitz
 
         private void BlitzMenu()
         {
-            _menu = new Menu("Kurisu: Blitz", "blitz", true);
+            _menu = new Menu("【超神汉化】Kurisu机器人", "blitz", true);
 
-            Menu blitzOrb = new Menu("璧扮爫", "orbwalker");
+            Menu blitzOrb = new Menu("走砍", "orbwalker");
             _orbwalker = new Orbwalking.Orbwalker(blitzOrb);
             _menu.AddSubMenu(blitzOrb);
 
-            Menu blitzTS = new Menu("鐩爣閫夋嫨", "tselect");
+            Menu blitzTS = new Menu("目标选择", "tselect");
             SimpleTs.AddToMenu(blitzTS);
             _menu.AddSubMenu(blitzTS);
             
-            Menu menuD = new Menu("鏄剧ず", "drawings");
-            menuD.AddItem(new MenuItem("drawQ", "Q鑼冨洿")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
-            menuD.AddItem(new MenuItem("drawR", "R鑼冨洿")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            Menu menuD = new Menu("显示", "drawings");
+            menuD.AddItem(new MenuItem("drawQ", "Q范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            menuD.AddItem(new MenuItem("drawR", "R范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
             _menu.AddSubMenu(menuD);
             
             Menu menuG = new Menu("Q", "autograb");
-            menuG.AddItem(new MenuItem("hitchance", "鍛戒腑鏈轰細"))
+            menuG.AddItem(new MenuItem("hitchance", "命中机会"))
                 .SetValue(new StringList(new[] {"Low", "Medium", "High"}, 2));
-            menuG.AddItem(new MenuItem("dneeded", "Min璺濈")).SetValue(new Slider(255, 0, (int)Q.Range));
-            menuG.AddItem(new MenuItem("dneeded2", "Max璺濈")).SetValue(new Slider((int)Q.Range, 0, (int)Q.Range));
-            menuG.AddItem(new MenuItem("dashing", "鑷姩Q绐佽繘")).SetValue(true);
-            menuG.AddItem(new MenuItem("immobile", "鑷姩Q涓嶅姩")).SetValue(true);
-            menuG.AddItem(new MenuItem("hneeded", "鐢熷懡< %涓峇")).SetValue(new Slider(0));
+            menuG.AddItem(new MenuItem("dneeded", "Min距离")).SetValue(new Slider(255, 0, (int)Q.Range));
+            menuG.AddItem(new MenuItem("dneeded2", "Max距离")).SetValue(new Slider((int)Q.Range, 0, (int)Q.Range));
+            menuG.AddItem(new MenuItem("dashing", "自动Q突进")).SetValue(true);
+            menuG.AddItem(new MenuItem("immobile", "自动Q不动")).SetValue(true);
+            menuG.AddItem(new MenuItem("hneeded", "生命< %不Q")).SetValue(new Slider(0));
             menuG.AddItem(new MenuItem("sep", ""));
             
             foreach (
@@ -280,21 +280,21 @@ namespace KurisuBlitz
                     .SetValue(new StringList(new[] {"Dont Grab ", "Normal Grab ", "Auto Grab "}, 1));
             }
             _menu.AddSubMenu(menuG);
-            Menu menuK = new Menu("鎶㈠ご", "blitzks");
-            menuK.AddItem(new MenuItem("killstealQ", "浣跨敤Q")).SetValue(false);
-            menuK.AddItem(new MenuItem("killstealE", "浣跨敤E")).SetValue(false);
-            menuK.AddItem(new MenuItem("killstealR", "浣跨敤R")).SetValue(false);
+            Menu menuK = new Menu("抢头", "blitzks");
+            menuK.AddItem(new MenuItem("killstealQ", "使用Q")).SetValue(false);
+            menuK.AddItem(new MenuItem("killstealE", "使用E")).SetValue(false);
+            menuK.AddItem(new MenuItem("killstealR", "使用R")).SetValue(false);
             _menu.AddSubMenu(menuK);
-            _menu.AddItem(new MenuItem("gapcloser", "闃茬獊")).SetValue(true);
-            _menu.AddItem(new MenuItem("interrupt", "鎵撴柇")).SetValue(true);
-            _menu.AddItem(new MenuItem("useE", "鑷姩E")).SetValue(true);
-            _menu.AddItem(new MenuItem("combokey", "杩炴嫑")).SetValue(new KeyBind(32, KeyBindType.Press));
+            _menu.AddItem(new MenuItem("gapcloser", "防突")).SetValue(true);
+            _menu.AddItem(new MenuItem("interrupt", "打断")).SetValue(true);
+            _menu.AddItem(new MenuItem("useE", "自动E")).SetValue(true);
+            _menu.AddItem(new MenuItem("combokey", "连招")).SetValue(new KeyBind(32, KeyBindType.Press));
             _menu.AddToMainMenu();
 
 			
-			Menu menuQun = new Menu("瓒呯姹夊寲", "by weilai");
-            menuQun.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            menuQun.AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+			Menu menuQun = new Menu("超神汉化", "by weilai");
+            menuQun.AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            menuQun.AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 			
 
         }

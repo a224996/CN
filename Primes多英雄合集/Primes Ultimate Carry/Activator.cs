@@ -34,11 +34,11 @@ namespace Primes_Ultimate_Carry
 		{
 			var tempMenu = menu;
 
-			var summoners = new Menu("鍙敜榄旀硶", "act_Summoner");
+			var summoners = new Menu("召唤魔法", "act_Summoner");
 			AddSummonerstoMenu(summoners);
 			tempMenu.AddSubMenu(summoners);
 
-			var items = new Menu("鍙娇鐢ㄧ殑椤圭洰", "act_Items");
+			var items = new Menu("可使用的项目", "act_Items");
 			AddItemstoMenu(items);
 			tempMenu.AddSubMenu(items);
 
@@ -52,13 +52,13 @@ namespace Primes_Ultimate_Carry
 		private static void AddItemstoMenu(Menu menu)
 		{
 			var tempMenu = menu;
-			var potionmenu = new Menu("鑽按", "act_potionmanager");
+			var potionmenu = new Menu("药水", "act_potionmanager");
 			PotionManager.AddtoMenusub(potionmenu);
 			tempMenu.AddSubMenu(potionmenu);
 
-			var defensivemenu = new Menu("闃插尽鐢ㄥ搧", "act_defensiveItem");
+			var defensivemenu = new Menu("防御用品", "act_defensiveItem");
 			
-			defensivemenu.AddSubMenu(new Menu("PUC 璐熼潰榄旀硶", "act_debuff"));		
+			defensivemenu.AddSubMenu(new Menu("PUC 负面魔法", "act_debuff"));		
 			foreach (var buffname in BuffnamesCC)
 			{
 				defensivemenu.SubMenu("act_debuff").AddItem(new MenuItem("act_debuff_" + buffname, "Anti " + buffname).SetValue(true));
@@ -68,7 +68,7 @@ namespace Primes_Ultimate_Carry
 				defensivemenu.SubMenu("act_debuff").AddItem(new MenuItem("act_debuff_" + buffname, "Anti " + buffname).SetValue(true));
 			}
 
-			var offensivemenu = new Menu("鍘屾伓鐨勭墿鍝併劎", "act_offensiveItem");
+			var offensivemenu = new Menu("厌恶的物品ㄧ", "act_offensiveItem");
 			var onhitmenu = new Menu("OnHit Items", "act_onhitItem");
 			ItemManager.AddSupMenu(defensivemenu, offensivemenu,onhitmenu);
 			tempMenu.AddSubMenu(defensivemenu);

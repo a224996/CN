@@ -85,21 +85,21 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "Use W").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用 W").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(false));
-            config.AddItem(new MenuItem("UseWH" + Id, "Use W").SetValue(false));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用 Q").SetValue(false));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用 W").SetValue(false));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("AutoQ" + Id, "Auto Q on stunned targets").SetValue(true));
+            config.AddItem(new MenuItem("AutoQ" + Id, "自动Q对昏迷目标").SetValue(true));
 
             return true;
         }
@@ -107,7 +107,7 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             return true;
         }
 

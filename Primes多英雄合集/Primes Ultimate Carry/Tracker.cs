@@ -25,10 +25,10 @@ namespace Primes_Ultimate_Carry
 		internal static void AddtoMenu(Menu menu)
 		{
 			var tempMenu = menu;
-			tempMenu.AddItem(new MenuItem("tb_sep0", "====== 璁剧疆"));
-			tempMenu.AddItem(new MenuItem("tb_show_enemy", "= 鏄剧ず璺熻釜鐨勬晫浜恒劎").SetValue(true));
-			tempMenu.AddItem(new MenuItem("tb_show_friend", "= 鏄剧ず璺熻釜鐨勬湅鍙嬨劎").SetValue(true));
-			tempMenu.AddItem(new MenuItem("tb_show_me", "= 鏄剧ず璺熻釜鎴戙劎").SetValue(true));		
+			tempMenu.AddItem(new MenuItem("tb_sep0", "====== 设置"));
+			tempMenu.AddItem(new MenuItem("tb_show_enemy", "= 显示跟踪的敌人").SetValue(true));
+			tempMenu.AddItem(new MenuItem("tb_show_friend", "= 显示跟踪的队友").SetValue(true));
+			tempMenu.AddItem(new MenuItem("tb_show_me", "= 显示跟踪自己").SetValue(true));		
 			tempMenu.AddItem(new MenuItem("tb_sep1", "========="));
 			PUC.Menu.AddSubMenu(tempMenu);
 

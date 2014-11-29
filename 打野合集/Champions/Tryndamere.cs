@@ -21,31 +21,31 @@ namespace Master
             SkillR = new Spell(SpellSlot.R, 400);
             SkillE.SetSkillshot(SkillE.Instance.SData.SpellCastTime, SkillE.Instance.SData.LineWidth, SkillE.Instance.SData.MissileSpeed, false, SkillshotType.SkillshotLine);
 
-            Config.AddSubMenu(new Menu("杩炴嫑/楠氭壈", "csettings"));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "qusage", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "autoqusage", "|浣跨敤Q濡傛灉HP鍦▅").SetValue(new Slider(40, 1)));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "wusage", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "eusage", "|浣跨敤E鍦ㄨ繛鎷泑").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "autoeusage", "|浣跨敤E濡傛灉HP浠ヤ笂|").SetValue(new Slider(20, 1)));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "ignite", "濡傛灉鍙嚮鏉€鑷姩浣跨敤鐐圭噧").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "iusage", "浣跨敤椤圭洰").SetValue(true));
+            Config.AddSubMenu(new Menu("连招/骚扰", "csettings"));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "qusage", "使用 Q").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "autoqusage", "|使用Q如果HP在|").SetValue(new Slider(40, 1)));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "wusage", "使用 W").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "eusage", "|使用E在连招|").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "autoeusage", "|使用E如果HP以上|").SetValue(new Slider(20, 1)));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "ignite", "如果可击杀自动使用点燃").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "iusage", "使用项目").SetValue(true));
 
-            Config.AddSubMenu(new Menu("娓呯嚎/娓呴噹", "LaneJungClear"));
-            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearE", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("清线/清野", "LaneJungClear"));
+            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearE", "使用 E").SetValue(true));
 
-            Config.AddSubMenu(new Menu("鏉傞」", "miscs"));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "killstealE", "鑷姩E鍋锋潃").SetValue(true));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "surviveQ", "灏濊瘯鐢≦鐢熷瓨").SetValue(true));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "surviveR", "灏濊瘯鐢≧鐢熷瓨").SetValue(true));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "SkinID", "|鎹㈢毊鑲").SetValue(new Slider(4, 0, 6))).ValueChanged += SkinChanger;
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "packetCast", "浣跨敤灏佸寘").SetValue(true));
+            Config.AddSubMenu(new Menu("杂项", "miscs"));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "killstealE", "自动E偷杀").SetValue(true));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "surviveQ", "尝试用Q生存").SetValue(true));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "surviveR", "尝试用R生存").SetValue(true));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "SkinID", "|换皮肤|").SetValue(new Slider(4, 0, 6))).ValueChanged += SkinChanger;
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "packetCast", "使用封包").SetValue(true));
 
-            Config.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "DrawSettings"));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawW", "W 鑼冨洿").SetValue(true));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawE", "E 鑼冨洿").SetValue(true));
-Config.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+            Config.AddSubMenu(new Menu("技能范围选项", "DrawSettings"));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawW", "W 范围").SetValue(true));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawE", "E 范围").SetValue(true));
+Config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
             Game.OnGameUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;

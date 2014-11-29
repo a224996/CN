@@ -61,10 +61,10 @@ namespace SkarnerHugeStinger
             menu = new Menu(ChampionName, ChampionName, true);
 
             //Orbwalker submenu
-            menu.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            menu.AddSubMenu(new Menu("走砍", "Orbwalking"));
 
             //Target selector
-            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var targetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             menu.AddSubMenu(targetSelectorMenu);
 
@@ -72,37 +72,37 @@ namespace SkarnerHugeStinger
             Orbwalker = new Orbwalking.Orbwalker(menu.SubMenu("Orbwalking"));
 
             //Combo menu:
-            menu.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            menu.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "浣跨敤 Q").SetValue(true));
-            menu.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "浣跨敤 W").SetValue(true));
-            menu.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "浣跨敤 E").SetValue(true));
-            menu.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "浣跨敤 R").SetValue(true));
-            menu.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "杩炴嫑!").SetValue(new KeyBind(menu.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
+            menu.AddSubMenu(new Menu("连招", "Combo"));
+            menu.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用 Q").SetValue(true));
+            menu.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用 W").SetValue(true));
+            menu.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用 E").SetValue(true));
+            menu.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用 R").SetValue(true));
+            menu.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "连招!").SetValue(new KeyBind(menu.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
             //Harass menu:
-            menu.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            menu.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "浣跨敤 Q").SetValue(true));
-            menu.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "浣跨敤 E").SetValue(true));
-            menu.SubMenu("Harass").AddItem(new MenuItem("HarassActive", "楠氭壈!").SetValue(new KeyBind(menu.Item("Farm").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            menu.SubMenu("Harass").AddItem(new MenuItem("HarassActiveT", "楠氭壈 (鍒囨崲)!").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Toggle)));
+            menu.AddSubMenu(new Menu("骚扰", "Harass"));
+            menu.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用 Q").SetValue(true));
+            menu.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用 E").SetValue(true));
+            menu.SubMenu("Harass").AddItem(new MenuItem("HarassActive", "骚扰!").SetValue(new KeyBind(menu.Item("Farm").GetValue<KeyBind>().Key, KeyBindType.Press)));
+            menu.SubMenu("Harass").AddItem(new MenuItem("HarassActiveT", "骚扰 (切换)!").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Toggle)));
 
             //Farming menu:
-            menu.AddSubMenu(new Menu("娓呴噹", "Farm"));
-            menu.SubMenu("Farm").AddItem(new MenuItem("UseQFarm", "浣跨敤 Q").SetValue(false));
-            menu.SubMenu("Farm").AddItem(new MenuItem("UseEFarm", "浣跨敤 E").SetValue(false));
-            menu.SubMenu("Farm").AddItem(new MenuItem("LaneClearActive", "娓呴噹!").SetValue(new KeyBind(menu.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
+            menu.AddSubMenu(new Menu("清野", "Farm"));
+            menu.SubMenu("Farm").AddItem(new MenuItem("UseQFarm", "使用 Q").SetValue(false));
+            menu.SubMenu("Farm").AddItem(new MenuItem("UseEFarm", "使用 E").SetValue(false));
+            menu.SubMenu("Farm").AddItem(new MenuItem("LaneClearActive", "清野!").SetValue(new KeyBind(menu.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
             //Misc Menu:
-            menu.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            menu.SubMenu("Misc").AddItem(new MenuItem("UseInt", "浣跨敤R鎵撴柇").SetValue(true));
-            menu.SubMenu("Misc").AddItem(new MenuItem("UseGap", "浣跨敤W鎺ヨ繎").SetValue(true));
-            menu.SubMenu("Misc").AddItem(new MenuItem("packet", "浣跨敤灏佸寘").SetValue(true));
-            menu.SubMenu("Misc").AddItem(new MenuItem("towerR", "濉斾笅鑷姩R鏁屼汉").SetValue(true));
-            menu.SubMenu("Misc").AddItem(new MenuItem("toggleR", "寮鸿R").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
-            menu.SubMenu("Misc").AddItem(new MenuItem("autoW", "W 濡傛灉 HP < %").SetValue(new Slider(40, 0, 100)));
+            menu.AddSubMenu(new Menu("杂项", "Misc"));
+            menu.SubMenu("Misc").AddItem(new MenuItem("UseInt", "使用R打断").SetValue(true));
+            menu.SubMenu("Misc").AddItem(new MenuItem("UseGap", "使用W接近").SetValue(true));
+            menu.SubMenu("Misc").AddItem(new MenuItem("packet", "使用封包").SetValue(true));
+            menu.SubMenu("Misc").AddItem(new MenuItem("towerR", "塔下自动R敌人").SetValue(true));
+            menu.SubMenu("Misc").AddItem(new MenuItem("toggleR", "强行R").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
+            menu.SubMenu("Misc").AddItem(new MenuItem("autoW", "W 如果 HP < %").SetValue(new Slider(40, 0, 100)));
 
             //Damage after combo:
-            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "鏄剧ず缁勫悎浼ゅ").SetValue(true);
+            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "显示组合伤害").SetValue(true);
             Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
             Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
             dmgAfterComboItem.ValueChanged += delegate(object sender, OnValueChangeEventArgs eventArgs)
@@ -111,28 +111,28 @@ namespace SkarnerHugeStinger
             };
 
             //Drawings menu:
-            menu.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "Drawings"));
+            menu.AddSubMenu(new Menu("技能范围选项", "Drawings"));
             menu.SubMenu("Drawings")
-                .AddItem(new MenuItem("QRange", "Q 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("QRange", "Q 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
             menu.SubMenu("Drawings")
-                .AddItem(new MenuItem("WRange", "W 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("WRange", "W 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             menu.SubMenu("Drawings")
-                .AddItem(new MenuItem("ERange", "E 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("ERange", "E 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
             menu.SubMenu("Drawings")
-                .AddItem(new MenuItem("RRange", "R 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("RRange", "R 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
             menu.SubMenu("Drawings")
                 .AddItem(dmgAfterComboItem);
             menu.AddToMainMenu();
-menu.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             //Events
             Game.OnGameUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPosibleToInterrupt;
             //Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
-            Game.PrintChat(ChampionName + " 鍔犺浇鎴愬姛! --- by 鍒濊姹夊寲QQ 5011477");
+           
         }
 
         private static float GetComboDamage(Obj_AI_Base enemy)

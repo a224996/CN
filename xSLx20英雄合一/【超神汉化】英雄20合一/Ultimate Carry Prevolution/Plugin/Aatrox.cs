@@ -32,48 +32,48 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Aatrox Plugin", "Aatrox");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("连招", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "E", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_onAmount", "R鍑讳腑").SetValue(new Slider(2, 5, 0)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_onAmount", "R击中").SetValue(new Slider(2, 5, 0)));
 					comboMenu.AddItem(new MenuItem("Combo_useR_onEnemyHealth", "R HP<%").SetValue(new Slider(60, 100, 0)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("骚扰", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "Q_Danger", true,"Q inside Dangerzone");
 					AddSpelltoMenu(harassMenu, "E", true);
 					champMenu.AddSubMenu(harassMenu);
 				}
-				var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+				var laneClearMenu = new Menu("清线", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
 					AddSpelltoMenu(laneClearMenu, "E", true);
 					champMenu.AddSubMenu(laneClearMenu);
 				}
-				var fleeMenu = new Menu("閫冭窇", "Flee");
+				var fleeMenu = new Menu("逃跑", "Flee");
 				{
-					AddSpelltoMenu(fleeMenu, "Q", true, "鍚戦紶鏍嘠 ");
-					AddSpelltoMenu(fleeMenu, "E", true, "浣跨敤E");
+					AddSpelltoMenu(fleeMenu, "Q", true, "向鼠标Q ");
+					AddSpelltoMenu(fleeMenu, "E", true, "使用E");
 					champMenu.AddSubMenu(fleeMenu);
 				}
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("杂项", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch", "鑷姩鍒囨崲").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch", "自动切换").SetValue(true));
 					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_health", "HP<").SetValue(new Slider(60, 100, 0)));
-					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_priorityhealth", "浼樺厛娌荤枟鑷韩").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Autoswitch_priorityhealth", "优先治疗自身").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("鑼冨洿", "Drawing");
+				var drawMenu = new Menu("范围", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Q范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "E范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "R范围").SetValue(true));
 					
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);			
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);			
 					drawMenu.AddItem(drawComboDamageMenu);
 						Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

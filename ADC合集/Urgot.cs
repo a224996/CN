@@ -235,29 +235,29 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "Use W").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "Use E").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "Use R").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用 W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用 E").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用 R").SetValue(true));
 
 
-            config.AddSubMenu(new Menu("Ult Option 1", "UltOpt1"));
+            config.AddSubMenu(new Menu("大招选择 1", "UltOpt1"));
 
             config.SubMenu("UltOpt1")
                 .AddItem(
-                    new MenuItem("UltOp1" + Id, "Teleport Ally Turrent").SetValue(new KeyBind("T".ToCharArray()[0],
+                    new MenuItem("UltOp1" + Id, "传送队友炮塔").SetValue(new KeyBind("T".ToCharArray()[0],
                         KeyBindType.Press)));
 
-            config.AddSubMenu(new Menu("Ult Option 2", "UltOpt2"));
+            config.AddSubMenu(new Menu("大招选择 2", "UltOpt2"));
             config.SubMenu("UltOpt2")
                 .AddItem(
-                    new MenuItem("UltOp2" + Id, "Teleport My Team").SetValue(new KeyBind("G".ToCharArray()[0],
+                    new MenuItem("UltOp2" + Id, "我的团队传送").SetValue(new KeyBind("G".ToCharArray()[0],
                         KeyBindType.Press)));
             config.SubMenu("UltOpt2")
-                .AddItem(new MenuItem("UltOp2Count" + Id, "Min. Ally Count").SetValue(new Slider(1, 1, 5)));
+                .AddItem(new MenuItem("UltOp2Count" + Id, "最小的对人数量").SetValue(new Slider(1, 1, 5)));
 
 
-            config.AddSubMenu(new Menu("Don't Use Ult on", "DontUlt"));
+            config.AddSubMenu(new Menu("不使用大招", "DontUlt"));
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
             {
                 config.SubMenu("DontUlt")
@@ -270,9 +270,9 @@ namespace Marksman
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用 Q").SetValue(true));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "Use Q (Toggle)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用 Q (切换)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));
 
             return true;
@@ -281,11 +281,11 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.LightGray)));
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.LightGray)));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(false, Color.LightGray)));
+                new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(false, Color.LightGray)));
             config.AddItem(
-                new MenuItem("DrawR" + Id, "R range").SetValue(new Circle(false, Color.LightGray)));
+                new MenuItem("DrawR" + Id, "R 范围").SetValue(new Circle(false, Color.LightGray)));
             config.AddItem(
                 new MenuItem("DrawQEx" + Id, "Corrosive Charge").SetValue(new Circle(true, Color.LightGray)));
             return true;
@@ -298,7 +298,7 @@ namespace Marksman
 
         public override bool LaneClearMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQL" + Id, "Use Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQL" + Id, "使用 Q").SetValue(true));
             return true;
         }
 

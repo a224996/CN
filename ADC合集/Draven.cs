@@ -42,7 +42,7 @@ namespace Marksman
             GameObject.OnCreate += OnCreateObject;
             GameObject.OnDelete += OnDeleteObject;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
-            Interrupter.OnPosibleToInterrupt += OnPosibleToInterrupt;
+            Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;
             Utils.PrintMessage("Draven loaded.");
         }
 
@@ -54,7 +54,7 @@ namespace Marksman
             }
         }
 
-        public void OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        public void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
         {
             if (E.IsReady() && Config.Item("EInterruptable").GetValue<bool>() && unit.IsValidTarget(E.Range))
             {
@@ -232,41 +232,41 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC", "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC", "Use W").SetValue(true));
-            config.AddItem(new MenuItem("UseEC", "Use E").SetValue(true));
-            config.AddItem(new MenuItem("UseRC", "Use R").SetValue(true));
+            config.AddItem(new MenuItem("UseQC", "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC", "使用 W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC", "使用 E").SetValue(true));
+            config.AddItem(new MenuItem("UseRC", "使用 R").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH", "Use Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQH", "使用 Q").SetValue(true));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawE", "E range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawE", "E 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawR", "R range(2000 units)").SetValue(
+                new MenuItem("DrawR", "R 范围(2000 单位)").SetValue(
                     new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawOrbwalk", "Draw orbwalk position").SetValue(new Circle(true, Color.Yellow)));
-            config.AddItem(new MenuItem("DrawReticles", "Draw on reticles").SetValue(new Circle(true, Color.Green)));
+                new MenuItem("DrawOrbwalk", "显示走砍位置").SetValue(new Circle(true, Color.Yellow)));
+            config.AddItem(new MenuItem("DrawReticles", "显示画线").SetValue(new Circle(true, Color.Green)));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("maxqamount", "Max Qs to use simultaneous").SetValue(new Slider(2, 4, 1)));
-            config.AddItem(new MenuItem("EGapCloser", "Auto E Gap closers").SetValue(true));
-            config.AddItem(new MenuItem("EInterruptable", "Auto E interruptable spells").SetValue(true));
-            config.AddItem(new MenuItem("RManualCast", "Cast R Manually(2000 range)"))
+            config.AddItem(new MenuItem("maxqamount", "最多同时使用多少Q").SetValue(new Slider(2, 4, 1)));
+            config.AddItem(new MenuItem("EGapCloser", "自动E防突进").SetValue(true));
+            config.AddItem(new MenuItem("EInterruptable", "自动E打断技能").SetValue(true));
+            config.AddItem(new MenuItem("RManualCast", "手动大招(2000 范围)"))
                 .SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press));
-            config.AddItem(new MenuItem("Epeel", "Peel self with E").SetValue(true));
-            config.AddItem(new MenuItem("CatchRadius", "Axe catch radius").SetValue(new Slider(600, 200, 1000)));
+            config.AddItem(new MenuItem("Epeel", "剥离自我与 E").SetValue(true));
+            config.AddItem(new MenuItem("CatchRadius", "捕捉斧头半径").SetValue(new Slider(600, 200, 1000)));
             return true;
         }
 

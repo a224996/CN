@@ -777,75 +777,75 @@ namespace DevCassio
             if (mustDebug)
                 Game.PrintChat("InitializeMainMenu Start");
 
-            Config = new Menu("榄旇泧涔嬫嫢", "DevCassio", true);
+            Config = new Menu("魔蛇之拥", "DevCassio", true);
 
-            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var targetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
-            Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            Config.AddSubMenu(new Menu("走砍", "Orbwalking"));
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
-            Config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "浣跨敤 R").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "浣跨敤鐐圭噧").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseAACombo", "浣跨敤 AA").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRSaveYourself", "浣跨敤R鏁戝懡").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRSaveYourselfMinHealth", "淇濈暀澶熸硶鍔涘€间娇鐢≧").SetValue(new Slider(25, 0, 100)));
+            Config.AddSubMenu(new Menu("连招", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用 Q").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用 W").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用 E").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用 R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "使用点燃").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseAACombo", "使用 AA").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRSaveYourself", "使用R救命").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRSaveYourselfMinHealth", "保留够法力值使用R").SetValue(new Slider(25, 0, 100)));
 
-            Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("HarassToggle", "楠氭壈 (鍒囨崲)").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Toggle)));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "浣跨敤 W").SetValue(false));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("骚扰", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("HarassToggle", "骚扰 (切换)").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Toggle)));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用 Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "使用 W").SetValue(false));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用 E").SetValue(true));
 
-            Config.AddSubMenu(new Menu("琛ュ叺", "Freeze"));
-            Config.SubMenu("Freeze").AddItem(new MenuItem("UseEFreeze", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("补兵", "Freeze"));
+            Config.SubMenu("Freeze").AddItem(new MenuItem("UseEFreeze", "使用 E").SetValue(true));
 
-            Config.AddSubMenu(new Menu("娓呭叺", "LaneClear"));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseWLaneClear", "浣跨敤 W").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELastHitLaneClear", "鍙湁娓呭叺浣跨敤 E ").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearMinMana", "淇濈暀娉曞姏").SetValue(new Slider(25, 0, 100)));
+            Config.AddSubMenu(new Menu("清兵", "LaneClear"));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "使用 Q").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseWLaneClear", "使用 W").SetValue(false));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "使用 E").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELastHitLaneClear", "只有清兵使用 E ").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearMinMana", "保留法力").SetValue(new Slider(25, 0, 100)));
 
-            Config.AddSubMenu(new Menu("娓呴噹", "JungleClear"));
-            Config.SubMenu("JungleClear").AddItem(new MenuItem("UseQJungleClear", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("JungleClear").AddItem(new MenuItem("UseEJungleClear", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("清野", "JungleClear"));
+            Config.SubMenu("JungleClear").AddItem(new MenuItem("UseQJungleClear", "使用 Q").SetValue(true));
+            Config.SubMenu("JungleClear").AddItem(new MenuItem("UseEJungleClear", "使用 E").SetValue(true));
 
-            Config.AddSubMenu(new Menu("闃茬獊", "Gapcloser"));
-            Config.SubMenu("Gapcloser").AddItem(new MenuItem("RAntiGapcloser", "R 闃茬獊").SetValue(true));
-            Config.SubMenu("Gapcloser").AddItem(new MenuItem("RInterrupetSpell", "R 鎵撴柇娉曟湳").SetValue(true));
-            Config.SubMenu("Gapcloser").AddItem(new MenuItem("RAntiGapcloserMinHealth", "淇濈暀娉曞姏").SetValue(new Slider(60, 0, 100)));
+            Config.AddSubMenu(new Menu("防突", "Gapcloser"));
+            Config.SubMenu("Gapcloser").AddItem(new MenuItem("RAntiGapcloser", "R 防突").SetValue(true));
+            Config.SubMenu("Gapcloser").AddItem(new MenuItem("RInterrupetSpell", "R 打断法术").SetValue(true));
+            Config.SubMenu("Gapcloser").AddItem(new MenuItem("RAntiGapcloserMinHealth", "保留法力").SetValue(new Slider(60, 0, 100)));
 
-            Config.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            Config.SubMenu("Misc").AddItem(new MenuItem("PacketCast", "鏁版嵁鍖呮暣鍚堢殑").SetValue(true));
+            Config.AddSubMenu(new Menu("杂项", "Misc"));
+            Config.SubMenu("Misc").AddItem(new MenuItem("PacketCast", "数据包整合的").SetValue(true));
 
-            Config.AddSubMenu(new Menu("鏈哄叧鏋壂灏勨埗)", "Legit"));
-            Config.SubMenu("Legit").AddItem(new MenuItem("PlayLegit", "鍚敤鏈哄叧鏋壂灏勨埗").SetValue(false));
-            Config.SubMenu("Legit").AddItem(new MenuItem("DisableNFE", "绂佺敤寮€鍙戝寘").SetValue(true));
-            Config.SubMenu("Legit").AddItem(new MenuItem("LegitCastDelay", "璁剧疆 E 寤惰繜").SetValue(new Slider(500, 0, 1500)));
+            Config.AddSubMenu(new Menu("机关枪扫射∶)", "Legit"));
+            Config.SubMenu("Legit").AddItem(new MenuItem("PlayLegit", "启用机关枪扫射∶").SetValue(false));
+            Config.SubMenu("Legit").AddItem(new MenuItem("DisableNFE", "禁用开发包").SetValue(true));
+            Config.SubMenu("Legit").AddItem(new MenuItem("LegitCastDelay", "设置 E 延迟").SetValue(new Slider(500, 0, 1500)));
 
-            Config.AddSubMenu(new Menu("澶ф嫑", "Ultimate"));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("UseAssistedUlt", "浣跨敤杈呭姪澶ф嫑").SetValue(true));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("AssistedUltKey", "杈呭姪澶ф嫑鎸夐敭").SetValue((new KeyBind("R".ToCharArray()[0], KeyBindType.Press))));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("BlockUlt", "闃叉绌哄ぇ").SetValue(true));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("UseUltUnderTower", "鏁屼汉鍦ㄥ涓嬩娇鐢ㄥぇ").SetValue(true));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("UltRange", "鏋侀檺璺濈").SetValue(new Slider(700, 0, 850)));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("RMinHit", "鏈€灏戣儗闈㈡晫浜烘暟").SetValue(new Slider(2, 1, 5)));
-            Config.SubMenu("Ultimate").AddItem(new MenuItem("RMinHitFacing", "鏈€灏戞闈㈡晫浜烘暟").SetValue(new Slider(1, 1, 5)));
+            Config.AddSubMenu(new Menu("大招", "Ultimate"));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("UseAssistedUlt", "使用辅助大招").SetValue(true));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("AssistedUltKey", "辅助大招按键").SetValue((new KeyBind("R".ToCharArray()[0], KeyBindType.Press))));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("BlockUlt", "防止空大").SetValue(true));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("UseUltUnderTower", "敌人在塔下使用大").SetValue(true));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("UltRange", "极限距离").SetValue(new Slider(700, 0, 850)));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("RMinHit", "最少背面敌人数").SetValue(new Slider(2, 1, 5)));
+            Config.SubMenu("Ultimate").AddItem(new MenuItem("RMinHitFacing", "最少正面敌人数").SetValue(new Slider(1, 1, 5)));
 
-            Config.AddSubMenu(new Menu("鑼冨洿", "Drawings"));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q 鑼冨洿").SetValue(new Circle(true, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W 鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E 鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R 鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("EDamage", "鏄剧ずE浼ゆ崯").SetValue(true));
-						Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
-				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+            Config.AddSubMenu(new Menu("范围", "Drawings"));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q 范围").SetValue(new Circle(true, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W 范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E 范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R 范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("EDamage", "显示E伤损").SetValue(true));
+						Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
+				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
             skinManager.AddToMenu(ref Config);
 

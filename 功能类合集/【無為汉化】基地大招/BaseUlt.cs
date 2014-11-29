@@ -36,12 +36,12 @@ namespace BaseUlt2
 
         public BaseUlt()
         {
-            (_menu = new Menu("鍩哄湴澶ф嫑", "BaseUlt", true)).AddToMainMenu();
-            _menu.AddItem(new MenuItem("showRecalls", "鏄剧ず鍥炲煄").SetValue(true));
-            _menu.AddItem(new MenuItem("baseUlt", "鍩哄湴澶ф嫑").SetValue(true));
-            _menu.AddItem(new MenuItem("extraDelay", "棰濆鐨勫欢杩熴劎").SetValue(new Slider(0, -2000, 2000)));
-            _menu.AddItem(new MenuItem("panicKey", "绂佺敤澶ф嫑鎸夐敭").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
-            _menu.AddItem(new MenuItem("regardlessKey", "浠讳綍鏃堕棿(淇濇寔)").SetValue(new KeyBind(17, KeyBindType.Press))); //17 == ctrl
+            (_menu = new Menu("【無為汉化】基地大招", "BaseUlt", true)).AddToMainMenu();
+            _menu.AddItem(new MenuItem("showRecalls", "显示回城").SetValue(true));
+            _menu.AddItem(new MenuItem("baseUlt", "基地大招").SetValue(true));
+            _menu.AddItem(new MenuItem("extraDelay", "额外的延迟").SetValue(new Slider(0, -2000, 2000)));
+            _menu.AddItem(new MenuItem("panicKey", "禁用大招按键").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
+            _menu.AddItem(new MenuItem("regardlessKey", "任何时间(保持)").SetValue(new KeyBind(17, KeyBindType.Press))); //17 == ctrl
 
             var teamUlt = _menu.AddSubMenu(new Menu("Team Baseult Friends", "TeamUlt"));
 

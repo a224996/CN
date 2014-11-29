@@ -42,37 +42,37 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             var champMenu = new Menu("Ezreal Plugin", "Ezreal");
             {
-				var SpellMenu = new Menu("娉曟湳", "SpellMenu");
+				var SpellMenu = new Menu("法术", "SpellMenu");
 				{
 					var qMenu = new Menu("Q", "QMenu");
 					{
-                        qMenu.AddItem(new MenuItem("Q_Max_Range", "Q Max 鑼冨洿").SetValue(new Slider(1200, 500, 1200)));
-                        qMenu.AddItem(new MenuItem("Auto_Q_Slow", "鑷姩Q鍑忛€熺殑").SetValue(true));
-                        qMenu.AddItem(new MenuItem("Auto_Q_Immobile", "鑷姩Q闈欐").SetValue(true));
+                        qMenu.AddItem(new MenuItem("Q_Max_Range", "Q最大范围").SetValue(new Slider(1200, 500, 1200)));
+                        qMenu.AddItem(new MenuItem("Auto_Q_Slow", "自动Q减速的").SetValue(true));
+                        qMenu.AddItem(new MenuItem("Auto_Q_Immobile", "自动Q静止的").SetValue(true));
 						SpellMenu.AddSubMenu(qMenu);
 					}
 
 					var wMenu = new Menu("W", "WMenu");
 					{
-                        wMenu.AddItem(new MenuItem("W_Max_Range", "W Max 鑼冨洿").SetValue(new Slider(1050, 500, 1050)));
+                        wMenu.AddItem(new MenuItem("W_Max_Range", "W最大范围").SetValue(new Slider(1050, 500, 1050)));
 						SpellMenu.AddSubMenu(wMenu);
 					}
 
 					var eMenu = new Menu("E", "EMenu");
 					{
-						eMenu.AddItem(new MenuItem("E_On_Killable", "鍙潃鐢‥").SetValue(true));
-                        eMenu.AddItem(new MenuItem("E_On_Safe", "妫€鏌瀹夊叏").SetValue(true));
+						eMenu.AddItem(new MenuItem("E_On_Killable", "可杀用E").SetValue(true));
+                        eMenu.AddItem(new MenuItem("E_On_Safe", "E安全检测").SetValue(true));
 						SpellMenu.AddSubMenu(eMenu);
 					}
 
 					var rMenu = new Menu("R", "RMenu");
 					{
-						rMenu.AddItem(new MenuItem("R_Min_Range", "R Min 鑼冨洿").SetValue(new Slider(300, 0, 1000)));
-                        rMenu.AddItem(new MenuItem("R_Max_Range", "R Max 鑼冨洿").SetValue(new Slider(2000, 0, 4000)));
-                        rMenu.AddItem(new MenuItem("R_Mec", "R 鍑讳腑 >=").SetValue(new Slider(3, 1, 5)));
-						rMenu.AddItem(new MenuItem("R_Overkill_Check", "鍑绘潃鎻愮ず").SetValue(true));
+						rMenu.AddItem(new MenuItem("R_Min_Range", "R最小范围").SetValue(new Slider(300, 0, 1000)));
+                        rMenu.AddItem(new MenuItem("R_Max_Range", "R最大范围").SetValue(new Slider(2000, 0, 4000)));
+                        rMenu.AddItem(new MenuItem("R_Mec", "R 击中 >=").SetValue(new Slider(3, 1, 5)));
+						rMenu.AddItem(new MenuItem("R_Overkill_Check", "击杀提示").SetValue(true));
 
-						rMenu.AddSubMenu(new Menu("涓嶄娇鐢≧", "Dont_R"));
+						rMenu.AddSubMenu(new Menu("不使用R", "Dont_R"));
 						foreach(var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != MyHero.Team)
 						)
                             rMenu.SubMenu("Dont_R")
@@ -84,47 +84,47 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				    champMenu.AddSubMenu(SpellMenu);
 				}
 
-                var comboMenu = new Menu("杩炴嫑", "Combo");
+                var comboMenu = new Menu("连招", "Combo");
                 {
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "W", true);
                     AddSpelltoMenu(comboMenu, "E", true);
                     AddSpelltoMenu(comboMenu, "R", true);
-                    comboMenu.AddItem(new MenuItem("R_Nearest_Killable", "R鏈€杩戝彲鏉€").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
+                    comboMenu.AddItem(new MenuItem("R_Nearest_Killable", "R最近可杀").SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("楠氭壈", "Harass");
+                var harassMenu = new Menu("骚扰", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
-                    harassMenu.AddItem(new MenuItem("Q_Auto_Harass", "Q锛堥攣瀹氾級").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Press)));
+                    harassMenu.AddItem(new MenuItem("Q_Auto_Harass", "Q（锁定）").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Press)));
                     AddSpelltoMenu(harassMenu, "W", true);
                     AddManaManagertoMenu(harassMenu, 30);
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+                var laneClearMenu = new Menu("清线", "LaneClear");
                 {
                     AddSpelltoMenu(laneClearMenu, "Q", true);
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-                var miscMenu = new Menu("鏉傞」", "Misc");
+                var miscMenu = new Menu("杂项", "Misc");
                 {
-                    harassMenu.AddItem(new MenuItem("Misc_Use_WE", "WE鎸囬拡").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                    harassMenu.AddItem(new MenuItem("Misc_Use_WE", "WE指针").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("显示", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-                    drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "R鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R_Killable", "R鏍囪").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+                    drawMenu.AddItem(new MenuItem("Draw_Q", "Q范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "W范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "E范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "R范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R_Killable", "R可杀").SetValue(true));
 
-					MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

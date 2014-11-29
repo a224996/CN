@@ -71,7 +71,7 @@ namespace RivenSharp
             {
 
             Game.PrintChat("RivenSharp by DeTuKs");
-            Config = new Menu("放逐之刃─瑞文", "Riven", true);
+            Config = new Menu("【無為汉化】瑞文V2", "Riven", true);
             //Orbwalkervar menu = new Menu("My Mainmenu", "my_mainmenu", true);
             var orbwalkerMenu = new Menu("LX 走砍", "my_Orbwalker");
             LXOrbwalker.AddToMenu(orbwalkerMenu);
@@ -98,8 +98,10 @@ namespace RivenSharp
 
             //Debug
             Config.AddSubMenu(new Menu("调试", "debug"));
-            Config.SubMenu("debug").AddItem(new MenuItem("db_targ", "调试目标��")).SetValue(new KeyBind('0', KeyBindType.Press, false));
+            Config.SubMenu("debug").AddItem(new MenuItem("db_targ", "调试目标")).SetValue(new KeyBind('0', KeyBindType.Press, false));
 
+			Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
+			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
             Config.AddToMainMenu();
 
             Drawing.OnDraw += onDraw;

@@ -142,41 +142,41 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "Use E").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "Use R").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用 E").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用 R").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用 Q").SetValue(true));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
             config.AddItem(
-                new MenuItem("DrawR" + Id, "R range").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawR" + Id, "R 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
             config.AddItem(
-                new MenuItem("DrawUlt" + Id, "Ult Text").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+                new MenuItem("DrawUlt" + Id, "大招文本").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("UltHelp" + Id, "Ult Target on R").SetValue(new KeyBind("R".ToCharArray()[0],
+                new MenuItem("UltHelp" + Id, "大招的目标 R").SetValue(new KeyBind("R".ToCharArray()[0],
                     KeyBindType.Press)));
             config.AddItem(
-                new MenuItem("UseEQC" + Id, "Use E-Q Combo").SetValue(new KeyBind("T".ToCharArray()[0],
+                new MenuItem("UseEQC" + Id, "使用 E-Q 连招").SetValue(new KeyBind("T".ToCharArray()[0],
                     KeyBindType.Press)));
             config.AddItem(
-                new MenuItem("Dash" + Id, "Dash to Mouse").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("Dash" + Id, "跟随鼠标").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
             return true;
         }
 

@@ -72,10 +72,12 @@ namespace KarmaSharp
                 Config.AddSubMenu(new Menu("额外", "extra"));
                 Config.SubMenu("extra").AddItem(new MenuItem("useMinions", "对小兵使用Q")).SetValue(true);
 				//Donate
-                Config.AddSubMenu(new Menu("捐赠��", "Donate"));
+                Config.AddSubMenu(new Menu("捐赠作者", "Donate"));
                 Config.SubMenu("Donate").AddItem(new MenuItem("domateMe", "PayPal:")).SetValue(true);
                 Config.SubMenu("Donate").AddItem(new MenuItem("domateMe2", "dtk600@gmail.com")).SetValue(true);
                 Config.SubMenu("Donate").AddItem(new MenuItem("domateMe3", "Tnx ^.^")).SetValue(true);
+				Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
+				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
                 //Debug
               //  Config.AddSubMenu(new Menu("Debug", "debug"));

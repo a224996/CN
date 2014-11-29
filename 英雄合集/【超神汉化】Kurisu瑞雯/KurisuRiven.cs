@@ -68,28 +68,28 @@ namespace KurisuRiven
             Initialize();
 
             Game.PrintChat("Riven Revision: 0995 Loaded");
-            config = new Menu("KurisuRiven", "kriven", true);
+            config = new Menu("【超神汉化】Kurisu瑞雯", "kriven", true);
 
             // Target Selector
-            Menu menuTS = new Menu("鐩爣閫夋嫨", "tselect");
+            Menu menuTS = new Menu("目标选择", "tselect");
             SimpleTs.AddToMenu(menuTS);
             config.AddSubMenu(menuTS);
 
             // Orbwalker
-            Menu menuOrb = new Menu("璧扮爫", "orbwalker");
+            Menu menuOrb = new Menu("走砍", "orbwalker");
             _orbwalker = new Orbwalking.Orbwalker(menuOrb);
             config.AddSubMenu(menuOrb);
 
             // Draw settings
-            Menu menuD = new Menu("鏄剧ず", "dsettings");
-            menuD.AddItem(new MenuItem("dsep1", "鏄剧ず"));
-            menuD.AddItem(new MenuItem("drawrr", "R鑼冨洿")).SetValue(true);
-            menuD.AddItem(new MenuItem("drawaa", "骞矨鑼冨洿")).SetValue(true);
-            menuD.AddItem(new MenuItem("drawp", "鏄剧ず琚姩")).SetValue(true);
-            menuD.AddItem(new MenuItem("drawengage", "W鑼冨洿")).SetValue(true);
-            menuD.AddItem(new MenuItem("drawjumps", "鏄剧ず璺崇偣")).SetValue(true);
-            menuD.AddItem(new MenuItem("drawkill", "鍑绘潃鎻愮ず")).SetValue(true);
-            var dmgItem = new MenuItem("damageafter", "鏄剧ず浼ゅ").SetValue(true);
+            Menu menuD = new Menu("显示", "dsettings");
+            menuD.AddItem(new MenuItem("dsep1", "显示"));
+            menuD.AddItem(new MenuItem("drawrr", "R范围")).SetValue(true);
+            menuD.AddItem(new MenuItem("drawaa", "平A范围")).SetValue(true);
+            menuD.AddItem(new MenuItem("drawp", "显示被动")).SetValue(true);
+            menuD.AddItem(new MenuItem("drawengage", "W范围")).SetValue(true);
+            menuD.AddItem(new MenuItem("drawjumps", "显示跳点")).SetValue(true);
+            menuD.AddItem(new MenuItem("drawkill", "击杀提示")).SetValue(true);
+            var dmgItem = new MenuItem("damageafter", "显示伤害").SetValue(true);
             Utility.HpBarDamageIndicator.DamageToUnit = _r.IsReady()
                 ? (Utility.HpBarDamageIndicator.DamageToUnitDelegate)ComboDamageWUlt
                 : ComboDamage;
@@ -99,82 +99,82 @@ namespace KurisuRiven
                 Utility.HpBarDamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
             };
             menuD.AddItem(dmgItem);
-            menuD.AddItem(new MenuItem("dsep2", "==娴嬭瘯"));
-            menuD.AddItem(new MenuItem("debugdmg", "杩炴嫑浼ゅ")).SetValue(false);
-            menuD.AddItem(new MenuItem("debugtrue", "鐪熷疄鑼冨洿")).SetValue(false);
+            menuD.AddItem(new MenuItem("dsep2", "==测试"));
+            menuD.AddItem(new MenuItem("debugdmg", "连招伤害")).SetValue(false);
+            menuD.AddItem(new MenuItem("debugtrue", "真实范围")).SetValue(false);
            
             config.AddSubMenu(menuD);
 
-            Menu menuK = new Menu("鐑敭", "demkeys");
-            menuK.AddItem(new MenuItem("combokey", "杩炴嫑")).SetValue(new KeyBind(32, KeyBindType.Press));
-            menuK.AddItem(new MenuItem("clearkey", "娓呯嚎")).SetValue(new KeyBind(86, KeyBindType.Press));
-            menuK.AddItem(new MenuItem("jumpkey", "绌垮")).SetValue(new KeyBind(88, KeyBindType.Press));
-            menuK.AddItem(new MenuItem("ksep1", "====娴嬭瘯"));
-            menuK.AddItem(new MenuItem("exportjump", "杈撳嚭浣嶇疆")).SetValue(new KeyBind(73, KeyBindType.Press));
+            Menu menuK = new Menu("热键", "demkeys");
+            menuK.AddItem(new MenuItem("combokey", "连招")).SetValue(new KeyBind(32, KeyBindType.Press));
+            menuK.AddItem(new MenuItem("clearkey", "清线")).SetValue(new KeyBind(86, KeyBindType.Press));
+            menuK.AddItem(new MenuItem("jumpkey", "穿墙")).SetValue(new KeyBind(88, KeyBindType.Press));
+            menuK.AddItem(new MenuItem("ksep1", "====测试"));
+            menuK.AddItem(new MenuItem("exportjump", "输出位置")).SetValue(new KeyBind(73, KeyBindType.Press));
             config.AddSubMenu(menuK);
 
             // Combo Settings
-            Menu menuC = new Menu("杩炴嫑", "csettings");
+            Menu menuC = new Menu("连招", "csettings");
             menuC.AddItem(new MenuItem("csep1", "==== E"));
-            menuC.AddItem(new MenuItem("usevalor", "浣跨敤E")).SetValue(true);
-            menuC.AddItem(new MenuItem("valorhealth", "鐢熷懡<%")).SetValue(new Slider(40));
-            menuC.AddItem(new MenuItem("waitvalor", "绛塃(澶ф嫑)")).SetValue(true);
+            menuC.AddItem(new MenuItem("usevalor", "使用E")).SetValue(true);
+            menuC.AddItem(new MenuItem("valorhealth", "生命<%")).SetValue(new Slider(40));
+            menuC.AddItem(new MenuItem("waitvalor", "等E(大招)")).SetValue(true);
             menuC.AddItem(new MenuItem("csep2", "==== R"));
-            menuC.AddItem(new MenuItem("useblade", "浣跨敤R")).SetValue(true);
+            menuC.AddItem(new MenuItem("useblade", "使用R")).SetValue(true);
             menuC.AddItem(new MenuItem("bladewhen", "==="))
                 .SetValue(new StringList(new[] { "Easykill", "Normalkill", "Hardkill" }, 2));
-            menuC.AddItem(new MenuItem("checkover", "鍑绘潃鎻愮ず")).SetValue(false);
-            menuC.AddItem(new MenuItem("wslash", "浜屾R"))
-                .SetValue(new StringList(new[] { "鍙潃", "Max浼ゅ" }, 1));
+            menuC.AddItem(new MenuItem("checkover", "击杀提示")).SetValue(false);
+            menuC.AddItem(new MenuItem("wslash", "二段R"))
+                .SetValue(new StringList(new[] { "可杀", "Max伤害" }, 1));
             menuC.AddItem(new MenuItem("csep3", "==== Q"));
-            menuC.AddItem(new MenuItem("blockanim", "Q(濞变箰)")).SetValue(false);
-            menuC.AddItem(new MenuItem("cancelanim", "Q绫诲瀷"))
+            menuC.AddItem(new MenuItem("blockanim", "Q(娱乐)")).SetValue(false);
+            menuC.AddItem(new MenuItem("cancelanim", "Q类型"))
 			    .SetValue(new StringList(new[] { "Move", "Packet", "Delay" }));
-            menuC.AddItem(new MenuItem("qqdelay", "Q绐佽繘寤惰繜 ")).SetValue(new Slider(1000, 0, 3000));
+            menuC.AddItem(new MenuItem("qqdelay", "Q突进延迟 ")).SetValue(new Slider(1000, 0, 3000));
             config.AddSubMenu(menuC);
 
             // Extra Settings
-            Menu menuO = new Menu("鏉傞」", "osettings");
-            menuO.AddItem(new MenuItem("osep2", "====鏉傞」"));
-            menuO.AddItem(new MenuItem("useignote", "鐐圭噧")).SetValue(true);
-            menuO.AddItem(new MenuItem("useautow", "鑷姩W")).SetValue(true);
+            Menu menuO = new Menu("杂项", "osettings");
+            menuO.AddItem(new MenuItem("osep2", "====杂项"));
+            menuO.AddItem(new MenuItem("useignote", "点燃")).SetValue(true);
+            menuO.AddItem(new MenuItem("useautow", "自动W")).SetValue(true);
             menuO.AddItem(new MenuItem("autow", "Min")).SetValue(new Slider(3, 1, 5));
-            menuO.AddItem(new MenuItem("osep1", "====浜屾R"));
-            menuO.AddItem(new MenuItem("useautows", "鑷姩")).SetValue(true);
-            menuO.AddItem(new MenuItem("autows", "浼ゅ>%")).SetValue(new Slider(65, 1));
-            menuO.AddItem(new MenuItem("autows2", "浜烘暟>%")).SetValue(new Slider(3, 2, 5));
-            menuO.AddItem(new MenuItem("osep3", "====鎵撴柇"));
-            menuO.AddItem(new MenuItem("interrupter", "鎵撴柇")).SetValue(true);
-            menuO.AddItem(new MenuItem("InterruptQ3", "涓夋Q鎵撴柇")).SetValue(true);
-            menuO.AddItem(new MenuItem("InterruptW", "W鎵撴柇")).SetValue(true);
+            menuO.AddItem(new MenuItem("osep1", "====二段R"));
+            menuO.AddItem(new MenuItem("useautows", "自动")).SetValue(true);
+            menuO.AddItem(new MenuItem("autows", "伤害>%")).SetValue(new Slider(65, 1));
+            menuO.AddItem(new MenuItem("autows2", "人数>%")).SetValue(new Slider(3, 2, 5));
+            menuO.AddItem(new MenuItem("osep3", "====打断"));
+            menuO.AddItem(new MenuItem("interrupter", "打断")).SetValue(true);
+            menuO.AddItem(new MenuItem("InterruptQ3", "三段Q打断")).SetValue(true);
+            menuO.AddItem(new MenuItem("InterruptW", "W打断")).SetValue(true);
             config.AddSubMenu(menuO);
 
             // Farm/Clear Settings
-            Menu menuJ = new Menu("娓呯嚎", "jsettings");
-            menuJ.AddItem(new MenuItem("jsep1", "====娓呴噹"));
-            menuJ.AddItem(new MenuItem("jungleE", "浣跨敤E ")).SetValue(true);
-            menuJ.AddItem(new MenuItem("jungleW", "浣跨敤W ")).SetValue(true);
-            menuJ.AddItem(new MenuItem("jungleQ", "浣跨敤Q")).SetValue(true);
-            menuJ.AddItem(new MenuItem("jsep2", "====娓呯嚎"));
-            menuJ.AddItem(new MenuItem("farmE", "浣跨敤E")).SetValue(true);
-            menuJ.AddItem(new MenuItem("farmW", "浣跨敤W")).SetValue(true);
-            menuJ.AddItem(new MenuItem("farmQ", "浣跨敤Q")).SetValue(true);
+            Menu menuJ = new Menu("清线", "jsettings");
+            menuJ.AddItem(new MenuItem("jsep1", "====清野"));
+            menuJ.AddItem(new MenuItem("jungleE", "使用E ")).SetValue(true);
+            menuJ.AddItem(new MenuItem("jungleW", "使用W ")).SetValue(true);
+            menuJ.AddItem(new MenuItem("jungleQ", "使用Q")).SetValue(true);
+            menuJ.AddItem(new MenuItem("jsep2", "====清线"));
+            menuJ.AddItem(new MenuItem("farmE", "使用E")).SetValue(true);
+            menuJ.AddItem(new MenuItem("farmW", "使用W")).SetValue(true);
+            menuJ.AddItem(new MenuItem("farmQ", "使用Q")).SetValue(true);
             config.AddSubMenu(menuJ);
 
             // Advance Settings
-            Menu menuA = new Menu("鎺ㄨ繘", "asettings");
+            Menu menuA = new Menu("推进", "asettings");
             menuA.AddItem(new MenuItem("asep1", "==== QA"));
-            menuA.AddItem(new MenuItem("autoconfig", "浣跨敤鎺ㄨ崘")).SetValue(false);
-            menuA.AddItem(new MenuItem("qcdelay", "寤惰繜 ")).SetValue(new Slider(0, 0, 1200));
-            menuA.AddItem(new MenuItem("aareset", "閲嶇疆")).SetValue(new Slider(0, 0, 1200));
-            menuA.AddItem(new MenuItem("asep4", "====绂佺敤"));
-            menuA.AddItem(new MenuItem("cursormode", "鍏夐€烸A")).SetValue(false);
-            menuA.AddItem(new MenuItem("asep2", "====鎹愯禒"));
+            menuA.AddItem(new MenuItem("autoconfig", "使用推荐")).SetValue(false);
+            menuA.AddItem(new MenuItem("qcdelay", "延迟 ")).SetValue(new Slider(0, 0, 1200));
+            menuA.AddItem(new MenuItem("aareset", "重置")).SetValue(new Slider(0, 0, 1200));
+            menuA.AddItem(new MenuItem("asep4", "====禁用"));
+            menuA.AddItem(new MenuItem("cursormode", "光速QA")).SetValue(false);
+            menuA.AddItem(new MenuItem("asep2", "====捐赠"));
             menuA.AddItem(new MenuItem("asep3", "xrobinsong@gmail.com"));
 						
-			Menu menuQun = new Menu("瓒呯姹夊寲", "by weilai");
-            menuQun.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            menuQun.AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+			Menu menuQun = new Menu("超神汉化", "by weilai");
+            menuQun.AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            menuQun.AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 
 
             config.AddSubMenu(menuA);

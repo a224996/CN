@@ -20,8 +20,8 @@ namespace Primes_Ultimate_Carry
 		internal static void AddtoMenu(Menu menu)
 		{
 			var tempMenu = menu;
-			tempMenu.AddItem(new MenuItem("ts_sep0", "===== 璁剧疆"));
-			tempMenu.AddItem(new MenuItem("ts_info", "= 蹇潵 ( 鑷姩 )"));
+			tempMenu.AddItem(new MenuItem("ts_sep0", "===== 设置"));
+			tempMenu.AddItem(new MenuItem("ts_info", "= 快来 ( 自动 )"));
 			tempMenu.AddItem(new MenuItem("ts_sep1", "========="));
 			PUC.Menu.AddSubMenu(tempMenu);
 		}

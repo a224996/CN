@@ -28,27 +28,27 @@ namespace Primes_Ultimate_Carry
 			Game.PrintChat("<font color=\"#00BFFF\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");
 
 			Player = ObjectManager.Player;
-			Menu = new Menu("銆愮劇鐐烘眽鍖栥€戝鑻遍泟鍚堥泦", Player.ChampionName + "UltimateCarry", true);
+			Menu = new Menu("【無為汉化】多英雄合集", Player.ChampionName + "UltimateCarry", true);
 
-			var infoMenu = new Menu("Primes 鍜ㄨ鍙般劎", "Primes_Info");
+			var infoMenu = new Menu("Primes 咨询台", "Primes_Info");
 			PrimesInfo.AddtoMenu(infoMenu);
 
-			var sidebarMenu = new Menu("Primes 杈规爮", "Primes_SideBar");
+			var sidebarMenu = new Menu("Primes 边栏", "Primes_SideBar");
 			SideBar.AddtoMenu(sidebarMenu);
 
-			var trackerMenu = new Menu("Primes 璺熻釜鍣ㄣ劎", "Primes_Tracker");
+			var trackerMenu = new Menu("Primes 跟踪器", "Primes_Tracker");
 			Tracker.AddtoMenu(trackerMenu);
 
-			var tsMenu = new Menu("Primes 鐩爣閫夋嫨", "Primes_TS");
+			var tsMenu = new Menu("Primes 目标选择", "Primes_TS");
 			TargetSelector.AddtoMenu(tsMenu);
 
-			var orbwalkMenu = new Menu("Primes 璧扮爫", "Primes_Orbwalker");
+			var orbwalkMenu = new Menu("Primes 走砍", "Primes_Orbwalker");
 			Orbwalker.AddtoMenu(orbwalkMenu);
 
-			var activatorMenu = new Menu("Primes 娲诲寲鍓傘劎", "Primes_Activator");
+			var activatorMenu = new Menu("Primes 活化剂", "Primes_Activator");
 			Activator.AddtoMenu(activatorMenu);
 
-			var autolevelMenu = new Menu("Primes 鑷姩鍔犵偣", "Primes_AutoLevel");
+			var autolevelMenu = new Menu("Primes 自动加点", "Primes_AutoLevel");
 			AutoLevel.AddtoMenu(autolevelMenu);
 			var loadbaseult = false;
 			switch(Player.ChampionName)
@@ -68,7 +68,7 @@ namespace Primes_Ultimate_Carry
 			}
 			if(loadbaseult)
 			{
-				var baseUltMenu = new Menu("Primes 鍩哄湴澶ф嫑", "Primes_BaseUlt");
+				var baseUltMenu = new Menu("Primes 基地大招", "Primes_BaseUlt");
 				BaseUlt.AddtoMenu(baseUltMenu);
 			}
 

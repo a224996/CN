@@ -58,74 +58,74 @@ namespace YasuoSharpV2
                 try
                 {
 
-                    Config = new Menu("鐒＄偤姹夊寲-浜氱储", "Yasuo", true);
+                    Config = new Menu("【無為汉化】亚索V2", "Yasuo", true);
                     //Orbwalker
-                    Config.AddSubMenu(new Menu("璧扮爫", "Orbwalker"));
+                    Config.AddSubMenu(new Menu("走砍", "Orbwalker"));
                     Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalker"));
                     //TS
-                    var TargetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+                    var TargetSelectorMenu = new Menu("目标选择", "Target Selector");
                     SimpleTs.AddToMenu(TargetSelectorMenu);
                     Config.AddSubMenu(TargetSelectorMenu);
                     //Combo
-                    Config.AddSubMenu(new Menu("杩炴嫑", "combo"));
-                    Config.SubMenu("combo").AddItem(new MenuItem("comboItems", "浣跨敤鐐圭噧")).SetValue(true);
+                    Config.AddSubMenu(new Menu("连招", "combo"));
+                    Config.SubMenu("combo").AddItem(new MenuItem("comboItems", "使用点燃")).SetValue(true);
                     //SmartR
-                    Config.SubMenu("combo").AddItem(new MenuItem("smartR", "鏅鸿兘 R")).SetValue(true);
-                    Config.SubMenu("combo").AddItem(new MenuItem("useRHit", "浣跨敤 R 濡傛灉鍑讳腑")).SetValue(new Slider(3, 5, 1));
-                    Config.SubMenu("combo").AddItem(new MenuItem("useRHitTime", "褰撹钀藉湴鏃朵娇鐢副R")).SetValue(true);
-                    Config.SubMenu("combo").AddItem(new MenuItem("useEWall", "瀹夊叏浣跨敤 E ")).SetValue(true);
+                    Config.SubMenu("combo").AddItem(new MenuItem("smartR", "智能 R")).SetValue(true);
+                    Config.SubMenu("combo").AddItem(new MenuItem("useRHit", "使用 R 如果击中")).SetValue(new Slider(3, 5, 1));
+                    Config.SubMenu("combo").AddItem(new MenuItem("useRHitTime", "当要落地时使用︱R")).SetValue(true);
+                    Config.SubMenu("combo").AddItem(new MenuItem("useEWall", "安全使用 E ")).SetValue(true);
                     //Flee away
-                    Config.SubMenu("combo").AddItem(new MenuItem("flee", "浣跨敤E閫冭窇")).SetValue(new KeyBind('Z', KeyBindType.Press, false));
-                    Config.SubMenu("combo").AddItem(new MenuItem("fleeStack", "閫冭窇鏃跺彔鍔燪")).SetValue(true);
+                    Config.SubMenu("combo").AddItem(new MenuItem("flee", "使用E逃跑")).SetValue(new KeyBind('Z', KeyBindType.Press, false));
+                    Config.SubMenu("combo").AddItem(new MenuItem("fleeStack", "逃跑时叠加Q")).SetValue(true);
 
 
                     //LastHit
-                    Config.AddSubMenu(new Menu("琛ュ叺", "lHit"));
-                    Config.SubMenu("lHit").AddItem(new MenuItem("useQlh", "浣跨敤 Q")).SetValue(true);
-                    Config.SubMenu("lHit").AddItem(new MenuItem("useElh", "浣跨敤 E")).SetValue(true);
+                    Config.AddSubMenu(new Menu("补兵", "lHit"));
+                    Config.SubMenu("lHit").AddItem(new MenuItem("useQlh", "使用 Q")).SetValue(true);
+                    Config.SubMenu("lHit").AddItem(new MenuItem("useElh", "使用 E")).SetValue(true);
                     //LaneClear
-                    Config.AddSubMenu(new Menu("娓呭叺", "lClear"));
-                    Config.SubMenu("lClear").AddItem(new MenuItem("useQlc", "浣跨敤 Q")).SetValue(true);
-                    Config.SubMenu("lClear").AddItem(new MenuItem("useEmpQHit", "灏忓叺鏈€灏戞暟閲忥副")).SetValue(new Slider(3, 6, 1));
-                    Config.SubMenu("lClear").AddItem(new MenuItem("useElc", "浣跨敤 E")).SetValue(true);
+                    Config.AddSubMenu(new Menu("清兵", "lClear"));
+                    Config.SubMenu("lClear").AddItem(new MenuItem("useQlc", "使用 Q")).SetValue(true);
+                    Config.SubMenu("lClear").AddItem(new MenuItem("useEmpQHit", "小兵最少数量︱")).SetValue(new Slider(3, 6, 1));
+                    Config.SubMenu("lClear").AddItem(new MenuItem("useElc", "使用 E")).SetValue(true);
                     //Harass
-                    Config.AddSubMenu(new Menu("楠氭壈", "harass"));
-                    Config.SubMenu("harass").AddItem(new MenuItem("harassTower", "濉斾笅楠氭壈")).SetValue(false);
-                    Config.SubMenu("harass").AddItem(new MenuItem("harassOn", "楠氭壈鏁屼汉")).SetValue(true);
-                    Config.SubMenu("harass").AddItem(new MenuItem("harQ3Only", "鍙娇Q3")).SetValue(false);
+                    Config.AddSubMenu(new Menu("骚扰", "harass"));
+                    Config.SubMenu("harass").AddItem(new MenuItem("harassTower", "塔下骚扰")).SetValue(false);
+                    Config.SubMenu("harass").AddItem(new MenuItem("harassOn", "骚扰敌人")).SetValue(true);
+                    Config.SubMenu("harass").AddItem(new MenuItem("harQ3Only", "只使Q3")).SetValue(false);
                     //Drawings
-                    Config.AddSubMenu(new Menu("鑼冨洿", "drawing"));
-                    Config.SubMenu("drawing").AddItem(new MenuItem("disDraw", "鍏ㄩ儴鍏抽棴")).SetValue(false);
-                    Config.SubMenu("drawing").AddItem(new MenuItem("drawQ", "Q鑼冨洿")).SetValue(true);
-                    Config.SubMenu("drawing").AddItem(new MenuItem("drawE", "E鑼冨洿")).SetValue(true);
-                    Config.SubMenu("drawing").AddItem(new MenuItem("drawR", "R鑼冨洿")).SetValue(true);
-                    Config.SubMenu("drawing").AddItem(new MenuItem("drawWJ", "鏄剧ず鍙┛瓒婄殑澧欙副")).SetValue(true);
+                    Config.AddSubMenu(new Menu("范围", "drawing"));
+                    Config.SubMenu("drawing").AddItem(new MenuItem("disDraw", "全部关闭")).SetValue(false);
+                    Config.SubMenu("drawing").AddItem(new MenuItem("drawQ", "Q范围")).SetValue(true);
+                    Config.SubMenu("drawing").AddItem(new MenuItem("drawE", "E范围")).SetValue(true);
+                    Config.SubMenu("drawing").AddItem(new MenuItem("drawR", "R范围")).SetValue(true);
+                    Config.SubMenu("drawing").AddItem(new MenuItem("drawWJ", "显示可穿越的墙︱")).SetValue(true);
 
                     //Extra
-                    Config.AddSubMenu(new Menu("棰濆", "extra"));
-                    Config.SubMenu("extra").AddItem(new MenuItem("djTur", "涓嶈璺宠繘濉旓副")).SetValue(true);
-                    Config.SubMenu("extra").AddItem(new MenuItem("autoLevel", "鑷姩鍔犵偣")).SetValue(true);
+                    Config.AddSubMenu(new Menu("额外", "extra"));
+                    Config.SubMenu("extra").AddItem(new MenuItem("djTur", "不要跳进塔︱")).SetValue(true);
+                    Config.SubMenu("extra").AddItem(new MenuItem("autoLevel", "自动加点")).SetValue(true);
                     Config.SubMenu("extra").AddItem(new MenuItem("levUpSeq", "")).SetValue(new StringList(new string[2] { "Q E W Q start", "Q E Q W start" }));
 
                     //LastHit
-                    Config.AddSubMenu(new Menu("椋庡", "aShots"));
+                    Config.AddSubMenu(new Menu("风墙", "aShots"));
                     //SmartW
-                    Config.SubMenu("aShots").AddItem(new MenuItem("smartW", "鍙兘浣跨敤W")).SetValue(true);
-                    Config.SubMenu("aShots").AddItem(new MenuItem("smartEDogue", "E 浣跨敤 dogue")).SetValue(true);
-                    Config.SubMenu("aShots").AddItem(new MenuItem("wwDanger", "WW 鍙翰鍗遍櫓鎶€鑳斤副")).SetValue(false);
-                    Config.SubMenu("aShots").AddItem(new MenuItem("wwDmg", "瑙﹀彂WW 琛€閲忎綆浜庯副")).SetValue(new Slider(0, 100, 1));
+                    Config.SubMenu("aShots").AddItem(new MenuItem("smartW", "只能使用W")).SetValue(true);
+                    Config.SubMenu("aShots").AddItem(new MenuItem("smartEDogue", "E 使用dogue")).SetValue(true);
+                    Config.SubMenu("aShots").AddItem(new MenuItem("wwDanger", "WW 只躲危险技能")).SetValue(false);
+                    Config.SubMenu("aShots").AddItem(new MenuItem("wwDmg", "触发WW 血量低于")).SetValue(new Slider(0, 100, 1));
                     skillShotMenu = getSkilshotMenu();
                     Config.SubMenu("aShots").AddSubMenu(skillShotMenu);
                     //Debug
-                    Config.AddSubMenu(new Menu("璋冭瘯", "debug"));
+                    Config.AddSubMenu(new Menu("调试", "debug"));
                     Config.SubMenu("debug").AddItem(new MenuItem("WWLast", "Print last ww blocked")).SetValue(new KeyBind('T', KeyBindType.Press, false));
                     Config.SubMenu("debug").AddItem(new MenuItem("saveDash", "saveDashd")).SetValue(new KeyBind('O', KeyBindType.Press, false));
                     Config.SubMenu("debug").AddItem(new MenuItem("exportDash", "export dashes")).SetValue(new KeyBind('P', KeyBindType.Press, false));
                     Config.SubMenu("debug").AddItem(new MenuItem("deleteDash", "deleteLastDash")).SetValue(new KeyBind('I', KeyBindType.Press, false));
 					
-					Config.AddSubMenu(new Menu("鐒＄偤姹夊寲", "by wuwei"));
-				    Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				    Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細158994507"));
+					Config.AddSubMenu(new Menu("無為汉化", "by wuwei"));
+				    Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+				    Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 
                     Config.AddToMainMenu();
                     Drawing.OnDraw += onDraw;

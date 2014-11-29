@@ -35,20 +35,20 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             var champMenu = new Menu("Irelia Plugin", "Irelia");
             {
-                var SpellMenu = new Menu("娉曟湳", "SpellMenu");
+                var SpellMenu = new Menu("技能", "SpellMenu");
                 {
                     var qMenu = new Menu("Q", "QMenu");
                     {
-                        qMenu.AddItem(new MenuItem("Q_Min_Distance", "Q min鑼冨洿").SetValue(new Slider(300, 0, 600)));
-                        qMenu.AddItem(new MenuItem("Q_Gap_Close", "Q灏忓叺绐佽繘").SetValue(true));
-                        qMenu.AddItem(new MenuItem("Q_Under_Tower", "濉斾笅Q鏁屼汉").SetValue(false));
+                        qMenu.AddItem(new MenuItem("Q_Min_Distance", "Q最小范围").SetValue(new Slider(300, 0, 600)));
+                        qMenu.AddItem(new MenuItem("Q_Gap_Close", "Q小兵突进").SetValue(true));
+                        qMenu.AddItem(new MenuItem("Q_Under_Tower", "塔下Q敌人").SetValue(false));
                         SpellMenu.AddSubMenu(qMenu);
                     }
 
                     var eMenu = new Menu("E", "EMenu");
                     {
-                        eMenu.AddItem(new MenuItem("E_Only_Stun", "鐣橢鏅曚汉").SetValue(true));
-                        eMenu.AddItem(new MenuItem("E_Running", "E璺戝姩").SetValue(true));
+                        eMenu.AddItem(new MenuItem("E_Only_Stun", "留E晕人").SetValue(true));
+                        eMenu.AddItem(new MenuItem("E_Running", "E跑动").SetValue(true));
                         SpellMenu.AddSubMenu(eMenu);
                     }
 
@@ -63,18 +63,18 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(SpellMenu);
                 }
 
-                var comboMenu = new Menu("杩炴嫑", "Combo");
+                var comboMenu = new Menu("连招", "Combo");
                 {
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "W", true);
                     AddSpelltoMenu(comboMenu, "E", true);
                     AddSpelltoMenu(comboMenu, "R", true);
-                    AddSpelltoMenu(comboMenu, "Ignite", true, "浣跨敤鐐圭噧");
-                    AddSpelltoMenu(comboMenu, "Botrk", true, "浣跨敤鐮磋触/灏忓集鍒€");
+                    AddSpelltoMenu(comboMenu, "Ignite", true, "使用点燃");
+                    AddSpelltoMenu(comboMenu, "Botrk", true, "使用破败/小弯刀");
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("楠氭壈", "Harass");
+                var harassMenu = new Menu("骚扰", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
                     AddSpelltoMenu(harassMenu, "W", true);
@@ -83,41 +83,41 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var lastHitMenu = new Menu("琛ュ叺", "Lasthit");
+                var lastHitMenu = new Menu("补兵", "Lasthit");
                 {
                     AddSpelltoMenu(lastHitMenu, "Q", true);
-                    AddSpelltoMenu(lastHitMenu, "LastHit_Tower_Q", true, "濉斾笅涓嶇敤");
+                    AddSpelltoMenu(lastHitMenu, "LastHit_Tower_Q", true, "塔下不用");
                     AddManaManagertoMenu(lastHitMenu, 30);
                     champMenu.AddSubMenu(lastHitMenu);
                 }
 
-                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+                var laneClearMenu = new Menu("清线", "LaneClear");
                 {
                     AddSpelltoMenu(laneClearMenu, "Q", true);
-                    AddSpelltoMenu(laneClearMenu, "LastHit_Tower_Q", true, "濉斾笅涓嶇敤");
+                    AddSpelltoMenu(laneClearMenu, "LastHit_Tower_Q", true, "塔下不用");
                     AddSpelltoMenu(laneClearMenu, "W", true);
                     AddSpelltoMenu(laneClearMenu, "R", true);
                     AddManaManagertoMenu(laneClearMenu, 0);
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-                var miscMenu = new Menu("鏉傞」", "Misc");
+                var miscMenu = new Menu("杂项", "Misc");
                 {
                     //miscMenu.AddItem(new MenuItem("Cast_EQ", "Cast EQ nearest target").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
-                    miscMenu.AddItem(new MenuItem("E_Gap_Closer", "E绐佽繘").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("QE_Interrupt", "Q/E鎵撴柇").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("E_Gap_Closer", "E突进").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("QE_Interrupt", "Q/E打断").SetValue(true));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-                var drawMenu = new Menu("鏄剧ず", "Drawing");
+                var drawMenu = new Menu("显示", "Drawing");
                 {
-                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-                    drawMenu.AddItem(new MenuItem("Draw_Q", "鏄剧ずQ").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
-                    drawMenu.AddItem(new MenuItem("Draw_R_Killable", "鏍囪R鍙潃").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+                    drawMenu.AddItem(new MenuItem("Draw_Q", "显示Q").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_E", "显示E").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_R", "显示R").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_R_Killable", "标记R可杀").SetValue(true));
 
-                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
                     drawMenu.AddItem(drawComboDamageMenu);
                     Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
                     Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

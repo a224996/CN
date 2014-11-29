@@ -36,16 +36,16 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Alistar Plugin", "Alistar");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("连招", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "R", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_enemyCount", "X鏁屼汉浣跨敤R")).SetValue(new Slider(2, 1, 5));
-					comboMenu.AddItem(new MenuItem("Combo_useR_Health", "HP<% 浣跨敤R").SetValue(new Slider(70)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_enemyCount", "敌人大于使用R")).SetValue(new Slider(2, 1, 5));
+					comboMenu.AddItem(new MenuItem("Combo_useR_Health", "HP<% 使用R").SetValue(new Slider(70)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("骚扰", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
@@ -55,29 +55,29 @@ namespace Ultimate_Carry_Prevolution.Plugin
 				var laneClearMenu = new Menu("QX ", "LaneClear");
 				{
 					AddSpelltoMenu(laneClearMenu, "Q", true);
-					laneClearMenu.AddItem(new MenuItem("LaneClear_useQ_minHit", "鍑讳腑>").SetValue(new Slider(2, 1, 6)));
+					laneClearMenu.AddItem(new MenuItem("LaneClear_useQ_minHit", "击中>").SetValue(new Slider(2, 1, 6)));
 					AddManaManagertoMenu(laneClearMenu, 20);
 					champMenu.AddSubMenu(laneClearMenu);
 				}
 
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("杂项", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Misc_useE_Health", "浣跨敤E娌荤枟 ").SetValue(new Slider(70)));
-					miscMenu.AddItem(new MenuItem("Misc_useE_Friends", "E闃熷弸").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useQ_AntiGapClose", "Q鏁屼汉").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useQ_Interrupt", "Q鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useW_AntiGapClose", "W鏁屼汉").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Misc_useW_Interrupt", "W鎵撴柇").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useE_Health", "使用E治疗 ").SetValue(new Slider(70)));
+					miscMenu.AddItem(new MenuItem("Misc_useE_Friends", "E队友").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useQ_AntiGapClose", "Q敌人").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useQ_Interrupt", "Q打断").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_AntiGapClose", "W敌人").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Misc_useW_Interrupt", "W打断").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("鑼冨洿", "Drawing");
+				var drawMenu = new Menu("范围", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_Q", "Q鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_W", "W鑼冨洿").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_E", "E鑼冨洿").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_Q", "Q范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_W", "W范围").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_E", "E范围").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

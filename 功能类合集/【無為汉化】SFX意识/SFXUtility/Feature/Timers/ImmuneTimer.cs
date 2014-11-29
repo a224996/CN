@@ -221,15 +221,15 @@ namespace SFXUtility.Feature
 
                     Menu = new Menu(Name, Name);
 
-                    var drawingMenu = new Menu("缁樺埗", Name + "Drawing");
-                    drawingMenu.AddItem(new MenuItem(Name + "DrawingAllyColor", "闃熷弸棰滆壊").SetValue(Color.DarkRed));
-                    drawingMenu.AddItem(new MenuItem(Name + "DrawingEnemyColor", "鏁屼汉棰滆壊").SetValue(Color.DarkRed));
+                    var drawingMenu = new Menu("绘制", Name + "Drawing");
+                    drawingMenu.AddItem(new MenuItem(Name + "DrawingAllyColor", "队友颜色").SetValue(Color.DarkRed));
+                    drawingMenu.AddItem(new MenuItem(Name + "DrawingEnemyColor", "敌人颜色").SetValue(Color.DarkRed));
 
                     Menu.AddSubMenu(drawingMenu);
 
-                    Menu.AddItem(new MenuItem(Name + "ShowAlly", "鏄剧ず闃熷弸").SetValue(true));
-                    Menu.AddItem(new MenuItem(Name + "ShowEnemy", "鏄剧ず鏁屼汉").SetValue(true));
-                    Menu.AddItem(new MenuItem(Name + "Enabled", "鍚敤").SetValue(false));
+                    Menu.AddItem(new MenuItem(Name + "ShowAlly", "显示队友").SetValue(true));
+                    Menu.AddItem(new MenuItem(Name + "ShowEnemy", "显示敌人").SetValue(true));
+                    Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(false));
 
                     _timers.Menu.AddSubMenu(Menu);
 

@@ -35,17 +35,17 @@ namespace Ultimate_Carry_Prevolution.Plugin
         {
             var champMenu = new Menu("Vayne Plugin", "Vayne");
             {
-                var comboMenu = new Menu("杩炴嫑", "Combo");
+                var comboMenu = new Menu("连招", "Combo");
                 {
-                    comboMenu.AddItem(new MenuItem("Focus_Target", "閿佸畾鐩爣").SetValue(true));
+                    comboMenu.AddItem(new MenuItem("Focus_Target", "目标选择").SetValue(true));
                     AddSpelltoMenu(comboMenu, "Q", true);
                     AddSpelltoMenu(comboMenu, "E", true);
                     AddSpelltoMenu(comboMenu, "R", true);
-                    AddSpelltoMenu(comboMenu, "Botrk", true, "浣跨敤鐮磋触/灏忓集鍒€");
+                    AddSpelltoMenu(comboMenu, "Botrk", true, "使用破败/小弯刀");
                     champMenu.AddSubMenu(comboMenu);
                 }
 
-                var harassMenu = new Menu("楠氭壈", "Harass");
+                var harassMenu = new Menu("骚扰", "Harass");
                 {
                     AddSpelltoMenu(harassMenu, "Q", true);
                     AddSpelltoMenu(harassMenu, "E", true);
@@ -53,29 +53,29 @@ namespace Ultimate_Carry_Prevolution.Plugin
                     champMenu.AddSubMenu(harassMenu);
                 }
 
-                var laneClearMenu = new Menu("娓呯嚎", "LaneClear");
+                var laneClearMenu = new Menu("清线", "LaneClear");
                 {
                     AddSpelltoMenu(laneClearMenu, "Q", true);
                     AddManaManagertoMenu(laneClearMenu, 0);
                     champMenu.AddSubMenu(laneClearMenu);
                 }
 
-                var miscMenu = new Menu("鏉傞」", "Misc");
+                var miscMenu = new Menu("杂项", "Misc");
                 {
-                    miscMenu.AddItem(new MenuItem("Misc_Q_Always", "Q+骞矨").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)).SetValue(false));
-                    miscMenu.AddItem(new MenuItem("Misc_useE_Gap_Closer", "E闃茬獊").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("Misc_useE_Interrupt", "E鎵撴柇").SetValue(true));
-                    miscMenu.AddItem(new MenuItem("Misc_E_Next", "鑷姩E").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle)));
-                    miscMenu.AddItem(new MenuItem("Misc_Push_Distance", "E璺濈").SetValue(new Slider(300, 350, 400)));
+                    miscMenu.AddItem(new MenuItem("Misc_Q_Always", "Q+平A").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)).SetValue(false));
+                    miscMenu.AddItem(new MenuItem("Misc_useE_Gap_Closer", "E防突").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Misc_useE_Interrupt", "E打断").SetValue(true));
+                    miscMenu.AddItem(new MenuItem("Misc_E_Next", "自动E").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Toggle)));
+                    miscMenu.AddItem(new MenuItem("Misc_Push_Distance", "E距离").SetValue(new Slider(300, 350, 400)));
                     champMenu.AddSubMenu(miscMenu);
                 }
 
-                var drawMenu = new Menu("鏄剧ず", "Drawing");
+                var drawMenu = new Menu("显示", "Drawing");
                 {
-                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-                    drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
+                    drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+                    drawMenu.AddItem(new MenuItem("Draw_E", "显示E").SetValue(true));
 
-                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+                    MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
                     drawMenu.AddItem(drawComboDamageMenu);
                     Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
                     Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

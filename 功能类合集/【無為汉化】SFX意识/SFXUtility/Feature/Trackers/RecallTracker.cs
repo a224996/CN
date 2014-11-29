@@ -68,7 +68,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鍥炲繂"; }
+            get { return "回忆"; }
         }
 
         #endregion
@@ -175,7 +175,7 @@ namespace SFXUtility.Feature
 
                     Menu = new Menu(Name, Name);
 
-                    var eMenuItem = new MenuItem(Name + "Enabled", "鍚敤").SetValue(true);
+                    var eMenuItem = new MenuItem(Name + "Enabled", "启用").SetValue(true);
 
                     eMenuItem.ValueChanged +=
                         (sender, args) =>

@@ -50,22 +50,22 @@ namespace Primes_Ultimate_Carry
 			_movementPrediction.SetTargetted(Player.BasicAttack.SpellCastTime, Player.BasicAttack.MissileSpeed);
 			
 			var tempMenu = menu;
-			tempMenu.AddItem(new MenuItem("orb_sep0", "====== 璁剧疆 "));
-			tempMenu.AddItem(new MenuItem("orb_HoldPos", "= 淇濇寔浣嶇疆").SetValue(new Slider(0, 100, 0)));
-			tempMenu.AddItem(new MenuItem("orb_ExtraWindup", "= 棰濆寤惰繜").SetValue(new Slider(80, 200, 0)));
-			tempMenu.AddItem(new MenuItem("orb_AutoWindup", "= 鑷姩璁剧疆缁堢粨").SetValue(false));
-			tempMenu.AddItem(new MenuItem("orb_farmdelay", "= 琛ュ叺寤惰繜").SetValue(new Slider(0, 200, 0)));
-			tempMenu.AddItem(new MenuItem("orb_Priority", "= 浼樺厛鍗曚綅").SetValue(new StringList(new[] { "Minion", "Hero" })));
-			tempMenu.AddItem(new MenuItem("orb_MeleePrediction", "= 鍥㈡垬棰勫垽 ").SetValue(false));
-			tempMenu.AddItem(new MenuItem("orb_nomove", "= 绂佺敤绉诲姩 ").SetValue(false));
-			tempMenu.AddItem(new MenuItem("orb_noattack", "= 绂佺敤鏀诲嚮 ").SetValue(false));
-			tempMenu.AddItem(new MenuItem("orb_draw", "= 鐢籄A鑼冨洿 ").SetValue(true));
-			tempMenu.AddItem(new MenuItem("orb_sep1", "=== 鎸夐敭"));
-			tempMenu.AddItem(new MenuItem("orbkey_Combo", "= 杩炴嫑鎸夐敭").SetValue(new KeyBind(32, KeyBindType.Press)));
-			tempMenu.AddItem(new MenuItem("orbkey_Harass", "= 楠氭壈鎸夐敭").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
-			tempMenu.AddItem(new MenuItem("orbkey_LaneClear", "= 娓呭叺鎸夐敭").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-			tempMenu.AddItem(new MenuItem("orbkey_Lasthit", "= 琛ュ叺鎸夐敭").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
-			tempMenu.AddItem(new MenuItem("orbkey_Runlikehell", "= 閫冭窇鎸夐敭").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
+			tempMenu.AddItem(new MenuItem("orb_sep0", "====== 设置 "));
+			tempMenu.AddItem(new MenuItem("orb_HoldPos", "= 保持位置").SetValue(new Slider(0, 100, 0)));
+			tempMenu.AddItem(new MenuItem("orb_ExtraWindup", "= 额外延迟").SetValue(new Slider(80, 200, 0)));
+			tempMenu.AddItem(new MenuItem("orb_AutoWindup", "= 自动设置终结").SetValue(false));
+			tempMenu.AddItem(new MenuItem("orb_farmdelay", "= 补兵延迟").SetValue(new Slider(0, 200, 0)));
+			tempMenu.AddItem(new MenuItem("orb_Priority", "= 优先单位").SetValue(new StringList(new[] { "Minion", "Hero" })));
+			tempMenu.AddItem(new MenuItem("orb_MeleePrediction", "= 团战预判 ").SetValue(false));
+			tempMenu.AddItem(new MenuItem("orb_nomove", "= 禁用移动 ").SetValue(false));
+			tempMenu.AddItem(new MenuItem("orb_noattack", "= 禁用攻击 ").SetValue(false));
+			tempMenu.AddItem(new MenuItem("orb_draw", "= 画AA范围 ").SetValue(true));
+			tempMenu.AddItem(new MenuItem("orb_sep1", "=== 按键"));
+			tempMenu.AddItem(new MenuItem("orbkey_Combo", "= 连招按键").SetValue(new KeyBind(32, KeyBindType.Press)));
+			tempMenu.AddItem(new MenuItem("orbkey_Harass", "= 骚扰按键").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+			tempMenu.AddItem(new MenuItem("orbkey_LaneClear", "= 清兵按键").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
+			tempMenu.AddItem(new MenuItem("orbkey_Lasthit", "= 补兵按键").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
+			tempMenu.AddItem(new MenuItem("orbkey_Runlikehell", "= 逃跑按键").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
 			tempMenu.AddItem(new MenuItem("orb_sep2", "========="));
 			PUC.Menu.AddSubMenu(tempMenu);
 

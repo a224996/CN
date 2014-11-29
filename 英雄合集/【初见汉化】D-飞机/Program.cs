@@ -43,114 +43,114 @@ namespace D_Corki
 
 
             //D Corki
-            _config = new Menu("鍒濊姹夊寲-椋炴満", "D-Corki", true);
+            _config = new Menu("初见汉化-飞机", "D-Corki", true);
 
             //TargetSelector
-            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var targetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             _config.AddSubMenu(targetSelectorMenu);
 
             //Orbwalker
-            _config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            _config.AddSubMenu(new Menu("走砍", "Orbwalking"));
             _orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
 
             //Combo
-            _config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            _config.SubMenu("Combo").AddItem(new MenuItem("UseQC", "浣跨敤Q")).SetValue(true);
-            _config.SubMenu("Combo").AddItem(new MenuItem("UseWC", "浣跨敤W")).SetValue(true);
+            _config.AddSubMenu(new Menu("连招", "Combo"));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseQC", "使用Q")).SetValue(true);
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseWC", "使用W")).SetValue(true);
             _config.SubMenu("Combo")
-                .AddItem(new MenuItem("UseWHE", "鍦℉P锛呬娇鐢╓").SetValue(new Slider(65, 1, 100)));
-            _config.SubMenu("Combo").AddItem(new MenuItem("EnemyC", "鏁屼汉R鑼冨洿 <").SetValue(new Slider(2, 1, 5)));
-            _config.SubMenu("Combo").AddItem(new MenuItem("UseEC", "浣跨敤E")).SetValue(true);
-            _config.SubMenu("Combo").AddItem(new MenuItem("UseRC", "浣跨敤R")).SetValue(true);
+                .AddItem(new MenuItem("UseWHE", "在HP％使用W").SetValue(new Slider(65, 1, 100)));
+            _config.SubMenu("Combo").AddItem(new MenuItem("EnemyC", "敌人R范围 <").SetValue(new Slider(2, 1, 5)));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseEC", "使用E")).SetValue(true);
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseRC", "使用R")).SetValue(true);
             _config.SubMenu("Combo")
-                .AddItem(new MenuItem("ActiveCombo", "杩炴嫑").SetValue(new KeyBind(32, KeyBindType.Press)));
+                .AddItem(new MenuItem("ActiveCombo", "连招").SetValue(new KeyBind(32, KeyBindType.Press)));
 
             //Harass
-            _config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            _config.SubMenu("Harass").AddItem(new MenuItem("UseQH", "浣跨敤Q")).SetValue(true);
-            _config.SubMenu("Harass").AddItem(new MenuItem("UseEH", "浣跨敤E")).SetValue(true);
-            _config.SubMenu("Harass").AddItem(new MenuItem("UseRH", "浣跨敤")).SetValue(true);
-            _config.SubMenu("Harass").AddItem(new MenuItem("RlimH", "R鏁伴噺>").SetValue(new Slider(3, 1, 7)));
+            _config.AddSubMenu(new Menu("骚扰", "Harass"));
+            _config.SubMenu("Harass").AddItem(new MenuItem("UseQH", "使用Q")).SetValue(true);
+            _config.SubMenu("Harass").AddItem(new MenuItem("UseEH", "使用E")).SetValue(true);
+            _config.SubMenu("Harass").AddItem(new MenuItem("UseRH", "使用")).SetValue(true);
+            _config.SubMenu("Harass").AddItem(new MenuItem("RlimH", "R数量>").SetValue(new Slider(3, 1, 7)));
             _config.SubMenu("Harass")
                 .AddItem(
-                    new MenuItem("harasstoggle", "鑷姩楠氭壈(鍒囨崲)").SetValue(new KeyBind("G".ToCharArray()[0],
+                    new MenuItem("harasstoggle", "自动骚扰(切换)").SetValue(new KeyBind("G".ToCharArray()[0],
                         KeyBindType.Toggle)));
             _config.SubMenu("Harass")
-                .AddItem(new MenuItem("Harrasmana", "鏈€浣庢硶鍔涳紖").SetValue(new Slider(60, 1, 100)));
+                .AddItem(new MenuItem("Harrasmana", "最低法力％").SetValue(new Slider(60, 1, 100)));
             _config.SubMenu("Harass")
                 .AddItem(
-                    new MenuItem("ActiveHarass", "楠氭壈").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+                    new MenuItem("ActiveHarass", "骚扰").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
 
             //Farm
-            _config.AddSubMenu(new Menu("鍙戣偛", "Farm"));
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseQL", "Q 娓呯嚎")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseEL", "E 娓呯嚎")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseRL", "R 娓呯嚎")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseQLH", "Q 灏惧垁")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseELH", "E 灏惧垁")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseQJ", "Q 娓呴噹")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseEJ", "E 娓呴噹")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("UseRJ", "R 娓呴噹")).SetValue(true);
-            _config.SubMenu("Farm").AddItem(new MenuItem("RlimL", "R鏁伴噺>").SetValue(new Slider(3, 1, 7)));
-            _config.SubMenu("Farm").AddItem(new MenuItem("Lanemana", "鏈€浣庢硶鍔涳紖").SetValue(new Slider(60, 1, 100)));
+            _config.AddSubMenu(new Menu("发育", "Farm"));
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseQL", "Q 清线")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseEL", "E 清线")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseRL", "R 清线")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseQLH", "Q 尾刀")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseELH", "E 尾刀")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseQJ", "Q 清野")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseEJ", "E 清野")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("UseRJ", "R 清野")).SetValue(true);
+            _config.SubMenu("Farm").AddItem(new MenuItem("RlimL", "R数量>").SetValue(new Slider(3, 1, 7)));
+            _config.SubMenu("Farm").AddItem(new MenuItem("Lanemana", "最低法力％").SetValue(new Slider(60, 1, 100)));
             _config.SubMenu("Farm")
                 .AddItem(
-                    new MenuItem("ActiveLast", "灏惧垁").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
+                    new MenuItem("ActiveLast", "尾刀").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
             _config.SubMenu("Farm")
                 .AddItem(
-                    new MenuItem("ActiveLane", "娓呯嚎娓呴噹").SetValue(new KeyBind("V".ToCharArray()[0],
+                    new MenuItem("ActiveLane", "清线清野").SetValue(new KeyBind("V".ToCharArray()[0],
                         KeyBindType.Press)));
 
             //Misc
-            _config.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            _config.SubMenu("Misc").AddItem(new MenuItem("UseQM", "浣跨敤Q鍑绘潃")).SetValue(true);
-            _config.SubMenu("Misc").AddItem(new MenuItem("UseEM", "浣跨敤E鍑绘潃")).SetValue(true);
-            _config.SubMenu("Misc").AddItem(new MenuItem("UseRM", "浣跨敤R鍑绘潃")).SetValue(true);
-            _config.SubMenu("Misc").AddItem(new MenuItem("skinC", "浣跨敤鐨偆").SetValue(false));
-            _config.SubMenu("Misc").AddItem(new MenuItem("skinCorki", "鐨偆").SetValue(new Slider(4, 1, 7)));
-            _config.SubMenu("Misc").AddItem(new MenuItem("usePackets", "浣跨敤灏佸寘")).SetValue(true);
+            _config.AddSubMenu(new Menu("杂项", "Misc"));
+            _config.SubMenu("Misc").AddItem(new MenuItem("UseQM", "使用Q击杀")).SetValue(true);
+            _config.SubMenu("Misc").AddItem(new MenuItem("UseEM", "使用E击杀")).SetValue(true);
+            _config.SubMenu("Misc").AddItem(new MenuItem("UseRM", "使用R击杀")).SetValue(true);
+            _config.SubMenu("Misc").AddItem(new MenuItem("skinC", "使用皮肤").SetValue(false));
+            _config.SubMenu("Misc").AddItem(new MenuItem("skinCorki", "皮肤").SetValue(new Slider(4, 1, 7)));
+            _config.SubMenu("Misc").AddItem(new MenuItem("usePackets", "使用封包")).SetValue(true);
 
             //Misc
-            _config.AddSubMenu(new Menu("鍛戒腑鍑犵巼", "HitChance"));
+            _config.AddSubMenu(new Menu("命中几率", "HitChance"));
 
-            _config.SubMenu("HitChance").AddSubMenu(new Menu("楠氭壈", "Harass"));
-            _config.SubMenu("HitChance").SubMenu("Harass").AddItem(new MenuItem("QchangeHar", "Q鍛戒腑").SetValue(
-                new StringList(new[] {"榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯"})));
-            _config.SubMenu("HitChance").SubMenu("Harass").AddItem(new MenuItem("EchangeHar", "E鍛戒腑").SetValue(
-                new StringList(new[] {"榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯"})));
-            _config.SubMenu("HitChance").SubMenu("Harass").AddItem(new MenuItem("RchangeHar", "R鍛戒腑").SetValue(
-                new StringList(new[] {"榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯"})));
-            _config.SubMenu("HitChance").AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            _config.SubMenu("HitChance").SubMenu("Combo").AddItem(new MenuItem("Qchange", "Q鍛戒腑").SetValue(
-                new StringList(new[] {"榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯"})));
-            _config.SubMenu("HitChance").SubMenu("Combo").AddItem(new MenuItem("Echange", "E鍛戒腑").SetValue(
-                new StringList(new[] {"榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯"})));
-            _config.SubMenu("HitChance").SubMenu("Combo").AddItem(new MenuItem("Rchange", "R鍛戒腑").SetValue(
-                new StringList(new[] {"榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯"})));
-            _config.SubMenu("HitChance").AddSubMenu(new Menu("鍑绘潃", "KillSteal"));
-            _config.SubMenu("HitChance").SubMenu("KillSteal").AddItem(new MenuItem("Qchangekil", "Q鍛戒腑").SetValue(
-                new StringList(new[] { "榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯" })));
-            _config.SubMenu("HitChance").SubMenu("KillSteal").AddItem(new MenuItem("Echangekil", "E鍛戒腑").SetValue(
-                new StringList(new[] { "榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯" })));
-            _config.SubMenu("HitChance").SubMenu("KillSteal").AddItem(new MenuItem("Rchangekil", "R鍛戒腑").SetValue(
-                new StringList(new[] { "榛樿", "涓瓑", "绮惧噯", "闈炲父绮惧噯" })));
+            _config.SubMenu("HitChance").AddSubMenu(new Menu("骚扰", "Harass"));
+            _config.SubMenu("HitChance").SubMenu("Harass").AddItem(new MenuItem("QchangeHar", "Q命中").SetValue(
+                new StringList(new[] {"默认", "中等", "精准", "非常精准"})));
+            _config.SubMenu("HitChance").SubMenu("Harass").AddItem(new MenuItem("EchangeHar", "E命中").SetValue(
+                new StringList(new[] {"默认", "中等", "精准", "非常精准"})));
+            _config.SubMenu("HitChance").SubMenu("Harass").AddItem(new MenuItem("RchangeHar", "R命中").SetValue(
+                new StringList(new[] {"默认", "中等", "精准", "非常精准"})));
+            _config.SubMenu("HitChance").AddSubMenu(new Menu("连招", "Combo"));
+            _config.SubMenu("HitChance").SubMenu("Combo").AddItem(new MenuItem("Qchange", "Q命中").SetValue(
+                new StringList(new[] {"默认", "中等", "精准", "非常精准"})));
+            _config.SubMenu("HitChance").SubMenu("Combo").AddItem(new MenuItem("Echange", "E命中").SetValue(
+                new StringList(new[] {"默认", "中等", "精准", "非常精准"})));
+            _config.SubMenu("HitChance").SubMenu("Combo").AddItem(new MenuItem("Rchange", "R命中").SetValue(
+                new StringList(new[] {"默认", "中等", "精准", "非常精准"})));
+            _config.SubMenu("HitChance").AddSubMenu(new Menu("击杀", "KillSteal"));
+            _config.SubMenu("HitChance").SubMenu("KillSteal").AddItem(new MenuItem("Qchangekil", "Q命中").SetValue(
+                new StringList(new[] { "默认", "中等", "精准", "非常精准" })));
+            _config.SubMenu("HitChance").SubMenu("KillSteal").AddItem(new MenuItem("Echangekil", "E命中").SetValue(
+                new StringList(new[] { "默认", "中等", "精准", "非常精准" })));
+            _config.SubMenu("HitChance").SubMenu("KillSteal").AddItem(new MenuItem("Rchangekil", "R命中").SetValue(
+                new StringList(new[] { "默认", "中等", "精准", "非常精准" })));
 
             //Drawings
-            _config.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "Drawings"));
-            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawQ", "Q鑼冨洿")).SetValue(true);
-            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawW", "W鑼冨洿")).SetValue(true);
-            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawE", "E鑼冨洿")).SetValue(true);
-            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawR", "R鑼冨洿")).SetValue(true);
-            _config.SubMenu("Drawings").AddItem(new MenuItem("CircleLag", "闄嶄綆FPS").SetValue(true));
+            _config.AddSubMenu(new Menu("技能范围选项", "Drawings"));
+            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawQ", "Q范围")).SetValue(true);
+            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawW", "W范围")).SetValue(true);
+            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawE", "E范围")).SetValue(true);
+            _config.SubMenu("Drawings").AddItem(new MenuItem("DrawR", "R范围")).SetValue(true);
+            _config.SubMenu("Drawings").AddItem(new MenuItem("CircleLag", "降低FPS").SetValue(true));
             _config.SubMenu("Drawings")
                 .AddItem(new MenuItem("CircleQuality", "Circles Quality").SetValue(new Slider(100, 100, 10)));
             _config.SubMenu("Drawings")
                 .AddItem(new MenuItem("CircleThickness", "Circles Thickness").SetValue(new Slider(1, 10, 1)));
-_config.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+_config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-_config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-_config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+_config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+_config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             _config.AddToMainMenu();
             Game.PrintChat("<font color='#881df2'>D-Corki by Diabaths</font> Loaded.");
             Game.OnGameUpdate += Game_OnGameUpdate;

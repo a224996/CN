@@ -55,44 +55,44 @@ namespace TwistedFate
             Q.SetSkillshot(0.25f, 40f, 1000f, false, SkillshotType.SkillshotLine);
 
             //Make the menu
-            Config = new Menu("鍒濊姹夊寲-鍗＄墝澶у笀", "TwistedFate", true);
+            Config = new Menu("初见汉化-卡牌大师", "TwistedFate", true);
 
-            var TargetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var TargetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(TargetSelectorMenu);
             Config.AddSubMenu(TargetSelectorMenu);
 
-            var SowMenu = new Menu("璧扮爫", "Orbwalking");
+            var SowMenu = new Menu("走砍", "Orbwalking");
             SOW = new Orbwalking.Orbwalker(SowMenu);
             Config.AddSubMenu(SowMenu);
 
             /* Q */
-            var q = new Menu("Q - 璁剧疆", "Q");
-            q.AddItem(new MenuItem("AutoQI", "鑷姩Q鐪╂檿").SetValue(true));
+            var q = new Menu("Q - 设置", "Q");
+            q.AddItem(new MenuItem("AutoQI", "自动Q眩晕").SetValue(true));
             q.AddItem(new MenuItem("AutoQD", "Auto-Q dashing").SetValue(true));
-            q.AddItem(new MenuItem("CastQ", "浣跨敤Q (棰勫垽)").SetValue(new KeyBind("U".ToCharArray()[0], KeyBindType.Press)));
+            q.AddItem(new MenuItem("CastQ", "使用Q (预判)").SetValue(new KeyBind("U".ToCharArray()[0], KeyBindType.Press)));
             Config.AddSubMenu(q);
 
             /* W */
-            var w = new Menu("W - 璁剧疆", "W");
+            var w = new Menu("W - 设置", "W");
             w.AddItem(
-                new MenuItem("SelectYellow", "榛勭墝").SetValue(new KeyBind("W".ToCharArray()[0],
+                new MenuItem("SelectYellow", "黄牌").SetValue(new KeyBind("W".ToCharArray()[0],
                     KeyBindType.Press)));
             w.AddItem(
-                new MenuItem("SelectBlue", "钃濈墝").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("SelectBlue", "蓝牌").SetValue(new KeyBind("E".ToCharArray()[0], KeyBindType.Press)));
             w.AddItem(
-                new MenuItem("SelectRed", "绾㈢墝").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("SelectRed", "红牌").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Config.AddSubMenu(w);
 
-            var r = new Menu("R - 璁剧疆", "R");
-            r.AddItem(new MenuItem("AutoY", "浣跨敤R鍚庤嚜鍔ㄩ€変晶榛勭墝").SetValue(true));
+            var r = new Menu("R - 设置", "R");
+            r.AddItem(new MenuItem("AutoY", "使用R后自动选侧黄牌").SetValue(true));
             Config.AddSubMenu(r);
 
-            var misc = new Menu("鏉傞」", "Misc");
-            misc.AddItem(new MenuItem("PingLH", "|鎻愮ず鍙嚮鏉€鐨勬晫浜簗(鏈湴鎻愮ず)").SetValue(true));
+            var misc = new Menu("杂项", "Misc");
+            misc.AddItem(new MenuItem("PingLH", "|提示可击杀的敌人|(本地提示)").SetValue(true));
             Config.AddSubMenu(misc);
 
             //Damage after combo:
-            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "鏄剧ず缁勫悎浼ゅ").SetValue(true);
+            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "显示组合伤害").SetValue(true);
             Utility.HpBarDamageIndicator.DamageToUnit = ComboDamage;
             Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
             dmgAfterComboItem.ValueChanged += delegate(object sender, OnValueChangeEventArgs eventArgs)
@@ -101,20 +101,20 @@ namespace TwistedFate
             };
 
             /*Drawing*/
-            var Drawings = new Menu("鎶€鑳借寖鍥撮€夐」", "Drawings");
-            Drawings.AddItem(new MenuItem("Qcircle", "Q 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(100,255,0,255))));
-            Drawings.AddItem(new MenuItem("Rcircle", "R 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(100, 255, 255, 255))));
-            Drawings.AddItem(new MenuItem("Rcircle2", "R 鑼冨洿 (|灏忓湴鍥捐寖鍥磡)").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+            var Drawings = new Menu("技能范围选项", "Drawings");
+            Drawings.AddItem(new MenuItem("Qcircle", "Q 范围").SetValue(new Circle(true, Color.FromArgb(100,255,0,255))));
+            Drawings.AddItem(new MenuItem("Rcircle", "R 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 255, 255))));
+            Drawings.AddItem(new MenuItem("Rcircle2", "R 范围 (|小地图范围|)").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
             Drawings.AddItem(dmgAfterComboItem);
             Config.AddSubMenu(Drawings);
 
-            Config.AddItem(new MenuItem("Combo", "杩炴嫑").SetValue(new KeyBind(32, KeyBindType.Press)));
+            Config.AddItem(new MenuItem("Combo", "连招").SetValue(new KeyBind(32, KeyBindType.Press)));
 
             Config.AddToMainMenu();
-Config.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+Config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             Game.OnGameUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += DrawingOnOnEndScene;

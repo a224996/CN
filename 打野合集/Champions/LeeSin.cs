@@ -26,59 +26,59 @@ namespace Master
             SkillE.SetSkillshot(SkillE.Instance.SData.SpellCastTime, SkillE.Instance.SData.LineWidth, SkillE.Instance.SData.MissileSpeed, false, SkillshotType.SkillshotCircle);
             SkillR.SetTargetted(SkillR.Instance.SData.SpellCastTime, SkillR.Instance.SData.MissileSpeed);
 
-            Config.SubMenu("Orbwalker").SubMenu("lxOrbwalker_Modes").AddItem(new MenuItem(Name + "starActive", "鏄庢槦杩炴嫑").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
-            Config.SubMenu("Orbwalker").SubMenu("lxOrbwalker_Modes").AddItem(new MenuItem(Name + "insecMake", "鍙兘鏄洖鏃嬭涪").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
-            Config.SubMenu("Orbwalker").SubMenu("lxOrbwalker_Modes").AddItem(new MenuItem(Name + "ksbrdr", "|鎶㈠ぇ榫?灏忛緳|").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("Orbwalker").SubMenu("lxOrbwalker_Modes").AddItem(new MenuItem(Name + "starActive", "明星连招").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("Orbwalker").SubMenu("lxOrbwalker_Modes").AddItem(new MenuItem(Name + "insecMake", "可能是回旋踢").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("Orbwalker").SubMenu("lxOrbwalker_Modes").AddItem(new MenuItem(Name + "ksbrdr", "|抢大??小龙|").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
 
-            Config.AddSubMenu(new Menu("杩炴嫑", "csettings"));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "pusage", "浣跨敤琚姩").SetValue(false));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "qusage", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "wusage", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "autowusage", "浣跨敤W濡傛灉HP鍦▅").SetValue(new Slider(40, 1)));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "eusage", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "rusage", "浣跨敤R鏉ュ嚮鏉€").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "ignite", "濡傛灉鍙嚮鏉€鑷姩浣跨敤鐐圭噧").SetValue(true));
-            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "iusage", "浣跨敤椤圭洰").SetValue(true));
+            Config.AddSubMenu(new Menu("连招", "csettings"));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "pusage", "使用被动").SetValue(false));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "qusage", "使用 Q").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "wusage", "使用 W").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "autowusage", "使用W如果HP在|").SetValue(new Slider(40, 1)));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "eusage", "使用 E").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "rusage", "使用R来击杀").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "ignite", "如果可击杀自动使用点燃").SetValue(true));
+            Config.SubMenu("csettings").AddItem(new MenuItem(Name + "iusage", "使用项目").SetValue(true));
 
-            Config.AddSubMenu(new Menu("楠氭壈", "hsettings"));
-            Config.SubMenu("hsettings").AddItem(new MenuItem(Name + "harMode", "浣跨敤楠氭壈濡傛灉HP鍦ㄤ互涓妡").SetValue(new Slider(20, 1)));
-            Config.SubMenu("hsettings").AddItem(new MenuItem(Name + "useHarE", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("骚扰", "hsettings"));
+            Config.SubMenu("hsettings").AddItem(new MenuItem(Name + "harMode", "使用骚扰如果HP在以上|").SetValue(new Slider(20, 1)));
+            Config.SubMenu("hsettings").AddItem(new MenuItem(Name + "useHarE", "使用 E").SetValue(true));
 
-            Config.AddSubMenu(new Menu("娓呯嚎/娓呴噹", "LaneJungClear"));
-            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearQ", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearW", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearE", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearI", "浣跨敤 鎻愪簹鐜涚壒/璐涔濆ご").SetValue(true));
+            Config.AddSubMenu(new Menu("清线/清野", "LaneJungClear"));
+            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearQ", "使用 Q").SetValue(true));
+            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearW", "使用 W").SetValue(true));
+            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearE", "使用 E").SetValue(true));
+            Config.SubMenu("LaneJungClear").AddItem(new MenuItem(Name + "useClearI", "使用 提亚玛特/贪欲九头").SetValue(true));
 
-            Config.AddSubMenu(new Menu("涓栫晫绗竴鎵撻噹", "insettings"));
-            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "insecMode", "妯″紡").SetValue(new StringList(new[] { "|闄勮繎鐨勭洰鏍噟", "|閫夋嫨鐨勭洰鏍噟", "|榧犳爣鐨勪綅缃畖" })));
-            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "insecFlash", "濡傛灉鏃犵溂浣跨敤闂幇").SetValue(true));
-            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "insecTowerR", "濡傛灉娌℃湁鑻遍泟鍒欒涪鍚戝").SetValue(new Slider(1100, 500, 1500)));
-            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "drawInsec", "|鍥炴棆韪㈢嚎鏉℃柟鍚憒").SetValue(true));
-            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "drawInsecTower", "|鏄剧ず澶ф嫑濉旇寖鍥磡").SetValue(true));
+            Config.AddSubMenu(new Menu("世界第一打野", "insettings"));
+            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "insecMode", "模式").SetValue(new StringList(new[] { "|附近的目标|", "|选择的目标|", "|鼠标的位置|" })));
+            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "insecFlash", "如果无眼使用闪现").SetValue(true));
+            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "insecTowerR", "如果没有英雄则踢向塔").SetValue(new Slider(1100, 500, 1500)));
+            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "drawInsec", "|回旋踢线条方向|").SetValue(true));
+            Config.SubMenu("insettings").AddItem(new MenuItem(Name + "drawInsecTower", "|显示大招塔范围|").SetValue(true));
 
-            Config.AddSubMenu(new Menu("澶ф嫑璁剧疆", "useUlt"));
+            Config.AddSubMenu(new Menu("大招设置", "useUlt"));
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(i => i.IsEnemy))
             {
-                Config.SubMenu("useUlt").AddItem(new MenuItem(Name + "ult" + enemy.ChampionName, "浣跨敤澶ф嫑 " + enemy.ChampionName).SetValue(true));
+                Config.SubMenu("useUlt").AddItem(new MenuItem(Name + "ult" + enemy.ChampionName, "使用大招 " + enemy.ChampionName).SetValue(true));
             }
 
-            Config.AddSubMenu(new Menu("鏉傞」", "miscs"));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "lasthitQ", "|浣跨敤Q鏈€鍚庝竴鍑粅").SetValue(true));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "surviveW", "|灏濊瘯浣跨敤W鐢熷瓨|").SetValue(true));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "smite", "|浣跨敤鎯╂垝灏忓叺鎺|").SetValue(true));
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "SkinID", "|鎹㈢毊鑲").SetValue(new Slider(4, 0, 6))).ValueChanged += SkinChanger;
-            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "packetCast", "浣跨敤灏佸寘").SetValue(true));
+            Config.AddSubMenu(new Menu("杂项", "miscs"));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "lasthitQ", "|使用Q最后一击|").SetValue(true));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "surviveW", "|尝试使用W生存|").SetValue(true));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "smite", "|使用惩戒小兵接Q|").SetValue(true));
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "SkinID", "|换皮肤|").SetValue(new Slider(4, 0, 6))).ValueChanged += SkinChanger;
+            Config.SubMenu("miscs").AddItem(new MenuItem(Name + "packetCast", "使用封包").SetValue(true));
 
-            Config.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "DrawSettings"));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "drawKillable", "鍑绘潃鏂囨湰").SetValue(true));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawQ", "Q 鑼冨洿").SetValue(false));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawW", "W 鑼冨洿").SetValue(true));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawE", "E 鑼冨洿").SetValue(false));
-            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawR", "R 鑼冨洿").SetValue(false));
-Config.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+            Config.AddSubMenu(new Menu("技能范围选项", "DrawSettings"));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "drawKillable", "击杀文本").SetValue(true));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawQ", "Q 范围").SetValue(false));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawW", "W 范围").SetValue(true));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawE", "E 范围").SetValue(false));
+            Config.SubMenu("DrawSettings").AddItem(new MenuItem(Name + "DrawR", "R 范围").SetValue(false));
+Config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
             Game.OnGameUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;

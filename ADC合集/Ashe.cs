@@ -148,43 +148,43 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "Use W").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "Use R").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用 W").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用 R").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWH" + Id, "Use W").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用 W").SetValue(true));
             config.AddItem(
-                new MenuItem("UseWTH" + Id, "Use W (Toggle)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseWTH" + Id, "使用 W (切换)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));
             return true;
         }
 
         public override bool LaneClearMenu(Menu config)
         {
-            config.AddItem(new MenuItem("DeactivateQ" + Id, "Always deactivate Frost Arrow").SetValue(false));
+            config.AddItem(new MenuItem("DeactivateQ" + Id, "总是停用霜冻之箭").SetValue(false));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W range").SetValue(new Circle(true, Color.CornflowerBlue)));
+                new MenuItem("DrawW" + Id, "W 范围").SetValue(new Circle(true, Color.CornflowerBlue)));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("QExploit" + Id, "Use Q Exploit").SetValue(true));
-            config.AddItem(new MenuItem("RInterruptable" + Id, "Auto R Interruptable Spells").SetValue(true));
-            config.AddItem(new MenuItem("EFlash" + Id, "Use E against Flashes").SetValue(true));
-            config.AddItem(new MenuItem("RManualCast" + Id, "Cast R Manually(2000 range)"))
+            config.AddItem(new MenuItem("QExploit" + Id, "使用 Q 漏斗").SetValue(true));
+            config.AddItem(new MenuItem("RInterruptable" + Id, "自动 R 可中断的咒语").SetValue(true));
+            config.AddItem(new MenuItem("EFlash" + Id, "使用 E 查看闪现").SetValue(true));
+            config.AddItem(new MenuItem("RManualCast" + Id, "手动R(2000 范围)"))
                 .SetValue(new KeyBind('T', KeyBindType.Press));
             return true;
         }

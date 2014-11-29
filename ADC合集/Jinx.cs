@@ -384,49 +384,49 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "浣跨敤W").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "浣跨敤R").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用R").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWH" + Id, "浣跨敤W").SetValue(false));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(false));
             return true;
         }
 
         public override bool LaneClearMenu(Menu config)
         {
-            config.AddItem(new MenuItem("SwapQ" + Id, "鎬绘槸鍒囨崲杞绘灙").SetValue(false));
+            config.AddItem(new MenuItem("SwapQ" + Id, "总是切换轻枪").SetValue(false));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("SwapDistance" + Id, "璺濈涓嶅鍒囨崲Q").SetValue(true));
-            config.AddItem(new MenuItem("SwapAOE" + Id, "鍒囨崲QAOE").SetValue(false));
-            config.AddItem(new MenuItem("MinWRange" + Id, "MinW鑼冨洿").SetValue(new Slider(525 + 65 * 2, 0, 1200)));
-            config.AddItem(new MenuItem("AutoEI" + Id, "鑷姩E闈欐").SetValue(true));
-            config.AddItem(new MenuItem("AutoES" + Id, "鑷姩E鍙楁帶").SetValue(true));
-            config.AddItem(new MenuItem("AutoED" + Id, "鑷姩E绐佽繘").SetValue(false));
+            config.AddItem(new MenuItem("SwapDistance" + Id, "距离不够切换Q").SetValue(true));
+            config.AddItem(new MenuItem("SwapAOE" + Id, "切换QAOE").SetValue(false));
+            config.AddItem(new MenuItem("MinWRange" + Id, "MinW范围").SetValue(new Slider(525 + 65 * 2, 0, 1200)));
+            config.AddItem(new MenuItem("AutoEI" + Id, "自动E静止").SetValue(true));
+            config.AddItem(new MenuItem("AutoES" + Id, "自动E受控").SetValue(true));
+            config.AddItem(new MenuItem("AutoED" + Id, "自动E突进").SetValue(false));
             config.AddItem(
-                new MenuItem("CastR" + Id, "鍗婅嚜鍔≧(2000)").SetValue(
+                new MenuItem("CastR" + Id, "半自动R(2000)").SetValue(
                     new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
-            config.AddItem(new MenuItem("ROverKill" + Id, "妫€鏌鍙潃").SetValue(true));
-            config.AddItem(new MenuItem("MinRRange" + Id, "Min R鑼冨洿").SetValue(new Slider(300, 0, 1500)));
-            config.AddItem(new MenuItem("MaxRRange" + Id, "Max R鑼冨洿").SetValue(new Slider(1700, 0, 4000)));
+            config.AddItem(new MenuItem("ROverKill" + Id, "检查R可杀").SetValue(true));
+            config.AddItem(new MenuItem("MinRRange" + Id, "Min R范围").SetValue(new Slider(300, 0, 1500)));
+            config.AddItem(new MenuItem("MaxRRange" + Id, "Max R范围").SetValue(new Slider(1700, 0, 4000)));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQBound" + Id, "Q鑼冨洿").SetValue(
+                new MenuItem("DrawQBound" + Id, "Q范围").SetValue(
                     new Circle(true, Color.FromArgb(100, 255, 0, 0))));
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W鑼冨洿").SetValue(new Circle(false, Color.CornflowerBlue)));
+                new MenuItem("DrawW" + Id, "W范围").SetValue(new Circle(false, Color.CornflowerBlue)));
             return true;
         }
 

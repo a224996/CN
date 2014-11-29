@@ -67,7 +67,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鍏嬮殕"; }
+            get { return "克隆"; }
         }
 
         #endregion
@@ -133,11 +133,11 @@ namespace SFXUtility.Feature
 
                     Menu = new Menu(Name, Name);
 
-                    var drawingMenu = new Menu("缁樺埗", Name + "Drawing");
+                    var drawingMenu = new Menu("绘制", Name + "Drawing");
                     drawingMenu.AddItem(
-                        new MenuItem(Name + "DrawingCircleColor", "鍦嗗湀棰滆壊").SetValue(Color.YellowGreen));
+                        new MenuItem(Name + "DrawingCircleColor", "圆圈颜色").SetValue(Color.YellowGreen));
                     drawingMenu.AddItem(
-                        new MenuItem(Name + "DrawingCircleRadius", "鍦嗗湀鍗婂緞").SetValue(new Slider(30)));
+                        new MenuItem(Name + "DrawingCircleRadius", "圆圈半径").SetValue(new Slider(30)));
 
                     Menu.AddSubMenu(drawingMenu);
 

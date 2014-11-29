@@ -70,8 +70,8 @@ namespace Marksman
         {
             if (!Orbwalking.CanMove(100)) return;
             
-            //Update Q range depending on level; 600 + 5 Ã— ( Tristana's level - 1)/* dont waste your Q for only 1 or 2 hits. */
-            //Update E and R range depending on level; 630 + 9 Ã— ( Tristana's level - 1)
+            //Update Q range depending on level; 600 + 5 ??? ( Tristana's level - 1)/* dont waste your Q for only 1 or 2 hits. */
+            //Update E and R range depending on level; 630 + 9 ??? ( Tristana's level - 1)
             Q.Range = 600 + 5 * (ObjectManager.Player.Level - 1);
             E.Range = 630 + 9 * (ObjectManager.Player.Level - 1);
             R.Range = 630 + 9 * (ObjectManager.Player.Level - 1);
@@ -117,17 +117,17 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "浣跨敤Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "浣跨敤E").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用E").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "浣跨敤Q").SetValue(false));
-            config.AddItem(new MenuItem("UseEH" + Id, "浣跨敤E").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(false));
+            config.AddItem(new MenuItem("UseEH" + Id, "使用E").SetValue(true));
             config.AddItem(
-                new MenuItem("UseETH" + Id, "浣跨敤E (閿佸畾)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseETH" + Id, "使用E (锁定)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));
             return true;
         }
@@ -135,15 +135,15 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E鑼冨洿").SetValue(new Circle(true, Color.CornflowerBlue)));
+                new MenuItem("DrawE" + Id, "E范围").SetValue(new Circle(true, Color.CornflowerBlue)));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseRM" + Id, "鍙潃浣跨敤R").SetValue(true));
-            config.AddItem(new MenuItem("UseRMG" + Id, "浣跨敤R闃茬獊").SetValue(true));
-            config.AddItem(new MenuItem("UseRMI" + Id, "浣跨敤R鎵撴柇").SetValue(true));
+            config.AddItem(new MenuItem("UseRM" + Id, "可杀使用R").SetValue(true));
+            config.AddItem(new MenuItem("UseRMG" + Id, "使用R防突").SetValue(true));
+            config.AddItem(new MenuItem("UseRMI" + Id, "使用R打断").SetValue(true));
             return true;
         }
 

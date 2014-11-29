@@ -52,7 +52,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鐒＄偤姹夊寲鈹€璺熻釜"; }
+            get { return "無為汉化─跟踪"; }
         }
 
         #endregion
@@ -67,7 +67,7 @@ namespace SFXUtility.Feature
 
                 Menu = new Menu(Name, Name);
 
-                Menu.AddItem(new MenuItem(Name + "Enabled", "鍚敤").SetValue(true));
+                Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(true));
 
                 BaseMenu.AddSubMenu(Menu);
 

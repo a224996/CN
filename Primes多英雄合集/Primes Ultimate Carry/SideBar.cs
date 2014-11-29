@@ -37,8 +37,8 @@ namespace Primes_Ultimate_Carry
 			//Champion5.Add();
 
 			var tempMenu = menu;
-			tempMenu.AddItem(new MenuItem("sb_sep0", "====== 璁剧疆"));
-			tempMenu.AddItem(new MenuItem("sb_show", "= 鏄剧ず杈规爮").SetValue(new KeyBind("S".ToCharArray()[0], KeyBindType.Press)));
+			tempMenu.AddItem(new MenuItem("sb_sep0", "====== 设置"));
+			tempMenu.AddItem(new MenuItem("sb_show", "= 显示边栏").SetValue(new KeyBind("S".ToCharArray()[0], KeyBindType.Press)));
 			tempMenu.AddItem(new MenuItem("sb_sep1", "========="));
 			PUC.Menu.AddSubMenu(tempMenu);
 

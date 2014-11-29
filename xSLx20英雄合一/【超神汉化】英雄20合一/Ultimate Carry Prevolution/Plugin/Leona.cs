@@ -32,15 +32,15 @@ namespace Ultimate_Carry_Prevolution.Plugin
 		{
 			var champMenu = new Menu("Leona Plugin", "Leona");
 			{
-				var comboMenu = new Menu("杩炴嫑", "Combo");
+				var comboMenu = new Menu("连招", "Combo");
 				{
 					AddSpelltoMenu(comboMenu, "Q", true);
 					AddSpelltoMenu(comboMenu, "W", true);
 					AddSpelltoMenu(comboMenu, "E", true);
-					comboMenu.AddItem(new MenuItem("Combo_useR_enemyCount", "R鍑讳腑>").SetValue(new Slider(3, 1, 5)));
+					comboMenu.AddItem(new MenuItem("Combo_useR_enemyCount", "R击中>").SetValue(new Slider(3, 1, 5)));
 					champMenu.AddSubMenu(comboMenu);
 				}
-				var harassMenu = new Menu("楠氭壈", "Harass");
+				var harassMenu = new Menu("骚扰", "Harass");
 				{
 					AddSpelltoMenu(harassMenu, "Q", true);
 					AddSpelltoMenu(harassMenu, "W", true);
@@ -49,26 +49,26 @@ namespace Ultimate_Carry_Prevolution.Plugin
 					champMenu.AddSubMenu(harassMenu);
 				}
 
-				var miscMenu = new Menu("鏉傞」", "Misc");
+				var miscMenu = new Menu("杂项", "Misc");
 				{
-					miscMenu.AddItem(new MenuItem("Q_AutoDetonate", "鑷姩Q").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Q_Interrupt", "Q鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Q_UnderTurret", "濉斾笅Q").SetValue(true));
-					miscMenu.AddItem(new MenuItem("Q_AgainstWard", "Q鎷嗙溂").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_AntiGapClose", "绐佽繘浣跨敤W").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_Interrupt", "W鎵撴柇").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_AgainstAA", "鏁屼汉骞矨浣跨敤W").SetValue(true));
-					miscMenu.AddItem(new MenuItem("W_AgainstSpells", "鏁屼汉鎶€鑳戒娇鐢╓").SetValue(true));
-					miscMenu.AddItem(new MenuItem("R_Interrupt", "R鎵撴柇").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_AutoDetonate", "自动Q").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_Interrupt", "Q打断").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_UnderTurret", "塔下Q").SetValue(true));
+					miscMenu.AddItem(new MenuItem("Q_AgainstWard", "Q拆眼").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_AntiGapClose", "突进使用W").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_Interrupt", "W打断").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_AgainstAA", "敌人平A时使用W").SetValue(true));
+					miscMenu.AddItem(new MenuItem("W_AgainstSpells", "敌人使用技能时使用W").SetValue(true));
+					miscMenu.AddItem(new MenuItem("R_Interrupt", "R打断").SetValue(true));
 					champMenu.AddSubMenu(miscMenu);
 				}
-				var drawMenu = new Menu("鏄剧ず", "Drawing");
+				var drawMenu = new Menu("显示", "Drawing");
 				{
-					drawMenu.AddItem(new MenuItem("Draw_Disabled", "绂佺敤").SetValue(false));
-					drawMenu.AddItem(new MenuItem("Draw_E", "鏄剧ずE").SetValue(true));
-					drawMenu.AddItem(new MenuItem("Draw_R", "鏄剧ずR").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用").SetValue(false));
+					drawMenu.AddItem(new MenuItem("Draw_E", "显示E").SetValue(true));
+					drawMenu.AddItem(new MenuItem("Draw_R", "显示R").SetValue(true));
 
-					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "鏄剧ず浼ゅ").SetValue(true);
+					var drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
 					drawMenu.AddItem(drawComboDamageMenu);
 					Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
 					Utility.HpBarDamageIndicator.Enabled = drawComboDamageMenu.GetValue<bool>();

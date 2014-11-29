@@ -31,15 +31,15 @@ namespace Master
             Game.PrintChat("<font color = \"#00bfff\">Master Series</font> by <font color = \"#9370db\">Brian</font>");
             Game.PrintChat("<font color = \"#ffa500\">Feel free to donate via Paypal to:</font> <font color = \"#ff4500\">dcbrian01@gmail.com</font>");
             Name = Player.ChampionName;
-            Config = new Menu("鎵撻噹鍚堥泦- " + Name, "Master_" + Name, true);
+            Config = new Menu("打野合集- " + Name, "Master_" + Name, true);
 
-            Config.AddSubMenu(new Menu("鐩爣閫夋嫨", "TSSettings"));
-            Config.SubMenu("TSSettings").AddItem(new MenuItem("tsMode", "妯″紡").SetValue(new StringList(new[] { "|鑷姩|", "|鏈€澶欰D|", "|鏈€澶欰P|", "|鏈€灏戞敾鍑粅", "|鏈€灏戝钩A|", "|鏈€浣嶩P|", "|鏈€杩憒", "|榧犳爣闄勮繎|" })));
-            Config.SubMenu("TSSettings").AddItem(new MenuItem("tsFocus", "寮哄埗鐩爣").SetValue(true));
-            Config.SubMenu("TSSettings").AddItem(new MenuItem("tsDraw", "鏄剧ず鐩爣").SetValue(true));
+            Config.AddSubMenu(new Menu("目标选择", "TSSettings"));
+            Config.SubMenu("TSSettings").AddItem(new MenuItem("tsMode", "模式").SetValue(new StringList(new[] { "|自动|", "|最多AD|", "|最多AP|", "|最少攻击|", "|最少平A|", "|最低HP|", "|最近|", "|鼠标附近|" })));
+            Config.SubMenu("TSSettings").AddItem(new MenuItem("tsFocus", "强制目标").SetValue(true));
+            Config.SubMenu("TSSettings").AddItem(new MenuItem("tsDraw", "显示目标").SetValue(true));
             selectTarget = new TargetSelector(2000, TargetSelector.TargetingMode.AutoPriority);
 
-            var OWMenu = new Menu("璧扮爫", "Orbwalker");
+            var OWMenu = new Menu("走砍", "Orbwalker");
             LXOrbwalker.AddToMenu(OWMenu);
             Config.AddSubMenu(OWMenu);
 

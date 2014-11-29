@@ -81,49 +81,49 @@ namespace Olafisback
             //Create the menu
             Config = new Menu(ChampionName, ChampionName, true);
 
-            var targetSelectorMenu = new Menu("鐩爣鐜板湪", "Target Selector");
+            var targetSelectorMenu = new Menu("目标现在", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
             //Orbwalker submenu
-            Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            Config.AddSubMenu(new Menu("走砍", "Orbwalking"));
 
             //Load the orbwalker and add it to the submenu.
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
-            Config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "浣跨敤Q")).SetValue(true);
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "浣跨敤W")).SetValue(true);
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "浣跨敤E")).SetValue(true);
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseItems", "浣跨敤鐗╁搧")).SetValue(true);
+            Config.AddSubMenu(new Menu("连招", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用Q")).SetValue(true);
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用W")).SetValue(true);
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用E")).SetValue(true);
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseItems", "使用物品")).SetValue(true);
             Config.SubMenu("Combo")
-                .AddItem(new MenuItem("ComboActive", "杩炴嫑").SetValue(new KeyBind(32, KeyBindType.Press)));
+                .AddItem(new MenuItem("ComboActive", "连招").SetValue(new KeyBind(32, KeyBindType.Press)));
 
-            Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "浣跨敤Q").SetValue(false));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQ2Harass", "浣跨敤鐭璔").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "浣跨敤E").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("Minman", "Min 钃濋噺").SetValue(new Slider(30, 100, 0)));
+            Config.AddSubMenu(new Menu("骚扰", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用Q").SetValue(false));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQ2Harass", "使用短Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用E").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("Minman", "Min 蓝量").SetValue(new Slider(30, 100, 0)));
             Config.SubMenu("Harass")
                 .AddItem(
-                    new MenuItem("HarassActive", "楠氭壈").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+                    new MenuItem("HarassActive", "骚扰").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
 
-            Config.AddSubMenu(new Menu("鏄剧ず", "Drawings"));
+            Config.AddSubMenu(new Menu("显示", "Drawings"));
             Config.SubMenu("Drawings")
-                .AddItem(new MenuItem("QRange", "Q鑼冨洿").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+                .AddItem(new MenuItem("QRange", "Q范围").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
             Config.SubMenu("Drawings")
-                .AddItem(new MenuItem("SQRange", "鐭璔鑼冨洿").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings")
-                .AddItem(
-                    new MenuItem("WRange", "W鑼冨洿").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+                .AddItem(new MenuItem("SQRange", "短Q范围").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
             Config.SubMenu("Drawings")
                 .AddItem(
-                    new MenuItem("ERange", "E鑼冨洿").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+                    new MenuItem("WRange", "W范围").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings")
+                .AddItem(
+                    new MenuItem("ERange", "E范围").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
             Config.AddToMainMenu();
 
-			Config.AddSubMenu(new Menu("瓒呯姹夊寲", "by weilai"));	
-			Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-			Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+			Config.AddSubMenu(new Menu("超神汉化", "by weilai"));	
+			Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+			Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 			
             //Add the events we are going to use:
             Drawing.OnDraw += Drawing_OnDraw;
@@ -157,7 +157,7 @@ namespace Olafisback
                 if (_axeObj != null)
                     Utility.DrawCircle(_axeObj.Position, 100, Color.Yellow, 6);
             }
-            //Draw the鑼冨洿s of the spells.
+            //Draw the范围s of the spells.
             foreach (var spell in SpellList)
             {
                 var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();

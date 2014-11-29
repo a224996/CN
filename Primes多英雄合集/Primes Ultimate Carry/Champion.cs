@@ -28,17 +28,17 @@ namespace Primes_Ultimate_Carry
 		{
 			ChampionMenu = new Menu("Primes " + PUC.Player.ChampionName, "Primes_Champion_" + PUC.Player.ChampionName);
 			
-			ChampionMenu.AddSubMenu(new Menu("鍒嗙粍璁剧疆", "Primes_Champion_Packets"));
-			ChampionMenu.SubMenu("Primes_Champion_Packets").AddItem(new MenuItem("Primes_Champion_Packets_sep0", "===== 璁剧疆"));
-			ChampionMenu.SubMenu("Primes_Champion_Packets").AddItem(new MenuItem("Primes_Champion_Packets_active", "= 浣跨敤鍒嗙粍").SetValue(true));
+			ChampionMenu.AddSubMenu(new Menu("分组设置", "Primes_Champion_Packets"));
+			ChampionMenu.SubMenu("Primes_Champion_Packets").AddItem(new MenuItem("Primes_Champion_Packets_sep0", "===== 设置"));
+			ChampionMenu.SubMenu("Primes_Champion_Packets").AddItem(new MenuItem("Primes_Champion_Packets_active", "= 使用分组").SetValue(true));
 			ChampionMenu.SubMenu("Primes_Champion_Packets").AddItem(new MenuItem("Primes_Champion_Packets_sep1", "========="));
 		}
 
 		public void AddSupportmode(Menu menu)
 		{
-			menu.AddSubMenu(new Menu("鏀寔妯″紡", "SupportMode"));
-			menu.SubMenu("SupportMode").AddItem(new MenuItem("sup_sep0", "===== 鏀寔妯″紡"));
-			menu.SubMenu("SupportMode").AddItem(new MenuItem("SubMode", "鏀寔妯″紡").SetValue(false));
+			menu.AddSubMenu(new Menu("支持模式", "SupportMode"));
+			menu.SubMenu("SupportMode").AddItem(new MenuItem("sup_sep0", "===== 支持模式"));
+			menu.SubMenu("SupportMode").AddItem(new MenuItem("SubMode", "支持模式").SetValue(false));
 			menu.SubMenu("SupportMode").AddItem(new MenuItem("sup_sep1", "========="));
 			
 			HaveSupportMode = true;

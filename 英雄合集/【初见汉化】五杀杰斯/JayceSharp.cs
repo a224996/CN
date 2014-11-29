@@ -39,27 +39,27 @@ namespace JayceSharp
             try
             {
 
-                Config = new Menu("鏉版柉", "Jayce", true);
+                Config = new Menu("初见汉化-杰斯", "Jayce", true);
                 //Orbwalker
-                Config.AddSubMenu(new Menu("璧扮爫", "Orbwalker"));
+                Config.AddSubMenu(new Menu("走砍", "Orbwalker"));
                 Jayce.orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalker"));
                 //TS
-                Menu targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+                Menu targetSelectorMenu = new Menu("目标选择", "Target Selector");
                 SimpleTs.AddToMenu(targetSelectorMenu);
                 Config.AddSubMenu(targetSelectorMenu);
                 //Combo
-                Config.AddSubMenu(new Menu("杩炴嫑璁剧疆", "combo"));
-                Config.SubMenu("combo").AddItem(new MenuItem("comboItems", "浣跨敤閫夐」")).SetValue(true);
-                Config.SubMenu("combo").AddItem(new MenuItem("fullDMG", "杩炴嫑")).SetValue(new KeyBind('A', KeyBindType.Press));
-                Config.SubMenu("combo").AddItem(new MenuItem("injTarget", "棰勫垽EQ")).SetValue(new KeyBind('G', KeyBindType.Press));
+                Config.AddSubMenu(new Menu("连招设置", "combo"));
+                Config.SubMenu("combo").AddItem(new MenuItem("comboItems", "使用选项")).SetValue(true);
+                Config.SubMenu("combo").AddItem(new MenuItem("fullDMG", "连招")).SetValue(new KeyBind('A', KeyBindType.Press));
+                Config.SubMenu("combo").AddItem(new MenuItem("injTarget", "预判EQ")).SetValue(new KeyBind('G', KeyBindType.Press));
 
 
                 //Extra
-                Config.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "drawing"));
+                Config.AddSubMenu(new Menu("技能范围选项", "drawing"));
                 Config.SubMenu("drawing").AddItem(new MenuItem("drawStuff", "Draw on/off")).SetValue(true);
                
                 //Extra
-                Config.AddSubMenu(new Menu("瀹氬悜EQ", "extra"));
+                Config.AddSubMenu(new Menu("定向EQ", "extra"));
                 Config.SubMenu("extra").AddItem(new MenuItem("shoot", "Shoot manual Q")).SetValue(new KeyBind('T', KeyBindType.Press));
 
                 //Debug
@@ -70,10 +70,10 @@ namespace JayceSharp
                 Config.SubMenu("debug").AddItem(new MenuItem("domateMe", "PayPal:")).SetValue(true);
                 Config.SubMenu("debug").AddItem(new MenuItem("domateMe2", "dtk600@gmail.com")).SetValue(true);
                 Config.SubMenu("debug").AddItem(new MenuItem("domateMe3", "Tnx ^.^")).SetValue(true);
-Config.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+Config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 
                 Config.AddToMainMenu();
                 Drawing.OnDraw += onDraw;

@@ -1,4 +1,4 @@
-﻿using DevCommom;
+using DevCommom;
 using LeagueSharp;
 using LeagueSharp.Common;
 using System;
@@ -511,60 +511,60 @@ namespace DevBrand
 
         private static void InitializeMainMenu()
         {
-            Config = new Menu("DevBrand", "DevBrand", true);
+            Config = new Menu("【超神汉化】Dev火男", "DevBrand", true);
 
-            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var targetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
-            Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            Config.AddSubMenu(new Menu("走砍", "Orbwalking"));
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
-            Config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "浣跨敤Q").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "浣跨敤W").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "浣跨敤E").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "浣跨敤R").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "浣跨敤鐐圭噧").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRMinEnemies", "R min鍑讳腑").SetValue(new Slider(2, 1, 5)));
-            Config.SubMenu("Combo").AddItem(new MenuItem("PriorizeStunCombo", "Priorize Q Stun").SetValue(true));
+            Config.AddSubMenu(new Menu("连招", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用Q").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用W").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用E").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "使用点燃").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRMinEnemies", "R 最少击中人数").SetValue(new Slider(2, 1, 5)));
+            Config.SubMenu("Combo").AddItem(new MenuItem("PriorizeStunCombo", "优先Q眩晕").SetValue(true));
 
-            Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "浣跨敤Q").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "浣跨敤W").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "浣跨敤E").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("PriorizeStunHarass", "Priorize Q Stun").SetValue(true));
+            Config.AddSubMenu(new Menu("骚扰", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "使用W").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用E").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("PriorizeStunHarass", "优先Q眩晕").SetValue(true));
 
-            Config.AddSubMenu(new Menu("娓呯嚎", "LaneClear"));
+            Config.AddSubMenu(new Menu("清线", "LaneClear"));
             //Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "Use Q").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseWLaneClear", "浣跨敤W").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "浣跨敤E").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("ManaLaneClear", "Min 钃濋噺").SetValue(new Slider(30, 1, 100)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseWLaneClear", "使用W").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "使用E").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("ManaLaneClear", "蓝量控制").SetValue(new Slider(30, 1, 100)));
 
-            Config.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            Config.SubMenu("Misc").AddItem(new MenuItem("PacketCast", "灏佸寘").SetValue(true));
+            Config.AddSubMenu(new Menu("杂项", "Misc"));
+            Config.SubMenu("Misc").AddItem(new MenuItem("PacketCast", "使用封包").SetValue(true));
 
-            Config.AddSubMenu(new Menu("鎶㈠ご", "KillSteal"));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KillSteal", "鎶㈠ご").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseQKillSteal", "浣跨敤Q").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseWKillSteal", "浣跨敤W").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseEKillSteal", "浣跨敤E").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseRKillSteal", "浣跨敤R").SetValue(true));
+            Config.AddSubMenu(new Menu("抢头", "KillSteal"));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KillSteal", "抢人头").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseQKillSteal", "使用Q").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseWKillSteal", "使用W").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseEKillSteal", "使用E").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseRKillSteal", "使用R").SetValue(true));
 
-            Config.AddSubMenu(new Menu("闃茬獊", "GapCloser"));
-            Config.SubMenu("GapCloser").AddItem(new MenuItem("BarrierGapCloser", "闃茬獊").SetValue(true));
-            Config.SubMenu("GapCloser").AddItem(new MenuItem("BarrierGapCloserMinHealth", "Min HP").SetValue(new Slider(40, 0, 100)));
+            Config.AddSubMenu(new Menu("防突", "GapCloser"));
+            Config.SubMenu("GapCloser").AddItem(new MenuItem("BarrierGapCloser", "防突进").SetValue(true));
+            Config.SubMenu("GapCloser").AddItem(new MenuItem("BarrierGapCloserMinHealth", "最低血量").SetValue(new Slider(40, 0, 100)));
 
-            Config.AddSubMenu(new Menu("鏄剧ず", "Drawings"));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q鑼冨洿").SetValue(new Circle(true, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R鑼冨洿").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("ComboDamage", "鏄剧ず浼ゅ").SetValue(true));
+            Config.AddSubMenu(new Menu("显示", "Drawings"));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q范围").SetValue(new Circle(true, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("ComboDamage", "显示伤害").SetValue(true));
 
-			Config.AddSubMenu(new Menu("瓒呯姹夊寲", "by weilai"));
-				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+			Config.AddSubMenu(new Menu("超神汉化", "by weilai"));
+				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+				
             skinManager.AddToMenu(ref Config);
 
             levelUpManager.AddToMenu(ref Config);

@@ -165,21 +165,21 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "Use E").SetValue(true));
-            config.AddItem(new MenuItem("UseETC" + Id, "Do not Under Turret E").SetValue(true));
-            config.AddItem(new MenuItem("UseETK" + Id, "Use E Under Turret If Enemy Killable")
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用 E").SetValue(true));
+            config.AddItem(new MenuItem("UseETC" + Id, "不要在炮塔 E").SetValue(true));
+            config.AddItem(new MenuItem("UseETK" + Id, "使用 E 如果敌人在炮塔杀死")
                 .SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEH" + Id, "Use E").SetValue(true));
-            config.AddItem(new MenuItem("UseETH" + Id, "Do not Under Turret E").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseEH" + Id, "使用 E").SetValue(true));
+            config.AddItem(new MenuItem("UseETH" + Id, "不要在炮塔 E").SetValue(true));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "Use Q (Toggle)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用 Q (切换)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));             
             return true;
         }
@@ -187,10 +187,10 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true,
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true,
                     Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(false,
+                new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(false,
                     Color.FromArgb(100, 255, 255, 255))));
             return true;
         }

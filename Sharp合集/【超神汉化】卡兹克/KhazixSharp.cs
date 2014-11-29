@@ -47,32 +47,32 @@ namespace KhazixSharp
 
                 Config = new Menu("Khazix", "Khazix", true);
                 //Orbwalker
-                Config.AddSubMenu(new Menu("璧扮爫", "Orbwalker"));
+                Config.AddSubMenu(new Menu("走砍", "Orbwalker"));
                 Khazix.orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalker"));
                 //TS
-                var TargetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+                var TargetSelectorMenu = new Menu("目标选择", "Target Selector");
                 SimpleTs.AddToMenu(TargetSelectorMenu);
                 Config.AddSubMenu(TargetSelectorMenu);
                 //Combo
-                Config.AddSubMenu(new Menu("杩炴嫑", "combo"));
-                Config.SubMenu("combo").AddItem(new MenuItem("comboItems", "浣跨敤鐗╁搧")).SetValue(true);
+                Config.AddSubMenu(new Menu("连招", "combo"));
+                Config.SubMenu("combo").AddItem(new MenuItem("comboItems", "使用物品")).SetValue(true);
 
                 //LastHit
-                Config.AddSubMenu(new Menu("琛ュ叺", "lHit"));
+                Config.AddSubMenu(new Menu("补兵", "lHit"));
                
                 //LaneClear
-                Config.AddSubMenu(new Menu("娓呯嚎", "lClear"));
+                Config.AddSubMenu(new Menu("清线", "lClear"));
                
                 //Harass
-                Config.AddSubMenu(new Menu("楠氭壈", "harass"));
+                Config.AddSubMenu(new Menu("骚扰", "harass"));
                
                 //Extra
-                Config.AddSubMenu(new Menu("鍏朵粬", "extra"));
+                Config.AddSubMenu(new Menu("其他", "extra"));
                 
 
                 //Debug
-                Config.AddSubMenu(new Menu("璋冭瘯", "debug"));
-                Config.SubMenu("debug").AddItem(new MenuItem("db_targ", "淇鐩爣")).SetValue(new KeyBind('T', KeyBindType.Press, false));
+                Config.AddSubMenu(new Menu("调试", "debug"));
+                Config.SubMenu("debug").AddItem(new MenuItem("db_targ", "修正目标")).SetValue(new KeyBind('T', KeyBindType.Press, false));
 
 
                 Config.AddToMainMenu();

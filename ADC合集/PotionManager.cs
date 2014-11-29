@@ -69,20 +69,20 @@ namespace Marksman
         private void Load()
         {
             potions = potions.OrderBy(x => x.Priority).ToList();
-            ExtrasMenu.AddSubMenu(new Menu("娌荤枟", "PotionManager"));
+            ExtrasMenu.AddSubMenu(new Menu("治疗", "PotionManager"));
 
-            ExtrasMenu.SubMenu("PotionManager").AddSubMenu(new Menu("鐢熷懡", "Health"));
+            ExtrasMenu.SubMenu("PotionManager").AddSubMenu(new Menu("生命", "Health"));
             ExtrasMenu.SubMenu("PotionManager")
                 .SubMenu("Health")
-                .AddItem(new MenuItem("HealthPotion", "绾㈣嵂").SetValue(true));
+                .AddItem(new MenuItem("HealthPotion", "红药").SetValue(true));
             ExtrasMenu.SubMenu("PotionManager")
                 .SubMenu("Health")
                 .AddItem(new MenuItem("HealthPercent", "HP%").SetValue(new Slider(30)));
 
-            ExtrasMenu.SubMenu("PotionManager").AddSubMenu(new Menu("钃濋噺", "Mana"));
+            ExtrasMenu.SubMenu("PotionManager").AddSubMenu(new Menu("蓝量", "Mana"));
             ExtrasMenu.SubMenu("PotionManager")
                 .SubMenu("Mana")
-                .AddItem(new MenuItem("ManaPotion", "钃濊嵂").SetValue(true));
+                .AddItem(new MenuItem("ManaPotion", "蓝药").SetValue(true));
             ExtrasMenu.SubMenu("PotionManager")
                 .SubMenu("Mana")
                 .AddItem(new MenuItem("ManaPercent", "MP%").SetValue(new Slider(30)));

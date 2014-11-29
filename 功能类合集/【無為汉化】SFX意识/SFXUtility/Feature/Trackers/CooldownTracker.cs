@@ -73,7 +73,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鍐峰嵈鏃堕棿"; }
+            get { return "冷却时间"; }
         }
 
         #endregion
@@ -114,9 +114,9 @@ namespace SFXUtility.Feature
 
                     Menu = new Menu(Name, Name);
 
-                    var eEMenuItem = new MenuItem(Name + "EnemyEnabled", "杩借釜鏁屼汉").SetValue(true);
-                    var aAMenuItem = new MenuItem(Name + "AllyEnabled", "杩借釜闃熷弸").SetValue(true);
-                    var eMenuItem = new MenuItem(Name + "Enabled", "鍚敤").SetValue(true);
+                    var eEMenuItem = new MenuItem(Name + "EnemyEnabled", "追踪敌人").SetValue(true);
+                    var aAMenuItem = new MenuItem(Name + "AllyEnabled", "追踪队友").SetValue(true);
+                    var eMenuItem = new MenuItem(Name + "Enabled", "启用").SetValue(true);
 
                     Menu.AddItem(eEMenuItem);
                     Menu.AddItem(aAMenuItem);

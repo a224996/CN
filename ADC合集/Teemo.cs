@@ -110,16 +110,16 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "Use R").SetValue(false));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用 R").SetValue(false));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(false));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用 Q").SetValue(false));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "Use Q (Toggle)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用 Q (切换)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));             
             return true;
         }
@@ -133,7 +133,7 @@ namespace Marksman
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQM" + Id, "Use Q KS").SetValue(true));
+            config.AddItem(new MenuItem("UseQM" + Id, "使用 Q 抢人头").SetValue(true));
             return true;
         }
 
@@ -145,7 +145,7 @@ namespace Marksman
 
         public override bool LaneClearMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQL" + Id, "Use Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQL" + Id, "使用 Q").SetValue(true));
             return true;
         }
     }

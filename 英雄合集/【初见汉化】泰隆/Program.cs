@@ -29,46 +29,46 @@ namespace Talon
             Player = ObjectManager.Player;
             if (Player.ChampionName != "Talon") return;
 
-            Game.PrintChat("<font color=\"#0066FF\">[<font color=\"#FFFFFF\">madk</font>]</font><font color=\"#FFFFFF\"> 鍔犺浇鎴愬姛!鍒濊姹夊寲QQ 5011477 :^)</font>");
+            Game.PrintChat("<font color=\"#0066FF\">[<font color=\"#FFFFFF\">madk</font>]</font><font color=\"#FFFFFF\"> 加载成功!初见汉化QQ 5011477 :^)</font>");
 
 
-            Config = new Menu("|鍒濊姹夊寲-鍒€閿嬩箣褰眧", "Talon", true);
+            Config = new Menu("|初见汉化-刀锋之影|", "Talon", true);
 
-            var Menu_TargetSelector = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var Menu_TargetSelector = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(Menu_TargetSelector);
 
-            var Menu_Orbwalker = new Menu("璧扮爫", "Orbwalker");
+            var Menu_Orbwalker = new Menu("走砍", "Orbwalker");
             LXOrbwalker.AddToMenu(Menu_Orbwalker);
 
-            var Menu_Combo = new Menu("杩炴嫑", "combo");
-            Menu_Combo.AddItem(new MenuItem("combo_Q", "浣跨敤Q").SetValue(true));
-            Menu_Combo.AddItem(new MenuItem("combo_W", "浣跨敤W").SetValue(true));
-            Menu_Combo.AddItem(new MenuItem("combo_E", "浣跨敤E").SetValue(true));
-            Menu_Combo.AddItem(new MenuItem("combo_R", "浣跨敤R").SetValue(true));
-            Menu_Combo.AddItem(new MenuItem("combo_ITM", "椤圭洰").SetValue(true));
-            Menu_Combo.AddItem(new MenuItem("combo_IGN", "浣跨敤鐐圭噧").SetValue(true));
-            Menu_Combo.AddItem(new MenuItem("combo_RUSH", "浣跨敤澶ф嫑鍐插埡").SetValue(true));
+            var Menu_Combo = new Menu("连招", "combo");
+            Menu_Combo.AddItem(new MenuItem("combo_Q", "使用Q").SetValue(true));
+            Menu_Combo.AddItem(new MenuItem("combo_W", "使用W").SetValue(true));
+            Menu_Combo.AddItem(new MenuItem("combo_E", "使用E").SetValue(true));
+            Menu_Combo.AddItem(new MenuItem("combo_R", "使用R").SetValue(true));
+            Menu_Combo.AddItem(new MenuItem("combo_ITM", "项目").SetValue(true));
+            Menu_Combo.AddItem(new MenuItem("combo_IGN", "使用点燃").SetValue(true));
+            Menu_Combo.AddItem(new MenuItem("combo_RUSH", "使用大招冲刺").SetValue(true));
 
-            var Menu_Harass = new Menu("楠氭壈", "harass");
-            Menu_Harass.AddItem(new MenuItem("harass_W", "浣跨敤W").SetValue(true));
-            Menu_Harass.AddItem(new MenuItem("harass_mn", "鎵€闇€钃濋噺.").SetValue(new Slider(40, 0, 100)));
+            var Menu_Harass = new Menu("骚扰", "harass");
+            Menu_Harass.AddItem(new MenuItem("harass_W", "使用W").SetValue(true));
+            Menu_Harass.AddItem(new MenuItem("harass_mn", "所需蓝量.").SetValue(new Slider(40, 0, 100)));
 
-            var Menu_Farm = new Menu("娓呯嚎", "farm");
-            Menu_Farm.AddItem(new MenuItem("farm_Q", "浣跨敤Q").SetValue(true));
-            Menu_Farm.AddItem(new MenuItem("farm_W", "浣跨敤W").SetValue(true));
+            var Menu_Farm = new Menu("清线", "farm");
+            Menu_Farm.AddItem(new MenuItem("farm_Q", "使用Q").SetValue(true));
+            Menu_Farm.AddItem(new MenuItem("farm_W", "使用W").SetValue(true));
 
-            var Menu_Items = new Menu("椤圭洰", "items");
-            Menu_Items.AddItem(new MenuItem("item_GB", "骞芥ⅵ涔嬬伒").SetValue(true));
-            Menu_Items.AddItem(new MenuItem("item_TMT", "鎻愪簹鐜涚壒").SetValue(true));
-            Menu_Items.AddItem(new MenuItem("item_HYD", "|涔濆ご铔噟").SetValue(true));
+            var Menu_Items = new Menu("项目", "items");
+            Menu_Items.AddItem(new MenuItem("item_GB", "幽梦之灵").SetValue(true));
+            Menu_Items.AddItem(new MenuItem("item_TMT", "提亚玛特").SetValue(true));
+            Menu_Items.AddItem(new MenuItem("item_HYD", "|九头蛇|").SetValue(true));
             Menu_Items.AddItem(new MenuItem("item_SOTD", "SOTD").SetValue(true));
 
-            var Menu_Drawings = new Menu("鎶€鑳借寖鍥撮€夐」", "drawings");
+            var Menu_Drawings = new Menu("技能范围选项", "drawings");
             Menu_Drawings.AddItem(new MenuItem("draw_W", "W & E").SetValue(new Circle(true, System.Drawing.Color.White)));
             Menu_Drawings.AddItem(new MenuItem("draw_R", "R").SetValue(new Circle(true, System.Drawing.Color.White)));
             
             // From Esk0r's Syndra
-            var dmgAfterCombo = Menu_Drawings.AddItem(new MenuItem("draw_Dmg", "鏄剧ず缁勫悎浼ゅ").SetValue(true));
+            var dmgAfterCombo = Menu_Drawings.AddItem(new MenuItem("draw_Dmg", "显示组合伤害").SetValue(true));
 
             Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
             Utility.HpBarDamageIndicator.Enabled = dmgAfterCombo.GetValue<bool>();

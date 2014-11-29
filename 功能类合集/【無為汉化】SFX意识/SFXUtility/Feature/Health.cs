@@ -55,7 +55,7 @@ namespace SFXUtility.Feature
 
         public override string Name
         {
-            get { return "鐒＄偤姹夊寲鈹€鍋ュ悍"; }
+            get { return "無為汉化─健康"; }
         }
 
         #endregion
@@ -104,20 +104,20 @@ namespace SFXUtility.Feature
 
                 Menu = new Menu(Name, Name);
 
-                var inhibitorMenu = new Menu("姘存櫠", Name + "Inhibitor");
-                inhibitorMenu.AddItem(new MenuItem(Name + "InhibitorColor", "棰滆壊").SetValue(Color.Yellow));
-                inhibitorMenu.AddItem(new MenuItem(Name + "InhibitorEnabled", "鍚敤").SetValue(true));
-                inhibitorMenu.AddItem(new MenuItem(Name + "InhibitorPercentage", "鐧惧垎姣斻劎").SetValue(true));
+                var inhibitorMenu = new Menu("水晶", Name + "Inhibitor");
+                inhibitorMenu.AddItem(new MenuItem(Name + "InhibitorColor", "颜色").SetValue(Color.Yellow));
+                inhibitorMenu.AddItem(new MenuItem(Name + "InhibitorEnabled", "启用").SetValue(true));
+                inhibitorMenu.AddItem(new MenuItem(Name + "InhibitorPercentage", "百分比ㄧ").SetValue(true));
 
-                var turretMenu = new Menu("鐐", Name + "Turret");
-                turretMenu.AddItem(new MenuItem(Name + "TurretColor", "棰滆壊").SetValue(Color.Yellow));
-                turretMenu.AddItem(new MenuItem(Name + "TurretEnabled", "鍚敤").SetValue(true));
-                turretMenu.AddItem(new MenuItem(Name + "TurretPercentage", "鐧惧垎姣斻劎").SetValue(true));
+                var turretMenu = new Menu("炮塔", Name + "Turret");
+                turretMenu.AddItem(new MenuItem(Name + "TurretColor", "颜色").SetValue(Color.Yellow));
+                turretMenu.AddItem(new MenuItem(Name + "TurretEnabled", "启用").SetValue(true));
+                turretMenu.AddItem(new MenuItem(Name + "TurretPercentage", "百分比ㄧ").SetValue(true));
 
                 Menu.AddSubMenu(inhibitorMenu);
                 Menu.AddSubMenu(turretMenu);
 
-                Menu.AddItem(new MenuItem(Name + "Enabled", "鍚敤").SetValue(false));
+                Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(false));
 
                 BaseMenu.AddSubMenu(Menu);
 

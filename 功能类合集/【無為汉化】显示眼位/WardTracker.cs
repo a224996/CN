@@ -389,8 +389,8 @@ namespace Tracker
 
         public static void AttachToMenu(Menu menu)
         {
-            Config = menu.AddSubMenu(new Menu("Ward Tracker", "Ward Tracker"));
-            Config.AddItem(new MenuItem("Details", "Show more info").SetValue(new KeyBind(16, KeyBindType.Press)));
+            Config = menu.AddSubMenu(new Menu("眼位计时", "Ward Tracker"));
+            Config.AddItem(new MenuItem("Details", "显示更多信息").SetValue(new KeyBind(16, KeyBindType.Press)));
             Config.AddItem(new MenuItem("Enabled", "Enabled").SetValue(true));
         }
 

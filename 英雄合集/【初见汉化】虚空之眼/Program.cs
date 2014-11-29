@@ -97,10 +97,10 @@ namespace Velkoz
             Config = new Menu(ChampionName, ChampionName, true);
 
             //Orbwalker submenu
-            Config.AddSubMenu(new Menu("璧扮爫", "Orbwalking"));
+            Config.AddSubMenu(new Menu("走砍", "Orbwalking"));
 
             //Add the target selector to the menu as submenu.
-            var targetSelectorMenu = new Menu("鐩爣閫夋嫨", "Target Selector");
+            var targetSelectorMenu = new Menu("目标选择", "Target Selector");
             SimpleTs.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
@@ -108,25 +108,25 @@ namespace Velkoz
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
             //Combo menu:
-            Config.AddSubMenu(new Menu("杩炴嫑", "Combo"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "浣跨敤 E").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "浣跨敤 R").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgniteCombo", "浣跨敤鐐圭噧").SetValue(true));
+            Config.AddSubMenu(new Menu("连招", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用 Q").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用 W").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用 E").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用 R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseIgniteCombo", "使用点燃").SetValue(true));
             Config.SubMenu("Combo")
                 .AddItem(
-                    new MenuItem("ComboActive", "杩炴嫑!").SetValue(
+                    new MenuItem("ComboActive", "连招!").SetValue(
                         new KeyBind(Config.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
             //Harass menu:
-            Config.AddSubMenu(new Menu("楠氭壈", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "浣跨敤 W").SetValue(false));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "浣跨敤 E").SetValue(false));
+            Config.AddSubMenu(new Menu("骚扰", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用 Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "使用 W").SetValue(false));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用 E").SetValue(false));
             Config.SubMenu("Harass")
                 .AddItem(
-                    new MenuItem("HarassActive", "楠氭壈!").SetValue(
+                    new MenuItem("HarassActive", "骚扰!").SetValue(
                         new KeyBind(Config.Item("Farm").GetValue<KeyBind>().Key, KeyBindType.Press)));
             Config.SubMenu("Harass")
                 .AddItem(
@@ -134,29 +134,29 @@ namespace Velkoz
                         KeyBindType.Toggle)));
 
             //Farming menu:
-            Config.AddSubMenu(new Menu("娓呯嚎", "Farm"));
-            Config.SubMenu("Farm").AddItem(new MenuItem("UseQFarm", "浣跨敤 Q").SetValue(false));
-            Config.SubMenu("Farm").AddItem(new MenuItem("UseWFarm", "浣跨敤 W").SetValue(false));
-            Config.SubMenu("Farm").AddItem(new MenuItem("UseEFarm", "浣跨敤 E").SetValue(false));
+            Config.AddSubMenu(new Menu("清线", "Farm"));
+            Config.SubMenu("Farm").AddItem(new MenuItem("UseQFarm", "使用 Q").SetValue(false));
+            Config.SubMenu("Farm").AddItem(new MenuItem("UseWFarm", "使用 W").SetValue(false));
+            Config.SubMenu("Farm").AddItem(new MenuItem("UseEFarm", "使用 E").SetValue(false));
 
             Config.SubMenu("Farm")
                 .AddItem(
-                    new MenuItem("LaneClearActive", "娓呯嚎!").SetValue(
+                    new MenuItem("LaneClearActive", "清线!").SetValue(
                         new KeyBind(Config.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
             //JungleFarm menu:
-            Config.AddSubMenu(new Menu("娓呴噹", "JungleFarm"));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseQJFarm", "浣跨敤 Q").SetValue(true));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseWJFarm", "浣跨敤 W").SetValue(true));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseEJFarm", "浣跨敤 E").SetValue(true));
+            Config.AddSubMenu(new Menu("清野", "JungleFarm"));
+            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseQJFarm", "使用 Q").SetValue(true));
+            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseWJFarm", "使用 W").SetValue(true));
+            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseEJFarm", "使用 E").SetValue(true));
             Config.SubMenu("JungleFarm")
                 .AddItem(
-                    new MenuItem("JungleFarmActive", "娓呴噹!").SetValue(
+                    new MenuItem("JungleFarmActive", "清野!").SetValue(
                         new KeyBind(Config.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
             //Misc
-            Config.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            Config.SubMenu("Misc").AddItem(new MenuItem("InterruptSpells", "鎵撴柇榄旀硶").SetValue(true));
+            Config.AddSubMenu(new Menu("杂项", "Misc"));
+            Config.SubMenu("Misc").AddItem(new MenuItem("InterruptSpells", "打断魔法").SetValue(true));
             Config.SubMenu("Misc").AddSubMenu(new Menu("Dont use R on", "DontUlt"));
 
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team))
@@ -165,20 +165,20 @@ namespace Velkoz
                     .AddItem(new MenuItem("DontUlt" + enemy.BaseSkinName, enemy.BaseSkinName).SetValue(false));
 
             //Drawings menu:
-            Config.AddSubMenu(new Menu("鎶€鑳借寖鍥撮€夐」", "Drawings"));
+            Config.AddSubMenu(new Menu("技能范围选项", "Drawings"));
             Config.SubMenu("Drawings")
-                .AddItem(new MenuItem("QRange", "Q 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("QRange", "Q 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
             Config.SubMenu("Drawings")
-                .AddItem(new MenuItem("WRange", "W 鑼冨洿").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("WRange", "W 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             Config.SubMenu("Drawings")
-                .AddItem(new MenuItem("ERange", "E 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("ERange", "E 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
             Config.SubMenu("Drawings")
-                .AddItem(new MenuItem("RRange", "R 鑼冨洿").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                .AddItem(new MenuItem("RRange", "R 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
             Config.AddToMainMenu();
-Config.AddSubMenu(new Menu("鍒濊姹夊寲", "by chujian"));
+Config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             //Add the events we are going to use:
             Game.OnGameUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;

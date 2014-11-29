@@ -34,67 +34,67 @@ namespace SKO_Rengar_V2
 			if (Player.ChampionName != "Rengar")
 				return;
 
-			SKOMenu = new Menu ("|鍒濊姹夊寲-鐙瓙鐙梶","SKORengar", true);
+			SKOMenu = new Menu ("|初见汉化-狮子狗|","SKORengar", true);
 
-			var SKOTs = new Menu ("|鍒濊姹夊寲-鐩爣閫夋嫨|","TargetSelector");
+			var SKOTs = new Menu ("|初见汉化-目标选择|","TargetSelector");
 			SimpleTs.AddToMenu(SKOTs);
 
-			var OrbMenu = new Menu ("|鍒濊姹夊寲-璧扮爫|", "Orbwalker");
+			var OrbMenu = new Menu ("|初见汉化-走砍|", "Orbwalker");
 			LXOrbwalker.AddToMenu (OrbMenu);
 
 
-			var Combo = new Menu ("|鍒濊姹夊寲-杩炴嫑|", "Combo");
-			Combo.AddItem(new MenuItem("CPrio", "浼樺厛绾").SetValue(new StringList(new[] {"Q", "W", "E"}, 2)));
-			Combo.AddItem(new MenuItem ("UseQ", "浣跨敤 Q").SetValue(true));
-			Combo.AddItem(new MenuItem ("UseW", "浣跨敤 W").SetValue(true));
-			Combo.AddItem(new MenuItem ("UseE", "浣跨敤 E").SetValue(true));
-			Combo.AddItem(new MenuItem ("UseR", "浣跨敤 R").SetValue(true));
-			Combo.AddItem(new MenuItem ("UseItemsCombo", "浣跨敤鐐圭噧").SetValue(true));
-			Combo.AddItem(new MenuItem ("UseAutoW", "鑷姩 W").SetValue(true));
-			Combo.AddItem(new MenuItem ("HpAutoW", "浣跨敤W鏈€浣嶩P鍦ㄣ€€").SetValue(new Slider(20,1,100)));
-			Combo.AddItem (new MenuItem("TripleQ", "5鎬掑弻Q鐖嗗彂杩炴嫑(绉掍汉)").SetValue(new KeyBind(OrbMenu.Item("Flee_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
-			Combo.AddItem(new MenuItem("activeCombo", "杩炴嫑").SetValue(new KeyBind(OrbMenu.Item("Combo_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
+			var Combo = new Menu ("|初见汉化-连招|", "Combo");
+			Combo.AddItem(new MenuItem("CPrio", "优先级|").SetValue(new StringList(new[] {"Q", "W", "E"}, 2)));
+			Combo.AddItem(new MenuItem ("UseQ", "使用 Q").SetValue(true));
+			Combo.AddItem(new MenuItem ("UseW", "使用 W").SetValue(true));
+			Combo.AddItem(new MenuItem ("UseE", "使用 E").SetValue(true));
+			Combo.AddItem(new MenuItem ("UseR", "使用 R").SetValue(true));
+			Combo.AddItem(new MenuItem ("UseItemsCombo", "使用点燃").SetValue(true));
+			Combo.AddItem(new MenuItem ("UseAutoW", "自动 W").SetValue(true));
+			Combo.AddItem(new MenuItem ("HpAutoW", "使用W最低HP在　").SetValue(new Slider(20,1,100)));
+			Combo.AddItem (new MenuItem("TripleQ", "5怒双Q爆发连招(秒人)").SetValue(new KeyBind(OrbMenu.Item("Flee_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
+			Combo.AddItem(new MenuItem("activeCombo", "连招").SetValue(new KeyBind(OrbMenu.Item("Combo_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
-			var Harass = new Menu("|鍒濊姹夊寲-楠氭壈|", "Harass");
-			Harass.AddItem(new MenuItem("HPrio", "浼樺厛绾").SetValue(new StringList(new[] {"W", "E"}, 1)));
-			Harass.AddItem(new MenuItem("UseWH", "浣跨敤 W").SetValue(true));
-			Harass.AddItem(new MenuItem("UseEH", "浣跨敤 E").SetValue(true));
-			Harass.AddItem(new MenuItem ("UseItemsHarass", "5鎬掑弻Q鐖嗗彂杩炴嫑").SetValue(true));
-			Harass.AddItem(new MenuItem("activeHarass","楠氭壈!").SetValue(new KeyBind(OrbMenu.Item("Harass_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
+			var Harass = new Menu("|初见汉化-骚扰|", "Harass");
+			Harass.AddItem(new MenuItem("HPrio", "优先级|").SetValue(new StringList(new[] {"W", "E"}, 1)));
+			Harass.AddItem(new MenuItem("UseWH", "使用 W").SetValue(true));
+			Harass.AddItem(new MenuItem("UseEH", "使用 E").SetValue(true));
+			Harass.AddItem(new MenuItem ("UseItemsHarass", "5怒双Q爆发连招").SetValue(true));
+			Harass.AddItem(new MenuItem("activeHarass","骚扰!").SetValue(new KeyBind(OrbMenu.Item("Harass_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
-			var JLClear = new Menu("|鍒濊姹夊寲-娓呯嚎|娓呴噹|", "JLClear");
-			JLClear.AddItem(new MenuItem("FPrio", "浼樺厛绾").SetValue(new StringList(new[] {"Q", "W", "E"}, 0)));
-			JLClear.AddItem(new MenuItem("UseQC", "浣跨敤 Q").SetValue(true));
-			JLClear.AddItem(new MenuItem("UseWC", "浣跨敤 W").SetValue(true));
-			JLClear.AddItem(new MenuItem("UseEC", "浣跨敤 E").SetValue(true));
-			JLClear.AddItem(new MenuItem("UseItemsClear", "浣跨敤鐐圭噧").SetValue(true));
-			JLClear.AddItem(new MenuItem("activeClear","娓呯嚎|娓呴噹!").SetValue(new KeyBind(OrbMenu.Item("LaneClear_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
+			var JLClear = new Menu("|初见汉化-清线|清野|", "JLClear");
+			JLClear.AddItem(new MenuItem("FPrio", "优先级|").SetValue(new StringList(new[] {"Q", "W", "E"}, 0)));
+			JLClear.AddItem(new MenuItem("UseQC", "使用 Q").SetValue(true));
+			JLClear.AddItem(new MenuItem("UseWC", "使用 W").SetValue(true));
+			JLClear.AddItem(new MenuItem("UseEC", "使用 E").SetValue(true));
+			JLClear.AddItem(new MenuItem("UseItemsClear", "使用点燃").SetValue(true));
+			JLClear.AddItem(new MenuItem("activeClear","清线|清野!").SetValue(new KeyBind(OrbMenu.Item("LaneClear_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
-			var TROLLZINHONASRANKEDS = new Menu("|鍒濊姹夊寲-鎶汉澶磡", "TristanaKillZiggs");
-			TROLLZINHONASRANKEDS.AddItem(new MenuItem("Foguinho", "浣跨敤鐐圭噧").SetValue(true));
-			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseQKs", "浣跨敤 Q").SetValue(true));
-			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseWKs", "浣跨敤 W").SetValue(true));
-			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseEKs", "浣跨敤 E").SetValue(true));
-			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseFlashKs", "浣跨敤闂幇").SetValue(false));
+			var TROLLZINHONASRANKEDS = new Menu("|初见汉化-抢人头|", "TristanaKillZiggs");
+			TROLLZINHONASRANKEDS.AddItem(new MenuItem("Foguinho", "使用点燃").SetValue(true));
+			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseQKs", "使用 Q").SetValue(true));
+			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseWKs", "使用 W").SetValue(true));
+			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseEKs", "使用 E").SetValue(true));
+			TROLLZINHONASRANKEDS.AddItem(new MenuItem("UseFlashKs", "使用闪现").SetValue(false));
 
-			var CHUPARUNSCUEPA = new Menu("|鍒濊姹夊寲-鑼冨洿|", "Drawing");
-			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawQ", "鑼冨洿 Q").SetValue(true));
-			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawW", "鑼冨洿 W").SetValue(true));
-			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawE", "鑼冨洿 E").SetValue(true));
-			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawR", "鑼冨洿R").SetValue(true));
-			CHUPARUNSCUEPA.AddItem(new MenuItem("CircleLag", "寤惰繜鑷敱鍦坾").SetValue(true));
-			CHUPARUNSCUEPA.AddItem(new MenuItem("CircleQuality", "鍦堣川閲弢").SetValue(new Slider(100, 100, 10)));
-			CHUPARUNSCUEPA.AddItem(new MenuItem("CircleThickness", "鍦堝帤搴").SetValue(new Slider(1, 10, 1)));
-            CHUPARUNSCUEPA.AddSubMenu(new Menu("|鍒濊姹夊寲-缇ゅ彿|", "by chujian"));
-            CHUPARUNSCUEPA.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            CHUPARUNSCUEPA.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "浜ゆ祦缇わ細333399"));
-			var Misc = new Menu("|鍒濊姹夊寲-鏉傞」|", "Misc");
-			Misc.AddItem(new MenuItem("UsePacket","浣跨敤灏佸寘").SetValue(true));
+			var CHUPARUNSCUEPA = new Menu("|初见汉化-范围|", "Drawing");
+			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawQ", "范围 Q").SetValue(true));
+			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawW", "范围 W").SetValue(true));
+			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawE", "范围 E").SetValue(true));
+			CHUPARUNSCUEPA.AddItem(new MenuItem("DrawR", "范围R").SetValue(true));
+			CHUPARUNSCUEPA.AddItem(new MenuItem("CircleLag", "延迟自由圈|").SetValue(true));
+			CHUPARUNSCUEPA.AddItem(new MenuItem("CircleQuality", "圈质量|").SetValue(new Slider(100, 100, 10)));
+			CHUPARUNSCUEPA.AddItem(new MenuItem("CircleThickness", "圈厚度|").SetValue(new Slider(1, 10, 1)));
+            CHUPARUNSCUEPA.AddSubMenu(new Menu("|初见汉化-群号|", "by chujian"));
+            CHUPARUNSCUEPA.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            CHUPARUNSCUEPA.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
+			var Misc = new Menu("|初见汉化-杂项|", "Misc");
+			Misc.AddItem(new MenuItem("UsePacket","使用封包").SetValue(true));
 			
-            Misc.AddSubMenu(new Menu("|鍒濊姹夊寲-缇ゅ彿|", "by chujian"));
-            Misc.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            Misc.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "浜ゆ祦缇わ細333399"));
-			Game.PrintChat("<font color='#07B88C'>SKO Rengar V2  鍔犺浇鎴愬姛!by鍒濊姹夊寲锛歈Q涓ㄤ辅5011477涓ㄤ辅</font>");
+            Misc.AddSubMenu(new Menu("|初见汉化-群号|", "by chujian"));
+            Misc.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            Misc.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
+			Game.PrintChat("<font color='#07B88C'>SKO Rengar V2  加载成功!by初见汉化：QQ丨丨5011477丨丨</font>");
 
 			SKOMenu.AddSubMenu(SKOTs);
 			SKOMenu.AddSubMenu(OrbMenu);

@@ -91,12 +91,12 @@ namespace Killability
             {
             }
 
-            _config = new Menu("鍑绘潃鎻愮ず", "Killability", true);
-            _config.AddItem(new MenuItem("icon", "鏄剧ず鍥炬爣").SetValue(true));
-            _config.AddItem(new MenuItem("text", "鏄剧ず鏂囨湰").SetValue(true));
-			_config.AddItem(new MenuItem("by wuwei", "鐒＄偤姹夊寲"));
-			_config.AddItem(new MenuItem("qunhao", "姹夊寲缇わ細386289593"));
-            _config.AddItem(new MenuItem("qunhao2", "濞冨▋缇わ細13497795"));
+            _config = new Menu("【無為汉化】击杀提示", "Killability", true);
+            _config.AddItem(new MenuItem("icon", "显示图标").SetValue(true));
+            _config.AddItem(new MenuItem("text", "显示文本").SetValue(true));
+			_config.AddItem(new MenuItem("by wuwei", "無為汉化"));
+			_config.AddItem(new MenuItem("qunhao", "汉化群：386289593"));
+            _config.AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
             _config.AddToMainMenu();
 
             InitDrawing();
