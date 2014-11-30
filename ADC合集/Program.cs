@@ -116,6 +116,7 @@ namespace Marksman
             QuickSilverMenu = new Menu("水银腰带", "QuickSilverSash");
             items.AddSubMenu(QuickSilverMenu);
             QuickSilverMenu.AddItem(new MenuItem("AnyStun", "眩晕").SetValue(true));
+			QuickSilverMenu.AddItem(new MenuItem("AnySlow", "减速").SetValue(true));
             QuickSilverMenu.AddItem(new MenuItem("AnySnare", "夹子").SetValue(true));
             QuickSilverMenu.AddItem(new MenuItem("AnyTaunt", "嘲讽").SetValue(true));
             foreach (var t in AActivator.BuffList)
