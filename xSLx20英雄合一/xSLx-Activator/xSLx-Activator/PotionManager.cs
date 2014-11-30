@@ -83,11 +83,11 @@ namespace xSLx_Activator
 					}
 				};
 
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep0", "====== 鐢熷懡"));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPotion", "= 绾㈣嵂").SetValue(true));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep0", "====== 生命"));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPotion", "= 红药").SetValue(true));
 			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_HealthPercent", "= HP<%").SetValue(new Slider(30)));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep1", "====== 钃濋噺"));
-			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPotion", "钃濊嵂").SetValue(true));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_sep1", "====== 蓝量"));
+			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPotion", "蓝药").SetValue(true));
 			_menuPotions.AddItem(new MenuItem("xSLxActivator_potionmanager_ManaPercent", "MP<%").SetValue(new Slider(30)));
 
 			Game.OnGameUpdate += OnGameUpdate;
