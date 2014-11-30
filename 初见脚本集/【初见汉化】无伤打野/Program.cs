@@ -28,7 +28,7 @@ namespace JunglePosition
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.PrintChat(
-                "<font color='#70DBDB'>初见汉化 </font><font color='#FFFFFF'>无伤打野</font> <font color='#70DBDB'> QQˉ5011477 !</font>");
+                 Game.PrintChat("<font color=\"#00BFFF\">鍒濊姹夊寲" + ChampionName + " -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛! QQ 5011477</font>"); 
 
         }
 

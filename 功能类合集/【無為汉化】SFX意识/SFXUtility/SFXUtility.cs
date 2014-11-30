@@ -85,7 +85,7 @@ namespace SFXUtility
 
         public string Name
         {
-            get { return "無為汉化─SFX意识"; }
+            get { return "【無為汉化】SFX意识"; }
         }
 
         public System.Version Version

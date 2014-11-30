@@ -94,7 +94,7 @@ namespace SKO_Rengar_V2
             Misc.AddSubMenu(new Menu("|初见汉化-群号|", "by chujian"));
             Misc.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
             Misc.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
-			Game.PrintChat("<font color='#07B88C'>SKO Rengar V2  加载成功!by初见汉化：QQ丨丨5011477丨丨</font>");
+			 Game.PrintChat("<font color=\"#00BFFF\">鍒濊姹夊寲" + ChampionName + " -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛! QQ 5011477</font>"); 
 
 			SKOMenu.AddSubMenu(SKOTs);
 			SKOMenu.AddSubMenu(OrbMenu);

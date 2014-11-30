@@ -112,7 +112,7 @@ namespace FedCaitlyn
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             GameObject.OnCreate += Trap_OnCreate;
 
-            Game.PrintChat("<font color=\"#00BFFF\">初见汉化" + ChampionName + " -</font> <font color=\"#FFFFFF\">加载成功!QQˉ5011477 !</font>");
+             Game.PrintChat("<font color=\"#00BFFF\">鍒濊姹夊寲" + ChampionName + " -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛! QQ 5011477</font>"); 
 
         }
 

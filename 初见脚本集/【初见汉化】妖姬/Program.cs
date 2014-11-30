@@ -125,7 +125,7 @@ namespace FedLeblanc
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
            
-            Game.PrintChat("<font color=\"#00BFFF\">初见汉化" + ChampionName + " -</font> <font color=\"#FFFFFF\">加载成功! QQ 5011477</font>");            
+            Game.PrintChat("<font color=\"#00BFFF\">鍒濊姹夊寲" + ChampionName + " -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛! QQ 5011477</font>");            
         } 
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
