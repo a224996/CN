@@ -49,7 +49,7 @@ namespace LeagueSharp.Common
                 var speed = decodedPacket.Speed;
                 var unit = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(networkId);
 
-                if (unit != null && unit.IsValid && unit.Type == GameObjectType.obj_AI_Hero)
+                if (unit.IsValid<Obj_AI_Hero>())
                 {
                     if (!DetectedDashes.ContainsKey(unit.NetworkId))
                     {

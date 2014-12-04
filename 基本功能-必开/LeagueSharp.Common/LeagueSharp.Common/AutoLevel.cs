@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,25 +15,42 @@ namespace LeagueSharp.Common
         public AutoLevel(int[] levels)
         {
             order = levels;
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+            Game.OnGameProcessPacket += InitialLevelUp;
         }
 
         public AutoLevel(IEnumerable<SpellSlot> levels)
         {
             order = levels.Select(spell => (int) spell).ToArray();
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+            Game.OnGameProcessPacket += InitialLevelUp;
         }
 
         public static void Enabled(bool enabled)
         {
             if (enabled)
             {
-                Game.OnGameProcessPacket -= Game_OnGameProcessPacket;
+                Game.OnGameProcessPacket += Game_OnGameProcessPacket;
             }
             else
             {
                 Game.OnGameProcessPacket -= Game_OnGameProcessPacket;
             }
+        }
+
+        private static void InitialLevelUp(GamePacketEventArgs args)
+        {
+            if (Game.Time < 20)
+            {
+                for (var i = 0; i < ObjectManager.Player.Level; i++)
+                {
+                    var spell = (SpellSlot) (order[i] - 1);
+                    if (ObjectManager.Player.Spellbook.GetSpell(spell).Level < 2)
+                    {
+                        ObjectManager.Player.Spellbook.LevelUpSpell(spell);
+                    }
+                }
+            }
+            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+            Game.OnGameProcessPacket -= InitialLevelUp;
         }
 
         private static void Game_OnGameProcessPacket(GamePacketEventArgs args)
@@ -48,8 +66,8 @@ namespace LeagueSharp.Common
             {
                 return;
             }
-
-            ObjectManager.Player.Spellbook.LevelUpSpell((SpellSlot) order[dp.Level - 1]);
+            var spell = (SpellSlot) (order[dp.Level - 1] - 1);
+            ObjectManager.Player.Spellbook.LevelUpSpell(spell);
         }
 
 

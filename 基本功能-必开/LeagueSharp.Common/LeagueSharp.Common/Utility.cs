@@ -95,6 +95,21 @@ namespace LeagueSharp.Common
             return true;
         }
 
+        public static bool IsValid<T>(this GameObject obj)
+        {
+            return obj != null && obj.IsValid && obj is T;
+        }
+
+        public static float HealthPercentage(this Obj_AI_Base unit)
+        {
+            return unit.Health / unit.MaxHealth * 100;
+        }
+
+        public static float ManaPercentage(this Obj_AI_Base unit)
+        {
+            return unit.Mana / unit.MaxMana * 100;
+        }
+
         public static void Highlight(this Obj_AI_Base unit, bool showHighlight = true)
         {
             if (showHighlight)
@@ -122,6 +137,17 @@ namespace LeagueSharp.Common
             }
         }
 
+        public static bool IsRecalling(this Obj_AI_Hero unit)
+        {
+            return unit.Buffs.Any(buff => buff.Name.ToLower().Contains("recall"));
+        }
+
+        public static Vector3 Randomize(this Vector3 position, int min, int max)
+        {
+            var ran = new Random();
+            return new Vector2(position.X + ran.Next(min, max), position.Y + ran.Next(min, max)).To3D();
+        }
+
         public static void PrintFloatText(this GameObject obj, string text, Packet.FloatTextPacket type)
         {
             Packet.S2C.FloatText.Encoded(new Packet.S2C.FloatText.Struct(text, type, obj.NetworkId)).Process();
@@ -135,42 +161,25 @@ namespace LeagueSharp.Common
 
         public static int GetRecallTime(Obj_AI_Hero obj)
         {
-            var duration = 0;
-
-            switch (obj.Spellbook.GetSpell(SpellSlot.Recall).Name)
-            {
-                case "Recall":
-                    duration = 8000;
-                    break;
-                case "RecallImproved":
-                    duration = 7000;
-                    break;
-                case "OdinRecall":
-                    duration = 4500;
-                    break;
-                case "OdinRecallImproved":
-                    duration = 4000;
-                    break;
-            }
-            return duration;
+            return GetRecallTime(obj.Spellbook.GetSpell(SpellSlot.Recall).Name);
         }
 
         public static int GetRecallTime(string recallName)
         {
             var duration = 0;
 
-            switch (recallName)
+            switch (recallName.ToLower())
             {
-                case "Recall":
+                case "recall":
                     duration = 8000;
                     break;
-                case "RecallImproved":
+                case "recallimproved":
                     duration = 7000;
                     break;
-                case "OdinRecall":
+                case "odinrecall":
                     duration = 4500;
                     break;
-                case "OdinRecallImproved":
+                case "odinrecallimproved":
                     duration = 4000;
                     break;
             }
@@ -270,29 +279,29 @@ namespace LeagueSharp.Common
         /// </summary>
         public static bool UnderTurret()
         {
-            return UnderTurret(ObjectManager.Player, true);
+            return UnderTurret(ObjectManager.Player.Position, true);
         }
 
         /// <summary>
         ///     Returns true if the unit is under tower range.
         /// </summary>
-        public static bool UnderTurret(Obj_AI_Base unit)
+        public static bool UnderTurret(this Obj_AI_Base unit)
         {
-            return UnderTurret(unit, true);
+            return UnderTurret(unit.Position, true);
         }
 
         /// <summary>
         ///     Returns true if the unit is under turret range.
         /// </summary>
-        public static bool UnderTurret(Obj_AI_Base unit, bool enemyTurretsOnly)
+        public static bool UnderTurret(this Obj_AI_Base unit, bool enemyTurretsOnly)
+        {
+            return UnderTurret(unit.Position, enemyTurretsOnly);
+        }
+
+        public static bool UnderTurret(this Vector3 position, bool enemyTurretsOnly)
         {
             return
-                ObjectManager.Get<Obj_AI_Turret>()
-                    .Where(
-                        turret =>
-                            turret != null && turret.IsValid && turret.Health > 0 &&
-                            (turret.IsEnemy || !enemyTurretsOnly))
-                    .Any(turret => Vector2.Distance(unit.Position.To2D(), turret.Position.To2D()) < 950);
+                ObjectManager.Get<Obj_AI_Turret>().Any(turret => turret.IsValidTarget(950, enemyTurretsOnly, position));
         }
 
         /// <summary>
@@ -527,14 +536,16 @@ namespace LeagueSharp.Common
 
             public string Name;
             public string ShortName;
+            public int StartingLevel;
             public MapType _MapType;
 
-            public Map(string name, string shortName, MapType map, Vector2 grid)
+            public Map(string name, string shortName, MapType map, Vector2 grid, int startLevel = 1)
             {
                 Name = name;
                 ShortName = shortName;
                 _MapType = map;
                 Grid = grid;
+                StartingLevel = startLevel;
             }
 
             private static bool SameVector(Vector3 v1, Vector3 v2)
@@ -584,7 +595,7 @@ namespace LeagueSharp.Common
                             ObjectManager.Get<Obj_Shop>().ToList().Find(shop => SameVector(shop.Position, pos)) != null))
                 {
                     return new Map(
-                        "The Crystal Scar", "crystalScar", MapType.CrystalScar, new Vector2(13894 / 2, 13218 / 2));
+                        "The Crystal Scar", "crystalScar", MapType.CrystalScar, new Vector2(13894 / 2, 13218 / 2), 3);
                 }
                 if (
                     ttt.Any(
@@ -601,7 +612,7 @@ namespace LeagueSharp.Common
                             ObjectManager.Get<Obj_Shop>().ToList().Find(shop => SameVector(shop.Position, pos)) != null))
                 {
                     return new Map(
-                        "Howling Abyss", "howlingAbyss", MapType.HowlingAbyss, new Vector2(13120 / 2, 12618 / 2));
+                        "Howling Abyss", "howlingAbyss", MapType.HowlingAbyss, new Vector2(13120 / 2, 12618 / 2), 3);
                 }
 
                 return new Map("Unknown", "unknown", MapType.Unknown, new Vector2(0, 0));
@@ -684,7 +695,7 @@ namespace LeagueSharp.Common
             var d = version.Split('.');
             for (var i = 0; i <= d.Length; i++)
             {
-                if (d[i] == null ||Convert.ToInt32(d[i]) != VersionArray[i])
+                if (d[i] == null || Convert.ToInt32(d[i]) != VersionArray[i])
                 {
                     return false;
                 }
