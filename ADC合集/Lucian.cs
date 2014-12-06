@@ -18,6 +18,7 @@ namespace Marksman
 
         public static bool DoubleHit = false;
         private static int xAttackLeft = 0;
+        private static float xPassiveUsedTime;
 
         public Lucian()
         {
@@ -30,6 +31,8 @@ namespace Marksman
             Q.SetSkillshot(0.25f, 65f, 1100f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(0.30f, 80f, 1600f, true, SkillshotType.SkillshotLine);
             E = new Spell(SpellSlot.E, 475);
+            
+            xPassiveUsedTime = Game.Time;
 
             Obj_AI_Base.OnProcessSpellCast += Game_OnProcessSpell;
             GameObject.OnDelete += GameObject_OnDelete;
@@ -41,23 +44,23 @@ namespace Marksman
             /*
             return;
             if (xMustAttackCount > 0 && (sender.Name.Contains("Lucian_P_buf") || sender.Name.Contains("Lucian_AA_mis")))
-        {
+            { 
                 xMustAttackCount -= 1;
             }
             */
         }
 
         public bool LucianHasPassiveX
-            {
+        {
             get
-                {
+            {
                 return ObjectManager.Player.Buffs.Any(buff => buff.Name == "lucianpassivebuff");
                 //return ObjectManager.Player.Buffs.Any(buff => buff.Name == "lucianpassivebuff") && xMustAttackCount == 0; 
             }
         }
 
         public static bool IsPositionSafeForE(Obj_AI_Hero target, Spell spell)
-            {
+        {
             var predPos = spell.GetPrediction(target).UnitPosition.To2D();
             var myPos = ObjectManager.Player.Position.To2D();
             var newPos = (target.Position.To2D() - myPos);
@@ -69,7 +72,7 @@ namespace Marksman
             foreach (var tower in ObjectManager.Get<Obj_Turret>()
                 .Where(tower => tower.IsValid && !tower.IsDead && Math.Abs(tower.Health) > float.Epsilon)
                 .Where(tower => Vector3.Distance(tower.Position, ObjectManager.Player.Position) < 1450))
-                {
+            {
                 closestTower = tower;
             }
 
@@ -92,15 +95,15 @@ namespace Marksman
                     MinionOrderTypes.None);
 
                 return (from vMinion in vMinions.Where(vMinion => vMinion.IsValidTarget(Q.Range))
-                    let endPoint =
-                        vMinion.ServerPosition.To2D()
-                            .Extend(ObjectManager.Player.ServerPosition.To2D(), -Q2.Range)
-                            .To3D()
-                    where
+                        let endPoint =
+                            vMinion.ServerPosition.To2D()
+                                .Extend(ObjectManager.Player.ServerPosition.To2D(), -Q2.Range)
+                                .To3D()
+                        where
                             vMinion.Distance(vTarget) <= vTarget.Distance(ObjectManager.Player) &&
                             Intersection(ObjectManager.Player.ServerPosition.To2D(), endPoint.To2D(),
                                 vTarget.ServerPosition.To2D(), vTarget.BoundingRadius + Q.Width / 4)
-                    select vMinion).FirstOrDefault();
+                        select vMinion).FirstOrDefault();
             }
         }
 
@@ -136,45 +139,34 @@ namespace Marksman
             if (spell.SData.Name.Contains("summoner")) return;
             if (!Config.Item("Passive" + Id).GetValue<bool>()) return;
             
-
             if (spell.SData.Name.ToLower().Contains("lucianq") || spell.SData.Name.ToLower().Contains("lucianw") ||
-                spell.SData.Name.ToLower().Contains("luciane") || spell.SData.Name.ToLower().Contains("lucianr")) 
+                spell.SData.Name.ToLower().Contains("luciane") || spell.SData.Name.ToLower().Contains("lucianr"))
             {
-                xAttackLeft = 2;
-                return;
+                xAttackLeft = 1;
+                xPassiveUsedTime = Game.Time;
             }
 
-            if (spell.SData.Name.ToLower().Contains("lucian") && spell.SData.Name.ToLower().Contains("attack") && !spell.SData.Name.ToLower().Contains("passiveattack"))
+            if (spell.SData.Name.ToLower().Contains("lucianpassiveattack"))
             {
-                Game.PrintChat(spell.SData.Name);
-                xAttackLeft -= 1;
-                return;
+                Utility.DelayAction.Add(500, () =>
+                {
+                    xAttackLeft -= 1;
+                });
             }
-            /*
-            if (!unit.IsMe) return;
-            if (spell.SData.Name.Contains("summoner")) return;
-            if (!Config.Item("Passive" + Id).GetValue<bool>()) return;
-            
-            if (spell.SData.Name.ToLower().Contains("lucianq") || spell.SData.Name.ToLower().Contains("lucianw") ||
-                spell.SData.Name.ToLower().Contains("luciane") || spell.SData.Name.ToLower().Contains("lucianr")) 
-            {
-                xAttackLeft = 2;
-                return;
-            }
-
-            if (spell.SData.Name.ToLower().Contains("lucian") && spell.SData.Name.ToLower().Contains("attack"))
-            {
-                xAttackLeft -= 1;
-                return;
-            }
-            */
         }
 
         public override void Game_OnGameUpdate(EventArgs args)
         {
             if (ObjectManager.Player.IsDead)
+            {
+                xAttackLeft = 0;
                 return;
-
+            }
+            
+            if (Game.Time > xPassiveUsedTime + 7 && xAttackLeft == 1)
+            {
+                xAttackLeft = 0;
+            }
             if (Config.Item("Passive" + Id).GetValue<bool>() && xAttackLeft > 0)
                 return;
 
@@ -208,9 +200,9 @@ namespace Marksman
             var useE = Config.Item("UseE" + (ComboActive ? "C" : "H") + Id).GetValue<bool>();
             var useQExtended = Config.Item("UseQExtended" + (ComboActive ? "C" : "H") + Id).GetValue<bool>();
 
-            if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Level > 0)
-                Config.Item("GHOSTBLADE")
-                    .SetValue(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Name == "LucianR");
+//            if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Level > 0)
+//                Config.Item("GHOSTBLADE")
+//                    .SetValue(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Name == "LucianR");
 
             if (useQExtended && Q.IsReady())
             {
@@ -241,10 +233,10 @@ namespace Marksman
             }
 
             if (useE && E.IsReady())
-                {
+            {
                 var t = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
                 if (t != null)
-                    {
+                {
                     E.Cast(Game.CursorPos);
                 }
             }

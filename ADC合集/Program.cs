@@ -23,7 +23,7 @@ namespace Marksman
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            Config = new Menu("【超神汉化】ADC合集", "Marksman", true);
+            Config = new Menu("Marksman", "Marksman", true);
             CClass = new Champion();
             AActivator = new Activator();
             
@@ -110,10 +110,32 @@ namespace Marksman
             var orbwalking = Config.AddSubMenu(new Menu("走砍", "Orbwalking"));
             CClass.Orbwalker = new Orbwalking.Orbwalker(orbwalking);
 
-            var items = Config.AddSubMenu(new Menu("物品", "Items"));
+            /* Menu Summoners */
+            var summoners = Config.AddSubMenu(new Menu("召唤师技能", "Summoners"));
+            var summonersHeal = summoners.AddSubMenu(new Menu("治愈", "Heal"));
+            {
+                summonersHeal.AddItem(new MenuItem("SUMHEALENABLE", "启用").SetValue(true));
+                summonersHeal.AddItem(new MenuItem("SUMHEALSLIDER", "血量低于.").SetValue(new Slider(20, 99, 1)));
+            }
+
+            var summonersBarrier = summoners.AddSubMenu(new Menu("屏障", "Barrier"));
+            {
+                summonersBarrier.AddItem(new MenuItem("SUMBARRIERENABLE", "启用").SetValue(true));
+                summonersBarrier.AddItem(
+                    new MenuItem("SUMBARRIERSLIDER", "血量低于.").SetValue(new Slider(20, 99, 1)));
+            }
+
+            var summonersIgnite = summoners.AddSubMenu(new Menu("点燃", "Ignite"));
+            {
+                summonersIgnite.AddItem(new MenuItem("SUMIGNITEENABLE", "启用").SetValue(true));
+            }
+            /* Menu Items */            
+            var items = Config.AddSubMenu(new Menu("项目", "Items"));
             items.AddItem(new MenuItem("BOTRK", "破败").SetValue(true));
-            items.AddItem(new MenuItem("GHOSTBLADE", "小弯刀").SetValue(true));
-            QuickSilverMenu = new Menu("水银腰带", "QuickSilverSash");
+            items.AddItem(new MenuItem("GHOSTBLADE", "鬼刀").SetValue(true));
+            items.AddItem(new MenuItem("SWORD", "神圣之剑").SetValue(true));
+            items.AddItem(new MenuItem("MURAMANA", "魔宗利刃").SetValue(true));
+            QuickSilverMenu = new Menu("QSS", "水银饰带");
             items.AddSubMenu(QuickSilverMenu);
             QuickSilverMenu.AddItem(new MenuItem("AnyStun", "眩晕").SetValue(true));
 			QuickSilverMenu.AddItem(new MenuItem("AnySlow", "减速").SetValue(true));
@@ -292,7 +314,8 @@ namespace Marksman
                                      ObjectManager.Player.Mana >= laneExistsMana;
 
             CClass.Game_OnGameUpdate(args);
-
+            
+            UseSummoners();
             var useItemModes = Config.Item("UseItemsMode").GetValue<StringList>().SelectedIndex;
 
             //Items
@@ -307,7 +330,7 @@ namespace Marksman
             var botrk = Config.Item("BOTRK").GetValue<bool>();
             var ghostblade = Config.Item("GHOSTBLADE").GetValue<bool>();
             var sword = Config.Item("SWORD").GetValue<bool>();
-            var igniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
+            var muramana = Config.Item("MURAMANA").GetValue<bool>();
             var target = CClass.Orbwalker.GetTarget();
 
             if (botrk)
@@ -337,18 +360,76 @@ namespace Marksman
                 !ObjectManager.Player.HasBuff("spectralfury", true) /*if ghostblade is not active*/ 
                 && Orbwalking.InAutoAttackRange(target)) 
                 Items.UseItem(3131);
-                
-            if (target != null && igniteSlot != SpellSlot.Unknown &&
-                ObjectManager.Player.SummonerSpellbook.CanUseSpell(igniteSlot) == SpellState.Ready)
+
+            if (muramana && Items.HasItem(3042))
             {
-                if (ObjectManager.Player.Distance(target) < 650 &&
-                    ObjectManager.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite) >= target.Health)
+                if (target != null && CClass.ComboActive &&
+                    target.Position.Distance(ObjectManager.Player.Position) < 1200) 
                 {
-                    ObjectManager.Player.SummonerSpellbook.CastSpell(igniteSlot, target);
+                    if (!ObjectManager.Player.HasBuff("Muramana", true))
+                    {
+                        Items.UseItem(3042);
+                    }
                 }
-            }    
+                else
+                {
+                    if (ObjectManager.Player.HasBuff("Muramana", true))
+                    {
+                        Items.UseItem(3042);
+                    }
+                }
+            }
         }
         
+        public static void UseSummoners()
+        {
+            const int xDangerousRange = 1100;
+
+            if (Config.Item("SUMHEALENABLE").GetValue<bool>())
+            {
+                var xSlot = ObjectManager.Player.GetSpellSlot("summonerheal");
+                var xCanUse = ObjectManager.Player.Health <=
+                              ObjectManager.Player.MaxHealth/100*Config.Item("SUMHEALSLIDER").GetValue<Slider>().Value;
+
+                if (xCanUse && 
+                    (xSlot != SpellSlot.Unknown || ObjectManager.Player.SummonerSpellbook.CanUseSpell(xSlot) == SpellState.Ready) 
+                    && Utility.CountEnemysInRange(xDangerousRange) != 0) 
+                {
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(xSlot);
+                }
+            }
+            
+            if (Config.Item("SUMBARRIERENABLE").GetValue<bool>())
+            {
+                var xSlot = ObjectManager.Player.GetSpellSlot("summonerbarrier");
+                var xCanUse = ObjectManager.Player.Health <=
+                              ObjectManager.Player.MaxHealth/100*Config.Item("SUMBARRIERSLIDER").GetValue<Slider>().Value;
+
+                if (xCanUse && 
+                    (xSlot != SpellSlot.Unknown || ObjectManager.Player.SummonerSpellbook.CanUseSpell(xSlot) == SpellState.Ready) 
+                    && Utility.CountEnemysInRange(xDangerousRange) != 0) 
+                {
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(xSlot);
+                }
+            }
+            
+            if (Config.Item("SUMIGNITEENABLE").GetValue<bool>())
+            {
+                var xSlot = ObjectManager.Player.GetSpellSlot("summonerdot");
+                var t = CClass.Orbwalker.GetTarget();
+                
+                if (t != null && xSlot != SpellSlot.Unknown &&
+                    ObjectManager.Player.SummonerSpellbook.CanUseSpell(xSlot) == SpellState.Ready)
+                {
+                    if (ObjectManager.Player.Distance(t) < 650 &&
+                        ObjectManager.Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite) >=
+                        t.Health)
+                    {
+                        ObjectManager.Player.SummonerSpellbook.CastSpell(xSlot, t);
+                    }
+                }
+            }
+        }        
         private static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
         {
             CClass.Orbwalking_AfterAttack(unit, target);

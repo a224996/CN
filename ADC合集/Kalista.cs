@@ -42,7 +42,7 @@ namespace Marksman
         {
             Utils.PrintMessage("Kalista loaded.");
 
-            Q = new Spell(SpellSlot.Q, 1350);
+            Q = new Spell(SpellSlot.Q, 1300);
             W = new Spell(SpellSlot.W, 5500);
             E = new Spell(SpellSlot.E, 950);
             R = new Spell(SpellSlot.R, 1250);
@@ -306,19 +306,19 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "Use W").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "Use E").SetValue(true));
-            config.AddItem(new MenuItem("UseRC" + Id, "Use R").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, "使用E").SetValue(true));
+            config.AddItem(new MenuItem("UseRC" + Id, "使用R").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWH" + Id, "Use W").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(true));
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "Use Q (Toggle)").SetValue(new KeyBind("H".ToCharArray()[0],
+                new MenuItem("UseQTH" + Id, "使用Q (切换)").SetValue(new KeyBind("H".ToCharArray()[0],
                     KeyBindType.Toggle)));
             return true;
         }
@@ -333,29 +333,29 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W range").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawW" + Id, "W 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
             config.AddItem(
-                new MenuItem("DrawR" + Id, "R range").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawR" + Id, "R 范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
             config.AddItem(new MenuItem("Dx" + Id, ""));
             config.AddItem(
-                new MenuItem("DrawConnMax" + Id, "Connection range").SetValue(new Circle(false,
+                new MenuItem("DrawConnMax" + Id, "连招 范围").SetValue(new Circle(false,
                     Color.FromArgb(100, 255, 255, 255))));
             config.AddItem(
-                new MenuItem("DrawConnText" + Id, "Connection Text").SetValue(new Circle(false, Color.GreenYellow)));
+                new MenuItem("DrawConnText" + Id, "连招文本").SetValue(new Circle(false, Color.GreenYellow)));
             config.AddItem(
-                new MenuItem("DrawConnSignal" + Id, "Connection Signal").SetValue(true));
+                new MenuItem("DrawConnSignal" + Id, "连招信号").SetValue(true));
             config.AddItem(new MenuItem("Dx" + Id, ""));
             config.AddItem(
-                new MenuItem("DrawEStackCount" + Id, "E Stack Count").SetValue(new Circle(false, Color.Firebrick)));
+                new MenuItem("DrawEStackCount" + Id, "E 层数").SetValue(new Circle(false, Color.Firebrick)));
             config.AddItem(new MenuItem("Dx", ""));
             config.AddItem(
-                new MenuItem("DrawJumpPos" + Id, "Jump Positions").SetValue(new Circle(false, Color.HotPink)));
+                new MenuItem("DrawJumpPos" + Id, "跳的位置").SetValue(new Circle(false, Color.HotPink)));
 
-            var damageAfterE = new MenuItem("DamageAfterE", "Damage After E").SetValue(true);
+            var damageAfterE = new MenuItem("DamageAfterE", "显示Ｅ伤害").SetValue(true);
             config.AddItem(damageAfterE);
 
             Utility.HpBarDamageIndicator.DamageToUnit = GetEDamage;

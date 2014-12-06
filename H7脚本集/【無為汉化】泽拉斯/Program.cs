@@ -131,12 +131,12 @@ namespace Xerath
             //Misc
             Config.AddSubMenu(new Menu("R", "R"));
             Config.SubMenu("R").AddItem(new MenuItem("EnableRUsage", "自动使用大招").SetValue(true));
-            Config.SubMenu("R").AddItem(new MenuItem("rMode", "模式").SetValue(new StringList(new[] { "正常", "自定??", "OnTap"})));
+            Config.SubMenu("R").AddItem(new MenuItem("rMode", "模式").SetValue(new StringList(new[] { "正常", "自定义", "OnTap"})));
             Config.SubMenu("R").AddItem(new MenuItem("rModeKey", "OnTap按钮").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Config.SubMenu("R").AddSubMenu(new Menu("设置延迟", "Custom delays"));
             for (int i = 1; i <= 3; i++)
                 Config.SubMenu("R").SubMenu("Custom delays").AddItem(new MenuItem("Delay"+i, "Delay"+i).SetValue(new Slider(0, 1500, 0)));
-            Config.SubMenu("R").AddItem(new MenuItem("PingRKillable", "Ping可杀死目??本地)").SetValue(true));
+            Config.SubMenu("R").AddItem(new MenuItem("PingRKillable", "可击杀目标 本地ping)").SetValue(true));
             Config.SubMenu("R").AddItem(new MenuItem("BlockMovement", "有障碍物时等待投掷R").SetValue(false));
             
 
@@ -184,7 +184,7 @@ namespace Xerath
             //Misc
             Config.AddSubMenu(new Menu("杂项", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("InterruptSpells", "打断法术").SetValue(true));
-            Config.SubMenu("Misc").AddItem(new MenuItem("AutoEGC", "自动E防突??").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("AutoEGC", "自动E防突进").SetValue(true));
 
 
             //Damage after combo:
@@ -212,7 +212,7 @@ namespace Xerath
                     new MenuItem("RRange", "R 范围").SetValue(new Circle(false, Color.FromArgb(150, Color.DodgerBlue))));
             Config.SubMenu("Drawings")
                 .AddItem(
-                    new MenuItem("RRangeM", "R 范围 小地??").SetValue(new Circle(false,
+                    new MenuItem("RRangeM", "R 范围 小地图").SetValue(new Circle(false,
                         Color.FromArgb(150, Color.DodgerBlue))));
             Config.SubMenu("Drawings")
                 .AddItem(dmgAfterComboItem);
@@ -335,6 +335,37 @@ namespace Xerath
 
             if (wTarget != null && useW && W.IsReady())
                 W.Cast(wTarget, false, true);
+        }
+
+        private static Obj_AI_Hero GetTargetNearMouse(float distance)
+        {
+            Obj_AI_Hero bestTarget = null;
+            var bestRatio = 0f;
+
+            if (SimpleTs.SelectedTarget.IsValidTarget() && !SimpleTs.IsInvulnerable(SimpleTs.SelectedTarget) &&
+                (Game.CursorPos.Distance(SimpleTs.SelectedTarget.ServerPosition) < distance && ObjectManager.Player.Distance(SimpleTs.SelectedTarget) < R.Range))
+            {
+                return SimpleTs.SelectedTarget;
+            }
+
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if (!hero.IsValidTarget(R.Range) || SimpleTs.IsInvulnerable(hero) || Game.CursorPos.Distance(hero.ServerPosition) > distance)
+                {
+                    continue;
+                }
+
+                var damage = (float)ObjectManager.Player.CalcDamage(hero, Damage.DamageType.Magical, 100);
+                var ratio = damage / (1 + hero.Health) * SimpleTs.GetPriority(hero);
+
+                if (ratio > bestRatio)
+                {
+                    bestRatio = ratio;
+                    bestTarget = hero;
+                }
+            }
+
+            return bestTarget;
         }
 
         private static void WhileCastingR()
@@ -511,6 +542,14 @@ namespace Xerath
 
         private static void Drawing_OnDraw(EventArgs args)
         {
+            if (IsCastingR)
+            {
+                if (Config.Item("OnlyNearMouse").GetValue<bool>())
+                {
+                    Utility.DrawCircle(Game.CursorPos, Config.Item("MRadius").GetValue<Slider>().Value, Color.White);
+                }
+            }
+
             //Draw the ranges of the spells.
             foreach (var spell in SpellList)
             {

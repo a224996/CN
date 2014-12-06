@@ -1,7 +1,6 @@
-﻿#region
+#region
 using System;
 using System.Drawing;
-using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 #endregion
@@ -17,33 +16,31 @@ namespace Marksman
 
         public Gnar()
         {
-            Console.Clear();
             Utils.PrintMessage("Gnar loaded.");
 
             Q = new Spell(SpellSlot.Q, 1100);
             Q.SetSkillshot(0.5f, 50f, 1200f, false, SkillshotType.SkillshotLine);
 
             W = new Spell(SpellSlot.W, 600);
+
             E = new Spell(SpellSlot.E, 500);
             E.SetSkillshot(0.5f, 50f, 1200f, false, SkillshotType.SkillshotCircle);
         }
 
         public override void Game_OnGameUpdate(EventArgs args)
         {
-            if (vGnar.Spellbook.GetSpell(SpellSlot.Q).Level > 0)
+            if (!Orbwalking.CanMove(100))
+                return;
+
+            var useQ = GetValue<bool>("UseQ" + (ComboActive ? "C" : "H"));
             if (ComboActive || HarassActive)
             {
-                var useQ = GetValue<bool>("UseQ" + (ComboActive ? "C" : "H"));
-
-                if (Orbwalking.CanMove(100))
+                if (Q.IsReady() && useQ)
                 {
-                    if (Q.IsReady() && useQ)
+                    var t = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
+                    if (t != null)
                     {
-                        var t = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
-                        if (t != null)
-                        {
-                            Q.Cast(t, false, true);
-                        }
+                        Q.Cast(t, false, true);
                     }
                 }
             }
@@ -80,27 +77,26 @@ namespace Marksman
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "Use Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "Use W").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "Use Q").SetValue(false));
-            config.AddItem(new MenuItem("UseWH" + Id, "Use W").SetValue(false));
+            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(false));
+            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(false));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
-
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawW" + Id, "W 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawE" + Id, "E range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawE" + Id, "E 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             return true;
         }
         public override bool ExtrasMenu(Menu config)
@@ -114,5 +110,5 @@ namespace Marksman
 
              return true;
         }
-        }
     }
+}

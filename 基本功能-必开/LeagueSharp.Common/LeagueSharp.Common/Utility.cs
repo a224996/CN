@@ -154,7 +154,7 @@ namespace LeagueSharp.Common
         }
 
 
-        public static bool IsWall(Vector3 position)
+        public static bool IsWall(this Vector3 position)
         {
             return NavMesh.GetCollisionFlags(position).HasFlag(CollisionFlags.Wall);
         }
@@ -507,7 +507,7 @@ namespace LeagueSharp.Common
                     var percentHealthAfterDamage = Math.Max(0, unit.Health - damage) / unit.MaxHealth;
                     var xPos = barPos.X + XOffset + Width * percentHealthAfterDamage;
 
-                    if (damage > unit.Health)
+                    //if (damage > unit.Health)
                     {
                         Text.X = (int) barPos.X + XOffset;
                         Text.Y = (int) barPos.Y + YOffset - 13;

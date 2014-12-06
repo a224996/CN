@@ -93,6 +93,8 @@ namespace LeagueSharp.Common
         private static Obj_AI_Base _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay = 80;
+        private static float _minDistance = 400;
+        private static readonly Random _random = new Random(DateTime.Now.Millisecond);
 
         static Orbwalking()
         {
@@ -275,6 +277,11 @@ namespace LeagueSharp.Common
             _delay = delay;
         }
 
+        public static void SetMinimumOrbwalkDistance(float d)
+        {
+            _minDistance = d;
+        }
+
         public static float GetLastMoveTime()
         {
             return LastMoveCommandT;
@@ -285,7 +292,7 @@ namespace LeagueSharp.Common
             return LastMoveCommandPosition;
         }
 
-        private static void MoveTo(Vector3 position, float holdAreaRadius = 0, bool overrideTimer = false)
+        private static void MoveTo(Vector3 position, float holdAreaRadius = 0, bool overrideTimer = false, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
             if (Environment.TickCount - LastMoveCommandT < _delay && !overrideTimer)
             {
@@ -305,10 +312,20 @@ namespace LeagueSharp.Common
             }
 
             var point = position;
-            if (Player.ServerPosition.Distance(position) > 400)
+            if (useFixedDistance)
             {
-                point = Player.ServerPosition +
-                        400 * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                point = position + (randomizeMinDistance ? _random.NextFloat(_minDistance * 0.8f, _minDistance * 1.2f) : _minDistance) * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+            }
+            else 
+            {
+                if (randomizeMinDistance)
+                {
+                    point = position + _random.NextFloat(_minDistance * 0.8f, _minDistance * 1.2f) * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                }
+                else if (Player.ServerPosition.Distance(position) > _minDistance)
+                {
+                    point = Player.ServerPosition + _minDistance * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                }
             }
 
             Player.IssueOrder(GameObjectOrder.MoveTo, point);
@@ -321,7 +338,9 @@ namespace LeagueSharp.Common
         public static void Orbwalk(Obj_AI_Base target,
             Vector3 position,
             float extraWindup = 90,
-            float holdAreaRadius = 0)
+            float holdAreaRadius = 0,
+            bool useFixedDistance = true,
+            bool randomizeMinDistance = true)
         {
             if (target != null && CanAttack())
             {
@@ -344,7 +363,7 @@ namespace LeagueSharp.Common
 
             if (CanMove(extraWindup))
             {
-                MoveTo(position, holdAreaRadius);
+                MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
             }
         }
 
@@ -597,7 +616,7 @@ namespace LeagueSharp.Common
                                 1000 * (int) Player.Distance(minion) / (int) GetMyProjectileSpeed();
                         var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
 
-                        if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion))
+                        if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
                         {
                             if (predHealth <= 0)
                             {

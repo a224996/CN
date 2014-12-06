@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -123,6 +124,42 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Minimap_Ward_Pink_Enemy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\activated.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\danger.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\deactivated.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\hev_logon.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\hev_shutdown.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\voice_off.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ganks_hater\voice_on.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Map_trap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Minimap_Ward_cait_trap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Minimap_Ward_teemo_trap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hud1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hud2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
