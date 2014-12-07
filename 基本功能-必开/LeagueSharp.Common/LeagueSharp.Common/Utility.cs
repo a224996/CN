@@ -97,7 +97,7 @@ namespace LeagueSharp.Common
 
         public static bool IsValid<T>(this GameObject obj)
         {
-            return obj != null && obj.IsValid && obj is T;
+            return obj.IsValid && obj is T;
         }
 
         public static float HealthPercentage(this Obj_AI_Base unit)
@@ -180,6 +180,12 @@ namespace LeagueSharp.Common
                     duration = 4500;
                     break;
                 case "odinrecallimproved":
+                    duration = 4000;
+                    break;
+                case "superrecall":
+                    duration = 4000;
+                    break;
+                case "superrecallimproved":
                     duration = 4000;
                     break;
             }

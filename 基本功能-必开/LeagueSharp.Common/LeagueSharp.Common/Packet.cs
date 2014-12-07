@@ -101,20 +101,25 @@ namespace LeagueSharp.Common
             Unknown100 = 0x00,
             Unknown101 = 0x01,
             Unknown102 = 0x02,
-            Unknown10C = 0x0C,
+
             Unknown115 = 0x15,
             Unknown116 = 0x16,
             Unknown124 = 0x24,
             Unknown11A = 0x1A,
             Unknown11E = 0x1E, // currently empty
-            Unknown122 = 0x22,
-            Unknown12C = 0x2C,
+
             /* These others could be packets with a handler */
             Unknown104 = 0x04, //confirmed in game/ida, related to spellslots
             Unknown118 = 0x08, //sion ult
             Unknown120 = 0x20, // confirmed in game
             SpawnTurret = 0x23, // confirmed in ida
 
+            /* New List: Confirmed in Game */
+            //FE 19 00 00 40 07 01 00 01 00 00 00 02 00 00 00 FF FF FF FF 00 00 00 00 00 00 00 00
+            InitSpell = 0x07, //also stack count for stackables, teemo shroom, akali, etc? 
+            Unknown10C = 0x0C, //this packet is like 0x127
+
+            Unknown122 = 0x22,
             Unknown125 = 0x25, // sion ult, other stuff
             //FE 05 00 00 40 25 01 03 EC 06 00 00 00 01 <== sion
 //            FE 19 00 00 40 25 01 00 00 07 00 00 00 06 FB 16 00 40 56 04 00 40 B2 04 00 40 B2 04 00 40 56 05 00 40 FB 16 00 40
@@ -123,11 +128,15 @@ namespace LeagueSharp.Common
 //FE 19 00 00 40 25 01 00 00 07 00 00 00 06 FB 16 00 40 56 04 00 40 B2 04 00 40 B2 04 00 40 56 05 00 40 FB 16 00 40
 //FE 19 00 00 40 25 01 00 00 07 00 00 00 06 56 04 00 40 B2 04 00 40 B2 04 00 40 56 05 00 40 56 05 00 40 FB 16 00 40
             NPCDeath = 0x26, //confirmed in ida, struct from intwars/ida
-            Unknown2E = 0x2E, //confirmed in ida
+            Unknown129 = 0x29, //related to spells (kalista ally unit), add?
+            Unknown12A = 0x2A, //related to spells (kalist ally unit after 0x129), maybe delete?
+            //FE 06 00 00 40 2A 01 3C 00 00 00
+            Unknown12C = 0x2C,
+            //FE 00 00 00 00 2C 01 81 00 00 00 00 FF FF FF FF 
+//FE 00 00 00 00 2C 01 80 00 00 00 00 FF FF FF FF 
+            Unknown12E = 0x2E, //confirmed in ida
+            Unknown12F = 0x2F, //FE 05 00 00 40 2F 01 00
 
-
-            //FE 19 00 00 40 07 01 00 01 00 00 00 02 00 00 00 FF FF FF FF 00 00 00 00 00 00 00 00
-            InitSpell = 0x07, //also stack count for stackables, teemo shroom, akali, etc? 
 
             AddBuff = 0x09, // buff added by towers in new SR
             UndoToken = 0x0B,
@@ -324,7 +333,8 @@ namespace LeagueSharp.Common
                 {
                     var result = new GamePacket(Header);
                     result.WriteInteger(packetStruct.SourceNetworkId);
-                    result.WriteByte(GetSpellByte(packetStruct.Slot));
+                    result.WriteByte(
+                        packetStruct.SpellFlag == 0xFF ? GetSpellByte(packetStruct.Slot) : packetStruct.SpellFlag);
                     result.WriteByte((byte) packetStruct.Slot);
                     result.WriteFloat(packetStruct.FromX);
                     result.WriteFloat(packetStruct.FromY);
@@ -343,7 +353,7 @@ namespace LeagueSharp.Common
                     var result = new Struct();
                     packet.Position = 1;
                     result.SourceNetworkId = packet.ReadInteger();
-                    packet.Position++;
+                    result.SpellFlag = packet.ReadByte();
                     result.Slot = (SpellSlot) packet.ReadByte();
                     result.FromX = packet.ReadFloat();
                     result.FromY = packet.ReadFloat();
@@ -393,6 +403,7 @@ namespace LeagueSharp.Common
                     public float FromY;
                     public SpellSlot Slot;
                     public int SourceNetworkId;
+                    public byte SpellFlag;
                     public int TargetNetworkId;
                     public float ToX;
                     public float ToY;
@@ -403,7 +414,8 @@ namespace LeagueSharp.Common
                         float fromX = 0f,
                         float fromY = 0f,
                         float toX = 0f,
-                        float toY = 0f)
+                        float toY = 0f,
+                        byte spellFlag = 0xFF)
                     {
                         SourceNetworkId = (sourceNetworkId == -1) ? ObjectManager.Player.NetworkId : sourceNetworkId;
                         Slot = slot;
@@ -412,6 +424,7 @@ namespace LeagueSharp.Common
                         ToX = toX;
                         ToY = toY;
                         TargetNetworkId = targetNetworkId;
+                        SpellFlag = spellFlag;
                     }
                 }
             }
@@ -1307,6 +1320,76 @@ namespace LeagueSharp.Common
 
             #endregion
 
+            #region Unknown10C
+
+            /// <summary>
+            ///     Like undo.
+            /// </summary>
+            public static class Unknown10C
+            {
+                public static byte SubHeader = (byte) MultiPacketType.Unknown10C;
+
+                public static List<RefundItem> Decoded(byte[] data)
+                {
+                    var packet = new GamePacket(data) { Position = 11 };
+                    var itemList = new List<RefundItem>();
+
+                    for (var i = 0; i <= 7; i++)
+                    {
+                        var inventorySlot = packet.ReadByte();
+                        var spellSlot = inventorySlot + SpellSlot.Item1;
+                        var stack = packet.ReadByte();
+                        var charge = packet.ReadByte();
+                        var itemId = packet.ReadShort();
+                        packet.Position += 2;
+                        var pos = packet.Position;
+
+                        if (itemId == 0)
+                        {
+                            continue;
+                        }
+
+                        var cd = packet.ReadFloat(packet.Position + 59); //this is prob wrong
+                        var totalCd = packet.ReadFloat(packet.Position + 29); //this is prob wrong
+                        packet.Position = pos;
+
+                        itemList.Add(new RefundItem(itemId, inventorySlot, spellSlot, stack, charge, cd, totalCd));
+                    }
+
+                    return itemList;
+                }
+
+                public class RefundItem
+                {
+                    public int Charge;
+                    public float CurrentCooldown;
+                    public byte InventorySlot;
+                    public int ItemId;
+                    public SpellSlot SpellSlot;
+                    public int Stack;
+                    public float TotalCooldown;
+
+                    public RefundItem(short itemId,
+                        byte inventorySlot,
+                        SpellSlot slot,
+                        int stack,
+                        int charge,
+                        float cd,
+                        float totalCd)
+                    {
+                        ItemId = itemId;
+                        InventorySlot = inventorySlot;
+                        SpellSlot = slot;
+                        Stack = stack;
+                        Charge = charge;
+                        CurrentCooldown = cd;
+                        TotalCooldown = totalCd;
+                    }
+                }
+            }
+
+            #endregion
+
             #region Unknown115
 
             /// <summary>
@@ -1344,47 +1427,28 @@ namespace LeagueSharp.Common
             {
                 public static byte SubHeader = (byte) MultiPacketType.Unknown122;
 
-                public static void Decoded(byte[] data)
-                {
-                    var packet = new GamePacket(data);
-                    var Int = packet.ReadInteger(7); // this is either a hash or two shorts
-                    var Float = packet.ReadFloat(); // usually 60
-
-                    var unknownByte1 = packet.ReadByte(83); //camp id?
-                    var unknownByte2 = packet.ReadByte(85);
-                    var unknownByte3 = packet.ReadByte(84);
-                    var unknownInt = packet.ReadInteger(86);
-                    var unknownFloat = packet.ReadFloat(90);
-                    // return new ReturnStruct { UnknownNetworkId = unknownNetworkId };
-                }
-
-                public struct ReturnStruct
-                {
-                    public int UnknownNetworkId;
-                }
-            }
-
-            #endregion
-
-            #region Unknown124
-
-            /// <summary>
-            ///     Unknown
-            ///     Struct from ida
-            /// </summary>
-            public static class Unknown124
-            {
-                public static byte SubHeader = (byte) MultiPacketType.Unknown124;
-
                 public static ReturnStruct Decoded(byte[] data)
                 {
                     var packet = new GamePacket(data);
-                    var unknownNetworkId = packet.ReadInteger(7);
-                    return new ReturnStruct { UnknownNetworkId = unknownNetworkId };
+                    var result = new ReturnStruct();
+
+                    var Int = packet.ReadInteger(7); // this is either a hash or two shorts
+                    var Float = packet.ReadFloat(); // usually 60
+                    result.Name = packet.ReadString(19);
+                    var unknownByte1 = packet.ReadByte(83); //camp id?
+                    var unknownByte2 = packet.ReadByte(84);
+                    result.CampId = packet.ReadByte(85);
+                    result.UnknownNetworkId = packet.ReadInteger(86);
+                    result.UnknownFloat = packet.ReadFloat(90);
+
+                    return result;
                 }
 
                 public struct ReturnStruct
                 {
+                    public byte CampId;
+                    public string Name;
+                    public float UnknownFloat;
                     public int UnknownNetworkId;
                 }
             }
@@ -1653,6 +1717,99 @@ namespace LeagueSharp.Common
 
             #endregion
 
+            #region CastAns
+
+            /// <summary>
+            ///     Received when a unit casts a spell.
+            /// </summary>
+            public static class CastAns
+            {
+                public static byte Header = 0xB5;
+
+                public static GamePacket Encoded(Struct packetStruct)
+                {
+                    //TODO when the packet is fully decoded.
+                    return new GamePacket(Header);
+                }
+
+                public static Struct Decoded(byte[] data)
+                {
+                    var packet = new GamePacket(data);
+                    var result = new Struct();
+
+                    result.SourceNetworkId = packet.ReadInteger(1);
+                    result.SourceUnit = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(result.SourceNetworkId);
+
+
+                    result.SpellFlag = packet.ReadShort(10);
+                    result.SpellHash = packet.ReadInteger();
+                    result.SpellNetworkId = packet.ReadInteger();
+
+                    packet.ReadByte(); //this always used to be 0, maybe flag now
+                    packet.ReadFloat(); // always 1
+                    packet.ReadFloat(); // always player nID
+                    packet.ReadFloat(); // always player nID
+
+                    result.MissileHash = packet.ReadInteger();
+                    result.MissileNetworkId = packet.ReadInteger();
+
+                    var p = packet.Position + 8;
+                    result.ToPosition = new Vector2(packet.ReadFloat(), packet.ReadFloat(p));
+                    packet.Position += 4;
+
+                    var c = packet.ReadByte(65);
+                    if (c > 0) //hopefully c is 1 always
+                    {
+                        result.TargetNetworkId = packet.ReadInteger();
+                        result.TargetUnit = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(result.TargetNetworkId);
+                        packet.ReadByte(); // for 0
+                    }
+                    result.ChannelTime = packet.ReadFloat();
+                    result.Delay = packet.ReadFloat();
+                    result.Visible = packet.ReadFloat();
+                    result.IsVisible = result.Visible > 0;
+                    result.Cooldown = packet.ReadFloat();
+
+                    packet.ReadInteger();
+                    packet.ReadByte();
+
+                    result.SpellSlot = (SpellSlot) packet.ReadByte();
+                    result.SpellFlag2 = packet.ReadByte();
+                    result.ManaCost = packet.ReadFloat();
+
+                    p = packet.Position + 8;
+                    result.FromPosition = new Vector2(packet.ReadFloat(), packet.ReadFloat(p));
+
+                    return result;
+                }
+
+                public struct Struct
+                {
+                    public float ChannelTime;
+                    public float Cooldown; // sometimes 0
+                    public float Delay;
+                    public Vector2 FromPosition;
+                    public bool IsVisible;
+                    public float ManaCost;
+                    public int MissileHash;
+                    public int MissileNetworkId;
+                    public int SourceNetworkId;
+                    public Obj_AI_Base SourceUnit;
+                    public float Speed;
+                    public short SpellFlag;
+                    public byte SpellFlag2;
+                    public int SpellHash;
+                    public int SpellNetworkId;
+                    public SpellSlot SpellSlot;
+                    public int TargetNetworkId;
+                    public Obj_AI_Base TargetUnit;
+                    public Vector2 ToPosition;
+                    public float Visible; // >0 visible
+                }
+            }
+
+            #endregion
+
             #region Dash
 
             /// <summary>
@@ -1874,9 +2031,18 @@ namespace LeagueSharp.Common
                     TeleportEnd,
                 }
 
+                private const int ErrorGap = 100; //in ticks
+
                 public static byte Header = 0xD8;
-                public static readonly Dictionary<int, int> RecallT = new Dictionary<int, int>();
-                public static readonly Dictionary<int, int> TPT = new Dictionary<int, int>();
+
+                private static readonly IDictionary<string, Type> TypeByString = new Dictionary<string, Type>
+                {
+                    { "Recall", Type.Recall },
+                    { "Teleport", Type.Teleport }
+                };
+
+                private static readonly Dictionary<int, RecallData> RecallDataByNetworkId =
+                    new Dictionary<int, RecallData>();
 
                 public static GamePacket Encoded(Struct packetStruct)
                 {
@@ -1890,9 +2056,9 @@ namespace LeagueSharp.Common
                     var result = new Struct();
 
                     result.UnitNetworkId = packet.ReadInteger(5);
-                    var type = packet.ReadString(75);
                     result.Status = RecallStatus.Unknown;
 
+                    var typeAsString = packet.ReadString(75);
                     var gObject = ObjectManager.GetUnitByNetworkId<GameObject>(result.UnitNetworkId);
 
                     if (gObject == null || !gObject.IsValid)
@@ -1910,55 +2076,74 @@ namespace LeagueSharp.Common
                         }
 
                         result.Type = ObjectType.Player;
-                        var duration = Utility.GetRecallTime(unit);
 
-                        result.Duration = duration;
-
-                        if (!RecallT.ContainsKey(result.UnitNetworkId))
+                        if (!RecallDataByNetworkId.ContainsKey(result.UnitNetworkId))
                         {
-                            RecallT.Add(result.UnitNetworkId, 0);
+                            RecallDataByNetworkId[result.UnitNetworkId] = new RecallData { Type = Type.Unknown };
                         }
 
-                        if (!TPT.ContainsKey(result.UnitNetworkId))
+                        if (string.IsNullOrEmpty(typeAsString))
                         {
-                            TPT.Add(result.UnitNetworkId, 0);
-                        }
-
-                        if (type == "Teleport")
-                        {
-                            TPT[result.UnitNetworkId] = Environment.TickCount;
-                            result.Status = RecallStatus.TeleportStart;
-                        }
-                        else if (type == "Recall")
-                        {
-                            result.Status = RecallStatus.RecallStarted;
-                            RecallT[result.UnitNetworkId] = Environment.TickCount;
-                        }
-                        else if (string.IsNullOrEmpty(type))
-                        {
-                            if (Environment.TickCount - RecallT[result.UnitNetworkId] < duration - 200)
+                            switch (RecallDataByNetworkId[result.UnitNetworkId].Type)
                             {
-                                result.Status = RecallStatus.RecallAborted;
+                                case Type.Recall:
+                                    if (Environment.TickCount - RecallDataByNetworkId[result.UnitNetworkId].Start <
+                                        RecallDataByNetworkId[result.UnitNetworkId].Duration - ErrorGap)
+                                    {
+                                        result.Status = RecallStatus.RecallAborted;
+                                    }
+                                    else
+                                    {
+                                        result.Status = RecallStatus.RecallFinished;
+                                    }
+                                    break;
+                                case Type.Teleport:
+                                    if (Environment.TickCount - RecallDataByNetworkId[result.UnitNetworkId].Start <
+                                        RecallDataByNetworkId[result.UnitNetworkId].Duration - ErrorGap)
+                                    {
+                                        result.Status = RecallStatus.TeleportAbort;
+                                    }
+                                    else
+                                    {
+                                        result.Status = RecallStatus.TeleportEnd;
+                                    }
+                                    break;
                             }
-                            else if (Environment.TickCount - RecallT[result.UnitNetworkId] < duration + 200)
+                        }
+                        else
+                        {
+                            if (TypeByString.ContainsKey(typeAsString))
                             {
-                                result.Status = RecallStatus.RecallFinished;
-                            }
-
-                            if (Environment.TickCount - TPT[result.UnitNetworkId] < 3500)
-                            {
-                                result.Status = RecallStatus.TeleportAbort;
-                            }
-                            else if (Environment.TickCount - TPT[result.UnitNetworkId] < 4500)
-                            {
-                                result.Status = RecallStatus.TeleportEnd;
+                                switch (TypeByString[typeAsString])
+                                {
+                                    case Type.Recall:
+                                        result.Status = RecallStatus.RecallStarted;
+                                        result.Duration = Utility.GetRecallTime(packet.ReadString(139));
+                                        RecallDataByNetworkId[result.UnitNetworkId] = new RecallData
+                                        {
+                                            Type = Type.Recall,
+                                            Duration = result.Duration,
+                                            Start = Environment.TickCount
+                                        };
+                                        break;
+                                    case Type.Teleport:
+                                        result.Status = RecallStatus.TeleportStart;
+                                        result.Duration = 3500;
+                                        RecallDataByNetworkId[result.UnitNetworkId] = new RecallData
+                                        {
+                                            Type = Type.Teleport,
+                                            Duration = result.Duration,
+                                            Start = Environment.TickCount
+                                        };
+                                        break;
+                                }
                             }
                         }
                     }
                     else if (gObject is Obj_AI_Turret)
                     {
                         result.Type = ObjectType.Turret;
-                        result.Status = string.IsNullOrEmpty(type)
+                        result.Status = string.IsNullOrEmpty(typeAsString)
                             ? RecallStatus.TeleportEnd
                             : RecallStatus.TeleportStart;
                     }
@@ -1975,7 +2160,7 @@ namespace LeagueSharp.Common
                             result.Type = ObjectType.Ward;
                         }
 
-                        result.Status = string.IsNullOrEmpty(type)
+                        result.Status = string.IsNullOrEmpty(typeAsString)
                             ? RecallStatus.TeleportEnd
                             : RecallStatus.TeleportStart;
                     }
@@ -1985,6 +2170,13 @@ namespace LeagueSharp.Common
                     }
 
                     return result;
+                }
+
+                internal struct RecallData
+                {
+                    public Type Type { get; set; }
+                    public int Start { get; set; }
+                    public int Duration { get; set; }
                 }
 
                 public struct Struct
@@ -2001,6 +2193,13 @@ namespace LeagueSharp.Common
                         Type = type;
                         Duration = duration;
                     }
+                }
+
+                internal enum Type
+                {
+                    Recall,
+                    Teleport,
+                    Unknown
                 }
             }
 
@@ -2667,7 +2866,8 @@ namespace LeagueSharp.Common
                     result.NetworkId = packet.ReadInteger(1);
                     result.Unit = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(result.NetworkId);
                     result.Slot = (SpellSlot) (packet.ReadByte());
-                    result.UnknownByte = packet.ReadByte();
+                    result.UnknownByte = packet.ReadByte(); // 0, 1C, 48
+                    result.UnknownByte2 = packet.ReadByte(); //usually 2
                     result.SpellString = packet.ReadString(11);
                     return result;
                 }
@@ -2691,6 +2891,7 @@ namespace LeagueSharp.Common
                     public string SpellString;
                     public Obj_AI_Base Unit;
                     public byte UnknownByte; // from slot?
+                    public byte UnknownByte2;
                 }
             }
 

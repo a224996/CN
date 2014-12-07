@@ -171,7 +171,7 @@ namespace LeagueSharp.Common
 
         private static void FireOnTargetSwitch(Obj_AI_Base newTarget)
         {
-            if (OnTargetChange != null && (_lastTarget == null || _lastTarget.NetworkId != newTarget.NetworkId))
+            if (OnTargetChange != null && (!_lastTarget.IsValidTarget() || _lastTarget != newTarget))
             {
                 OnTargetChange(_lastTarget, newTarget);
             }
@@ -216,7 +216,7 @@ namespace LeagueSharp.Common
         public static float GetRealAutoAttackRange(Obj_AI_Base target)
         {
             var result = Player.AttackRange + Player.BoundingRadius;
-            if (target != null)
+            if (target.IsValidTarget())
             {
                 return result + target.BoundingRadius;
             }
@@ -228,13 +228,12 @@ namespace LeagueSharp.Common
         /// </summary>
         public static bool InAutoAttackRange(Obj_AI_Base target)
         {
-            if (target != null)
+            if (!target.IsValidTarget())
             {
-                var myRange = GetRealAutoAttackRange(target);
-                return Vector2.DistanceSquared(target.ServerPosition.To2D(), Player.Position.To2D()) <=
-                       myRange * myRange;
+                return false;
             }
-            return false;
+            var myRange = GetRealAutoAttackRange(target);
+            return Vector2.DistanceSquared(target.ServerPosition.To2D(), Player.Position.To2D()) <= myRange * myRange;
         }
 
         /// <summary>
@@ -292,7 +291,11 @@ namespace LeagueSharp.Common
             return LastMoveCommandPosition;
         }
 
-        private static void MoveTo(Vector3 position, float holdAreaRadius = 0, bool overrideTimer = false, bool useFixedDistance = true, bool randomizeMinDistance = true)
+        private static void MoveTo(Vector3 position,
+            float holdAreaRadius = 0,
+            bool overrideTimer = false,
+            bool useFixedDistance = true,
+            bool randomizeMinDistance = true)
         {
             if (Environment.TickCount - LastMoveCommandT < _delay && !overrideTimer)
             {
@@ -314,17 +317,23 @@ namespace LeagueSharp.Common
             var point = position;
             if (useFixedDistance)
             {
-                point = position + (randomizeMinDistance ? _random.NextFloat(_minDistance * 0.8f, _minDistance * 1.2f) : _minDistance) * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                point = position +
+                        (randomizeMinDistance
+                            ? _random.NextFloat(_minDistance * 0.8f, _minDistance * 1.2f)
+                            : _minDistance) * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
             }
-            else 
+            else
             {
                 if (randomizeMinDistance)
                 {
-                    point = position + _random.NextFloat(_minDistance * 0.8f, _minDistance * 1.2f) * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                    point = position +
+                            _random.NextFloat(_minDistance * 0.8f, _minDistance * 1.2f) *
+                            (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
                 }
                 else if (Player.ServerPosition.Distance(position) > _minDistance)
                 {
-                    point = Player.ServerPosition + _minDistance * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
+                    point = Player.ServerPosition +
+                            _minDistance * (position.To2D() - Player.ServerPosition.To2D()).Normalized().To3D();
                 }
             }
 
@@ -342,28 +351,35 @@ namespace LeagueSharp.Common
             bool useFixedDistance = true,
             bool randomizeMinDistance = true)
         {
-            if (target != null && CanAttack())
+            try
             {
-                DisableNextAttack = false;
-                FireBeforeAttack(target);
-
-                if (!DisableNextAttack)
+                if (target.IsValidTarget() && CanAttack())
                 {
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                    DisableNextAttack = false;
+                    FireBeforeAttack(target);
 
-                    if (_lastTarget.IsValid && target.IsValid && _lastTarget.NetworkId != target.NetworkId)
+                    if (!DisableNextAttack)
                     {
-                        LastAATick = Environment.TickCount + Game.Ping / 2;
-                    }
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, target);
 
-                    _lastTarget = target;
-                    return;
+                        if (_lastTarget != null && _lastTarget.IsValid && _lastTarget != target)
+                        {
+                            LastAATick = Environment.TickCount + Game.Ping / 2;
+                        }
+
+                        _lastTarget = target;
+                        return;
+                    }
+                }
+
+                if (CanMove(extraWindup))
+                {
+                    MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }
-
-            if (CanMove(extraWindup))
+            catch (Exception e)
             {
-                MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
+                Console.WriteLine(e.ToString());
             }
         }
 
@@ -388,31 +404,36 @@ namespace LeagueSharp.Common
 
         private static void OnProcessSpell(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs Spell)
         {
-            if (IsAutoAttackReset(Spell.SData.Name) && unit.IsMe)
+            var spellName = Spell.SData.Name;
+            var target = Spell.Target as Obj_AI_Base;
+
+            if (IsAutoAttackReset(spellName) && unit.IsMe)
             {
                 Utility.DelayAction.Add(250, ResetAutoAttackTimer);
             }
 
-            if (IsAutoAttack(Spell.SData.Name))
+            if (!IsAutoAttack(spellName))
             {
-                if (unit.IsMe)
-                {
-                    LastAATick = Environment.TickCount - Game.Ping / 2;
-                    if (Spell.Target is Obj_AI_Base)
-                    {
-                        FireOnTargetSwitch((Obj_AI_Base) Spell.Target);
-                        _lastTarget = (Obj_AI_Base) Spell.Target;
-                    }
+                return;
+            }
 
-                    if (unit.IsMelee())
-                    {
-                        Utility.DelayAction.Add(
-                            (int) (unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
-                    }
+            if (unit.IsMe)
+            {
+                LastAATick = Environment.TickCount - Game.Ping / 2;
+                if (target != null && target.IsValid)
+                {
+                    FireOnTargetSwitch(target);
+                    _lastTarget = target;
                 }
 
-                FireOnAttack(unit, _lastTarget);
+                if (unit.IsMelee())
+                {
+                    Utility.DelayAction.Add(
+                        (int) (unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
+                }
             }
+
+            FireOnAttack(unit, _lastTarget);
         }
 
         public class BeforeAttackEventArgs
@@ -632,7 +653,7 @@ namespace LeagueSharp.Common
                 }
 
                 //Forced target
-                if (_forcedTarget != null && _forcedTarget.IsValidTarget() && InAutoAttackRange(_forcedTarget))
+                if (_forcedTarget.IsValidTarget() && InAutoAttackRange(_forcedTarget))
                 {
                     return _forcedTarget;
                 }
@@ -641,7 +662,7 @@ namespace LeagueSharp.Common
                 if (ActiveMode != OrbwalkingMode.LastHit)
                 {
                     var target = SimpleTs.GetTarget(-1, SimpleTs.DamageType.Physical);
-                    if (target != null)
+                    if (target.IsValidTarget())
                     {
                         return target;
                     }
@@ -662,7 +683,7 @@ namespace LeagueSharp.Common
                     }
                 }
 
-                if (result != null)
+                if (result.IsValidTarget())
                 {
                     return result;
                 }
@@ -673,7 +694,7 @@ namespace LeagueSharp.Common
                 {
                     if (!ShouldWait())
                     {
-                        if (_prevMinion != null && _prevMinion.IsValidTarget() && InAutoAttackRange(_prevMinion))
+                        if (_prevMinion.IsValidTarget() && InAutoAttackRange(_prevMinion))
                         {
                             var predHealth = HealthPrediction.LaneClearHealthPrediction(
                                 _prevMinion, (int) ((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay);
