@@ -30,17 +30,17 @@ namespace VayneHunterRework
 
         public static void CreateTypeQSSMenu()
         {
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("stun", "鐪╂檿").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("charm", "榄呮儜").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("taunt", "鍢茶").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("fear", "鎭愭儳").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("snare", "闄烽槺").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("silence", "娌夐粯").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("supression", "鍘嬪埗").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("polymorph", "鍙樺舰").SetValue(true));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("blind", "鑷寸洸").SetValue(false));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("slow", "鍑忛€焲").SetValue(false));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("poison", "涓瘨").SetValue(false));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("stun", "眩晕").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("charm", "魅惑").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("taunt", "嘲讽").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("fear", "恐惧").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("snare", "陷阱").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("silence", "沉默").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("supression", "压制").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("polymorph", "变形").SetValue(true));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("blind", "致盲").SetValue(false));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("slow", "减速|").SetValue(false));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("poison", "中毒").SetValue(false));
         }
 
         public static void CreateQSSSpellList()

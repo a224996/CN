@@ -107,7 +107,7 @@ namespace VayneHunterRework
 			Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 			
             Menu.AddToMainMenu();
-            Game.PrintChat("<font color='#FF0000'>VayneHunter</font> <font color='#FFFFFF'>Rework loaded!</font>");
+            Game.PrintChat("<font color='#FF0000'>暗夜猎手-薇恩</font> <font color='#FFFFFF'>加载成功!</font>");
             Game.PrintChat("By <font color='#FF0000'>DZ</font><font color='#FFFFFF'>191</font>. Special Thanks to: Kurisuu");
             Game.PrintChat("If you like my assemblies feel free to donate me (link on the forum :) )");
            //Cleanser.cleanUselessSpells();
@@ -519,8 +519,7 @@ namespace VayneHunterRework
         }
         bool isGrass(Vector3 Pos)
         {
-            //return NavMesh.IsWallOfGrass(Pos);
-            return false; 
+            return NavMesh.IsWallOfGrass(Pos);
         }
 
         void CheckAndWard(Vector3 sPos, Vector3 EndPosition, Obj_AI_Hero target)
