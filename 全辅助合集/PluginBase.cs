@@ -24,6 +24,9 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
+using AntiGapcloser = Support.Util.AntiGapcloser;
 using Color = System.Drawing.Color;
 using Version = System.Version;
 
@@ -131,23 +134,6 @@ namespace Support
                     {
                         Process.Start("http://www.joduska.me/forum/topic/170-aio-support-is-easy/");
                         Config.Item("visit").SetValue(false);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            };
-			Game.OnGameUpdate += args =>
-            {
-                try
-                {
-                    ActiveMode = Orbwalker.ActiveMode;
-
-                    if (Config.Item("qun").GetValue<bool>())
-                    {
-                        Process.Start("http://jq.qq.com/?_wv=1027&k=SHJuOk");
-                        Config.Item("qun").SetValue(false);
                     }
                 }
                 catch (Exception e)

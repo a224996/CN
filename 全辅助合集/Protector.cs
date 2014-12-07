@@ -24,6 +24,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Support.Evade;
+using Support.Util;
 using Collision = Support.Evade.Collision;
 using SpellData = LeagueSharp.SpellData;
 
@@ -137,30 +138,30 @@ namespace Support
 			Game.PrintChat("<font color=\"#00BFFF\">====== 鍖呭惈鑻遍泟====== </font>");
 			Game.PrintChat("<font color=\"#00BFFF\">銊х墰澶淬劎鏈哄櫒浜恒劎甯冮殕銊ф湯鏃ャ劎椋庡コ銊уぉ鍚€呫劎鏇欏厜銊ч湶闇层劎鑾敇濞溿劎濞滅編銊х惔濂炽劎瀹濈煶銊ч敜鐭炽劎鏃跺厜銊у鎷夈劎</font>");
 			Game.PrintChat("<font color=\"#00BFFF\">鏇村姹夊寲鑴氭湰璇峰姞  L#姹夊寲缇わ細386289593</font>");
-            Menu = new Menu("Support: 鏀寔宸ュ叿", "Protector", true);
+            Menu = new Menu("Support: 支持工具", "Protector", true);
 
             // detector
-            var detector = Menu.AddSubMenu(new Menu("鎺㈡祴鍣ㄣ劎", "Detector"));
+            var detector = Menu.AddSubMenu(new Menu("探测器ㄧ", "Detector"));
 
             // detector targeted
-            var targeted = detector.AddSubMenu(new Menu("閽堝", "Targeted"));
-            targeted.AddItem(new MenuItem("TargetedActive", "鍚敤").SetValue(true));
+            var targeted = detector.AddSubMenu(new Menu("针对", "Targeted"));
+            targeted.AddItem(new MenuItem("TargetedActive", "启用").SetValue(true));
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly))
             {
                 targeted.AddItem(new MenuItem("Detector.Targeted." + ally.ChampionName, ally.ChampionName).SetValue(true));
             }
 
             // detector skillshots
-            var skillshot = detector.AddSubMenu(new Menu("鎶€鑳芥爣绀恒劎", "Skillshots"));
-            skillshot.AddItem(new MenuItem("SkillshotsActive", "鍚敤").SetValue(true));
-            skillshot.AddItem(new MenuItem("IsAboutToHitTime", "鏃堕棿寤惰繜").SetValue(new Slider(200, 0, 400)));
+            var skillshot = detector.AddSubMenu(new Menu("技能标示ㄧ", "Skillshots"));
+            skillshot.AddItem(new MenuItem("SkillshotsActive", "启用").SetValue(true));
+            skillshot.AddItem(new MenuItem("IsAboutToHitTime", "时间延迟").SetValue(new Slider(200, 0, 400)));
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly))
             {
                 skillshot.AddItem(new MenuItem("Detector.Skillshots." + ally.ChampionName, ally.ChampionName).SetValue(true));
             }
 
             // spells
-            var spells = Menu.AddSubMenu(new Menu("娉曟湳", "Spells"));
+            var spells = Menu.AddSubMenu(new Menu("法术", "Spells"));
             foreach (var spell in ProtectorSpells.Where(s => s.ChampionName == ObjectManager.Player.ChampionName))
             {
                 var spellMenu = spells.AddSubMenu(new Menu(spell.Name, spell.Name));
@@ -171,7 +172,7 @@ namespace Support
             }
 
             // items
-            var items = Menu.AddSubMenu(new Menu("椤圭洰", "Items"));
+            var items = Menu.AddSubMenu(new Menu("项目", "Items"));
             foreach (var item in ProtectorItems)
             {
                 var itemsMenu = items.AddSubMenu(new Menu(item.Name, item.Name));
@@ -189,8 +190,8 @@ namespace Support
             }
 
             // misc
-            var misc = Menu.AddSubMenu(new Menu("鏉傞」", "Misc"));
-            misc.AddItem(new MenuItem("UsePackets", "浣跨敤灏佸寘").SetValue(true));
+            var misc = Menu.AddSubMenu(new Menu("杂项", "Misc"));
+            misc.AddItem(new MenuItem("UsePackets", "使用封包").SetValue(true));
 
             Menu.AddToMainMenu();
         }

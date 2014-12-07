@@ -21,6 +21,8 @@ using System;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 
 #endregion
 
@@ -54,7 +56,7 @@ namespace Support.Plugins
             if (ComboMode)
             {
                 if (Q.IsReady() && ConfigValue<bool>("Combo.Q") &&
-                    Player.HealthPercent() < ConfigValue<Slider>("Combo.Q.Health").Value)
+                    Player.HealthPercentage() < ConfigValue<Slider>("Combo.Q.Health").Value)
                 {
                     var minion = MinionManager.GetMinions(Player.Position, Q.Range).FirstOrDefault();
                     if (minion.IsValidTarget(Q.Range))
@@ -81,7 +83,7 @@ namespace Support.Plugins
             if (HarassMode)
             {
                 if (Q.IsReady() && ConfigValue<bool>("Harass.Q") &&
-                    Player.HealthPercent() < ConfigValue<Slider>("Harass.Q.Health").Value)
+                    Player.HealthPercentage() < ConfigValue<Slider>("Harass.Q.Health").Value)
                 {
                     var minion = MinionManager.GetMinions(Player.Position, Q.Range).FirstOrDefault();
                     if (minion.IsValidTarget(Q.Range))

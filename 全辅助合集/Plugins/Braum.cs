@@ -24,6 +24,8 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Support.Evade;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 using SpellData = LeagueSharp.SpellData;
 
 #endregion
@@ -65,7 +67,7 @@ namespace Support.Plugins
                     return;
 
                 if (Orbwalking.IsAutoAttack(spell.Name) &&
-                    target.HealthPercent() > ConfigValue<Slider>("Misc.Shield.Health").Value)
+                    target.HealthPercentage() > ConfigValue<Slider>("Misc.Shield.Health").Value)
                     return;
 
                 if (spell.MissileSpeed > 2000 || spell.MissileSpeed == 0)

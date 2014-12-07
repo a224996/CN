@@ -23,6 +23,8 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 using Collision = LeagueSharp.Common.Collision;
 
 #endregion

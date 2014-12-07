@@ -20,6 +20,8 @@
 using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 
 #endregion
 

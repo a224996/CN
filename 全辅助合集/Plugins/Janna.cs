@@ -22,6 +22,8 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 
 #endregion
 
@@ -124,15 +126,15 @@ namespace Support.Plugins
                     switch (ConfigValue<Slider>("Misc.E.Spell." + args.SData.Name).Value) // prio 0 = disabled
                     {
                         case 1:
-                            if (Player.ManaPercent() > ConfigValue<Slider>("Mana.E.Priority.1").Value)
+                            if (Player.ManaPercentage() > ConfigValue<Slider>("Mana.E.Priority.1").Value)
                                 E.CastOnUnit(caster, UsePackets);
                             break;
                         case 2:
-                            if (Player.ManaPercent() > ConfigValue<Slider>("Mana.E.Priority.2").Value)
+                            if (Player.ManaPercentage() > ConfigValue<Slider>("Mana.E.Priority.2").Value)
                                 E.CastOnUnit(caster, UsePackets);
                             break;
                         case 3:
-                            if (Player.ManaPercent() > ConfigValue<Slider>("Mana.E.Priority.3").Value)
+                            if (Player.ManaPercentage() > ConfigValue<Slider>("Mana.E.Priority.3").Value)
                                 E.CastOnUnit(caster, UsePackets);
                             break;
                     }

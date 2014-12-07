@@ -20,6 +20,8 @@
 using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 
 #endregion
 
@@ -31,7 +33,7 @@ namespace Support.Plugins
         {
             Q = new Spell(SpellSlot.Q, AttackRange);
             W = new Spell(SpellSlot.W, AttackRange);
-            E = new Spell(SpellSlot.E, 875);
+            E = new Spell(SpellSlot.E, 700);
             R = new Spell(SpellSlot.R, 1200);
 
             E.SetSkillshot(0.25f, 100f, 2000f, false, SkillshotType.SkillshotLine);

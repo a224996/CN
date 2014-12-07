@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Support
+namespace Support.Util
 {
     internal class DamageBoostSpell
     {

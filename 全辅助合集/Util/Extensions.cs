@@ -17,6 +17,8 @@
 
 #region
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -24,7 +26,7 @@ using SharpDX;
 
 #endregion
 
-namespace Support
+namespace Support.Util
 {
     public enum HeroType
     {
@@ -103,24 +105,9 @@ namespace Support
                    !unit.IsDead && unit.IsTargetable;
         }
 
-        public static bool IsValid<T>(this GameObject obj)
-        {
-            return obj.IsValid && obj is T;
-        }
-
         public static double HealthBuffer(this Obj_AI_Base hero, int buffer)
         {
             return hero.Health - (hero.MaxHealth*buffer/100);
-        }
-
-        public static double HealthPercent(this Obj_AI_Base hero)
-        {
-            return hero.Health/hero.MaxHealth*100;
-        }
-
-        public static double ManaPercent(this Obj_AI_Base hero)
-        {
-            return hero.Mana/hero.MaxMana*100;
         }
 
         public static void IssueOrderEx(this Obj_AI_Base hero, GameObjectOrder order, GameObject target,
@@ -238,6 +225,11 @@ namespace Support
         {
             menu.AddItem(
                 new MenuItem(name + ObjectManager.Player.ChampionName, displayName).SetValue(new Slider(value, min, max)));
+        }
+
+        public static void AddObject(this Menu menu, string name, string displayName, object value)
+        {
+            menu.AddItem(new MenuItem(name + ObjectManager.Player.ChampionName, displayName).SetValue(value));
         }
     }
 }

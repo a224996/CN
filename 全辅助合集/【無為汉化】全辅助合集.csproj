@@ -73,9 +73,9 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntiGapcloser.cs" />
-    <Compile Include="AutoBushRevealer.cs" />
-    <Compile Include="DamageBoostDatabase.cs" />
+    <Compile Include="Util\AntiGapcloser.cs" />
+    <Compile Include="Util\AutoBushRevealer.cs" />
+    <Compile Include="Util\DamageBoostDatabase.cs" />
     <Compile Include="Evade\Collision.cs" />
     <Compile Include="Evade\Config.cs" />
     <Compile Include="Plugins\Nunu.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="Evade\SpellData.cs" />
     <Compile Include="Evade\SpellDatabase.cs" />
     <Compile Include="Evade\Utils.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Util\Extensions.cs" />
     <Compile Include="Plugins\Alistar.cs" />
     <Compile Include="Plugins\Blitzcrank.cs" />
     <Compile Include="Plugins\Braum.cs" />
@@ -107,8 +107,7 @@
     <Compile Include="Disabled\Soraka.cs" />
     <Compile Include="Plugins\Taric.cs" />
     <Compile Include="Plugins\Thresh.cs" />
-    <Compile Include="Template.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Util\Helpers.cs" />
     <Compile Include="Plugins\Zilean.cs" />
     <Compile Include="Plugins\Zyra.cs" />
   </ItemGroup>

@@ -20,6 +20,8 @@
 using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Support.Util;
+using ActiveGapcloser = Support.Util.ActiveGapcloser;
 
 #endregion
 
@@ -56,7 +58,7 @@ namespace Support.Plugins
                 }
 
                 if (W.CastCheck(Target, "Combo.W") && R.IsReady() &&
-                    Player.HealthPercent() <= ConfigValue<Slider>("Misc.W.Hp").Value)
+                    Player.HealthPercentage() <= ConfigValue<Slider>("Misc.W.Hp").Value)
                 {
                     R.CastOnUnit(Player, UsePackets);
                     Utility.DelayAction.Add(200, () => W.CastOnUnit(Target, UsePackets));
@@ -71,10 +73,6 @@ namespace Support.Plugins
                 {
                     R.CastOnUnit(Player, UsePackets);
                     Utility.DelayAction.Add(200, () => E.CastOnUnit(Player, UsePackets));
-                }
-                if (W.CastCheck(Target, "Combo.W"))
-                {
-                    W.CastOnUnit(Target, UsePackets);
                 }
             }
 
@@ -92,6 +90,13 @@ namespace Support.Plugins
                 if (Q.CastCheck(Target, "Harass.Q"))
                 {
                     Q.Cast(Target, UsePackets);
+                }
+
+                if (E.IsReady() && R.IsReady() &&
+                    Helpers.AllyInRange(600).Count >= ConfigValue<Slider>("Misc.E.Count").Value)
+                {
+                    R.CastOnUnit(Player, UsePackets);
+                    Utility.DelayAction.Add(200, () => E.CastOnUnit(Player, UsePackets));
                 }
             }
         }

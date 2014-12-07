@@ -26,7 +26,7 @@ using SharpDX;
 
 #endregion
 
-namespace Support
+namespace Support.Util
 {
     public class AutoBushRevealer
     {
