@@ -7,7 +7,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using System.Drawing;
 using SharpDX;
-
+using System.Net;
 namespace HiddenObj
 {
     internal class HiddenObj
@@ -67,8 +67,7 @@ namespace HiddenObj
         private static void onLoad(EventArgs args)
         {
             Game.PrintChat("Hidden Objects 0.1 by DeTuKs");
-            
-        }
+		}
 
         private static void onDraw(EventArgs args)
         {

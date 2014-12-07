@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
-
+using System.Net;
 using LeagueSharp;
 using LeagueSharp.Common;
 /*TODO
@@ -69,10 +69,12 @@ namespace RivenSharp
         {
             try
             {
+                if (Riven.Player.ChampionName != "Riven") return;
 
+			        
             Game.PrintChat("RivenSharp by DeTuKs");
             Config = new Menu("【無為汉化】瑞文V2", "Riven", true);
-            //Orbwalkervar menu = new Menu("My Mainmenu", "my_mainmenu", true);
+            //Orbwalkervar menu = new Menu("主菜单", "my_mainmenu", true);
             var orbwalkerMenu = new Menu("LX 走砍", "my_Orbwalker");
             LXOrbwalker.AddToMenu(orbwalkerMenu);
             Config.AddSubMenu(orbwalkerMenu);
@@ -82,7 +84,6 @@ namespace RivenSharp
            Config.AddSubMenu(TargetSelectorMenu);
             //Combo
             Config.AddSubMenu(new Menu("连招", "combo"));
-            Config.SubMenu("combo").AddItem(new MenuItem("useR", "使用 R")).SetValue(new KeyBind('Z', KeyBindType.Toggle, true));
             Config.SubMenu("combo").AddItem(new MenuItem("forceQE", "使用Q后E")).SetValue(true);
             Config.SubMenu("combo").AddItem(new MenuItem("packets", "使用封包")).SetValue(true);
 
@@ -234,7 +235,8 @@ namespace RivenSharp
         {
             if (Config.Item("doHarasE").GetValue<KeyBind>().Active ||
                 Config.Item("doHarasQ").GetValue<KeyBind>().Active
-                || LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
+                || LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo || 
+                LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear)
             {
                 return true;
             }

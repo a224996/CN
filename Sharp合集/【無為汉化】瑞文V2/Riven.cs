@@ -45,6 +45,23 @@ namespace RivenSharp
             sumItems = new SummonerItems(Player);
         }
 
+        #region laneClear
+
+        public static void doLaneClear()
+        {
+            Obj_AI_Base target = LXOrbwalker.GetPossibleTarget();
+            if (target is Obj_AI_Minion)
+            {
+                useESmart(target);
+                useWSmart(target);
+                useHydra(target);
+            }
+        }
+
+
+        #endregion
+
+
 
         public static void doCombo(Obj_AI_Base target)
         {
@@ -204,7 +221,7 @@ namespace RivenSharp
         {
             if (!R.IsReady())
                 return;
-            if (!ultIsOn() && RivenSharp.Config.Item("useR").GetValue<KeyBind>().Active && !E.IsReady() && target.Distance(Player.ServerPosition) < (Q.Range + target.BoundingRadius))
+            if (!ultIsOn() && !E.IsReady() && target.Distance(Player.ServerPosition) < (Q.Range + target.BoundingRadius))
             {
                 R.Cast();
             }
@@ -264,6 +281,8 @@ namespace RivenSharp
             {
                 if (timeToReach > 2.5 || timeToReach < 0.0f || rushDown)
                 {
+                    Vector2 to = Player.Position.To2D().Extend(target.Position.To2D(), 50);
+                    Player.IssueOrder(GameObjectOrder.MoveTo,to.To3D());
                     Q.Cast(target.ServerPosition);
                 }
             }
