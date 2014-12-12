@@ -23,7 +23,7 @@ namespace Marksman
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            Config = new Menu("Marksman", "Marksman", true);
+            Config = new Menu("【超神汉化】ADC合集", "Marksman", true);
             CClass = new Champion();
             AActivator = new Activator();
             

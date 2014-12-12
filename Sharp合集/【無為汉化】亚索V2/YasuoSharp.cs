@@ -1,9 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Evade;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -86,7 +85,7 @@ namespace YasuoSharpV2
                     //LaneClear
                     Config.AddSubMenu(new Menu("清兵", "lClear"));
                     Config.SubMenu("lClear").AddItem(new MenuItem("useQlc", "使用 Q")).SetValue(true);
-                    Config.SubMenu("lClear").AddItem(new MenuItem("useEmpQHit", "小兵最少数量︱")).SetValue(new Slider(3, 6, 1));
+                    Config.SubMenu("lClear").AddItem(new MenuItem("useEmpQHit", "小兵最少数量")).SetValue(new Slider(3, 6, 1));
                     Config.SubMenu("lClear").AddItem(new MenuItem("useElc", "使用 E")).SetValue(true);
                     //Harass
                     Config.AddSubMenu(new Menu("骚扰", "harass"));
@@ -99,11 +98,11 @@ namespace YasuoSharpV2
                     Config.SubMenu("drawing").AddItem(new MenuItem("drawQ", "Q范围")).SetValue(true);
                     Config.SubMenu("drawing").AddItem(new MenuItem("drawE", "E范围")).SetValue(true);
                     Config.SubMenu("drawing").AddItem(new MenuItem("drawR", "R范围")).SetValue(true);
-                    Config.SubMenu("drawing").AddItem(new MenuItem("drawWJ", "显示可穿越的墙︱")).SetValue(true);
+                    Config.SubMenu("drawing").AddItem(new MenuItem("drawWJ", "显示可穿越的墙")).SetValue(true);
 
                     //Extra
                     Config.AddSubMenu(new Menu("额外", "extra"));
-                    Config.SubMenu("extra").AddItem(new MenuItem("djTur", "不要跳进塔︱")).SetValue(true);
+                    Config.SubMenu("extra").AddItem(new MenuItem("djTur", "不要跳进塔")).SetValue(true);
                     Config.SubMenu("extra").AddItem(new MenuItem("autoLevel", "自动加点")).SetValue(true);
                     Config.SubMenu("extra").AddItem(new MenuItem("levUpSeq", "")).SetValue(new StringList(new string[2] { "Q E W Q start", "Q E Q W start" }));
 
@@ -217,7 +216,7 @@ namespace YasuoSharpV2
                 {
                     Yasuo.Q.SetSkillshot(Yasuo.getNewQSpeed(), 50f, float.MaxValue, false, SkillshotType.SkillshotLine);
 
-                    if (Yasuo.startDash + 1f < Game.Time && Yasuo.isDashigPro)
+                    if (Yasuo.startDash + 475000/((700 + Yasuo.Player.MoveSpeed)) < Environment.TickCount && Yasuo.isDashigPro)
                     {
                         Yasuo.isDashigPro = false;
                     }
@@ -336,6 +335,18 @@ namespace YasuoSharpV2
                 if (Config.Item("disDraw").GetValue<bool>())
                     return;
 
+
+                foreach (Obj_AI_Base jun in MinionManager.GetMinions(Yasuo.Player.ServerPosition, 700, MinionTypes.All, MinionTeam.Neutral))
+                {
+                    Drawing.DrawCircle(jun.Position, 70, Color.Green);
+                    Vector2 posAfterE = Yasuo.Player.ServerPosition.To2D() + (Vector2.Normalize(jun.ServerPosition.To2D() - Yasuo.Player.ServerPosition.To2D()) * 475);
+                   // Vector2 posAfterE = Yasuo.Player.Position.To2D().Extend(jun.Position.To2D(), 475);//jun.ServerPosition.To2D().Extend() + (Vector2.Normalize(Yasuo.Player.Position.To2D() - jun.ServerPosition.To2D()) * 475);
+                    Drawing.DrawCircle(posAfterE.To3D(), 50, Color.Violet);
+                    Vector3 posAfterDash = Yasuo.Player.GetPath(posAfterE.To3D()).Last();
+                    Drawing.DrawCircle(posAfterDash, 50, Color.DarkRed);
+
+                }
+
                 if (Config.Item("drawQ").GetValue<bool>())
                     Utility.DrawCircle(Yasuo.Player.Position, 475, (Yasuo.isDashigPro) ? Color.Red : Color.Blue, 10, 10);
                 if (Config.Item("drawR").GetValue<bool>())
@@ -359,11 +370,8 @@ namespace YasuoSharpV2
                     }
 
                 }
-                foreach (var ss in DetectedSkillshots)
-                {
-                    ss.Draw(Color.CadetBlue, Color.Red, 1);
-                }
-
+                
+            
                 /*   if ((int)NavMesh.GetCollisionFlags(Game.CursorPos) == 2 || (int)NavMesh.GetCollisionFlags(Game.CursorPos) == 64)
                     Drawing.DrawCircle(Game.CursorPos, 70, Color.Green);
                 if (map.isWall(Game.CursorPos.To2D()))
@@ -441,7 +449,7 @@ namespace YasuoSharpV2
                         Yasuo.lastDash.from = Yasuo.Player.Position;
                         Yasuo.isDashigPro = true;
                         Yasuo.castFrom = Yasuo.Player.Position;
-                        Yasuo.startDash = Game.Time;
+                        Yasuo.startDash = Environment.TickCount;
                     }
                 }
             }

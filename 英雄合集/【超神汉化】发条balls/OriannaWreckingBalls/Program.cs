@@ -68,7 +68,7 @@ namespace OriannaWreckingBalls
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
 
             //Create the menu
-            menu = new Menu(ChampionName, ChampionName, true);
+            menu = new Menu("【超神汉化】发条balls", ChampionName, true);
 
             //Orbwalker submenu
             var orbwalkerMenu = new Menu("走砍", "my_Orbwalker");

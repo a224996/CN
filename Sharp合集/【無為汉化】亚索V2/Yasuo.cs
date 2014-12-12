@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Evade;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -125,66 +124,31 @@ namespace YasuoSharpV2
         public static void setDashes()
         {
             #region WallDashingValues
+            //botoomside
             dashes.Add(new YasDash(new Vector3(5997.00f, 5065.00f, 51.67f), new Vector3(6447.35f, 5216.45f, 56.11f)));
-            dashes.Add(new YasDash(new Vector3(6897.00f, 5665.00f, 55.66f), new Vector3(6659.32f, 5285.89f, 58.84f)));
-            dashes.Add(new YasDash(new Vector3(3847.00f, 5965.00f, 55.13f), new Vector3(3477.00f, 6263.00f, 55.61f)));
-            dashes.Add(new YasDash(new Vector3(3197.00f, 6815.00f, 53.86f), new Vector3(3328.71f, 6366.87f, 55.61f)));
-            dashes.Add(new YasDash(new Vector3(6615.00f, 5197.00f, 56.40f), new Vector3(6885.00f, 5761.00f, 55.60f)));
-            dashes.Add(new YasDash(new Vector3(3435.00f, 6267.00f, 55.61f), new Vector3(4003.00f, 6007.00f, 54.55f)));
-            dashes.Add(new YasDash(new Vector3(3353.00f, 6319.00f, 55.61f), new Vector3(3141.00f, 6745.00f, 53.93f)));
-            dashes.Add(new YasDash(new Vector3(6511.00f, 5233.00f, 57.02f), new Vector3(5972.25f, 5084.35f, 51.67f)));
-            dashes.Add(new YasDash(new Vector3(5997.00f, 5065.00f, 51.67f), new Vector3(6447.35f, 5216.45f, 56.11f)));
-            dashes.Add(new YasDash(new Vector3(6897.00f, 5665.00f, 55.66f), new Vector3(6659.32f, 5285.89f, 58.84f)));
-            dashes.Add(new YasDash(new Vector3(3847.00f, 5965.00f, 55.13f), new Vector3(3477.00f, 6263.00f, 55.61f)));
-            dashes.Add(new YasDash(new Vector3(3197.00f, 6815.00f, 53.86f), new Vector3(3328.71f, 6366.87f, 55.61f)));
-            dashes.Add(new YasDash(new Vector3(6615.00f, 5197.00f, 56.40f), new Vector3(6885.00f, 5761.00f, 55.60f)));
-            dashes.Add(new YasDash(new Vector3(3435.00f, 6267.00f, 55.61f), new Vector3(4003.00f, 6007.00f, 54.55f)));
-            dashes.Add(new YasDash(new Vector3(3353.00f, 6319.00f, 55.61f), new Vector3(3141.00f, 6745.00f, 53.93f)));
-            dashes.Add(new YasDash(new Vector3(6511.00f, 5233.00f, 57.02f), new Vector3(5972.25f, 5084.35f, 51.67f)));
-            dashes.Add(new YasDash(new Vector3(7319.51f, 7394.79f, 54.01f), new Vector3(7709.69f, 7649.68f, 53.35f)));
-            dashes.Add(new YasDash(new Vector3(3423.00f, 7719.00f, 55.06f), new Vector3(3541.61f, 7204.61f, 54.48f)));
-            dashes.Add(new YasDash(new Vector3(3469.00f, 7739.00f, 55.01f), new Vector3(3979.00f, 8101.00f, 51.94f)));
-            dashes.Add(new YasDash(new Vector3(3579.00f, 7217.00f, 54.39f), new Vector3(3452.67f, 7586.14f, 55.04f)));
-            dashes.Add(new YasDash(new Vector3(4027.00f, 7829.00f, 51.99f), new Vector3(3617.00f, 7589.00f, 54.40f)));
-            dashes.Add(new YasDash(new Vector3(1789.00f, 8209.00f, 54.92f), new Vector3(1241.82f, 8198.85f, 50.63f)));
-            dashes.Add(new YasDash(new Vector3(1297.00f, 8113.00f, 50.86f), new Vector3(1759.00f, 8223.00f, 54.92f)));
-            dashes.Add(new YasDash(new Vector3(7901.00f, 2423.00f, 54.28f), new Vector3(7982.06f, 2994.11f, 55.34f)));
-            dashes.Add(new YasDash(new Vector3(8213.00f, 2429.00f, 54.28f), new Vector3(8221.72f, 2912.02f, 57.89f)));
-            dashes.Add(new YasDash(new Vector3(8245.00f, 2415.00f, 54.28f), new Vector3(8110.77f, 2953.00f, 56.58f)));
-            dashes.Add(new YasDash(new Vector3(7259.00f, 3821.00f, 57.42f), new Vector3(7213.00f, 3965.00f, 57.29f)));
-            dashes.Add(new YasDash(new Vector3(7795.00f, 2915.00f, 54.70f), new Vector3(7936.29f, 2465.55f, 54.28f)));
-            dashes.Add(new YasDash(new Vector3(7423.00f, 3763.00f, 56.91f), new Vector3(7751.41f, 3288.25f, 54.77f)));
-            dashes.Add(new YasDash(new Vector3(7293.00f, 3893.00f, 57.30f), new Vector3(6671.00f, 3883.00f, 51.67f)));
-            dashes.Add(new YasDash(new Vector3(12311.00f, 6151.00f, 54.84f), new Vector3(12444.78f, 6731.78f, 54.85f)));
-            dashes.Add(new YasDash(new Vector3(12233.00f, 6235.00f, 54.86f), new Vector3(12782.00f, 6383.88f, 56.40f)));
-            dashes.Add(new YasDash(new Vector3(12267.00f, 6313.00f, 54.83f), new Vector3(12775.00f, 5951.00f, 58.53f)));
-            dashes.Add(new YasDash(new Vector3(10445.00f, 7263.00f, 55.32f), new Vector3(10384.54f, 6816.62f, 54.87f)));
-            dashes.Add(new YasDash(new Vector3(10701.00f, 8105.00f, 63.34f), new Vector3(10678.48f, 7568.38f, 55.35f)));
-            dashes.Add(new YasDash(new Vector3(10529.00f, 8083.00f, 65.67f), new Vector3(9949.00f, 8319.00f, 64.18f)));
-            dashes.Add(new YasDash(new Vector3(10595.00f, 6615.00f, 54.87f), new Vector3(9977.00f, 6511.00f, 55.13f)));
-            dashes.Add(new YasDash(new Vector3(10645.00f, 7563.00f, 55.35f), new Vector3(10702.72f, 8030.58f, 64.66f)));
-            dashes.Add(new YasDash(new Vector3(12745.00f, 6215.00f, 57.56f), new Vector3(12277.06f, 6270.45f, 54.84f)));
-            dashes.Add(new YasDash(new Vector3(10545.00f, 6765.00f, 54.87f), new Vector3(10861.00f, 7303.00f, 55.35f)));
-            dashes.Add(new YasDash(new Vector3(10695.00f, 7263.00f, 55.35f), new Vector3(10577.00f, 6803.00f, 54.87f)));
-            dashes.Add(new YasDash(new Vector3(7411.00f, 9301.00f, 55.46f), new Vector3(7003.00f, 8827.00f, 56.02f)));
-            dashes.Add(new YasDash(new Vector3(7535.00f, 9207.00f, 55.51f), new Vector3(7987.00f, 9637.00f, 53.53f)));
-            dashes.Add(new YasDash(new Vector3(7923.00f, 9409.00f, 53.53f), new Vector3(7491.00f, 9207.00f, 55.51f)));
-            dashes.Add(new YasDash(new Vector3(6197.00f, 11513.00f, 54.63f), new Vector3(6135.00f, 11983.00f, 39.60f)));
-            dashes.Add(new YasDash(new Vector3(6561.00f, 10737.00f, 54.64f), new Vector3(6083.00f, 11137.00f, 54.36f)));
-            dashes.Add(new YasDash(new Vector3(6147.00f, 12013.00f, 39.61f), new Vector3(6101.00f, 11389.00f, 54.62f)));
-            dashes.Add(new YasDash(new Vector3(5797.00f, 11963.00f, 39.60f), new Vector3(6239.00f, 11521.00f, 54.63f)));
-            dashes.Add(new YasDash(new Vector3(6577.00f, 10715.00f, 54.64f), new Vector3(6123.00f, 11143.00f, 54.42f)));
-            dashes.Add(new YasDash(new Vector3(5843.00f, 12025.00f, 39.62f), new Vector3(5867.00f, 11399.00f, 54.00f)));
-            dashes.Add(new YasDash(new Vector3(6581.00f, 10761.00f, 54.64f), new Vector3(6034.87f, 10917.85f, 53.88f)));
-            dashes.Add(new YasDash(new Vector3(5797.00f, 11963.00f, 39.60f), new Vector3(6182.85f, 11577.15f, 54.63f)));
-            dashes.Add(new YasDash(new Vector3(6085.00f, 11993.00f, 39.61f), new Vector3(6397.00f, 11529.00f, 54.63f)));
-            dashes.Add(new YasDash(new Vector3(5801.00f, 11975.00f, 39.60f), new Vector3(6150.74f, 11506.03f, 54.63f)));
-            dashes.Add(new YasDash(new Vector3(6073.00f, 12013.00f, 39.61f), new Vector3(6359.35f, 11537.81f, 54.63f)));
-            dashes.Add(new YasDash(new Vector3(7195.00f, 8713.00f, 56.02f), new Vector3(7461.15f, 9067.39f, 55.60f)));
-            dashes.Add(new YasDash(new Vector3(10605.00f, 6609.00f, 54.86f), new Vector3(9981.00f, 6565.00f, 55.12f)));
-            dashes.Add(new YasDash(new Vector3(7527.00f, 9203.00f, 55.52f), new Vector3(7991.00f, 9621.00f, 53.53f)));
-            dashes.Add(new YasDash(new Vector3(7450.88f, 9144.42f, 55.55f), new Vector3(7985.00f, 8765.50f, 55.07f)));
-            dashes.Add(new YasDash(new Vector3(9995.00f, 6565.00f, 55.12f), new Vector3(10387.00f, 6815.92f, 54.87f)));
+            dashes.Add(new YasDash(new Vector3(3582.00f, 7936.00f, 53.67f), new Vector3(3845.85f, 7376.56f, 51.56f)));
+            dashes.Add(new YasDash(new Vector3(3880.00f, 7978.00f, 51.81f), new Vector3(3824.00f, 7356.00f, 51.50f)));
+            dashes.Add(new YasDash(new Vector3(3724.00f, 7408.00f, 51.87f), new Vector3(3631.26f, 7824.56f, 53.78f)));
+            dashes.Add(new YasDash(new Vector3(3850.00f, 7968.00f, 51.91f), new Vector3(4042.00f, 7376.00f, 51.00f)));
+            dashes.Add(new YasDash(new Vector3(3894.00f, 6446.00f, 52.46f), new Vector3(4480.45f, 6432.95f, 50.77f)));
+            dashes.Add(new YasDash(new Vector3(3732.00f, 6528.00f, 52.46f), new Vector3(3732.00f, 7154.00f, 50.53f)));
+            dashes.Add(new YasDash(new Vector3(4374.00f, 6258.00f, 51.36f), new Vector3(3946.00f, 6462.00f, 52.46f)));
+            dashes.Add(new YasDash(new Vector3(3674.00f, 7058.00f, 50.33f), new Vector3(3734.00f, 6588.00f, 52.46f)));
+            dashes.Add(new YasDash(new Vector3(3786.00f, 6534.00f, 52.46f), new Vector3(3470.00f, 6888.00f, 51.15f)));
+            dashes.Add(new YasDash(new Vector3(3890.00f, 6520.00f, 52.46f), new Vector3(4258.00f, 6218.00f, 51.94f)));
+            dashes.Add(new YasDash(new Vector3(2124.00f, 8506.00f, 51.78f), new Vector3(1880.00f, 7930.00f, 51.43f)));
+            dashes.Add(new YasDash(new Vector3(2148.00f, 8370.00f, 51.78f), new Vector3(1690.00f, 8688.00f, 52.66f)));
+            dashes.Add(new YasDash(new Vector3(1724.00f, 8156.00f, 52.84f), new Vector3(2108.00f, 8436.00f, 51.78f)));
+            dashes.Add(new YasDash(new Vector3(8370.00f, 2698.00f, 51.04f), new Vector3(7977.40f, 3171.12f, 51.58f)));
+            dashes.Add(new YasDash(new Vector3(8314.00f, 2678.00f, 51.12f), new Vector3(8376.00f, 3300.00f, 52.56f)));
+            dashes.Add(new YasDash(new Vector3(8272.00f, 3208.00f, 51.89f), new Vector3(8324.00f, 2736.00f, 51.13f)));
+            dashes.Add(new YasDash(new Vector3(7858.00f, 3912.00f, 53.76f), new Vector3(8362.70f, 3652.84f, 54.42f)));
+            dashes.Add(new YasDash(new Vector3(7564.00f, 4112.00f, 54.46f), new Vector3(7686.00f, 4726.00f, 49.53f)));
+            dashes.Add(new YasDash(new Vector3(7030.00f, 5460.00f, 54.20f), new Vector3(7410.00f, 5954.00f, 52.48f)));
+            dashes.Add(new YasDash(new Vector3(6972.00f, 5508.00f, 55.43f), new Vector3(6395.04f, 5313.03f, 48.53f)));
+            dashes.Add(new YasDash(new Vector3(6924.00f, 5492.00f, 54.36f), new Vector3(6334.00f, 5292.00f, 48.53f)));
+            dashes.Add(new YasDash(new Vector3(7372.00f, 5858.00f, 52.57f), new Vector3(7062.00f, 5500.00f, 55.03f)));
+
             #endregion
             sumItems = new SummonerItems(Player);
         }
@@ -238,7 +202,7 @@ namespace YasuoSharpV2
                             return;
                         }
 
-                        if (distToDash < 3f && jumps.Count > 0)
+                        if (distToDash < 3f && jumps.Count > 0 && jumps.First().Distance(Player)<=470)
                         {
                             E.Cast(jumps.First());
                         }
@@ -312,7 +276,7 @@ namespace YasuoSharpV2
             if (YasuoSharp.Config.Item("useEWall").GetValue<bool>())
                 eBehindWall(target);
             Obj_AI_Base goodTarg = canDoEQEasly(target);
-            if (goodTarg != null)
+            if (goodTarg != null && goodTarg.Distance(Player)<=470)
             {
                 E.Cast(goodTarg);
                 Q.Cast(target);
@@ -337,9 +301,10 @@ namespace YasuoSharpV2
             
             if (!isDashigPro)
             {
+                
                 List<Vector2> minionPs = YasMath.GetCastMinionsPredictedPositions(minions, getNewQSpeed()*0.3f, 30f,
                     float.MaxValue, Player.ServerPosition, 465, false, SkillshotType.SkillshotLine);
-                Vector2 clos = Geometry.Closest(Player.ServerPosition.To2D(), minionPs);
+                Vector2 clos = LeagueSharp.Common.Geometry.Closest(Player.ServerPosition.To2D(), minionPs);
                 if (Player.Distance(clos) < 475)
                 {
 
@@ -375,7 +340,7 @@ namespace YasuoSharpV2
         public static Vector2 getNextPos(Obj_AI_Hero target)
         {
             Vector2 dashPos = target.Position.To2D();
-            if (target.IsMoving)
+            if (target.IsMoving && target.Path.Count()!=0)
             {
                 Vector2 tpos = target.Position.To2D();
                 Vector2 path = target.Path[0].To2D() - tpos;
@@ -501,7 +466,7 @@ namespace YasuoSharpV2
                     if (!isDashigPro)
                     {
                         List<Vector2> minionPs = YasMath.GetCastMinionsPredictedPositions(minions, getNewQSpeed() * 0.3f, 30f, float.MaxValue, Player.ServerPosition, 465, false, SkillshotType.SkillshotLine);
-                        Vector2 clos = Geometry.Closest(Player.ServerPosition.To2D(), minionPs);
+                        Vector2 clos = LeagueSharp.Common.Geometry.Closest(Player.ServerPosition.To2D(), minionPs);
                         if (Player.Distance(clos) < 475)
                         {
                             Console.WriteLine("Cast q simp");
@@ -761,7 +726,7 @@ namespace YasuoSharpV2
         {
             //try douge with E if cant windWall
 
-            if (!W.IsReady())
+            if (!W.IsReady() || skillShot.SpellData.Type == SkillShotType.SkillshotCircle || skillShot.SpellData.Type == SkillShotType.SkillshotRing)
                 return;
             if (skillShot.IsAboutToHit(250, Player))
             {
@@ -862,7 +827,7 @@ namespace YasuoSharpV2
 
         public static bool useENormal(Obj_AI_Base target)
         {
-            if (!E.IsReady())
+            if (!E.IsReady() || target.Distance(Player)>470)
                 return false;
             Vector2 posAfter = V2E(Player.Position, target.Position, 475);
             if (!YasuoSharp.Config.Item("djTur").GetValue<bool>())
@@ -877,6 +842,7 @@ namespace YasuoSharpV2
                 Vector2 posAfterE = pPos + (Vector2.Normalize(target.Position.To2D() - pPos) * E.Range);
                 if (!inTowerRange(posAfterE))
                 {
+                    Console.WriteLine("use gap?");
                     if (isSafePoint(posAfter).IsSafe)
                         E.Cast(target, false);
                     return true;
@@ -930,7 +896,7 @@ namespace YasuoSharpV2
                 goesThroughWall(pos.To3D(), Player.Position))
                 return;
             Vector2 bestLoc = pPos + (Vector2.Normalize(pos - pPos) * (Player.MoveSpeed * 0.35f));
-            float bestDist = pos.Distance(bestLoc);
+            float bestDist = pos.Distance(pPos)-50;
             try
             {
                 foreach (Obj_AI_Base enemy in ObjectManager.Get<Obj_AI_Base>().Where(ob => enemyIsJumpable(ob, ignore)))
@@ -947,6 +913,7 @@ namespace YasuoSharpV2
                             bestLoc = posAfterE;
                             bestDist = distE;
                             bestEnem = enemy;
+                           // Console.WriteLine("Gap to best enem");
                         }
                     }
                 }
@@ -957,7 +924,10 @@ namespace YasuoSharpV2
             }
 
             if (bestEnem != null)
+            {
+                Console.WriteLine("should use gap");
                 useENormal(bestEnem);
+            }
 
         }
 
@@ -990,7 +960,7 @@ namespace YasuoSharpV2
 
         public static bool enemyIsJumpable(Obj_AI_Base enemy, List<Obj_AI_Hero> ignore = null)
         {
-            if (enemy.IsValid && enemy.IsEnemy && !enemy.IsInvulnerable && !enemy.MagicImmune && !enemy.IsDead)
+            if (enemy.IsValid && enemy.IsEnemy && !enemy.IsInvulnerable && !enemy.MagicImmune && !enemy.IsDead && !(enemy is FollowerObject))
             {
                 if (ignore != null)
                     foreach (Obj_AI_Hero ign in ignore)

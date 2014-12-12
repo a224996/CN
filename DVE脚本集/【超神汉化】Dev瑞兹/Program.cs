@@ -1,4 +1,4 @@
-using DevCommom;
+﻿using DevCommom;
 using LeagueSharp;
 using LeagueSharp.Common;
 using System;
@@ -182,6 +182,7 @@ namespace DevRyze
                 Game.PrintChat("InitializeAttachEvents Finish");
         }
 
+
         static void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             var TearExploit = Config.Item("TearExploit").GetValue<bool>();
@@ -230,7 +231,7 @@ namespace DevRyze
                 var MinionList = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health)
                     .Where(x => !x.IsDead && HealthPrediction.LaneClearHealthPrediction(x, (int)(timeNextAA * 1.1)) <= 0).ToList();
 
-                if (MinionList.Count() > 0)
+                if (MinionList.Any())
                 {
                     var mob = MinionList.First();
                     if (Q.IsReady() && mob.IsValidTarget(Q.Range))
@@ -242,7 +243,7 @@ namespace DevRyze
                     }
                 }
 
-                if (MinionList.Count() > 0)
+                if (MinionList.Any())
                 {
                     var mob = MinionList.First();
                     if (E.IsReady() && mob.IsValidTarget(E.Range))
@@ -272,7 +273,7 @@ namespace DevRyze
                             !x.IsDead && target.NetworkId != x.NetworkId && !MinionListToIgnore.Contains(x.NetworkId) &&
                             HealthPrediction.LaneClearHealthPrediction(x, (int)(Player.AttackDelay * 1000 * 1.1)) <= 0).ToList();
 
-                    if (MinionList.Count() > 0)
+                    if (MinionList.Any())
                     { 
                         var mob = MinionList.First();
                         if (Q.IsReady() && mob.IsValidTarget(Q.Range))
@@ -285,7 +286,7 @@ namespace DevRyze
                         }
                     }
 
-                    if (MinionList.Count() > 0)
+                    if (MinionList.Any())
                     {
                         var mob = MinionList.First();
                         if (E.IsReady() && mob.IsValidTarget(E.Range))
@@ -314,6 +315,8 @@ namespace DevRyze
                 var useW = Config.Item("UseWCombo").GetValue<bool>();
                 var useE = Config.Item("UseQCombo").GetValue<bool>();
 
+                args.Process = Config.Item("UseAACombo").GetValue<bool>();
+
                 if (Player.GetNearestEnemy().IsValidTarget(W.Range) && ((useQ && Q.IsReady()) || (useW && W.IsReady() || useE && E.IsReady())))
                     args.Process = false;
             }
@@ -327,6 +330,7 @@ namespace DevRyze
                 if (Player.GetNearestEnemy().IsValidTarget(W.Range) && ((useQ && Q.IsReady()) || (useW && W.IsReady() || useE && E.IsReady())))
                     args.Process = false;
             }
+
         }
 
         static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
@@ -406,6 +410,8 @@ namespace DevRyze
         {
             var eTarget = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
 
+            Orbwalking.Orbwalk(eTarget, Game.CursorPos);
+
             if (eTarget == null)
                 return;
 
@@ -418,12 +424,14 @@ namespace DevRyze
                 W.CastOnUnit(eTarget, packetCast);
             }
 
-            if (UseFullComboAfterChase && (eTarget.HasBuff("Rune Prison") || dtLastRunePrision.AddSeconds(4) > DateTime.Now))
+            if (UseFullComboAfterChase && (eTarget.HasBuff("Rune Prison") || dtLastRunePrision.AddSeconds(5) > DateTime.Now))
             {
                 dtLastRunePrision = DateTime.Now;
                 BurstCombo();
                 Combo();
             }
+
+
         }
 
         public static void BurstCombo()
@@ -562,6 +570,7 @@ namespace DevRyze
 
             var JungleList = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
+            var UseLaneClearLastHit = Config.Item("UseLaneClearLastHit").GetValue<bool>();
             var useQ = Config.Item("UseQLaneClear").GetValue<bool>();
             var useW = Config.Item("UseWLaneClear").GetValue<bool>();
             var useE = Config.Item("UseELaneClear").GetValue<bool>();
@@ -571,57 +580,122 @@ namespace DevRyze
             if (Q.IsReady() && useQ && Player.GetManaPerc() > ManaLaneClear)
             {
                 var queryJungle = JungleList.Where(x => x.IsValidTarget(Q.Range));
-                if (queryJungle.Count() > 0)
+                if (queryJungle.Any())
                 {
                     var mob = queryJungle.First();
                     Q.CastOnUnit(mob, packetCast);
                 }
 
-                var queryMinion = MinionList.Where(x => x.IsValidTarget(Q.Range) && HealthPrediction.LaneClearHealthPrediction(x, (int)Q.Delay * 1000) < Player.GetSpellDamage(x, SpellSlot.Q) * 0.9);
-                if (queryMinion.Count() > 0)
+                var queryMinion = MinionList.Where(x => x.IsValidTarget(Q.Range));
+                if (queryMinion.Any())
                 {
                     var mob = queryMinion.First();
-                    Q.CastOnUnit(mob, packetCast);
-                    MinionListToIgnore.Add(mob.NetworkId);
-                    MinionList.Remove(mob);
+                    if (UseLaneClearLastHit)
+                    {
+                        if (HealthPrediction.GetHealthPrediction(mob, (int)Q.Delay * 1000) < Player.GetSpellDamage(mob, SpellSlot.Q) * 0.9)
+                        {
+                            Q.CastOnUnit(mob, packetCast);
+                            MinionListToIgnore.Add(mob.NetworkId);
+                            MinionList.Remove(mob);
+                        }
+                    }
+                    else
+                    {
+                        if (HealthPrediction.GetHealthPrediction(mob, (int)Q.Delay * 1000) < Player.GetSpellDamage(mob, SpellSlot.Q) * 0.9)
+                        {
+                            Q.CastOnUnit(mob, packetCast);
+                            MinionListToIgnore.Add(mob.NetworkId);
+                            MinionList.Remove(mob);
+                        }
+                        else
+                        {
+                            mob = queryMinion.Last();
+                            Q.CastOnUnit(mob, packetCast);
+                            MinionList.Remove(mob);
+                        }
+                    }
                 }
             }
 
             if (W.IsReady() && useW && Player.GetManaPerc() > ManaLaneClear)
             {
                 var queryJungle = JungleList.Where(x => x.IsValidTarget(W.Range));
-                if (queryJungle.Count() > 0)
+                if (queryJungle.Any())
                 {
                     var mob = queryJungle.First();
                     W.CastOnUnit(mob, packetCast);
                 }
 
-                var query = MinionList.Where(x => x.IsValidTarget(W.Range) && HealthPrediction.LaneClearHealthPrediction(x, (int)W.Delay * 1000) < Player.GetSpellDamage(x, SpellSlot.W) * 0.9);
-                if (query.Count() > 0)
+                var query = MinionList.Where(x => x.IsValidTarget(W.Range));
+                if (query.Any())
                 {
                     var mob = query.First();
-                    W.CastOnUnit(mob, packetCast);
-                    MinionListToIgnore.Add(mob.NetworkId);
-                    MinionList.Remove(mob);
+                    if (UseLaneClearLastHit)
+                    {
+                        
+                        if (HealthPrediction.GetHealthPrediction(mob, (int)W.Delay * 1000) < Player.GetSpellDamage(mob, SpellSlot.W) * 0.9)
+                        {
+                            W.CastOnUnit(mob, packetCast);
+                            MinionListToIgnore.Add(mob.NetworkId);
+                            MinionList.Remove(mob);
+                        }
+                    }
+                    else
+                    {
+                        if (HealthPrediction.GetHealthPrediction(mob, (int)W.Delay * 1000) < Player.GetSpellDamage(mob, SpellSlot.W) * 0.9)
+                        {
+                            W.CastOnUnit(mob, packetCast);
+                            MinionListToIgnore.Add(mob.NetworkId);
+                            MinionList.Remove(mob);
+                        }
+                        else 
+                        {
+                            mob = query.Last();
+                            W.CastOnUnit(mob, packetCast);
+                            MinionList.Remove(mob);
+                        }
+                    }
                 }
             }
 
             if (E.IsReady() && useE && Player.GetManaPerc() > ManaLaneClear)
             {
                 var queryJungle = JungleList.Where(x => x.IsValidTarget(E.Range));
-                if (queryJungle.Count() > 0)
+                if (queryJungle.Any())
                 {
                     var mob = queryJungle.First();
                     E.CastOnUnit(mob, packetCast);
                 }
 
-                var query = MinionList.Where(x => x.IsValidTarget(E.Range) && HealthPrediction.LaneClearHealthPrediction(x, (int)E.Delay * 1000) < Player.GetSpellDamage(x, SpellSlot.E) * 0.9);
-                if (query.Count() > 0)
+                var query = MinionList.Where(x => x.IsValidTarget(E.Range));
+                if (query.Any())
                 {
                     var mob = query.First();
-                    E.CastOnUnit(mob, packetCast);
-                    MinionListToIgnore.Add(mob.NetworkId);
-                    MinionList.Remove(mob);
+                    if (UseLaneClearLastHit)
+                    {
+                        if (HealthPrediction.GetHealthPrediction(mob, (int)E.Delay * 1000) < Player.GetSpellDamage(mob, SpellSlot.E) * 0.9)
+                        {
+                            E.CastOnUnit(mob, packetCast);
+                            MinionListToIgnore.Add(mob.NetworkId);
+                            MinionList.Remove(mob);
+                        }
+                    }
+                    else 
+                    {
+                        if (HealthPrediction.GetHealthPrediction(mob, (int)E.Delay * 1000) < Player.GetSpellDamage(mob, SpellSlot.E) * 0.9)
+                        {
+                            E.CastOnUnit(mob, packetCast);
+                            MinionListToIgnore.Add(mob.NetworkId);
+                            MinionList.Remove(mob);
+                        }
+                        else 
+                        {
+                            mob = query.Last();
+                            E.CastOnUnit(mob, packetCast);
+                            MinionList.Remove(mob);
+                        }
+
+                    }
                 }
             }
 
@@ -639,7 +713,7 @@ namespace DevRyze
             if (Q.IsReady() && useQ && Player.GetManaPerc() > ManaLaneClear)
             {
                 var queryMinion = MinionList.Where(x => x.IsValidTarget(Q.Range) && HealthPrediction.LaneClearHealthPrediction(x, (int)Q.Delay * 1000) < Player.GetSpellDamage(x, SpellSlot.Q) * 0.9);
-                if (queryMinion.Count() > 0)
+                if (queryMinion.Any())
                 {
                     var mob = queryMinion.First();
                     Q.CastOnUnit(mob, packetCast);
@@ -647,6 +721,7 @@ namespace DevRyze
                 }
             }
         }
+
 
         static void Drawing_OnDraw(EventArgs args)
         {
@@ -663,24 +738,6 @@ namespace DevRyze
             }
         }
 
-        // working ???
-        //private static void TearExploit()
-        //{
-        //    var UsePacket = Config.Item("UsePacket").GetValue<bool>();
-        //    var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health);
-        //    if (Q.IsReady() && W.IsReady())
-        //    {
-        //        foreach (var minion in allMinions)
-        //        {
-        //            if (120 >= minion.Health)
-        //            {
-        //                Q.CastOnUnit(minion, UsePacket);
-        //                Utility.DelayAction.Add(25, () => W.CastOnUnit(minion, UsePacket));
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
 
         private static void InitializeMainMenu()
         {
@@ -702,6 +759,7 @@ namespace DevRyze
             Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用W").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用 E").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用R").SetValue(true));
+			Config.SubMenu("Combo").AddItem(new MenuItem("UseAACombo", "使用AA").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseRComboToggle", "使用R(锁定)").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Toggle)));
 
             Config.AddSubMenu(new Menu("骚扰", "Harass"));
@@ -718,6 +776,7 @@ namespace DevRyze
 
             Config.AddSubMenu(new Menu("清线", "LaneClear")); 
             Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearKey", "清线").SetValue(new KeyBind(Config.Item("LaneClear").GetValue<KeyBind>().Key, KeyBindType.Press)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseLaneClearLastHit", "只打最后一击").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "使用Q").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseWLaneClear", "使用W").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "使用E").SetValue(true));
