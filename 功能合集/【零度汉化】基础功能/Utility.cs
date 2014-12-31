@@ -105,7 +105,8 @@ namespace LeagueSharp.Common
         {
             return t == 0
                 ? spell.State == SpellState.Ready
-                : (spell.State == SpellState.Ready || (spell.State == SpellState.Cooldown && (spell.CooldownExpires - Game.Time) <= t / 1000f));
+                : (spell.State == SpellState.Ready ||
+                   (spell.State == SpellState.Cooldown && (spell.CooldownExpires - Game.Time) <= t / 1000f));
         }
 
         public static bool IsReady(this Spell spell, int t = 0)
@@ -174,6 +175,15 @@ namespace LeagueSharp.Common
         public static void PrintFloatText(this GameObject obj, string text, Packet.FloatTextPacket type)
         {
             Packet.S2C.FloatText.Encoded(new Packet.S2C.FloatText.Struct(text, type, obj.NetworkId)).Process();
+        }
+
+        public static bool IsAutoAttack(this SpellData spellData)
+        {
+            return Orbwalking.IsAutoAttack(spellData.Name);
+        }
+        public static bool IsAutoAttack(this SpellDataInst spellData)
+        {
+            return Orbwalking.IsAutoAttack(spellData.Name);
         }
 
         public static bool IsWall(this Vector3 position)
@@ -366,12 +376,24 @@ namespace LeagueSharp.Common
         ///     Returns true if Player is in shop range.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Use ObjectManager.Player.InShop()", false)]
         public static bool InShopRange()
         {
             return
                 ObjectManager.Get<Obj_Shop>()
                     .Where(shop => shop.IsAlly)
                     .Any(shop => Vector2.Distance(ObjectManager.Player.Position.To2D(), shop.Position.To2D()) < 1250);
+        }
+
+        /// <summary>
+        ///     Returns true if hero is in shop range.
+        /// </summary>
+        /// <returns></returns>
+        public static bool InShop(this Obj_AI_Hero hero)
+        {
+            return hero.IsVisible &&
+                   ObjectManager.Get<Obj_Shop>()
+                       .Any(s => s.Team == hero.Team && hero.Distance(s.Position, true) < 1562500); // 1250²
         }
 
         /// <summary>
@@ -412,11 +434,12 @@ namespace LeagueSharp.Common
             }
         }
 
+        [Obsolete("Use ObjectManager.Player.InFounta()", false)]
         public static bool InFountain()
         {
             float fountainRange = 750;
             var map = Map.GetMap();
-            if (map != null && map._MapType == Map.MapType.SummonersRift)
+            if (map != null && map.Type == Map.MapType.SummonersRift)
             {
                 fountainRange = 1050;
             }
@@ -427,6 +450,19 @@ namespace LeagueSharp.Common
                         spawnPoint =>
                             Vector2.Distance(ObjectManager.Player.Position.To2D(), spawnPoint.Position.To2D()) <
                             fountainRange);
+        }
+
+        public static bool InFountain(this Obj_AI_Hero hero)
+        {
+            float fountainRange = 562500; //750²
+            var map = Map.GetMap();
+            if (map != null && map.Type == Map.MapType.SummonersRift)
+            {
+                fountainRange = 1102500; //1050²
+            }
+            return hero.IsVisible &&
+                   ObjectManager.Get<Obj_SpawnPoint>()
+                       .Any(sp => sp.Team == hero.Team && hero.Distance(sp.Position, true) < fountainRange);
         }
 
         public static class DelayAction
@@ -548,89 +584,87 @@ namespace LeagueSharp.Common
                 HowlingAbyss
             }
 
-            public MapType _MapType;
-            public Vector2 Grid;
-            public string Name;
-            public string ShortName;
-            public int StartingLevel;
-
-            public Map(string name, string shortName, MapType map, Vector2 grid, int startLevel = 1)
+            private static readonly IDictionary<int, Map> MapById = new Dictionary<int, Map>
             {
-                Name = name;
-                ShortName = shortName;
-                _MapType = map;
-                Grid = grid;
-                StartingLevel = startLevel;
-            }
+                {
+                    8,
+                    new Map
+                    {
+                        Name = "The Crystal Scar",
+                        ShortName = "crystalScar",
+                        Type = MapType.CrystalScar,
+                        _MapType = MapType.CrystalScar,
+                        Grid = new Vector2(13894 / 2, 13218 / 2),
+                        StartingLevel = 3
+                    }
+                },
+                {
+                    10,
+                    new Map
+                    {
+                        Name = "The Twisted Treeline",
+                        ShortName = "twistedTreeline",
+                        Type = MapType.TwistedTreeline,
+                        _MapType = MapType.TwistedTreeline,
+                        Grid = new Vector2(15436 / 2, 14474 / 2),
+                        StartingLevel = 1
+                    }
+                },
+                {
+                    11,
+                    new Map
+                    {
+                        Name = "Summoner's Rift",
+                        ShortName = "summonerRift",
+                        Type = MapType.SummonersRift,
+                        _MapType = MapType.SummonersRift,
+                        Grid = new Vector2(13982 / 2, 14446 / 2),
+                        StartingLevel = 1
+                    }
+                },
+                {
+                    12,
+                    new Map
+                    {
+                        Name = "Howling Abyss",
+                        ShortName = "howlingAbyss",
+                        Type = MapType.HowlingAbyss,
+                        _MapType = MapType.HowlingAbyss,
+                        Grid = new Vector2(13120 / 2, 12618 / 2),
+                        StartingLevel = 3
+                    }
+                }
+            };
 
-            private static bool SameVector(Vector3 v1, Vector3 v2)
-            {
-                return (Math.Abs(Math.Floor(v1.X) - Math.Floor(v2.X)) < float.Epsilon &&
-                        Math.Abs(Math.Floor(v1.Y) - Math.Floor(v2.Y)) < float.Epsilon &&
-                        Math.Abs(Math.Floor(v1.Z) - Math.Floor(v2.Z)) < float.Epsilon);
-            }
+            public MapType Type { get; private set; }
+
+            [Obsolete("Use Map.Type", false)]
+            public MapType _MapType { get; private set; }
+
+            public Vector2 Grid { get; private set; }
+            public string Name { get; private set; }
+            public string ShortName { get; private set; }
+            public int StartingLevel { get; private set; }
 
             /// <summary>
             ///     Returns the current map.
             /// </summary>
             public static Map GetMap()
             {
-                Vector3[] sr =
+                if (MapById.ContainsKey((int) Game.MapId))
                 {
-                    new Vector3(13767.23f, 14807.54f, 218.222f),
-                    new Vector3(232.4198f, 1277.637f, 163.7132f)
-                };
-                Vector3[] dom =
-                {
-                    new Vector3(16.54065f, 4452.441f, 168.618f),
-                    new Vector3(13876.07f, 4445.496f, 99.3553f)
-                };
-                Vector3[] ttt =
-                {
-                    new Vector3(14125.37f, 8005.887f, 123.4631f),
-                    new Vector3(1313.361f, 8005.887f, 123.4631f)
-                };
-                Vector3[] ha =
-                {
-                    new Vector3(497.0624f, 1932.652f, -39.8721f),
-                    new Vector3(11065.5f, 12306.48f, -185.1475f)
-                };
-
-                if (
-                    sr.Any(
-                        pos =>
-                            ObjectManager.Get<Obj_Shop>().ToList().Find(shop => SameVector(shop.Position, pos)) != null))
-                {
-                    return new Map(
-                        "Summoner's Rift", "summonerRift", MapType.SummonersRift, new Vector2(13982 / 2, 14446 / 2));
-                }
-                if (
-                    dom.Any(
-                        pos =>
-                            ObjectManager.Get<Obj_Shop>().ToList().Find(shop => SameVector(shop.Position, pos)) != null))
-                {
-                    return new Map(
-                        "The Crystal Scar", "crystalScar", MapType.CrystalScar, new Vector2(13894 / 2, 13218 / 2), 3);
-                }
-                if (
-                    ttt.Any(
-                        pos =>
-                            ObjectManager.Get<Obj_Shop>().ToList().Find(shop => SameVector(shop.Position, pos)) != null))
-                {
-                    return new Map(
-                        "The Twisted Treeline", "twistedTreeline", MapType.TwistedTreeline,
-                        new Vector2(15436 / 2, 14474 / 2));
-                }
-                if (
-                    ha.Any(
-                        pos =>
-                            ObjectManager.Get<Obj_Shop>().ToList().Find(shop => SameVector(shop.Position, pos)) != null))
-                {
-                    return new Map(
-                        "Howling Abyss", "howlingAbyss", MapType.HowlingAbyss, new Vector2(13120 / 2, 12618 / 2), 3);
+                    return MapById[(int) Game.MapId];
                 }
 
-                return new Map("Unknown", "unknown", MapType.Unknown, new Vector2(0, 0));
+                return new Map
+                {
+                    Name = "Unknown",
+                    ShortName = "unknown",
+                    Type = MapType.Unknown,
+                    _MapType = MapType.Unknown,
+                    Grid = new Vector2(0, 0),
+                    StartingLevel = 1
+                };
             }
         }
 
@@ -641,35 +675,6 @@ namespace LeagueSharp.Common
         {
             public static readonly Dictionary<int, List<Vector2>> StoredPaths = new Dictionary<int, List<Vector2>>();
             public static readonly Dictionary<int, int> StoredTick = new Dictionary<int, int>();
-
-            // TODO: update for 4.21
-            //static WaypointTracker()
-            //{
-            //    Game.OnGameProcessPacket += Game_OnGameProcessPacket;
-            //}
-
-            //private static void Game_OnGameProcessPacket(GamePacketEventArgs args)
-            //{
-            //    if (args.PacketData[0] == Packet.S2C.LoseVision.Header)
-            //    {
-            //        var decodedPacket = Packet.S2C.LoseVision.Decoded(args.PacketData);
-            //        var networkId = decodedPacket.UnitNetworkId;
-            //        var unit = ObjectManager.GetUnitByNetworkId<Obj_AI_Hero>(networkId);
-            //        if (unit != null && unit.IsValid && unit.IsVisible)
-            //        {
-            //            if (!StoredPaths.ContainsKey(networkId))
-            //            {
-            //                StoredPaths.Add(networkId, GetWaypoints(unit));
-            //                StoredTick.Add(networkId, Environment.TickCount);
-            //            }
-            //            else
-            //            {
-            //                StoredPaths[networkId] = GetWaypoints(unit);
-            //                StoredTick[networkId] = Environment.TickCount;
-            //            }
-            //        }
-            //    }
-            //}
         }
     }
 

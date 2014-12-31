@@ -669,14 +669,7 @@ namespace LeagueSharp.Common
 
                 foreach (var entry in dictionary.Value)
                 {
-                    if (!dicToSave.ContainsKey(entry.Key))
-                    {
-                        dicToSave.Add(entry.Key, entry.Value);
-                    }
-                    else
-                    {
-                        dicToSave[entry.Key] = entry.Value;
-                    }
+                    dicToSave[entry.Key] = entry.Value;
                 }
 
                 SavedSettings.Save(dictionary.Key, dicToSave);
@@ -772,8 +765,9 @@ namespace LeagueSharp.Common
 
         public Menu SubMenu(string name)
         {
-            //Search in submenus
-            return Children.FirstOrDefault(subMenu => subMenu.Name == name);
+            //Search in submenus and if it doesn't exist add it.
+            var subMenu = Children.FirstOrDefault(sm => sm.Name == name);
+            return subMenu ?? AddSubMenu(new Menu(name, name));
         }
     }
 
@@ -793,11 +787,13 @@ namespace LeagueSharp.Common
     {
         private readonly object _newValue;
         private readonly object _oldValue;
+        private bool _process;
 
         public OnValueChangeEventArgs(object oldValue, object newValue)
         {
             _oldValue = oldValue;
             _newValue = newValue;
+            _process = true;
         }
 
         public T GetOldValue<T>()
@@ -808,6 +804,15 @@ namespace LeagueSharp.Common
         public T GetNewValue<T>()
         {
             return (T) _newValue;
+        }
+
+        public bool Process
+        {
+            get
+            {
+                return _process;
+            }
+            set { _process = value; }
         }
     }
 
@@ -1049,17 +1054,30 @@ namespace LeagueSharp.Common
                 Console.WriteLine(e);
             }
 
+            OnValueChangeEventArgs valueChangedEvent = null;
+
             if (_valueSet)
             {
                 var handler = ValueChanged;
                 if (handler != null)
                 {
-                    handler(this, new OnValueChangeEventArgs(_value, newValue));
+                    valueChangedEvent = new OnValueChangeEventArgs(_value, newValue);
+                    handler(this, valueChangedEvent);
                 }
             }
 
+            if (valueChangedEvent != null)
+            {
+                if (valueChangedEvent.Process)
+                {
+                    _value = newValue;
+                }
+            }
+            else
+            {
+                _value = newValue;
+            }
             _valueSet = true;
-            _value = newValue;
             _serialized = Global.Serialize(_value);
             return this;
         }
@@ -1070,10 +1088,10 @@ namespace LeagueSharp.Common
             {
                 if (!dics.ContainsKey(SaveFileName))
                 {
-                    dics.Add(SaveFileName, new Dictionary<string, byte[]>());
+                    dics[SaveFileName] = new Dictionary<string, byte[]>();
                 }
 
-                dics[SaveFileName].Add(SaveKey, _serialized);
+                dics[SaveFileName][SaveKey] = _serialized;
             }
         }
 
