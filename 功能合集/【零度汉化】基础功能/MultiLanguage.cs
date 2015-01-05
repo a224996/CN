@@ -36,14 +36,19 @@ namespace LeagueSharp.Common
     {
         public static Dictionary<string, string> Translations = new Dictionary<string, string>();
 
-        public static XmlSerializer Serializer = new XmlSerializer(
+       /* public static readonly XmlSerializer Serializer = new XmlSerializer(
             typeof(TranslatedEntry[]), new XmlRootAttribute { ElementName = "entries" });
-
+        */
         static MultiLanguage()
         {
-            LoadLanguage(Config.SelectedLanguage);
+            //LoadLanguage(Config.SelectedLanguage);
         }
 
+        public static string _(string textToTranslate)
+        {
+            return Translations.ContainsKey(textToTranslate) ? Translations[textToTranslate] : textToTranslate;
+        }
+        /*
         public static bool LoadLanguage(string name)
         {
             var filePath = Path.Combine(Config.LeagueSharpDirectory, "translations", name + ".xml");
@@ -65,12 +70,7 @@ namespace LeagueSharp.Common
                 Console.WriteLine(ee.ToString());
                 return false;
             }
-        }
-
-        public static string _(string textToTranslate)
-        {
-            return Translations.ContainsKey(textToTranslate) ? Translations[textToTranslate] : textToTranslate;
-        }
+        }*/
 
         public class TranslatedEntry
         {

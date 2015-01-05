@@ -307,7 +307,7 @@ namespace LeagueSharp.Common
 
             LastMoveCommandT = Environment.TickCount;
 
-            if (Player.ServerPosition.Distance(position) < holdAreaRadius)
+            if (Player.ServerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
             {
                 if (Player.Path.Count() > 1)
                 {
@@ -499,28 +499,31 @@ namespace LeagueSharp.Common
                 /* Misc options */
                 var misc = new Menu("杂项", "Misc");
                 misc.AddItem(
-                    new MenuItem("HoldPosRadius", "保持半径位置").SetShared().SetValue(new Slider(0, 150, 0)));
+                    new MenuItem("HoldPosRadius", "保持半径位置").SetShared().SetValue(new Slider(0, 0, 150)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "优先补兵").SetShared().SetValue(true));
                 _config.AddSubMenu(misc);
 
 
                 /* Delay sliders */
                 _config.AddItem(
-                    new MenuItem("ExtraWindup", "终结时间").SetShared().SetValue(new Slider(80, 200, 0)));
-                _config.AddItem(new MenuItem("FarmDelay", "补兵延迟").SetShared().SetValue(new Slider(0, 200, 0)));
+                    new MenuItem("ExtraWindup", "终结时间").SetShared().SetValue(new Slider(80, 0, 200)));
+                _config.AddItem(new MenuItem("FarmDelay", "补兵延迟").SetShared().SetValue(new Slider(0, 0, 200)));
+                _config.AddItem(new MenuItem("MovementDelay", "动作延迟").SetShared().SetValue(new Slider(80, 0, 150)))
+                    .ValueChanged += (sender, args) => SetMovementDelay(args.GetNewValue<Slider>().Value);
+                
 
                 /*Load the menu*/
                 _config.AddItem(
                     new MenuItem("LastHit", "补兵").SetShared()
-                        .SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press, false)));
+                        .SetValue(new KeyBind('X', KeyBindType.Press, false)));
 
                 _config.AddItem(
                     new MenuItem("Farm", "混合").SetShared()
-                        .SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press, false)));
+                        .SetValue(new KeyBind('T', KeyBindType.Press, false)));
 
                 _config.AddItem(
                     new MenuItem("LaneClear", "清兵").SetShared()
-                        .SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press, false)));
+                        .SetValue(new KeyBind('V', KeyBindType.Press, false)));
 
                 _config.AddItem(
                     new MenuItem("Orbwalk", "连招").SetShared().SetValue(new KeyBind(32, KeyBindType.Press, false)));

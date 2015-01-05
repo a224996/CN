@@ -176,7 +176,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public Vector3 CastPosition
         {
-            get { return _castPosition.To2D().IsValid() ? _castPosition : Input.Unit.ServerPosition; }
+            get { return _castPosition.To2D().IsValid() ? _castPosition.SetZ() : Input.Unit.ServerPosition; }
             set { _castPosition = value; }
         }
 
@@ -193,7 +193,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public Vector3 UnitPosition
         {
-            get { return _unitPosition.To2D().IsValid() ? _unitPosition : Input.Unit.ServerPosition; }
+            get { return _unitPosition.To2D().IsValid() ? _unitPosition.SetZ() : Input.Unit.ServerPosition; }
             set { _unitPosition = value; }
         }
     }
@@ -244,7 +244,7 @@ namespace LeagueSharp.Common
             }
 
             //Target too far away.
-            if (input.Range != float.MaxValue && input.Unit.Distance(input.RangeCheckFrom) >= input.Range * 1.5d)
+            if (input.Range != float.MaxValue && input.Unit.Distance(input.RangeCheckFrom, true) > Math.Pow(input.Range * 1.5, 2))
             {
                 return new PredictionOutput { Input = input };
             }
@@ -386,10 +386,10 @@ namespace LeagueSharp.Common
         {
             var speed = input.Unit.MoveSpeed;
 
-            if (input.Unit.Distance(input.From, true) < 300 * 300)
+            if (input.Unit.Distance(input.From, true) < 200 * 200)
             {
-                input.Delay /= 2;
-                speed /= 2;
+                //input.Delay /= 2;
+                speed /= 1.5f;
             }
 
             var result = GetPositionOnPath(input, input.Unit.GetWaypoints(), speed);

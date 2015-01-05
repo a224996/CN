@@ -23,6 +23,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using Color = System.Drawing.Color;
@@ -93,15 +94,9 @@ namespace LeagueSharp.Common
             {
                 return;
             }
-            _selectedTargetObjAiHero = null;
-            foreach (var enemy in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(hero => hero.IsValidTarget())
-                    .OrderByDescending(h => h.Distance(Game.CursorPos))
-                    .Where(enemy => enemy.Distance(Game.CursorPos) < 200))
-            {
-                _selectedTargetObjAiHero = enemy;
-            }
+            _selectedTargetObjAiHero = ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(hero => hero.IsValidTarget() && hero.Distance(Game.CursorPos, true) < 40000) // 200 * 200
+                    .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
         }
 
         #endregion
@@ -324,15 +319,17 @@ namespace LeagueSharp.Common
 
         public static Obj_AI_Hero GetTarget(float range,
             DamageType damageType,
-            bool ignoreShield = true)
+            bool ignoreShield = true,
+            IEnumerable<Obj_AI_Hero> ignoredChamps = null)
         {
-            return GetTarget(ObjectManager.Player, range, damageType, ignoreShield);
+            return GetTarget(ObjectManager.Player, range, damageType, ignoreShield, ignoredChamps);
         }
 
         private static bool IsValidTarget(Obj_AI_Base target,
             float range,
             DamageType damageType,
-            bool ignoreShieldSpells = true)
+            bool ignoreShieldSpells = true,
+            IEnumerable<Obj_AI_Hero> ignoredChamps = null)
         {
             return target.IsValidTarget(range <= 0 ? Orbwalking.GetRealAutoAttackRange(target) : range) &&
                 !IsInvulnerable(target, damageType, ignoreShieldSpells);
@@ -341,10 +338,14 @@ namespace LeagueSharp.Common
         public static Obj_AI_Hero GetTarget(Obj_AI_Base champion,
             float range,
             DamageType type,
-            bool ignoreShieldSpells = true)
+            bool ignoreShieldSpells = true,
+            IEnumerable<Obj_AI_Hero> ignoredChamps = null)
         {
             try
             {
+                if (ignoredChamps == null)
+                    ignoredChamps = new List<Obj_AI_Hero>();
+
                 var targetingMode = TargetingMode.AutoPriority;
                 var damageType = (Damage.DamageType)Enum.Parse(typeof(Damage.DamageType), type.ToString());
 
@@ -361,7 +362,7 @@ namespace LeagueSharp.Common
 
                 var targets =
                     ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(hero => IsValidTarget(hero, range, type, ignoreShieldSpells));
+                        .Where(hero => !ignoredChamps.Any(ignored => ignored.NetworkId == hero.NetworkId) && IsValidTarget(hero, range, type, ignoreShieldSpells));
 
                 switch (targetingMode)
                 {
@@ -382,7 +383,7 @@ namespace LeagueSharp.Common
                         return targets.OrderBy(hero => champion.Distance(hero, true)).FirstOrDefault();
 
                     case TargetingMode.NearMouse:
-                        return targets.FirstOrDefault(hero => hero.Distance(Game.CursorPos) < 150);
+                        return targets.FirstOrDefault(hero => hero.Distance(Game.CursorPos, true) < 22500); // 150 * 150
 
                     case TargetingMode.AutoPriority:
                         return
