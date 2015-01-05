@@ -7,6 +7,7 @@ ___________             __   .__                    _____                       
      \/              \/     \/       \//_____/           \/            \/     \/            \/     \/          \/   \/     \/          \/         \/ 
 */
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.Remoting.Messaging;
 using System.Security.AccessControl;
 using LeagueSharp;
@@ -19,6 +20,7 @@ namespace FuckingAwesomeLeeSin
 {
     class Program
     {
+        #region Params
         public static string ChampName = "LeeSin";
         public static Orbwalking.Orbwalker Orbwalker;
         private static Obj_AI_Hero Player = ObjectManager.Player; // Instead of typing ObjectManager.Player you can just type Player
@@ -62,7 +64,9 @@ namespace FuckingAwesomeLeeSin
         }
 
         public static SpellSlot IgniteSlot;
+        #endregion
 
+        #region OnLoad
 
         static void Game_OnGameLoad(EventArgs args)
         {
@@ -97,12 +101,13 @@ namespace FuckingAwesomeLeeSin
             Menu.SubMenu("Combo").AddItem(new MenuItem("ksR", "|能击杀使用|R").SetValue(false));
             Menu.SubMenu("Combo").AddItem(new MenuItem("starCombo", "|连招|").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Menu.SubMenu("Combo").AddItem(new MenuItem("random2ejwej", "W->Q->R->Q2"));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("aaStacks", "等待被动").SetValue(false));
 
             var harassMenu = new Menu("|骚扰|", "Harass");
             harassMenu.AddItem(new MenuItem("q1H", "|使用| Q").SetValue(true));
             harassMenu.AddItem(new MenuItem("q2H", "|使用| 二段Q").SetValue(true));
-            harassMenu.AddItem(new MenuItem("wH", "顺眼/敌人闪现(禁用)").SetValue(false));
-            harassMenu.AddItem(new MenuItem("eH", "|使用| E").SetValue(true));
+            harassMenu.AddItem(new MenuItem("wH", "顺眼/敌人闪现(禁用)").SetValue(true));
+            harassMenu.AddItem(new MenuItem("eH", "|使用| E").SetValue(false));
             Menu.AddSubMenu(harassMenu);
 
             //Jung/Wave Clear
@@ -162,6 +167,7 @@ namespace FuckingAwesomeLeeSin
 
             var drawMenu = new Menu("|范围设置|", "Drawing");
             drawMenu.AddItem(new MenuItem("DrawEnabled", "|连招范围|").SetValue(false));
+            drawMenu.AddItem(new MenuItem("insecDraw", "绘制INSEC").SetValue(true));
             drawMenu.AddItem(new MenuItem("WJDraw", "|顺眼范围|").SetValue(true));
             drawMenu.AddItem(new MenuItem("drawQ", "|Q 范围|").SetValue(true));
             drawMenu.AddItem(new MenuItem("drawW", "|W 范围|").SetValue(true));
@@ -189,33 +195,38 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             PrintMessage("Loaded!");
         }
 
-        public static double SmiteDmg()
-        {
-            int[] dmg =
-            {
-                20*Player.Level + 370, 30*Player.Level + 330, 40*+Player.Level + 240, 50*Player.Level + 100
-            };
-            return Player.Spellbook.CanUseSpell(smiteSlot) == SpellState.Ready ? dmg.Max() : 0;
-        }
+        #endregion
 
+        #region Harass
         public static void Harass()
         {
             var target = TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical);
             var q = paramBool("q1H");
             var q2 = paramBool("q2H");
             var e = paramBool("eH");
+            var w = paramBool("wH");
 
-            if (q && Q.IsReady() && Q.Instance.Name == "BlindMonkQOne" && target.IsValidTarget(Q.Range)) CastQ1(target);
+            if (q && Q.IsReady() && Q.Instance.Name == "BlindMonkQOne" && target.IsValidTarget(Q.Range) && q) CastQ1(target);
             if (q2 && Q.IsReady() &&
-                (target.HasBuff("BlindMonkQOne", true) || target.HasBuff("blindmonkqonechaos", true)))
+               (target.HasBuff("BlindMonkQOne", true) || target.HasBuff("blindmonkqonechaos", true)) && q2)
             {
-                if(CastQAgain || !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player))) Q.Cast();
+                if (CastQAgain || !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player))) Q.Cast();
             }
-            if (e && E.IsReady() && target.IsValidTarget(E.Range) && E.Instance.Name == "BlindMonkEOne") E.Cast();
+            if (e && E.IsReady() && target.IsValidTarget(E.Range) && E.Instance.Name == "BlindMonkEOne" && e) E.Cast();
+            if (w && Player.Distance(target) < 50 && !(target.HasBuff("BlindMonkQOne", true) && !target.HasBuff("blindmonkqonechaos", true)) && (E.Instance.Name == "blindmonketwo" || !E.IsReady() && e) && (Q.Instance.Name == "blindmonkqtwo" || !Q.IsReady() && q))
+            {
+                var min =
+                    ObjectManager.Get<Obj_AI_Minion>()
+                        .Where(a => a.IsAlly && a.Distance(Player) <= W.Range)
+                        .OrderByDescending(a => a.Distance(target))
+                        .FirstOrDefault();
+                W.CastOnUnit(min);
+            }
 
         }
+        #endregion
 
-
+        #region Insec
         public static bool isNullInsecPos = true;
         public static Vector3 insecPos;
 
@@ -255,6 +266,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 Utility.DelayAction.Add(100, () => R.CastOnUnit(target, true));
             }
         }
+
         public static Vector3 getInsecPos(Obj_AI_Hero target)
         {
             if (isNullInsecPos)
@@ -269,18 +281,18 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             {
                 Vector3 insecPosition = InterceptionPoint(GetAllyInsec(GetAllyHeroes(target, 2000 + Menu.Item("bonusRangeA").GetValue<Slider>().Value)));
                 insecLinePos = Drawing.WorldToScreen(insecPosition);
-                return V2E(insecPosition, target.Position, target.Distance(insecPosition) + 200).To3D();
+                return V2E(insecPosition, target.Position, target.Distance(insecPosition) + 230).To3D();
 
             } 
             if(turrets.Any() && paramBool("insec2tower"))
             {
                 insecLinePos = Drawing.WorldToScreen(turrets[0].Position);
-                return V2E(turrets[0].Position, target.Position, target.Distance(turrets[0].Position) + 200).To3D();
+                return V2E(turrets[0].Position, target.Position, target.Distance(turrets[0].Position) + 230).To3D();
             }
             if (paramBool("insec2orig"))
             {
                 insecLinePos = Drawing.WorldToScreen(insecPos);
-                return V2E(insecPos, target.Position, target.Distance(insecPos) + 200).To3D();
+                return V2E(insecPos, target.Position, target.Distance(insecPos) + 230).To3D();
             }
             return new Vector3();
         }
@@ -313,6 +325,13 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                         {
                             Q.Cast();
                             InsecComboStep = InsecComboStepSelect.WGAPCLOSE;
+                        }
+                        else
+                        {
+                            if (Q.Instance.Name == "blindmonkqtwo" && returnQBuff().Distance(target) <= 600)
+                            {
+                                Q.Cast();
+                            }
                         }
                         break;
                     case InsecComboStepSelect.WGAPCLOSE:
@@ -377,6 +396,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         {
             return from.To2D() + distance * Vector3.Normalize(direction - from).To2D();
         }
+        #endregion
+
+        #region SmiteSaver
         public static void SaveMe()
         {
             if ((Player.Health / Player.MaxHealth * 100) > Menu.Item("hpPercentSM").GetValue<Slider>().Value || Player.Spellbook.CanUseSpell(smiteSlot) != SpellState.Ready) return;
@@ -384,7 +406,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             var buffSafe = false;
             foreach (
                 var minion in
-                    MinionManager.GetMinions(Player.Position, 1000f, MinionTypes.All, MinionTeam.Neutral,
+                    MinionManager.GetMinions(Player.Position, 1100f, MinionTypes.All, MinionTeam.Neutral,
                         MinionOrderTypes.None))
             {
                 foreach (var minionName in epics)
@@ -424,6 +446,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 }
             }
         }
+        #endregion
+
+        #region Tick Tasks
         static void Game_OnGameUpdate(EventArgs args)
         {
             if(Player.IsDead) return;
@@ -483,18 +508,25 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             if(Menu.Item("wjump").GetValue<KeyBind>().Active)
                 wardjumpToMouse();
         }
+#endregion
+
+        #region Draw
         static void Drawing_OnDraw(EventArgs args)
         {
-            if (!paramBool("DrawEnabled")) return;
             Obj_AI_Hero newTarget = paramBool("insecMode")
                    ? TargetSelector.GetSelectedTarget()
                    : TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical);
             if (Menu.Item("instaFlashInsec").GetValue<KeyBind>().Active) Drawing.DrawText(960, 340, System.Drawing.Color.Red, "FLASH INSEC ENABLED");
-            if (newTarget != null && newTarget.IsVisible && Player.Distance(newTarget) < 3000)
+            if (newTarget != null && newTarget.IsVisible && Player.Distance(newTarget) < 3000 && paramBool("insecDraw"))
             {
                 Vector2 targetPos = Drawing.WorldToScreen(newTarget.Position);
                 Drawing.DrawLine(insecLinePos.X, insecLinePos.Y, targetPos.X, targetPos.Y, 3, System.Drawing.Color.White);
                 Utility.DrawCircle(getInsecPos(newTarget), 100, System.Drawing.Color.White);
+            }
+            if (!paramBool("DrawEnabled")) return;
+            foreach (var t in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if(t.HasBuff("BlindMonkQOne", true) || t.HasBuff("blindmonkqonechaos", true)) Drawing.DrawCircle(t.Position, 200, System.Drawing.Color.Red);
             }
             if (Menu.Item("smiteEnabled").GetValue<KeyBind>().Active && paramBool("drawSmite"))
             {
@@ -511,32 +543,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             if (paramBool("drawR")) Utility.DrawCircle(Player.Position, R.Range - 80, R.IsReady() ? System.Drawing.Color.LightSkyBlue :System.Drawing.Color.Tomato);
 
         }
-        public static float Q2Damage(Obj_AI_Base target, float subHP = 0, bool monster = false)
-        {
-            var damage = (50 + (Q.Level*30)) + (0.09 * Player.FlatPhysicalDamageMod) + ((target.MaxHealth - (target.Health - subHP))*0.08);
-            if (monster && damage > 400) return (float) Damage.CalcDamage(Player, target, Damage.DamageType.Physical, 400);
-            return (float) Damage.CalcDamage(Player, target, Damage.DamageType.Physical, damage);
-        }
-        public static void wardjumpToMouse()
-        {
-            WardJump(Game.CursorPos, paramBool("m2m"), paramBool("maxRange"), paramBool("castInRange"), paramBool("j2m"), paramBool("j2c"));
-        }
-        public static void PrintMessage(string msg) // Credits to ChewyMoon, and his Brain.exe
-        {
-            Game.PrintChat("<font color=\"#6699ff\"><b>FALeeSin:</b></font> <font color=\"#FFFFFF\">" + msg + "</font>");
-        }
-        public static void Orbwalk(Vector3 pos, Obj_AI_Hero target = null)
-        {
-            Player.IssueOrder(GameObjectOrder.MoveTo, pos);
-        }
-        private static SpellDataInst GetItemSpell(InventorySlot invSlot)
-        {
-            return Player.Spellbook.Spells.FirstOrDefault(spell => (int)spell.Slot == invSlot.Slot + 4);
-        }
-        public static bool packets()
-        {
-            return Menu.Item("NFE").GetValue<bool>();
-        }
+        #endregion
+
+        #region Autosmite
         public static void smiter()
         {
             var minion =
@@ -581,57 +590,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             }
         }
 
-        //Start Credits to Kurisu
-        public static readonly int[] SmitePurple = { 3713, 3726, 3725, 3726, 3723 };
-        public static readonly int[] SmiteGrey = { 3711, 3722, 3721, 3720, 3719 };
-        public static readonly int[] SmiteRed = { 3715, 3718, 3717, 3716, 3714 };
-        public static readonly int[] SmiteBlue = { 3706, 3710, 3709, 3708, 3707 };
+        #endregion
 
-        public static string smitetype()
-        {
-            if (SmiteBlue.Any(Items.HasItem))
-            {
-                return "s5_summonersmiteplayerganker";
-            }
-            if (SmiteRed.Any(Items.HasItem))
-            {
-                return "s5_summonersmiteduel";
-            }
-            if (SmiteGrey.Any(Items.HasItem))
-            {
-                return "s5_summonersmitequick";
-            }
-            if (SmitePurple.Any(Items.HasItem))
-            {
-                return "itemsmiteaoe";
-            }
-            return "summonersmite";
-        }
-        //End credits
-
-        public static void useItems(Obj_AI_Hero enemy)
-        {
-            if (Items.CanUseItem(3142) && Player.Distance(enemy) <= 600)
-                Items.UseItem(3142);
-            if (Items.CanUseItem(3144) && Player.Distance(enemy) <= 450)
-                Items.UseItem(3144, enemy);
-            if (Items.CanUseItem(3153) && Player.Distance(enemy) <= 450)
-                Items.UseItem(3153, enemy);
-            if (Items.CanUseItem(3077) && Utility.CountEnemysInRange(350) >= 1)
-                Items.UseItem(3077);
-            if (Items.CanUseItem(3074) && Utility.CountEnemysInRange(350) >= 1)
-                Items.UseItem(3074);
-            if(Items.CanUseItem(3143) && Utility.CountEnemysInRange(450) >= 1)
-                Items.UseItem(3143);
-        }
-        public static void useClearItems(Obj_AI_Base enemy)
-        {
-
-            if (Items.CanUseItem(3077) && Player.Distance(enemy) < 350)
-                Items.UseItem(3077);
-            if (Items.CanUseItem(3074) && Player.Distance(enemy) < 350)
-                Items.UseItem(3074);
-        }
+        #region WaveClear
         public static void AllClear()
         {
             var passiveIsActive = Player.HasBuff("blindmonkpassive_cosmetic", true);
@@ -699,6 +660,13 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                         E.Cast();
                     }
                 }
+        }
+        #endregion
+
+        #region Wardjump
+        public static void wardjumpToMouse()
+        {
+            WardJump(Game.CursorPos, paramBool("m2m"), paramBool("maxRange"), paramBool("castInRange"), paramBool("j2m"), paramBool("j2c"));
         }
         private static void WardJump(Vector3 pos, bool m2m = true, bool maxRange = false, bool reqinMaxRange = false, bool minions = true, bool champions = true)
         {
@@ -789,7 +757,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             }
             return slot;
         }
-
+        
         private static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
             if (Environment.TickCount < lastPlaced + 300)
@@ -801,7 +769,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 }
             }
         }
+    #endregion
 
+        #region Combo
         public static void wardCombo()
         {
             var target = TargetSelector.GetTarget(1500, TargetSelector.DamageType.Physical);
@@ -835,17 +805,18 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         }
         public static void StarCombo()
         {
-            var target = TargetSelector.GetTarget(1500, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Physical);
             if (target == null) return;
-            if (R.GetDamage(target) >= target.Health && paramBool("ksR")) R.Cast(target, packets());
-            useItems(target);
             if ((target.HasBuff("BlindMonkQOne", true) || target.HasBuff("blindmonkqonechaos", true)) && paramBool("useQ2"))
             {
-                if (CastQAgain || target.HasBuffOfType(BuffType.Knockup) && !Player.IsValidTarget(300) && !R.IsReady() || !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)) && !R.IsReady() || Q.GetDamage(target, 1) > target.Health)
+                if (CastQAgain || target.HasBuffOfType(BuffType.Knockup) && !Player.IsValidTarget(300) && !R.IsReady() || !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)) || Q.GetDamage(target, 1) > target.Health || returnQBuff().Distance(target) < Player.Distance(target) && !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)))
                 {
                     Q.Cast();
                 }
             }
+            if ((paramBool("aaStacks") && Player.HasBuff("blindmonkpassive_cosmetic", true)) || target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player))) return;
+            if (R.GetDamage(target) >= target.Health && paramBool("ksR")) R.Cast(target, packets());
+            useItems(target);
             if (paramBool("useW"))
             {
                 if (paramBool("wMode") && target.Distance(Player) > Orbwalking.GetRealAutoAttackRange(Player))
@@ -880,6 +851,104 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 Q.CastIfHitchanceEquals(target, minChance, true);
             }
         }
+
+#endregion
+
+        #region Utility
+        //Start Credits to Kurisu
+        public static readonly int[] SmitePurple = { 3713, 3726, 3725, 3726, 3723 };
+        public static readonly int[] SmiteGrey = { 3711, 3722, 3721, 3720, 3719 };
+        public static readonly int[] SmiteRed = { 3715, 3718, 3717, 3716, 3714 };
+        public static readonly int[] SmiteBlue = { 3706, 3710, 3709, 3708, 3707 };
+
+        public static string smitetype()
+        {
+            if (SmiteBlue.Any(a => Items.HasItem(a)))
+            {
+                return "s5_summonersmiteplayerganker";
+            }
+            if (SmiteRed.Any(a => Items.HasItem(a)))
+            {
+                return "s5_summonersmiteduel";
+            }
+            if (SmiteGrey.Any(a => Items.HasItem(a)))
+            {
+                return "s5_summonersmitequick";
+            }
+            if (SmitePurple.Any(a => Items.HasItem(a)))
+            {
+                return "itemsmiteaoe";
+            }
+            return "summonersmite";
+        }
+        //End credits
+
+        public static float Q2Damage(Obj_AI_Base target, float subHP = 0, bool monster = false)
+        {
+            var damage = (50 + (Q.Level * 30)) + (0.09 * Player.FlatPhysicalDamageMod) + ((target.MaxHealth - (target.Health - subHP)) * 0.08);
+            if (monster && damage > 400) return (float)Damage.CalcDamage(Player, target, Damage.DamageType.Physical, 400);
+            return (float)Damage.CalcDamage(Player, target, Damage.DamageType.Physical, damage);
+        }
+
+        public static void PrintMessage(string msg) // Credits to ChewyMoon, and his Brain.exe
+        {
+            Game.PrintChat("<font color=\"#6699ff\"><b>FALeeSin:</b></font> <font color=\"#FFFFFF\">" + msg + "</font>");
+        }
+        public static void Orbwalk(Vector3 pos, Obj_AI_Hero target = null)
+        {
+            Player.IssueOrder(GameObjectOrder.MoveTo, pos);
+        }
+        private static SpellDataInst GetItemSpell(InventorySlot invSlot)
+        {
+            return Player.Spellbook.Spells.FirstOrDefault(spell => (int)spell.Slot == invSlot.Slot + 4);
+        }
+        public static bool packets()
+        {
+            return Menu.Item("NFE").GetValue<bool>();
+        }
+
+        public static Obj_AI_Base returnQBuff()
+        {
+            foreach (var unit in ObjectManager.Get<Obj_AI_Base>().Where(a => a.IsValidTarget(1300)))
+            {
+                if (unit.HasBuff("BlindMonkQOne", true) || unit.HasBuff("blindmonkqonechaos", true)) return unit;
+            }
+            return null;
+        }
+
+        public static void useItems(Obj_AI_Hero enemy)
+        {
+            if (Items.CanUseItem(3142) && Player.Distance(enemy) <= 600)
+                Items.UseItem(3142);
+            if (Items.CanUseItem(3144) && Player.Distance(enemy) <= 450)
+                Items.UseItem(3144, enemy);
+            if (Items.CanUseItem(3153) && Player.Distance(enemy) <= 450)
+                Items.UseItem(3153, enemy);
+            if (Items.CanUseItem(3077) && Utility.CountEnemysInRange(350) >= 1)
+                Items.UseItem(3077);
+            if (Items.CanUseItem(3074) && Utility.CountEnemysInRange(350) >= 1)
+                Items.UseItem(3074);
+            if(Items.CanUseItem(3143) && Utility.CountEnemysInRange(450) >= 1)
+                Items.UseItem(3143);
+        }
+
+
+        public static double SmiteDmg()
+        {
+            int[] dmg =
+            {
+                20*Player.Level + 370, 30*Player.Level + 330, 40*+Player.Level + 240, 50*Player.Level + 100
+            };
+            return Player.Spellbook.CanUseSpell(smiteSlot) == SpellState.Ready ? dmg.Max() : 0;
+        }
+
+        public static void useClearItems(Obj_AI_Base enemy)
+        {
+            if (Items.CanUseItem(3077) && Player.Distance(enemy) < 350)
+                Items.UseItem(3077);
+            if (Items.CanUseItem(3074) && Player.Distance(enemy) < 350)
+                Items.UseItem(3074);
+        }
         public static bool paramBool(String paramName)
         {
             return Menu.Item(paramName).GetValue<bool>();
@@ -903,5 +972,6 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         {
             return ((obj.Health / obj.MaxHealth) * 100) <= Menu.Item(paramName).GetValue<Slider>().Value;
         }
+        #endregion
     }
 }
