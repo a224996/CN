@@ -34,6 +34,7 @@ namespace meta_Smite
             Config.AddItem(new MenuItem("Enabled", "切换启用").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle, true)));
             Config.AddItem(new MenuItem("EnabledH", "保持启用").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Press)));
             Config.AddItem(new MenuItem("DrawStatus", "显示状态!").SetValue(true));
+            Config.AddItem(new MenuItem("RangeDraw", "Range When Enabled").SetValue(true));
             //Config.AddItem(new MenuItem("SmiteCast", "Cast smite using packet")).SetValue(true);
             Config.AddToMainMenu();
             champSpell = addSupportedChampSkill();
@@ -55,7 +56,6 @@ namespace meta_Smite
                 bool smiteReady = false;
                 bool spellReady = false;
                 Obj_AI_Base mob = GetNearest(ObjectManager.Player.ServerPosition);
-                //testFind(ObjectManager.Player.ServerPosition);
                 if (mob != null && Config.Item(mob.BaseSkinName).GetValue<bool>())
                 {
                     double smitedamage = smiteDamage();
@@ -69,6 +69,7 @@ namespace meta_Smite
                     if (smiteReady && mob.Health < smitedamage) //Smite is ready and enemy is killable with smite
                     {
                         setSmiteSlot();
+                        smite.Slot = smiteSlot;
                         ObjectManager.Player.Spellbook.CastSpell(smiteSlot, mob);
                     }
 
@@ -85,7 +86,6 @@ namespace meta_Smite
                     {
                         if (smiteReady)
                         {
-                            //Game.PrintChat("Mob health is: " + mob.Health + ", damage is: " + (smitedamage + spelldamage));
                             if (mob.Health < smitedamage + spelldamage) //Smite is ready and combined damage will kill
                             {
                                 if(ObjectManager.Player.ChampionName == "Lux")
@@ -155,6 +155,13 @@ namespace meta_Smite
                     }
                 }
             }
+        }
+        
+        
+        
+        public static void Drawing_OnDraw(EventArgs args)
+        {
+
             var drawStatus = Config.Item("DrawStatus").GetValue<bool>();
             if (drawStatus)
             {
@@ -167,12 +174,16 @@ namespace meta_Smite
                     Drawing.DrawText(ObjectManager.Player.HPBarPosition.X + 10, ObjectManager.Player.HPBarPosition.Y + 36, Color.Red, "Smite Disabled!");
                 }
             }
-        }
-        
-        
-        
-        public static void Drawing_OnDraw(EventArgs args)
-        {
+
+            var rangeDrawStatus = Config.Item("RangeDraw").GetValue<bool>(); 
+            if(rangeDrawStatus)
+            {
+                if (Config.Item("Enabled").GetValue<KeyBind>().Active || Config.Item("EnabledH").GetValue<KeyBind>().Active)
+                {
+                    Drawing.DrawCircle(ObjectManager.Player.Position, 760f, Color.Red);
+                }
+            }
+
             Obj_AI_Base mob1 = GetNearest(ObjectManager.Player.ServerPosition);
             if (Vector3.Distance(ObjectManager.Player.ServerPosition, mob1.ServerPosition) < 1500 && mob1.IsVisible)
             {
@@ -293,7 +304,7 @@ namespace meta_Smite
                     }
                 }
                 #endregion
-                else if (mob1.BaseSkinName == "SRU_BaronSpawn")
+                else if (mob1.BaseSkinName == "SRU_Baron")
                 {
                     if (smiteR && spellR)
                     {
@@ -321,19 +332,19 @@ namespace meta_Smite
 
         public static string smitetype()
         {
-            if (SmiteBlue.Any(Items.HasItem))
+            if (SmiteBlue.Any(id => Items.HasItem(id)))
             {
                 return "s5_summonersmiteplayerganker";
             }
-            if (SmiteRed.Any(Items.HasItem))
+            if (SmiteRed.Any(id => Items.HasItem(id)))
             {
                 return "s5_summonersmiteduel";
             }
-            if (SmiteGrey.Any(Items.HasItem))
+            if (SmiteGrey.Any(id => Items.HasItem(id)))
             {
                 return "s5_summonersmitequick";
             }
-            if (SmitePurple.Any(Items.HasItem))
+            if (SmitePurple.Any(id => Items.HasItem(id)))
             {
                 return "itemsmiteaoe";
             }
@@ -556,8 +567,8 @@ namespace meta_Smite
                 Config.SubMenu("Camps").AddItem(new MenuItem("TT_NWolf", "三狼").SetValue(true));
                 Config.SubMenu("Camps").AddItem(new MenuItem("TT_NWraith", "幽灵").SetValue(true));
             }
-			if (Game.MapId == (GameMapId)11)
-			{
+	    if (Game.MapId == (GameMapId)11)
+	    {
                 //start by SKO
 				Config.SubMenu("Camps").AddItem(new MenuItem("SRU_BaronSpawn", "大龙").SetValue(true));
 				Config.SubMenu("Camps").AddItem(new MenuItem("SRU_Dragon", "小龙").SetValue(true));
@@ -623,7 +634,7 @@ namespace meta_Smite
         private static readonly string[] MinionNames =
         {
             "TT_Spiderboss", "TTNGolem", "TTNWolf", "TTNWraith",
-            "SRU_Blue", "SRU_Gromp", "SRU_Murkwolf", "SRU_Razorbeak", "SRU_Red", "SRU_Krug", "SRU_Dragon", "SRU_BaronSpawn", "Sru_Crab"
+            "SRU_Blue", "SRU_Gromp", "SRU_Murkwolf", "SRU_Razorbeak", "SRU_Red", "SRU_Krug", "SRU_Dragon", "Sru_Crab", "SRU_Baron"
         };
 
         public static void testFind(Vector3 pos)
@@ -649,7 +660,7 @@ namespace meta_Smite
         {
             var minions =
                 ObjectManager.Get<Obj_AI_Minion>()
-                    .Where(minion => minion.IsValid && MinionNames.Any(name => minion.Name.StartsWith(name)) && !MinionNames.Any(name => minion.Name.Contains("Mini")));
+                    .Where(minion => minion.IsValid && MinionNames.Any(name => minion.Name.StartsWith(name)) && !MinionNames.Any(name => minion.Name.Contains("Mini")) && !MinionNames.Any(name => minion.Name.Contains("Spawn")));
             var objAiMinions = minions as Obj_AI_Minion[] ?? minions.ToArray();
             Obj_AI_Minion sMinion = objAiMinions.FirstOrDefault();
             double? nearest = null;
