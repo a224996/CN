@@ -229,12 +229,12 @@ namespace LeagueSharp.Common
             }
             config.AddItem(autoPriorityItem);
             config.AddItem(
-                new MenuItem("TargetingMode", "Target Mode").SetShared()
+                new MenuItem("TargetingMode", "目标模式").SetShared()
                     .SetValue(
                         new StringList(
                             new[]
                             {
-                                "LowHP", "MostAD", "MostAP", "Closest", "NearMouse", "Priority", "LessAttack", "LessCast"
+                                "低血量", "ADC", "AP", "最近的", "鼠标附近的", "优先权", "不攻击的", "无技能的"
                             }, 5)));
         }
 

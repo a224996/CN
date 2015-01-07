@@ -54,8 +54,8 @@ namespace LeagueSharp.Common
                         new Vector2(source.Position.X, source.Position.Y),
                         (Vector2.Subtract(
                             new Vector2(source.ServerPosition.X, source.ServerPosition.Y),
-                            new Vector2(source.Position.X, source.Position.Y)).Normalized() * (target.Distance(source)))), true) <=
-                lineLength * lineLength;
+                            new Vector2(source.Position.X, source.Position.Y)).Normalized() * (target.Distance(source)))),
+                    true) <= lineLength * lineLength;
         }
 
         /// <summary>
@@ -135,6 +135,16 @@ namespace LeagueSharp.Common
             return unit.Mana / unit.MaxMana * 100;
         }
 
+        public static float TotalMagicalDamage(this Obj_AI_Hero target)
+        {
+            return target.BaseAbilityDamage + target.FlatMagicDamageMod;
+        }
+
+        public static float TotalAttackDamage(this Obj_AI_Hero target)
+        {
+            return target.BaseAttackDamage + target.FlatPhysicalDamageMod;
+        }
+
         public static bool IsRecalling(this Obj_AI_Hero unit)
         {
             return unit.Buffs.Any(buff => buff.Name.ToLower().Contains("recall"));
@@ -150,6 +160,7 @@ namespace LeagueSharp.Common
         {
             return Orbwalking.IsAutoAttack(spellData.Name);
         }
+
         public static bool IsAutoAttack(this SpellDataInst spellData)
         {
             return Orbwalking.IsAutoAttack(spellData.Name);
@@ -198,13 +209,9 @@ namespace LeagueSharp.Common
             return duration;
         }
 
-        public static void LevelUpSpell(this Spellbook book, SpellSlot slot)
+        public static void LevelUpSpell(this Spellbook book, SpellSlot slot, bool evolve = false)
         {
-            new PKT_NPC_UpgradeSpellReq
-            {
-                NetworkId = ObjectManager.Player.NetworkId,
-                SpellSlot = (byte)slot,
-            }.Encode();
+            new PKT_NPC_UpgradeSpellReq { NetworkId = ObjectManager.Player.NetworkId, SpellSlot = (byte) slot, Evolve = evolve }.Encode();
         }
 
         public static List<Vector2> CutPath(this List<Vector2> path, float distance)
@@ -270,9 +277,12 @@ namespace LeagueSharp.Common
         /// <summary>
         ///     Returns the spell slot with the name.
         /// </summary>
-         public static SpellSlot GetSpellSlot(this Obj_AI_Hero unit, string name)
+        public static SpellSlot GetSpellSlot(this Obj_AI_Hero unit, string name)
         {
-            foreach (var spell in unit.Spellbook.Spells.Where(spell => String.Equals(spell.Name, name, StringComparison.CurrentCultureIgnoreCase)))
+            foreach (
+                var spell in
+                    unit.Spellbook.Spells.Where(
+                        spell => String.Equals(spell.Name, name, StringComparison.CurrentCultureIgnoreCase)))
             {
                 return spell.Slot;
             }
@@ -353,7 +363,7 @@ namespace LeagueSharp.Common
         {
             return
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(h => h.IsValidTarget() && h.ServerPosition.Distance(point, true) < range * range).Count();
+                    .Count(h => h.IsValidTarget() && h.ServerPosition.Distance(point, true) < range * range);
         }
 
         /// <summary>
@@ -366,7 +376,10 @@ namespace LeagueSharp.Common
             return
                 ObjectManager.Get<Obj_Shop>()
                     .Where(shop => shop.IsAlly)
-                    .Any(shop => Vector2.DistanceSquared(ObjectManager.Player.Position.To2D(), shop.Position.To2D()) < 1562500); // 1250 * 1250
+                    .Any(
+                        shop =>
+                            Vector2.DistanceSquared(ObjectManager.Player.Position.To2D(), shop.Position.To2D()) <
+                            1562500); // 1250 * 1250
         }
 
         /// <summary>
@@ -383,6 +396,7 @@ namespace LeagueSharp.Common
         /// <summary>
         ///     Draws a "lag-free" circle
         /// </summary>
+        [Obsolete("Use Render.Circle", false)]
         public static void DrawCircle(Vector3 center,
             float radius,
             Color color,
@@ -456,10 +470,12 @@ namespace LeagueSharp.Common
             {
                 return 0;
             }
-            return (short)(packetData[0] + packetData[1] * 256);
+            return (short) (packetData[0] + packetData[1] * 256);
         }
 
-        public static void SendAsPacket(this byte[] packetData, PacketChannel channel = PacketChannel.C2S, PacketProtocolFlags protocolFlags = PacketProtocolFlags.Reliable)
+        public static void SendAsPacket(this byte[] packetData,
+            PacketChannel channel = PacketChannel.C2S,
+            PacketProtocolFlags protocolFlags = PacketProtocolFlags.Reliable)
         {
             Game.SendPacket(packetData, channel, protocolFlags);
         }
