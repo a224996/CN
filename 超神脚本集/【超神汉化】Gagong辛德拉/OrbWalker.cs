@@ -64,12 +64,12 @@ namespace GagongSyndra
             Menu = menu;
 
             var menuDrawing = new Menu("绘制", "orb_Draw");
-			menuDrawing.AddItem(new MenuItem("orb_Draw_AARange", "AA范围").SetValue(new Circle(true, Color.FloralWhite)));
-			menuDrawing.AddItem(new MenuItem("orb_Draw_AARange_Enemy", "敌人AA范围").SetValue(new Circle(true, Color.Pink)));
-			menuDrawing.AddItem(new MenuItem("orb_Draw_Holdzone", "控制区域").SetValue(new Circle(true, Color.FloralWhite)));
-			menuDrawing.AddItem(new MenuItem("orb_Draw_MinionHPBar", "小兵血格").SetValue(new Circle(true, Color.Black)));
+			menuDrawing.AddItem(new MenuItem("orb_Draw_AARange", "AA范围").SetValue(new Circle(false, Color.BlueViolet)));
+			menuDrawing.AddItem(new MenuItem("orb_Draw_AARange_Enemy", "敌人AA范围").SetValue(new Circle(false, Color.Pink)));
+			menuDrawing.AddItem(new MenuItem("orb_Draw_Holdzone", "控制区域").SetValue(new Circle(false, Color.FloralWhite)));
+			menuDrawing.AddItem(new MenuItem("orb_Draw_MinionHPBar", "小兵血格").SetValue(new Circle(false, Color.Black)));
 			menuDrawing.AddItem(new MenuItem("orb_Draw_MinionHPBar_thickness", "血格密度").SetValue(new Slider(1, 1, 3)));
-			menuDrawing.AddItem(new MenuItem("orb_Draw_hitbox", "显示命中").SetValue(new Circle(true, Color.FloralWhite)));
+			menuDrawing.AddItem(new MenuItem("orb_Draw_hitbox", "显示命中").SetValue(new Circle(false, Color.FloralWhite)));
 			menuDrawing.AddItem(new MenuItem("orb_Draw_Lasthit", "补兵").SetValue(new Circle(true, Color.Lime)));
 			menuDrawing.AddItem(new MenuItem("orb_Draw_nearKill", "附近小兵").SetValue(new Circle(true, Color.Gold)));
 			menu.AddSubMenu(menuDrawing);
@@ -78,9 +78,9 @@ namespace GagongSyndra
 			menuMisc.AddItem(new MenuItem("orb_Misc_Holdzone", "保持位置").SetValue(new Slider(50, 100, 0)));
 			menuMisc.AddItem(new MenuItem("orb_Misc_Farmdelay", "补兵延迟").SetValue(new Slider(0, 200, 0)));
 			menuMisc.AddItem(new MenuItem("orb_Misc_ExtraWindUp", "额外的缓冲时间").SetValue(new Slider(80, 200, 0)));
-			menuMisc.AddItem(new MenuItem("orb_Misc_AutoWindUp", "自动设置缓冲时间").SetValue(false));
+			menuMisc.AddItem(new MenuItem("orb_Misc_AutoWindUp", "自动设置缓冲时间").SetValue(true));
 			menuMisc.AddItem(new MenuItem("orb_Misc_Priority_Unit", "优先攻击").SetValue(new StringList(new[] { "小兵", "英雄" })));
-			menuMisc.AddItem(new MenuItem("orb_Misc_Humanizer", "延迟").SetValue(new Slider(80, 200, 15)));
+			menuMisc.AddItem(new MenuItem("orb_Misc_Humanizer", "延迟").SetValue(new Slider(50, 200, 15)));
 			menuMisc.AddItem(new MenuItem("orb_Misc_AllMovementDisabled", "禁止移动").SetValue(false));
 			menuMisc.AddItem(new MenuItem("orb_Misc_AllAttackDisabled", "禁止所有攻击").SetValue(false));
 
@@ -112,7 +112,7 @@ namespace GagongSyndra
 				menuModes.AddSubMenu(modeLaneClear);
 
 				var modeLaneFreeze = new Menu("混合", "orb_Modes_LaneFreeze");
-				modeLaneFreeze.AddItem(new MenuItem("LaneFreeze_Key", "热键").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+				modeLaneFreeze.AddItem(new MenuItem("LaneFreeze_Key", "热键").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
 				modeLaneFreeze.AddItem(new MenuItem("LaneFreeze_move", "移动").SetValue(true));
 				modeLaneFreeze.AddItem(new MenuItem("LaneFreeze_attack", "攻击").SetValue(true));
 				menuModes.AddSubMenu(modeLaneFreeze);

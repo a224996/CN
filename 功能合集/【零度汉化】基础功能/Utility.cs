@@ -1,7 +1,7 @@
 ﻿#region LICENSE
 
 /*
- Copyright 2014 - 2014 LeagueSharp
+ Copyright 2014 - 2015 LeagueSharp
  Utility.cs is part of LeagueSharp.Common.
  
  LeagueSharp.Common is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ namespace LeagueSharp.Common
         /// <summary>
         ///     Returns if the source is facing the target.
         /// </summary>
+        [Obsolete("The optional parameter lineLength will be removed, please avoid using it :-)", false)]
         public static bool IsFacing(this Obj_AI_Base source, Obj_AI_Base target, float lineLength = 300)
         {
             if (source == null || target == null)
@@ -48,22 +49,17 @@ namespace LeagueSharp.Common
                 return false;
             }
 
-            return
-                target.Distance(
-                    Vector2.Add(
-                        new Vector2(source.Position.X, source.Position.Y),
-                        (Vector2.Subtract(
-                            new Vector2(source.ServerPosition.X, source.ServerPosition.Y),
-                            new Vector2(source.Position.X, source.Position.Y)).Normalized() * (target.Distance(source)))),
-                    true) <= lineLength * lineLength;
+            const float angle = 90;
+            return source.Direction.To2D().AngleBetween((target.Position - source.Position).To2D()) < angle;
         }
 
         /// <summary>
         ///     Returns if both source and target are Facing Themselves.
         /// </summary>
-        public static bool IsBothFacing(Obj_AI_Base source, Obj_AI_Base target, float lineLength)
+        [Obsolete("The optional parameter lineLength will be removed, please avoid using it :-)", false)]
+        public static bool IsBothFacing(Obj_AI_Base source, Obj_AI_Base target, float lineLength = 1337)
         {
-            return source.IsFacing(target, lineLength) && target.IsFacing(source, lineLength);
+            return source.IsFacing(target) && target.IsFacing(source);
         }
 
         /// <summary>
@@ -104,7 +100,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public static bool IsReady(this SpellDataInst spell, int t = 0)
         {
-            return t == 0
+            return spell != null && spell.Slot != SpellSlot.Unknown && t == 0
                 ? spell.State == SpellState.Ready
                 : (spell.State == SpellState.Ready ||
                    (spell.State == SpellState.Cooldown && (spell.CooldownExpires - Game.Time) <= t / 1000f));
@@ -122,7 +118,12 @@ namespace LeagueSharp.Common
 
         public static bool IsValid<T>(this GameObject obj)
         {
-            return obj != null && obj.IsValid && obj is T;
+            return obj is T && obj.IsValid;
+        }
+
+        public static bool IsValidSlot(this InventorySlot slot)
+        {
+            return slot != null && slot.SpellSlot != SpellSlot.Unknown;
         }
 
         public static float HealthPercentage(this Obj_AI_Base unit)
@@ -150,10 +151,26 @@ namespace LeagueSharp.Common
             return unit.Buffs.Any(buff => buff.Name.ToLower().Contains("recall"));
         }
 
+        public static bool IsOnScreen(this Vector3 position)
+        {
+            var pos = Drawing.WorldToScreen(position);
+            return pos.X > 0 && pos.X <= Drawing.Width && pos.Y > 0 && pos.Y <= Drawing.Height;
+        }
+
+        public static bool IsOnScreen(this Vector2 position)
+        {
+            return position.To3D().IsOnScreen();
+        }
+
         public static Vector3 Randomize(this Vector3 position, int min, int max)
         {
-            var ran = new Random();
-            return new Vector2(position.X + ran.Next(min, max), position.Y + ran.Next(min, max)).To3D();
+            var ran = new Random(Environment.TickCount);
+            return position + new Vector2(ran.Next(min, max), ran.Next(min, max)).To3D();
+        }
+
+        public static Vector2 Randomize(this Vector2 position, int min, int max)
+        {
+            return position.To3D().Randomize(min, max).To2D();
         }
 
         public static bool IsAutoAttack(this SpellData spellData)
@@ -211,7 +228,12 @@ namespace LeagueSharp.Common
 
         public static void LevelUpSpell(this Spellbook book, SpellSlot slot, bool evolve = false)
         {
-            new PKT_NPC_UpgradeSpellReq { NetworkId = ObjectManager.Player.NetworkId, SpellSlot = (byte) slot, Evolve = evolve }.Encode();
+            new PKT_NPC_UpgradeSpellReq
+            {
+                NetworkId = ObjectManager.Player.NetworkId,
+                SpellSlot = (byte) slot,
+                Evolve = evolve
+            }.Encode();
         }
 
         public static List<Vector2> CutPath(this List<Vector2> path, float distance)
@@ -264,14 +286,17 @@ namespace LeagueSharp.Common
         /// <summary>
         ///     Returns if the unit has the buff and it is active
         /// </summary>
-        public static bool HasBuff(this Obj_AI_Base unit, string buffName, bool dontUseDisplayName = false)
+        public static bool HasBuff(this Obj_AI_Base unit,
+            string buffName,
+            bool dontUseDisplayName = false,
+            bool ignoreCase = false)
         {
+            var name = ignoreCase ? buffName.ToLower() : buffName;
             return
                 unit.Buffs.Any(
                     buff =>
-                        ((!dontUseDisplayName && buff.DisplayName == buffName) ||
-                         (dontUseDisplayName && buff.Name == buffName)) && buff.IsActive &&
-                        buff.EndTime - Game.Time >= 0);
+                        ((dontUseDisplayName && buff.Name == name) || (!dontUseDisplayName && buff.DisplayName == name)) &&
+                        buff.IsActive && buff.EndTime - Game.Time > 0);
         }
 
         /// <summary>
@@ -279,10 +304,9 @@ namespace LeagueSharp.Common
         /// </summary>
         public static SpellSlot GetSpellSlot(this Obj_AI_Hero unit, string name)
         {
-            foreach (
-                var spell in
-                    unit.Spellbook.Spells.Where(
-                        spell => String.Equals(spell.Name, name, StringComparison.CurrentCultureIgnoreCase)))
+            foreach (var spell in
+                unit.Spellbook.Spells.Where(
+                    spell => String.Equals(spell.Name, name, StringComparison.CurrentCultureIgnoreCase)))
             {
                 return spell.Slot;
             }
@@ -510,7 +534,10 @@ namespace LeagueSharp.Common
                                 //Will somehow result in calling ALL non-internal marked classes of the called assembly and causes NullReferenceExceptions.
                             }
                         }
-                        catch (Exception e) {}
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
 
                         ActionList.RemoveAt(i);
                     }

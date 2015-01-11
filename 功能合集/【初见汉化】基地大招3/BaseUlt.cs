@@ -14,6 +14,7 @@ namespace BaseUlt3
 {
     /*
      * fixed? use for allies when fixed: champ.Spellbook.GetSpell(SpellSlot.R) = Ready
+     * Fadeout even normal recall finishes
      * */
 
     internal class BaseUlt
@@ -52,8 +53,8 @@ namespace BaseUlt3
             Menu.AddItem(new MenuItem("showRecalls", "显示回城").SetValue(true));
             Menu.AddItem(new MenuItem("baseUlt", "泉水大招").SetValue(true));
             Menu.AddItem(new MenuItem("checkCollision", "碰撞检测").SetValue(true));
-            Menu.AddItem(new MenuItem("panicKey", "禁用大招按键").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
-            Menu.AddItem(new MenuItem("regardlessKey", "任何时候 (保持)").SetValue(new KeyBind(17, KeyBindType.Press))); //17 == ctrl
+            Menu.AddItem(new MenuItem("panicKey", "禁用大招按键").SetValue(new KeyBind(107, KeyBindType.Press))); //32 == space
+            Menu.AddItem(new MenuItem("regardlessKey", "任何时候 (保持)").SetValue(new KeyBind(109, KeyBindType.Press))); //17 == ctrl
             Menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
             Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
             Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao1", "交流群：333399"));
@@ -65,22 +66,21 @@ namespace BaseUlt3
 
             bool compatibleChamp = IsCompatibleChamp(ObjectManager.Player.ChampionName);
 
+            TeamUlt = Menu.AddSubMenu(new Menu("基地大招团队", "TeamUlt"));
+            DisabledChampions = Menu.AddSubMenu(new Menu("可击杀目标", "DisabledChampions"));
+
             if (compatibleChamp)
             {
-                TeamUlt = Menu.AddSubMenu(new Menu("Team Baseult Friends", "TeamUlt"));
-
                 foreach (Obj_AI_Hero champ in Allies.Where(x => !x.IsMe && IsCompatibleChamp(x.ChampionName)))
-                    TeamUlt.AddItem(new MenuItem(champ.ChampionName, "Ally with baseult: " + champ.ChampionName).SetValue(false).DontSave());
-
-                DisabledChampions = Menu.AddSubMenu(new Menu("Disabled Champion targets", "DisabledChampions"));
+                    TeamUlt.AddItem(new MenuItem(champ.ChampionName, "队友使用基地大招: " + champ.ChampionName).SetValue(false).DontSave());
 
                 foreach (Obj_AI_Hero champ in Enemies)
-                    DisabledChampions.AddItem(new MenuItem(champ.ChampionName, "Don't shoot: " + champ.ChampionName).SetValue(false).DontSave());
+                    DisabledChampions.AddItem(new MenuItem(champ.ChampionName, "别开枪: " + champ.ChampionName).SetValue(false).DontSave());
             }
 
             EnemySpawnPos = ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy).Position; //ObjectManager.Get<GameObject>().FirstOrDefault(x => x.Type == GameObjectType.obj_SpawnPoint && x.IsEnemy).Position;
 
-            Map = Utility.Map.GetMap()._MapType;
+            Map = Utility.Map.GetMap().Type;
 
             Ultimate = new Spell(SpellSlot.R);
 
@@ -280,11 +280,15 @@ namespace BaseUlt3
 
         void Obj_AI_Base_OnTeleport(GameObject sender, GameObjectTeleportEventArgs args)
         {
-            //if (args.PacketData[0] == Packet.S2C.Teleport.Header)
-            //{
-                var recall = Packet.S2C.Teleport.Decoded(sender, args);
-                EnemyInfo.Find(x => x.Player.NetworkId == recall.UnitNetworkId).RecallInfo.UpdateRecall(recall);
-            //}
+            var unit = sender as Obj_AI_Hero;
+
+            if (unit == null || !unit.IsValid || unit.IsAlly)
+            {
+                return;
+            }
+
+            var recall = Packet.S2C.Teleport.Decoded(unit, args);
+            EnemyInfo.Find(x => x.Player.NetworkId == recall.UnitNetworkId).RecallInfo.UpdateRecall(recall);
         }
 
         void Drawing_OnPostReset(EventArgs args)

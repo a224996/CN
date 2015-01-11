@@ -91,7 +91,20 @@ namespace Marksman
                             hero =>
                                 hero.IsValidTarget(R.Range)))
                     R.Cast(hero, false, true);
+                
+                if (R.IsReady() && GetValue<bool>("AutoRI"))
+                {
+                    var t = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+                    if (t.IsValidTarget(R.Range) &&
+                        (t.HasBuffOfType(BuffType.Stun) || t.HasBuffOfType(BuffType.Snare) ||
+                        t.HasBuffOfType(BuffType.Taunt) || t.HasBuff("zhonyasringshield") ||
+                        t.HasBuff("Recall")))
+                    {
+                        R.Cast(t.Position);
+                    }                
+                }                    
             }
+            
 
             if (LaneClearActive)
             {
@@ -128,7 +141,7 @@ namespace Marksman
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q range").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
             return true;
         }
 
@@ -140,7 +153,7 @@ namespace Marksman
 
         public override bool ExtrasMenu(Menu config)
         {
-
+            config.AddItem(new MenuItem("AutoRI" + Id, "使用 R").SetValue(true));
             return true;
         }
 

@@ -119,7 +119,8 @@ namespace Marksman
                     if (autoEi && E.IsReady() &&
                         (enemy.HasBuffOfType(BuffType.Stun) || enemy.HasBuffOfType(BuffType.Snare) ||
                          enemy.HasBuffOfType(BuffType.Charm) || enemy.HasBuffOfType(BuffType.Fear) ||
-                         enemy.HasBuffOfType(BuffType.Taunt)))
+                         enemy.HasBuffOfType(BuffType.Taunt) || enemy.HasBuff("zhonyasringshield") ||
+                         enemy.HasBuff("Recall")))
                     {
                         E.CastIfHitchanceEquals(enemy, HitChance.High);
                     }
@@ -247,8 +248,8 @@ namespace Marksman
                             {
                                 if (CountAlliesNearTarget(t, 500) <= 3)
                                 {
-                                    if (rDamage > t.Health && !ObjectManager.Player.IsAutoAttacking &&
-                                        !ObjectManager.Player.IsChanneling)
+                                    if (rDamage > t.Health /*&& !ObjectManager.Player.IsAutoAttacking &&
+                                        !ObjectManager.Player.IsChanneling*/)
                                     {
                                         if (R.Cast(t) == Spell.CastStates.SuccessfullyCasted) { }
                                     }
@@ -262,8 +263,8 @@ namespace Marksman
                             {
                                 if (CountAlliesNearTarget(t, 500) <= 3)
                                 {
-                                    if (rDamage > t.Health && !ObjectManager.Player.IsAutoAttacking &&
-                                        !ObjectManager.Player.IsChanneling)
+                                    if (rDamage > t.Health /*&& !ObjectManager.Player.IsAutoAttacking &&
+                                        !ObjectManager.Player.IsChanneling*/)
                                     {
                                         if (R.Cast(t) == Spell.CastStates.SuccessfullyCasted) { }
                                     }
@@ -407,7 +408,7 @@ namespace Marksman
         {
             config.AddItem(new MenuItem("SwapDistance" + Id, "距离不够切换Q").SetValue(true));
             config.AddItem(new MenuItem("SwapAOE" + Id, "切换QAOE").SetValue(false));
-            config.AddItem(new MenuItem("MinWRange" + Id, "MinW范围").SetValue(new Slider(525 + 65 * 2, 0, 1200)));
+            config.AddItem(new MenuItem("MinWRange" + Id, "最小W范围").SetValue(new Slider(525 + 65 * 2, 0, 1200)));
             config.AddItem(new MenuItem("AutoEI" + Id, "自动E静止").SetValue(true));
             config.AddItem(new MenuItem("AutoES" + Id, "自动E受控").SetValue(true));
             config.AddItem(new MenuItem("AutoED" + Id, "自动E突进").SetValue(false));

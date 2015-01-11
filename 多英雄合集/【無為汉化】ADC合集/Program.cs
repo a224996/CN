@@ -11,6 +11,7 @@ namespace Marksman
     {
         public static Menu Config;
         public static Menu QuickSilverMenu;
+//        public static Menu MenuInterruptableSpell;
         public static Champion CClass;
         public static Activator AActivator;
         public static double ActivatorTime;
@@ -186,8 +187,24 @@ namespace Marksman
                 {
                     Config.AddSubMenu(misc);
                 }
+                /*
+                if (championName != "caitlyn" || championName != "jinx")
+                {
+                    MenuInterruptableSpell = new Menu("Interruptable Spell",
+                        "Interrupt with " + championName == "caitlyn" ? "Caitlyn's W" : "Jinx's E");
 
-                var extras = new Menu("附加", "Extras");
+                    MenuInterruptableSpell.AddItem(new MenuItem("InterruptSpells", "Active").SetValue(true));
+
+                    foreach (var xSpell in Interrupter.Spells)
+                    {
+                        MenuInterruptableSpell.AddItem(
+                            new MenuItem("IntNode" + xSpell.BuffName, xSpell.ChampionName + " | " + xSpell.Slot)
+                                .SetValue(true));
+                    }
+                    Config.AddSubMenu(MenuInterruptableSpell);
+                }
+                */
+                var extras = new Menu("临时", "Extras");
                 if (CClass.ExtrasMenu(extras))
                 {
                     new PotionManager(extras);
@@ -198,11 +215,12 @@ namespace Marksman
                 if (CClass.DrawingMenu(drawing))
                 {
                     drawing.AddItem(
-                        new MenuItem("drawMinionLastHit", "Minion Last Hit").SetValue(new Circle(false,
+                        new MenuItem("drawMinionLastHit", "小兵最后一击").SetValue(new Circle(false,
                             System.Drawing.Color.GreenYellow)));
                     drawing.AddItem(
-                        new MenuItem("drawMinionNearKill", "Minion Near Kill").SetValue(new Circle(false,
+                        new MenuItem("drawMinionNearKill", "附近的小兵").SetValue(new Circle(false,
                             System.Drawing.Color.Gray)));
+                    drawing.AddItem(new MenuItem("drawJunglePosition", "野怪位置").SetValue(true));
 
                     Config.AddSubMenu(drawing);
                 }
@@ -220,10 +238,40 @@ namespace Marksman
             Game.OnGameUpdate += Game_OnGameUpdate;
             Orbwalking.AfterAttack += Orbwalking_AfterAttack;
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
+            //Interrupter.OnPossibleToInterrupt += Interrupter_OnPosibleToInterrupt;
             //Game.OnWndProc += Game_OnWndProc;
         }
+        
+        /*
+        private static void Interrupter_OnPosibleToInterrupt(Obj_AI_Base t, InterruptableSpell args)
+        {
+            if (!Config.Item("InterruptSpells").GetValue<KeyBind>().Active) 
+                return;
 
-         private static void Game_OnWndProc(WndEventArgs args)
+            if (ObjectManager.Player.ChampionName != "Caitlyn" || ObjectManager.Player.ChampionName != "Jinx")
+                return;
+
+            Spell xSpellSlot = null;
+
+            if (ObjectManager.Player.ChampionName == "Caitlyn")
+            {
+                xSpellSlot = new Spell(SpellSlot.W);
+                xSpellSlot.Range = 800f;
+            }
+
+            if (ObjectManager.Player.ChampionName == "Jinx")
+            {
+                xSpellSlot = new Spell(SpellSlot.E);
+                xSpellSlot.Range = 900f;
+            }
+            if (xSpellSlot == null)
+                return;
+
+            if (ObjectManager.Player.Distance(t) < xSpellSlot.Range)
+                xSpellSlot.Cast(t);
+        }
+        */
+        private static void Game_OnWndProc(WndEventArgs args)
         {
             
             if (args.Msg != 0x201)
@@ -257,6 +305,12 @@ namespace Marksman
                 Utility.DrawCircle(xSelectedTarget.Position, xSelectedTarget.BoundingRadius * 1.5f, System.Drawing.Color.Red);
             }
             */
+            var drawJunglePosition = CClass.Config.SubMenu("Drawings").Item("drawJunglePosition").GetValue<bool>();
+            {
+                if (drawJunglePosition)
+                    Utils.Jungle.DrawJunglePosition();
+            }
+            
             var drawMinionLastHit = CClass.Config.SubMenu("Drawings").Item("drawMinionLastHit").GetValue<Circle>();
             var drawMinionNearKill = CClass.Config.SubMenu("Drawings").Item("drawMinionNearKill").GetValue<Circle>();
             if (drawMinionLastHit.Active || drawMinionNearKill.Active)
@@ -306,15 +360,15 @@ namespace Marksman
             //Update the combo and harass values.
             CClass.ComboActive = CClass.Config.Item("Orbwalk").GetValue<KeyBind>().Active;
             
-            var harassExistsMana = ObjectManager.Player.MaxMana/100*Config.Item("HarassMana").GetValue<Slider>().Value;
+            var vHarassManaPer = Config.Item("HarassMana").GetValue<Slider>().Value;
             CClass.HarassActive = CClass.Config.Item("Farm").GetValue<KeyBind>().Active &&
-                                  ObjectManager.Player.Mana >= harassExistsMana;
+                                  ObjectManager.Player.ManaPercentage() >= vHarassManaPer;
 
-            CClass.ToggleActive = ObjectManager.Player.Mana >= harassExistsMana;
+            CClass.ToggleActive = ObjectManager.Player.ManaPercentage() >= vHarassManaPer;
 
-            var laneExistsMana = ObjectManager.Player.MaxMana/100*Config.Item("LaneClearMana").GetValue<Slider>().Value;
+            var vLaneClearManaPer = Config.Item("LaneClearMana").GetValue<Slider>().Value;
             CClass.LaneClearActive = CClass.Config.Item("LaneClear").GetValue<KeyBind>().Active &
-                                     ObjectManager.Player.Mana >= laneExistsMana;
+                                     ObjectManager.Player.ManaPercentage() >= vLaneClearManaPer;
 
             CClass.Game_OnGameUpdate(args);
             
@@ -386,6 +440,9 @@ namespace Marksman
         
         public static void UseSummoners()
         {
+            if (ObjectManager.Player.IsDead)
+                return;
+                
             const int xDangerousRange = 1100;
 
             if (Config.Item("SUMHEALENABLE").GetValue<bool>())
@@ -394,9 +451,9 @@ namespace Marksman
                 var xCanUse = ObjectManager.Player.Health <=
                               ObjectManager.Player.MaxHealth/100*Config.Item("SUMHEALSLIDER").GetValue<Slider>().Value;
 
-                if (xCanUse && !Utility.InShopRange() && 
+                if (xCanUse && !ObjectManager.Player.InShop() && 
                     (xSlot != SpellSlot.Unknown || ObjectManager.Player.Spellbook.CanUseSpell(xSlot) == SpellState.Ready) 
-                    && Utility.CountEnemysInRange(xDangerousRange) > 0) 
+                    && ObjectManager.Player.CountEnemysInRange(xDangerousRange) > 0) 
                 {
                     ObjectManager.Player.Spellbook.CastSpell(xSlot);
                 }
@@ -408,9 +465,9 @@ namespace Marksman
                 var xCanUse = ObjectManager.Player.Health <=
                               ObjectManager.Player.MaxHealth/100*Config.Item("SUMBARRIERSLIDER").GetValue<Slider>().Value;
 
-                if (xCanUse && !Utility.InShopRange() && 
+                if (xCanUse && !ObjectManager.Player.InShop() && 
                     (xSlot != SpellSlot.Unknown || ObjectManager.Player.Spellbook.CanUseSpell(xSlot) == SpellState.Ready) 
-                    && Utility.CountEnemysInRange(xDangerousRange) > 0) 
+                    && ObjectManager.Player.CountEnemysInRange(xDangerousRange) > 0) 
                 {
                     ObjectManager.Player.Spellbook.CastSpell(xSlot);
                 }

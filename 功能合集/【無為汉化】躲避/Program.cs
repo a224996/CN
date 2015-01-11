@@ -149,7 +149,8 @@ namespace Evade
             //Initialze the collision
             Collision.Init();
 
-            Game.PrintChat("<font color=\"#00BFFF\">Evade# -</font> <font color=\"#FFFFFF\">Loaded</font>");
+            Game.PrintChat("<font color=\"#00BFFF\">銆愮劇鐐烘眽鍖栥€慹vade韬查伩# -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛</font>");
+			Game.PrintChat("<font color=\"#FFFFFF\">    鏇村姹夊寲鑴氭湰璇峰姞</font> <font color=\"#FFFF00\">   L#姹夊寲缇わ細386289593</font> ");
 
 
             if (Config.PrintSpellData)
@@ -1285,9 +1286,17 @@ namespace Evade
             {
                 return;
             }
+            if (Config.Menu.Item("ShowEvadeStatus").GetValue<bool>())
+            {
+                var heropos = Drawing.WorldToScreen(ObjectManager.Player.Position);
+                if (Config.Menu.Item("Enabled").GetValue<KeyBind>().Active)
+                {
+                    Drawing.DrawText(heropos.X, heropos.Y, Color.Red, "Evade: ON");
+                }
+            }
             var Border = Config.Menu.Item("Border").GetValue<Slider>().Value;
             var missileColor = Config.Menu.Item("MissileColor").GetValue<Color>();
-
+            
             //Draw the polygon for each skillshot.
             foreach (var skillshot in DetectedSkillshots)
             {

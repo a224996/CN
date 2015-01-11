@@ -25,7 +25,7 @@ namespace Marksman
             Q = new Spell(SpellSlot.Q, 1200);
             Q.SetSkillshot(0.25f, 60f, 2000f, true, SkillshotType.SkillshotLine);
 
-            W = new Spell(SpellSlot.W, 950);
+            W = new Spell(SpellSlot.W, 850);
             W.SetSkillshot(0.25f, 80f, 1600f, false, SkillshotType.SkillshotLine);
 
             R = new Spell(SpellSlot.R, 2500);
@@ -74,6 +74,15 @@ namespace Marksman
                 t = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
                 if (t != null)
                     Q.Cast(t);
+            }
+
+            if (W.IsReady() &&  GetValue<KeyBind>("UseWTH").Active && ToggleActive)
+            {
+                if(ObjectManager.Player.HasBuff("Recall"))
+                    return;
+                t = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
+                if (t != null)
+                    W.Cast(t);
             }
 
             if (ComboActive || HarassActive)
@@ -140,6 +149,9 @@ namespace Marksman
             config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(true));
             config.AddItem(
                 new MenuItem("UseQTH" + Id, "使用Q (锁定)").SetValue(new KeyBind("H".ToCharArray()[0],
+                    KeyBindType.Toggle)));
+            config.AddItem(
+                new MenuItem("UseWTH" + Id, "使用 W (切换)").SetValue(new KeyBind("J".ToCharArray()[0],
                     KeyBindType.Toggle)));
             return true;
         }
