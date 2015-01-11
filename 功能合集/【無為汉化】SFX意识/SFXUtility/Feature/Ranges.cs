@@ -93,7 +93,7 @@ namespace SFXUtility.Feature
                     {
                         if (!distanceLimitEnabled || hero.Distance(ObjectManager.Player.Position) <= distanceLimit)
                         {
-                            Utility.DrawCircle(hero.Position, radius, color, circleThickness);
+                            Render.Circle.DrawCircle(hero.Position, radius, color, circleThickness);
                         }
                     }
                 }
@@ -124,7 +124,7 @@ namespace SFXUtility.Feature
                     {
                         if (!distanceLimitEnabled || hero.Distance(ObjectManager.Player.Position) <= distanceLimit)
                         {
-                            Utility.DrawCircle(hero.Position, ExperienceRange, color, circleThickness);
+                            Render.Circle.DrawCircle(hero.Position, ExperienceRange, color, circleThickness);
                         }
                     }
                 }
@@ -175,28 +175,28 @@ namespace SFXUtility.Feature
                         {
                             var range = hero.Spellbook.GetSpell(SpellSlot.Q).SData.CastRange[0];
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
-                                Utility.DrawCircle(hero.Position, range, color, circleThickness);
+                                Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                         if ((hero.IsAlly && drawFriendlyW || hero.IsEnemy && drawEnemyW || hero.IsMe && drawSelfW) &&
                             !(hero.IsMe && !drawSelfW))
                         {
                             var range = hero.Spellbook.GetSpell(SpellSlot.W).SData.CastRange[0];
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
-                                Utility.DrawCircle(hero.Position, range, color, circleThickness);
+                                Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                         if ((hero.IsAlly && drawFriendlyE || hero.IsEnemy && drawEnemyE || hero.IsMe && drawSelfE) &&
                             !(hero.IsMe && !drawSelfE))
                         {
                             var range = hero.Spellbook.GetSpell(SpellSlot.E).SData.CastRange[0];
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
-                                Utility.DrawCircle(hero.Position, range, color, circleThickness);
+                                Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                         if ((hero.IsAlly && drawFriendlyR || hero.IsEnemy && drawEnemyR || hero.IsMe && drawSelfR) &&
                             !(hero.IsMe && !drawSelfR))
                         {
                             var range = hero.Spellbook.GetSpell(SpellSlot.R).SData.CastRange[0];
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
-                                Utility.DrawCircle(hero.Position, range, color, circleThickness);
+                                Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                     }
                 }
@@ -224,7 +224,7 @@ namespace SFXUtility.Feature
                     {
                         if (!distanceLimitEnabled || turret.Distance(ObjectManager.Player.Position) <= distanceLimit)
                         {
-                            Utility.DrawCircle(turret.Position, TurretRange,
+                            Render.Circle.DrawCircle(turret.Position, TurretRange,
                                 Menu.Item(Name + "Turret" + (turret.IsAlly ? "Friendly" : "Enemy") + "Color")
                                     .GetValue<Color>(), circleThickness);
                         }

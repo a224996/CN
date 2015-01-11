@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 
 /*
  Copyright 2014 - 2014 Nikita Bernthaler
@@ -16,292 +16,399 @@
  
  You should have received a copy of the GNU General Public License
  along with SFXUtility. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #endregion
 
 namespace SFXUtility.Feature
 {
-    #region
+	#region
 
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using Class;
-    using IoCContainer;
-    using LeagueSharp;
-    using LeagueSharp.Common;
-    using SharpDX;
-    using Color = System.Drawing.Color;
-    using Utilities = Class.Utilities;
+	using System;
+	using System.Collections.Generic;
+	using System.Globalization;
+	using System.Linq;
+	using Class;
+	using IoCContainer;
+	using LeagueSharp;
+	using LeagueSharp.Common;
+	using SharpDX;
+	using Color = System.Drawing.Color;
+	using Utilities = Class.Utilities;
 
-    #endregion
+	#endregion
 
-    internal class JungleTimer : Base
-    {
-        #region Fields
+	internal class JungleTimer : Base
+	{
+		#region Fields
 
-        private const float CheckInterval = 25f;
+		private int _nextTime;
+		private Timers _timers;
+		private readonly List<JungleCamp> _jungleCamps = new List<JungleCamp>();
+		private readonly List<DrawText> _DrawText = new List<DrawText>();
 
-        private readonly List<Camp> _camps = new List<Camp>();
-        private float _lastCheck = Environment.TickCount;
-        private Timers _timers;
+		#endregion
 
-        #endregion
+		#region Constructors
 
-        #region Constructors
+		public JungleTimer(IContainer container)
+			: base(container)
+		{
+			CustomEvents.Game.OnGameLoad += OnGameLoad;
+		}
 
-        public JungleTimer(IContainer container)
-            : base(container)
-        {
-            CustomEvents.Game.OnGameLoad += OnGameLoad;
-        }
+		#endregion
 
-        #endregion
+		#region Properties
 
-        #region Properties
+		public override bool Enabled
+		{
+			get
+			{
+				return _timers != null && _timers.Menu != null &&
+					_timers.Menu.Item(_timers.Name + "Enabled").GetValue<bool>() && Menu != null &&
+					Menu.Item(Name + "Enabled").GetValue<bool>();
+			}
+		}
+		
+		public override string Name
+		{
+			get { return "Jungle"; }
+		}
 
-        public override bool Enabled
-        {
-            get
-            {
-                return _timers != null && _timers.Menu != null &&
-                       _timers.Menu.Item(_timers.Name + "Enabled").GetValue<bool>() && Menu != null &&
-                       Menu.Item(Name + "Enabled").GetValue<bool>();
-            }
-        }
+		#endregion
 
-        public override string Name
-        {
-            get { return "Jungle"; }
-        }
+		#region Methods
 
-        #endregion
 
-        #region Methods
+		private void Drawing_OnEndScene(EventArgs args)
+		{
+			try
+			{
+				if (!Enabled) return;
+				foreach (var Texts in _DrawText)
+				{
+					if (IsFormat()) Texts.format = true;
+					else Texts.format = false;
+					foreach (JungleCamp jungleCamp in _jungleCamps.Where(camp => camp.NextRespawnTime > 0 && Texts.JungleCamp.Id == camp.Id))
+					{
+						Texts.Text.OnEndScene();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-        private void OnDraw(EventArgs args)
-        {
-            try
-            {
-                if (!Enabled)
-                    return;
+		private void OnGameLoad(EventArgs args)
+		{
+			try
+			{
+				Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
 
-                foreach (Camp camp in _camps.Where(camp => !(camp.NextRespawnTime <= 0f)))
-                {
-                    Utilities.DrawTextCentered(Drawing.WorldToMinimap(camp.Position),
-                        Menu.Item(Name + "DrawingColor").GetValue<Color>(),
-                        ((int) (camp.NextRespawnTime - Game.Time)).ToString(CultureInfo.InvariantCulture));
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+				if (IoC.IsRegistered<Timers>() && IoC.Resolve<Timers>().Initialized)
+				{
+					TimersLoaded(IoC.Resolve<Timers>());
+				}
+				else
+				{
+					if (IoC.IsRegistered<Mediator>())
+					{
+						IoC.Resolve<Mediator>().Register("Timers_initialized", TimersLoaded);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
+		
+		private void OnGameUpdate(EventArgs args)
+		{
+			try
+			{
+				if (!Enabled)
+					return;
 
-        private void OnGameLoad(EventArgs args)
-        {
-            try
-            {
-                Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
+				if ((int) Game.ClockTime - _nextTime >= 0)
+				{
+					_nextTime = (int) Game.ClockTime + 1;
+					var minions =
+						ObjectManager.Get<Obj_AI_Base>()
+						.Where(minion => !minion.IsDead && minion.IsValid && minion.Name.ToUpper().StartsWith("SRU"));
+					var junglesAlive =
+						_jungleCamps.Where(
+							jungle =>
+							!jungle.IsDead &&
+							jungle.Names.Any(
+								s =>
+								minions.Where(minion => minion.Name == s)
+								.Select(minion => minion.Name)
+								.FirstOrDefault() != null));
+					foreach (var jungle in junglesAlive)
+					{
+						jungle.Visibled = true;
+					}
+					var junglesDead =
+						_jungleCamps.Where(
+							jungle =>
+							!jungle.IsDead && jungle.Visibled &&
+							jungle.Names.All(
+								s =>
+								minions.Where(minion => minion.Name == s)
+								.Select(minion => minion.Name)
+								.FirstOrDefault() == null));
+					foreach (var jungle in junglesDead)
+					{
+						jungle.IsDead = true;
+						jungle.Visibled = false;
+						jungle.NextRespawnTime = (int) Game.ClockTime + jungle.RespawnTime;
+					}
+					foreach (JungleCamp jungleCamp in
+					         _jungleCamps.Where(jungleCamp => (jungleCamp.NextRespawnTime - (int) Game.ClockTime) <= 0))
+					{
+						jungleCamp.IsDead = false;
+						jungleCamp.NextRespawnTime = 0;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-                if (IoC.IsRegistered<Timers>() && IoC.Resolve<Timers>().Initialized)
-                {
-                    TimersLoaded(IoC.Resolve<Timers>());
-                }
-                else
-                {
-                    if (IoC.IsRegistered<Mediator>())
-                    {
-                        IoC.Resolve<Mediator>().Register("Timers_initialized", TimersLoaded);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+		private void TimersLoaded(object o)
+		{
+			try
+			{
+				if (o is Timers && (o as Timers).Menu != null)
+				{
+					_timers = (o as Timers);
 
-        private void OnGameProcessPacket(GamePacketEventArgs args)
-        {
-            try
-            {
-                if (!Enabled)
-                    return;
+					Menu = new Menu(Name, Name);
+					
+					Menu.AddItem(new MenuItem(Name + "Format", "Format Time mm:ss").SetValue(false));
 
-                if (args.PacketData[0] == Packet.S2C.EmptyJungleCamp.Header)
-                {
-                    var packet = Packet.S2C.EmptyJungleCamp.Decoded(args.PacketData);
-                    var camp = _camps.FirstOrDefault(c => c.Id == packet.CampId);
-                    if (packet.UnitNetworkId != 0 && !Equals(camp, default(Camp)))
-                    {
-                        if (packet.EmptyType != 3)
-                        {
-                            camp.NextRespawnTime = Game.Time + camp.RespawnTime;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+					Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(true));
 
-        private void OnGameUpdate(EventArgs args)
-        {
-            try
-            {
-                if (!Enabled || _lastCheck + CheckInterval > Environment.TickCount)
-                    return;
+					_timers.Menu.AddSubMenu(Menu);
+					
+					if (Utility.Map.GetMap().Type == Utility.Map.MapType.SummonersRift)
+					{
+						// Blue: Blue Buff
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Blue", 300, new Vector3(3388.2f, 8400f, 55.2f),
+								new[] { "SRU_Blue1.1.1", "SRU_BlueMini1.1.2", "SRU_BlueMini21.1.3" },1));
+						
+						// Blue: Wolves
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Murkwolf", 100, new Vector3(3415.8f, 6950f, 55.6f),
+								new[] { "SRU_Murkwolf2.1.1", "SRU_MurkwolfMini2.1.2", "SRU_MurkwolfMini2.1.3" },2));
+						
+						// Blue: Chicken
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Razorbeak", 100, new Vector3(6500f, 5900f, 60f),
+								new[]
+								{
+									"SRU_Razorbeak3.1.1", "SRU_RazorbeakMini3.1.2", "SRU_RazorbeakMini3.1.3", "SRU_RazorbeakMini3.1.4"
+								},3));
+						
+						// Blue: Red Buff
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Red", 300, new Vector3(7300.4f, 4600.1f, 56.9f),
+								new[] { "SRU_Red4.1.1", "SRU_RedMini4.1.2", "SRU_RedMini4.1.3" },4));
+						
+						// Blue: Krug
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Krug", 100, new Vector3(7700.2f, 3200f, 54.3f),
+								new[] { "SRU_Krug5.1.2", "SRU_KrugMini5.1.1" },5));
+						
+						// Blue: Gromp
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Gromp", 100, new Vector3(1900.1f, 9200f, 54.9f), new[] { "SRU_Gromp13.1.1" },6));
+						
+						// Red: Blue Buff
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Blue", 300, new Vector3(10440f, 7500f, 54.9f),
+								new[] { "SRU_Blue7.1.1", "SRU_BlueMini7.1.2", "SRU_BlueMini27.1.3" },7));
+						
+						// Red: Wolves
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Murkwolf", 100, new Vector3(10350f, 9000f, 65.5f),
+								new[] { "SRU_Murkwolf8.1.1", "SRU_MurkwolfMini8.1.2", "SRU_MurkwolfMini8.1.3" },8));
+						
+						// Red: Chicken
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Razorbeak", 100, new Vector3(7100f, 10000f, 55.5f),
+								new[]
+								{
+									"SRU_Razorbeak9.1.1", "SRU_RazorbeakMini9.1.2", "SRU_RazorbeakMini9.1.3", "SRU_RazorbeakMini9.1.4"
+								},9));
+						
+						// Red: Red Buff
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Red", 300, new Vector3(6450.2f, 11400f, 54.6f),
+								new[] { "SRU_Red10.1.1", "SRU_RedMini10.1.2", "SRU_RedMini10.1.3" },10));
+						
+						// Red: Krug
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Krug", 100, new Vector3(6005f, 13000f, 39.6f),
+								new[] { "SRU_Krug11.1.2", "SRU_KrugMini11.1.1" },11));
+						
+						// Red: Gromp
+						_jungleCamps.Add(
+							new JungleCamp("SRU_Gromp", 100, new Vector3(12000f, 7000f, 54.8f), new[] { "SRU_Gromp14.1.1" },12));
+						
+						// Neutral: Dragon
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Dragon", 360, new Vector3(9300.8f, 4200.5f, -60.3f), new[] { "SRU_Dragon6.1.1" },13));
+						
+						// Neutral: Baron
+						_jungleCamps.Add(
+							new JungleCamp(
+								"SRU_Baron", 420, new Vector3(4300.1f, 11600.7f, -63.1f), new[] { "SRU_Baron12.1.1" },14));
+						
+						// Dragon: Crab
+						_jungleCamps.Add(
+							new JungleCamp("Sru_Crab", 180, new Vector3(10600f, 5600.5f, -60.3f), new[] { "Sru_Crab15.1.1" },15));
+						
+						// Baron: Crab
+						_jungleCamps.Add(
+							new JungleCamp("Sru_Crab", 180, new Vector3(4200.1f, 9900.7f, -63.1f), new[] { "Sru_Crab16.1.1" },16));
 
-                _lastCheck = Environment.TickCount;
+					}
+					if (Utility.Map.GetMap().Type == Utility.Map.MapType.TwistedTreeline)
+					{
+						// Blue: Wraiths
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_NWraith", 50, new Vector3(3550f, 6250f, 60f),
+								new[] { "TT_NWraith1.1.1", "TT_NWraith21.1.2", "TT_NWraith21.1.3" },1));
+						
+						// Blue: Golems
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_NGolem", 50, new Vector3(4500f, 8550f, 60f),
+								new[] { "TT_NGolem2.1.1", "TT_NGolem22.1.2" },2));
+						
+						// Blue: Wolves
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_NWolf", 50, new Vector3(5600f, 6400f, 60f),
+								new[] { "TT_NWolf3.1.1", "TT_NWolf23.1.2", "TT_NWolf23.1.3" },3));
+						
+						// Red: Wraiths
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_NWraith", 50, new Vector3(10300f, 6250f, 60f),
+								new[] { "TT_NWraith4.1.1", "TT_NWraith24.1.2", "TT_NWraith24.1.3" },4));
+						
+						// Red: Golems
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_NGolem", 50, new Vector3(9800f, 8550f, 60f),
+								new[] { "TT_NGolem5.1.1", "TT_NGolem25.1.2" },5));
+						
+						// Red: Wolves
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_NWolf", 50, new Vector3(8600f, 6400f, 60f),
+								new[] { "TT_NWolf6.1.1", "TT_NWolf26.1.2", "TT_NWolf26.1.3" },6));
+						
+						// Neutral: Vilemaw
+						_jungleCamps.Add(
+							new JungleCamp(
+								"TT_Spiderboss", 300, new Vector3(7150f, 11100f, 60f),
+								new[] { "TT_Spiderboss8.1.1" },7));
+					}
+					if (_jungleCamps.Count > 0)
+					{
+						foreach (var camp in _jungleCamps)
+						{
+							DrawText pos = new DrawText(camp);
+							_DrawText.Add(pos);
+						}
+						Game.OnGameUpdate += OnGameUpdate;
+						Drawing.OnEndScene += Drawing_OnEndScene;
+					}
+					else Game.PrintChat("Jungle Timer only supports SummonersRift and TwistedTreeline maps.");
+					Initialized = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-                foreach (Camp camp in _camps.Where(camp => (camp.NextRespawnTime - Game.Time) < 0f))
-                {
-                    camp.NextRespawnTime = 0f;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+		#endregion
+		
+		public bool IsFormat()
+		{
+			return Menu.Item(Name + "Format").GetValue<bool>();
+		}
 
-        private void TimersLoaded(object o)
-        {
-            try
-            {
-                if (o is Timers && (o as Timers).Menu != null)
-                {
-                    _timers = (o as Timers);
-
-                    Menu = new Menu(Name, Name);
-
-                    var drawingMenu = new Menu("绘制", Name + "Drawing");
-                    drawingMenu.AddItem(new MenuItem(Name + "DrawingColor", "颜色").SetValue(Color.Yellow));
-
-                    Menu.AddSubMenu(drawingMenu);
-
-                    Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(true));
-
-                    _timers.Menu.AddSubMenu(Menu);
-
-                    if (Utility.Map.GetMap()._MapType == Utility.Map.MapType.SummonersRift)
-                    {
-                        // Blue: Blue Buff
-                        _camps.Add(new Camp(new Vector3(3388.2f, 7697.2f, 55.2f), 1, 300f));
-
-                        // Blue: Wolves
-                        _camps.Add(new Camp(new Vector3(3415.8f, 6269.6f, 55.6f), 2, 50f));
-
-                        // Blue: Wraiths
-                        _camps.Add(new Camp(new Vector3(6447f, 5384f, 60f), 3, 50f));
-
-                        // Blue: Red Buff
-                        _camps.Add(new Camp(new Vector3(7509.4f, 3977.1f, 56.9f), 4, 300f));
-
-                        // Blue: Golems
-                        _camps.Add(new Camp(new Vector3(8042.2f, 2274.3f, 54.3f), 5, 50f));
-
-                        // Blue: Wight
-                        _camps.Add(new Camp(new Vector3(1859.1f, 8246.3f, 54.9f), 13, 50f));
-
-                        // Red: Blue Buff
-                        _camps.Add(new Camp(new Vector3(10440f, 6717.9f, 54.9f), 7, 300f));
-
-                        // Red: Wolves
-                        _camps.Add(new Camp(new Vector3(10575f, 8083f, 65.5f), 8, 50f));
-
-                        // Red: Wraiths
-                        _camps.Add(new Camp(new Vector3(7534.3f, 9226.5f, 55.5f), 9, 50f));
-
-                        // Red: Red Buff
-                        _camps.Add(new Camp(new Vector3(6558.2f, 10524.9f, 54.6f), 10, 300f));
-
-                        // Red: Golems
-                        _camps.Add(new Camp(new Vector3(6005f, 12055f, 39.6f), 11, 50f));
-
-                        // Red: Wight
-                        _camps.Add(new Camp(new Vector3(12287f, 6205f, 54.8f), 14, 50f));
-
-                        // Neutral: Dragon
-                        _camps.Add(new Camp(new Vector3(9606.8f, 4210.5f, -60.3f), 6, 360f));
-
-                        // Neutral: Baron
-                        _camps.Add(new Camp(new Vector3(4549.1f, 10126.7f, -63.1f), 12, 420f));
-                    }
-
-                    if (Utility.Map.GetMap()._MapType == Utility.Map.MapType.TwistedTreeline)
-                    {
-                        // Blue: Wraiths
-                        _camps.Add(new Camp(new Vector3(4414f, 5774f, 60f), 1, 50f));
-
-                        // Blue: Golems
-                        _camps.Add(new Camp(new Vector3(5088f, 8065f, 60f), 2, 50f));
-
-                        // Blue: Wolves
-                        _camps.Add(new Camp(new Vector3(6148f, 5993f, 60f), 3, 50f));
-
-                        // Red: Wraiths
-                        _camps.Add(new Camp(new Vector3(11008f, 5775f, 60f), 4, 50f));
-
-                        // Red: Golems
-                        _camps.Add(new Camp(new Vector3(10341f, 8084f, 60f), 5, 50f));
-
-                        // Red: Wolves
-                        _camps.Add(new Camp(new Vector3(9239f, 6022f, 60f), 6, 50f));
-
-                        // Neutral: Vilemaw
-                        _camps.Add(new Camp(new Vector3(7711f, 10080f, 60f), 8, 300f));
-                    }
-
-                    if (_camps.Count > 0)
-                    {
-                        Game.OnGameUpdate += OnGameUpdate;
-                        Game.OnGameProcessPacket += OnGameProcessPacket;
-                        Drawing.OnDraw += OnDraw;
-                    }
-
-                    Initialized = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
-
-        #endregion
-
-        #region Nested Types
-
-        private class Camp
-        {
-            #region Fields
-
-            public readonly int Id;
-            public readonly Vector3 Position;
-            public readonly float RespawnTime;
-            public float NextRespawnTime;
-
-            #endregion
-
-            #region Constructors
-
-            public Camp(Vector3 position, int id, float respawnTime)
-            {
-                Position = position;
-                Id = id;
-                RespawnTime = respawnTime;
-            }
-
-            #endregion
-        }
-
-        #endregion
-    }
+		private class JungleCamp
+		{
+			public String Name;
+			public int NextRespawnTime;
+			public int RespawnTime;
+			public bool IsDead;
+			public bool Visibled;
+			public Vector3 Position;
+			public string[] Names;
+			public readonly int Id;
+			public JungleCamp(String name, int respawnTime, Vector3 position, string[] names, int id)
+			{
+				Name = name;
+				RespawnTime = respawnTime;
+				Position = position;
+				Names = names;
+				IsDead = false;
+				Visibled = false;
+				Id = id;
+			}
+		}
+		
+		private class DrawText
+		{
+			private int _layer;
+			public Render.Text Text { get; set; }
+			public JungleCamp JungleCamp;
+			public bool format;
+			public DrawText(JungleCamp pos)
+			{
+				Text = new Render.Text(Drawing.WorldToMinimap(pos.Position),"",15,SharpDX.Color.White)
+				{
+					VisibleCondition = sender => (pos.NextRespawnTime > 0 ),
+					TextUpdate = () => FormatTime(pos.NextRespawnTime - (int)Game.ClockTime),
+				};
+				JungleCamp = pos;
+				Text.Add(_layer);
+				_layer++;
+			}
+			private string FormatTime(int time)
+			{
+				var t = TimeSpan.FromSeconds(time);
+				if (format) return string.Format("{0:D1}:{1:D2}", t.Minutes, t.Seconds);
+				else return time.ToString(CultureInfo.InvariantCulture);
+			}
+		}
+	}
 }

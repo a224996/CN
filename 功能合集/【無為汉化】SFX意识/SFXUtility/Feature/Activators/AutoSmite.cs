@@ -93,8 +93,8 @@ namespace SFXUtility.Feature
         {
             get
             {
-                return Utility.Map.GetMap()._MapType == Utility.Map.MapType.SummonersRift ||
-                       Utility.Map.GetMap()._MapType == Utility.Map.MapType.TwistedTreeline;
+                return Utility.Map.GetMap().Type == Utility.Map.MapType.SummonersRift ||
+                       Utility.Map.GetMap().Type == Utility.Map.MapType.TwistedTreeline;
             }
         }
 
@@ -137,7 +137,7 @@ namespace SFXUtility.Feature
 
                     Menu.AddItem(new MenuItem(Name + "BigCamps", "大Camps").SetValue(true));
                     Menu.AddItem(new MenuItem(Name + "SmallCamps", "小Camps").SetValue(false));
-                    Menu.AddItem(new MenuItem(Name + "PacketCasting", "封包").SetValue(false));
+ //                   Menu.AddItem(new MenuItem(Name + "PacketCasting", "封包").SetValue(false));
                     Menu.AddItem(
                         new MenuItem(Name + "Enabled", "启用").SetValue(new KeyBind('N', KeyBindType.Toggle, true)));
 
@@ -145,12 +145,12 @@ namespace SFXUtility.Feature
 
                     if (IsValidMap)
                     {
-                        Utility.Map.MapType map = Utility.Map.GetMap()._MapType;
+                        Utility.Map.MapType map = Utility.Map.GetMap().Type;
 
                         if (map == Utility.Map.MapType.SummonersRift)
                         {
-                            _bigMinionNames = new[] {"AncientGolem", "LizardElder", "Worm", "Dragon"};
-                            _smallMinionNames = new[] {"GreatWraith", "Wraith", "GiantWolf", "Golem", "Wight"};
+                            _bigMinionNames = new[] {"SRU_Blue", "SRU_Red", "SRU_Baron", "SRU_Dragon"};
+                            _smallMinionNames = new[] {"SRU_Razorbeak", "SRU_Krug", "SRU_Murkwolf", "SRU_Gromp", "SRU_Crab"};
                         }
                         else if (map == Utility.Map.MapType.TwistedTreeline)
                         {
@@ -205,14 +205,14 @@ namespace SFXUtility.Feature
 
                 if (SmiteEnabled && Menu.Item(Name + "DrawingSmiteRange").GetValue<bool>())
                 {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _smite.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, _smite.Range,
                         _smite.CanUseSpell() && _smite.IsInRange(_currentMinion)
                             ? Menu.Item(Name + "DrawingUseableColor").GetValue<Color>()
                             : Menu.Item(Name + "DrawingUnusableColor").GetValue<Color>(), circleThickness);
                 }
                 if (HeroSpellEnabled && Menu.Item(Name + "DrawingHeroSpellsRange").GetValue<bool>())
                 {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _heroSpell.Range + _currentMinion.BoundingRadius,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, _heroSpell.Range + _currentMinion.BoundingRadius,
                         _heroSpell.CanUseSpell() && _heroSpell.IsInRange(_currentMinion)
                             ? Menu.Item(Name + "DrawingUseableColor").GetValue<Color>()
                             : Menu.Item(Name + "DrawingUnusableColor").GetValue<Color>(), circleThickness);
@@ -287,7 +287,7 @@ namespace SFXUtility.Feature
                 {
                     if (HeroSpellEnabled && _heroSpell.CanUseSpell(_currentMinion))
                     {
-                        _heroSpell.CastSpell(_currentMinion, Menu.Item(Name + "PacketCasting").GetValue<bool>());
+                        _heroSpell.CastSpell(_currentMinion);
                     }
                     if (SmiteEnabled && _smite.CanUseSpell(_currentMinion))
                     {

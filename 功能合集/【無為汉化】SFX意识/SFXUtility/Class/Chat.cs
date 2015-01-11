@@ -32,7 +32,7 @@ namespace SFXUtility.Class
     {
         #region Fields
 
-        public const string DefaultColor = "#F7A100";
+        public const string DefaultColor = "#0071E1";
 
         #endregion
 

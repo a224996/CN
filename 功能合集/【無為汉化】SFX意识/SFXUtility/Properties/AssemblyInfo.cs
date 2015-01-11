@@ -34,9 +34,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SFXUtility")]
 [assembly: AssemblyDescription("AutoSmite, AutoPotions, Tracker etc.")]
 [assembly: AssemblyConfiguration(("Release"))]
-[assembly: AssemblyCompany("Smokyfox")]
+[assembly: AssemblyCompany("Smokyfox & zUsername")]
 [assembly: AssemblyProduct("SFXUtility")]
-[assembly: AssemblyCopyright("Copyright © Smokyfox 2014")]
+[assembly: AssemblyCopyright("Copyright © Smokyfox, zUsername 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -61,5 +61,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.7.6.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.7")]
+[assembly: AssemblyFileVersion("1.0.0.7")]

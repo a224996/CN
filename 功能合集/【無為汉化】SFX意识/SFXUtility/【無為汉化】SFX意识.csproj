@@ -40,31 +40,32 @@
   <ItemGroup>
     <Reference Include="LeagueSharp, Version=1.0.0.25, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\LeagueSharp\\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\LeagueSharp\\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\LeagueSharp\\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\LeagueSharp\\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\Analytics.cs" />
     <Compile Include="Class\Chat.cs" />
+    <Compile Include="Class\Helper.cs" />
     <Compile Include="Class\HeroSpell.cs" />
     <Compile Include="Class\Item.cs" />
     <Compile Include="Class\Smite.cs" />
+    <Compile Include="Class\SpellHumanizer.cs" />
     <Compile Include="Feature\Activators\Activators.cs" />
     <Compile Include="Feature\AutoLeveler.cs" />
     <Compile Include="Feature\Activators\AutoPotion.cs" />

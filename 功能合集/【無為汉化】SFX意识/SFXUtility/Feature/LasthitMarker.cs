@@ -106,7 +106,7 @@ namespace SFXUtility.Feature
                     }
                     if (Menu.Item(Name + "DrawingCircleEnabled").GetValue<bool>() && killable)
                     {
-                        Utility.DrawCircle(minion.Position, minion.BoundingRadius + radius, circleColor, circleThickness);
+                        Render.Circle.DrawCircle(minion.Position, minion.BoundingRadius + radius, circleColor, circleThickness);
                     }
                 }
             }

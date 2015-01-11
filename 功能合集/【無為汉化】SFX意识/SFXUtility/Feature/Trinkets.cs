@@ -127,7 +127,7 @@ namespace SFXUtility.Feature
                     return;
 
                 _lastCheck = Environment.TickCount;
-                if (ObjectManager.Player.IsDead || Utility.InShopRange())
+                if (ObjectManager.Player.IsDead || ObjectManager.Player.InShop())
                 {
                     if (!Menu.Item(Name + "SellUpgraded").GetValue<bool>())
                     {

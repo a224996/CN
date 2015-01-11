@@ -16,119 +16,119 @@
  
  You should have received a copy of the GNU General Public License
  along with SFXUtility. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #endregion
 
 namespace SFXUtility.Feature
 {
-    #region
+	#region
 
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Class;
-    using IoCContainer;
-    using LeagueSharp;
-    using LeagueSharp.Common;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Class;
+	using IoCContainer;
+	using LeagueSharp;
+	using LeagueSharp.Common;
 
-    #endregion
+	#endregion
 
-    internal class AutoPotion : Base
-    {
-        #region Fields
+	internal class AutoPotion : Base
+	{
+		#region Fields
 
-        private Activators _activators;
+		private Activators _activators;
 
-        private List<Potion> _potions = new List<Potion>
-        {
-            new Potion
-            {
-                BuffName = "ItemCrystalFlask",
-                MinCharges = 1,
-                ItemId = (ItemId) Item.Pot.CrystallineFlask,
-                Priority = 1,
-                TypeList = new List<PotionType> {PotionType.Health, PotionType.Mana}
-            },
-            new Potion
-            {
-                BuffName = "RegenerationPotion",
-                MinCharges = 0,
-                ItemId = (ItemId) Item.Pot.HealthPotion,
-                Priority = 2,
-                TypeList = new List<PotionType> {PotionType.Health}
-            },
-            new Potion
-            {
-                BuffName = "FlaskOfCrystalWater",
-                MinCharges = 0,
-                ItemId = (ItemId) Item.Pot.ManaPotion,
-                Priority = 3,
-                TypeList = new List<PotionType> {PotionType.Mana}
-            },
-            new Potion
-            {
-                BuffName = "ItemMiniRegenPotion",
-                MinCharges = 0,
-                ItemId = (ItemId) Item.Pot.TotalBiscuitOfRejuvenation,
-                Priority = 4,
-                TypeList = new List<PotionType> {PotionType.Health}
-            }
-        };
+		private List<Potion> _potions = new List<Potion>
+		{
+			new Potion
+			{
+				BuffName = "ItemCrystalFlask",
+				MinCharges = 1,
+				ItemId = (ItemId) Item.Pot.CrystallineFlask,
+				Priority = 1,
+				TypeList = new List<PotionType> {PotionType.Health, PotionType.Mana}
+			},
+			new Potion
+			{
+				BuffName = "RegenerationPotion",
+				MinCharges = 0,
+				ItemId = (ItemId) Item.Pot.HealthPotion,
+				Priority = 2,
+				TypeList = new List<PotionType> {PotionType.Health}
+			},
+			new Potion
+			{
+				BuffName = "FlaskOfCrystalWater",
+				MinCharges = 0,
+				ItemId = (ItemId) Item.Pot.ManaPotion,
+				Priority = 3,
+				TypeList = new List<PotionType> {PotionType.Mana}
+			},
+			new Potion
+			{
+				BuffName = "ItemMiniRegenPotion",
+				MinCharges = 0,
+				ItemId = (ItemId) Item.Pot.TotalBiscuitOfRejuvenation,
+				Priority = 4,
+				TypeList = new List<PotionType> {PotionType.Health}
+			}
+		};
 
-        #endregion
+		#endregion
 
-        #region Enums
+		#region Enums
 
-        private enum PotionType
-        {
-            Health,
-            Mana
-        };
+		private enum PotionType
+		{
+			Health,
+			Mana
+		};
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public AutoPotion(Container container) : base(container)
-        {
-            CustomEvents.Game.OnGameLoad += OnGameLoad;
-        }
+		public AutoPotion(Container container) : base(container)
+		{
+			CustomEvents.Game.OnGameLoad += OnGameLoad;
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        public override bool Enabled
-        {
-            get
-            {
-                return _activators != null && _activators.Menu != null &&
-                       _activators.Menu.Item(_activators.Name + "Enabled").GetValue<bool>() && Menu != null &&
-                       Menu.Item(Name + "Enabled").GetValue<bool>();
-            }
-        }
+		public override bool Enabled
+		{
+			get
+			{
+				return _activators != null && _activators.Menu != null &&
+					_activators.Menu.Item(_activators.Name + "Enabled").GetValue<bool>() && Menu != null &&
+					Menu.Item(Name + "Enabled").GetValue<bool>();
+			}
+		}
 
-        public override string Name
-        {
+		public override string Name
+		{
             get { return "自动红药"; }
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        private void ActivatorsLoaded(object o)
-        {
-            try
-            {
-                if (o is Activators && (o as Activators).Menu != null)
-                {
-                    _activators = (o as Activators);
+		private void ActivatorsLoaded(object o)
+		{
+			try
+			{
+				if (o is Activators && (o as Activators).Menu != null)
+				{
+					_activators = (o as Activators);
 
-                    _potions = _potions.OrderBy(x => x.Priority).ToList();
+					_potions = _potions.OrderBy(x => x.Priority).ToList();
 
-                    Menu = new Menu(Name, Name);
+					Menu = new Menu(Name, Name);
 
                     var healthMenu = new Menu("红药", Name + "Health");
                     healthMenu.AddItem(new MenuItem(Name + "HealthPotion", "使用生命药水").SetValue(true));
@@ -139,116 +139,118 @@ namespace SFXUtility.Feature
                     manaMenu.AddItem(new MenuItem(Name + "ManaPotion", "使用法力药水").SetValue(true));
                     manaMenu.AddItem(new MenuItem(Name + "ManaPercent", "剩余法力").SetValue(new Slider(60)));
 
-                    Menu.AddSubMenu(healthMenu);
-                    Menu.AddSubMenu(manaMenu);
+					Menu.AddSubMenu(healthMenu);
+					Menu.AddSubMenu(manaMenu);
 
                     Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(false));
 
-                    _activators.Menu.AddSubMenu(Menu);
+					_activators.Menu.AddSubMenu(Menu);
 
-                    Game.OnGameUpdate += OnGameUpdate;
+					Game.OnGameUpdate += OnGameUpdate;
 
-                    Initialized = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+					Initialized = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-        private InventorySlot GetPotionSlot(PotionType type)
-        {
-            return (from potion in _potions
-                where potion.TypeList.Contains(type)
-                from item in ObjectManager.Player.InventoryItems
-                where item.Id == potion.ItemId && item.Charges >= potion.MinCharges
-                select item).FirstOrDefault();
-        }
+		private InventorySlot GetPotionSlot(PotionType type)
+		{
+			return (from potion in _potions
+			        where potion.TypeList.Contains(type)
+			        from item in ObjectManager.Player.InventoryItems
+			        where item.Id == potion.ItemId && item.Charges >= potion.MinCharges
+			        select item).FirstOrDefault();
+		}
 
-        private bool IsBuffActive(PotionType type)
-        {
-            return
-                _potions.Where(potion => potion.TypeList.Contains(type))
-                    .Any(potion => ObjectManager.Player.IsBuffActive(potion.BuffName));
-        }
+		private bool IsBuffActive(PotionType type)
+		{
+			return
+				_potions.Where(potion => potion.TypeList.Contains(type))
+				.Any(potion => ObjectManager.Player.IsBuffActive(potion.BuffName));
+		}
 
-        private void OnGameLoad(EventArgs args)
-        {
-            try
-            {
-                Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
+		private void OnGameLoad(EventArgs args)
+		{
+			try
+			{
+				Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
 
-                if (IoC.IsRegistered<Activators>() && IoC.Resolve<Activators>().Initialized)
-                {
-                    ActivatorsLoaded(IoC.Resolve<Activators>());
-                }
-                else
-                {
-                    if (IoC.IsRegistered<Mediator>())
-                    {
-                        IoC.Resolve<Mediator>().Register("Activators_initialized", ActivatorsLoaded);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+				if (IoC.IsRegistered<Activators>() && IoC.Resolve<Activators>().Initialized)
+				{
+					ActivatorsLoaded(IoC.Resolve<Activators>());
+				}
+				else
+				{
+					if (IoC.IsRegistered<Mediator>())
+					{
+						IoC.Resolve<Mediator>().Register("Activators_initialized", ActivatorsLoaded);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-        private void OnGameUpdate(EventArgs args)
-        {
-            try
-            {
-                if (!Enabled)
-                    return;
+		private void OnGameUpdate(EventArgs args)
+		{
+			try
+			{
+				if (!Enabled || ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead ||
+				    ObjectManager.Player.HasBuff("Recall") || ObjectManager.Player.HasBuff("SummonerTeleport") ||
+				    ObjectManager.Player.HasBuff("RecallImproved") || ObjectManager.Player.CountEnemysInRange(1500) > 0)
+						return;				
+				
+				if (Menu.Item(Name + "HealthPotion").GetValue<bool>())
+				{
+					if (ObjectManager.Player.HealthPercentage() <=
+					    Menu.Item(Name + "HealthPercent").GetValue<Slider>().Value)
+					{
+						InventorySlot healthSlot = GetPotionSlot(PotionType.Health);
+						if (healthSlot != null && !IsBuffActive(PotionType.Health))
+							ObjectManager.Player.Spellbook.CastSpell(healthSlot.SpellSlot);
+					}
+				}
 
-                if (Menu.Item(Name + "HealthPotion").GetValue<bool>())
-                {
-                    if (ObjectManager.Player.HealthPercentage() <=
-                        Menu.Item(Name + "HealthPercent").GetValue<Slider>().Value)
-                    {
-                        InventorySlot healthSlot = GetPotionSlot(PotionType.Health);
-                        if (healthSlot != null && !IsBuffActive(PotionType.Health))
-                        	ObjectManager.Player.Spellbook.CastSpell(healthSlot.SpellSlot);
-                    }
-                }
+				if (Menu.Item(Name + "ManaPotion").GetValue<bool>())
+				{
+					if (ObjectManager.Player.ManaPercentage() <=
+					    Menu.Item(Name + "ManaPercent").GetValue<Slider>().Value)
+					{
+						InventorySlot manaSlot = GetPotionSlot(PotionType.Mana);
+						if (manaSlot != null && !IsBuffActive(PotionType.Mana))
+							ObjectManager.Player.Spellbook.CastSpell(manaSlot.SpellSlot);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-                if (Menu.Item(Name + "ManaPotion").GetValue<bool>())
-                {
-                    if (ObjectManager.Player.ManaPercentage() <=
-                        Menu.Item(Name + "ManaPercent").GetValue<Slider>().Value)
-                    {
-                        InventorySlot manaSlot = GetPotionSlot(PotionType.Mana);
-                        if (manaSlot != null && !IsBuffActive(PotionType.Mana))
-                        	ObjectManager.Player.Spellbook.CastSpell(manaSlot.SpellSlot);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+		#endregion
 
-        #endregion
+		#region Nested Types
 
-        #region Nested Types
+		private class Potion
+		{
+			#region Properties
 
-        private class Potion
-        {
-            #region Properties
+			public string BuffName { get; set; }
+			public ItemId ItemId { get; set; }
+			public int MinCharges { get; set; }
+			public int Priority { get; set; }
+			public List<PotionType> TypeList { get; set; }
 
-            public string BuffName { get; set; }
-            public ItemId ItemId { get; set; }
-            public int MinCharges { get; set; }
-            public int Priority { get; set; }
-            public List<PotionType> TypeList { get; set; }
+			#endregion
+		}
 
-            #endregion
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

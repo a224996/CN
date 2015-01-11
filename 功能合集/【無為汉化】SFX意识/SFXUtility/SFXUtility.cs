@@ -47,11 +47,12 @@ namespace SFXUtility
                 infoMenu.AddItem(new MenuItem("InfoVersion", string.Format("版本: {0}", Version)));
                 infoMenu.AddItem(new MenuItem("InfoIRC", "作者∶ Appril"));
 				infoMenu.AddItem(new MenuItem("qun", "L#汉化群∶386289593"));
-                infoMenu.AddItem(new MenuItem("InfoGithub", "Github").SetValue(new StringList(new[]
+                infoMenu.AddItem(new MenuItem("InfoGithub", "Github:").SetValue(new StringList(new[]
                 {
                     "81199000",
-					"Smokyfox",
-                    "Lizzaran"
+                    "Smokyfox",
+                    "Lizzaran",
+                    "zUsername"
                 })));
 
                 miscMenu.AddSubMenu(infoMenu);
@@ -90,7 +91,7 @@ namespace SFXUtility
 
         public System.Version Version
         {
-            get { return new System.Version(0, 7, 6, 0); }
+            get { return new System.Version(1, 0, 0, 7); }
         }
 
         #endregion

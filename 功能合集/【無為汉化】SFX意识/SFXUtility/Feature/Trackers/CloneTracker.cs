@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 
 /*
  Copyright 2014 - 2014 Nikita Bernthaler
@@ -16,146 +16,151 @@
  
  You should have received a copy of the GNU General Public License
  along with SFXUtility. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #endregion
 
 namespace SFXUtility.Feature
 {
-    #region
+	#region
 
-    using System;
-    using System.Drawing;
-    using System.Linq;
-    using Class;
-    using IoCContainer;
-    using LeagueSharp;
-    using LeagueSharp.Common;
+	using System;
+	using System.Drawing;
+	using System.Linq;
+	using Class;
+	using IoCContainer;
+	using LeagueSharp;
+	using LeagueSharp.Common;
 
-    #endregion
+	#endregion
 
-    internal class CloneTracker : Base
-    {
-        #region Fields
+	internal class CloneTracker : Base
+	{
+		#region Fields
+		
+		private Trackers _trackers;
 
-        private readonly string[] _cloneHeroes = {"Shaco", "LeBlanc", "MonkeyKing", "Yorick"};
-        private Trackers _trackers;
+		#endregion
 
-        #endregion
+		#region Constructors
 
-        #region Constructors
+		public CloneTracker(IContainer container)
+			: base(container)
+		{
+			CustomEvents.Game.OnGameLoad += OnGameLoad;
+		}
 
-        public CloneTracker(IContainer container)
-            : base(container)
-        {
-            CustomEvents.Game.OnGameLoad += OnGameLoad;
-        }
+		#endregion
 
-        #endregion
+		#region Properties
 
-        #region Properties
+		public override bool Enabled
+		{
+			get
+			{
+				return _trackers != null && _trackers.Menu != null &&
+					_trackers.Menu.Item(_trackers.Name + "Enabled").GetValue<bool>() && Menu != null &&
+					Menu.Item(Name + "Enabled").GetValue<bool>();
+			}
+		}
 
-        public override bool Enabled
-        {
-            get
-            {
-                return _trackers != null && _trackers.Menu != null &&
-                       _trackers.Menu.Item(_trackers.Name + "Enabled").GetValue<bool>() && Menu != null &&
-                       Menu.Item(Name + "Enabled").GetValue<bool>();
-            }
-        }
+		public override string Name
+		{
+			get { return "克隆"; }
+		}
 
-        public override string Name
-        {
-            get { return "克隆"; }
-        }
+		#endregion
 
-        #endregion
+		#region Methods
 
-        #region Methods
+		private void OnDraw(EventArgs args)
+		{
+			try
+			{
+				if (!Enabled)
+					return;
 
-        private void OnDraw(EventArgs args)
-        {
-            try
-            {
-                if (!Enabled)
-                    return;
+				var circleColor = Menu.Item(Name + "DrawingCircleColor").GetValue<Circle>().Color;
+				var radius = Menu.Item(Name + "DrawingCircleRadius").GetValue<Slider>().Value;
+				
+				foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
+				{
+					if (hero.IsEnemy && !hero.IsDead && hero.IsVisible)
+					{
+						if (hero.ChampionName.Contains("Shaco") ||
+						    hero.ChampionName.Contains("Leblanc") ||
+						    hero.ChampionName.Contains("MonkeyKing") ||
+						    hero.ChampionName.Contains("Yorick"))
+						{
+							Render.Circle.DrawCircle(hero.ServerPosition, hero.BoundingRadius + radius, circleColor);
+						}
+						
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-                var circleColor = Menu.Item(Name + "DrawingCircleColor").GetValue<Color>();
-                var radius = Menu.Item(Name + "DrawingCircleRadius").GetValue<Slider>().Value;
+		private void OnGameLoad(EventArgs args)
+		{
+			try
+			{
+				Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
 
-                foreach (
-                    Obj_AI_Hero hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(hero => hero.IsValid && hero.IsEnemy && !hero.IsDead && hero.IsVisible)
-                            .Where(hero => _cloneHeroes.Contains(hero.ChampionName)))
-                {
-                    Utility.DrawCircle(hero.ServerPosition, hero.BoundingRadius + radius, circleColor);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+				if (IoC.IsRegistered<Trackers>() && IoC.Resolve<Trackers>().Initialized)
+				{
+					TrackersLoaded(IoC.Resolve<Trackers>());
+				}
+				else
+				{
+					if (IoC.IsRegistered<Mediator>())
+					{
+						IoC.Resolve<Mediator>().Register("Trackers_initialized", TrackersLoaded);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-        private void OnGameLoad(EventArgs args)
-        {
-            try
-            {
-                Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
+		private void TrackersLoaded(object o)
+		{
+			try
+			{
+				if (o is Trackers && (o as Trackers).Menu != null)
+				{
+					_trackers = (o as Trackers);
 
-                if (IoC.IsRegistered<Trackers>() && IoC.Resolve<Trackers>().Initialized)
-                {
-                    TrackersLoaded(IoC.Resolve<Trackers>());
-                }
-                else
-                {
-                    if (IoC.IsRegistered<Mediator>())
-                    {
-                        IoC.Resolve<Mediator>().Register("Trackers_initialized", TrackersLoaded);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+					Menu = new Menu(Name, Name);
 
-        private void TrackersLoaded(object o)
-        {
-            try
-            {
-                if (o is Trackers && (o as Trackers).Menu != null)
-                {
-                    _trackers = (o as Trackers);
+					var drawingMenu = new Menu("绘制", Name + "Drawing");
+					drawingMenu.AddItem(
+						new MenuItem(Name + "DrawingCircleColor", "圆圈颜色").SetValue(new Circle(true, Color.YellowGreen)));
+					drawingMenu.AddItem(
+						new MenuItem(Name + "DrawingCircleRadius", "圆圈半径").SetValue(new Slider(30)));
 
-                    Menu = new Menu(Name, Name);
+					Menu.AddSubMenu(drawingMenu);
 
-                    var drawingMenu = new Menu("绘制", Name + "Drawing");
-                    drawingMenu.AddItem(
-                        new MenuItem(Name + "DrawingCircleColor", "圆圈颜色").SetValue(Color.YellowGreen));
-                    drawingMenu.AddItem(
-                        new MenuItem(Name + "DrawingCircleRadius", "圆圈半径").SetValue(new Slider(30)));
+					Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(false));
 
-                    Menu.AddSubMenu(drawingMenu);
+					_trackers.Menu.AddSubMenu(Menu);
 
-                    Menu.AddItem(new MenuItem(Name + "Enabled", "Enabled").SetValue(false));
+					Drawing.OnDraw += OnDraw;
 
-                    _trackers.Menu.AddSubMenu(Menu);
+					Initialized = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-                    Drawing.OnDraw += OnDraw;
-
-                    Initialized = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }
