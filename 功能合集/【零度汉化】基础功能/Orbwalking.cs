@@ -83,6 +83,12 @@ namespace LeagueSharp.Common
             "xenzhaothrust3"
         };
 
+        //Champs whose auto attacks can't be cancelled
+        private static readonly string[] NoCancelChamps =
+        {
+            "Kalista"
+        };
+
         public static int LastAATick;
         public static bool Attack = true;
         public static bool DisableNextAttack;
@@ -272,8 +278,9 @@ namespace LeagueSharp.Common
         {
             if (LastAATick <= Environment.TickCount)
             {
-                return (Environment.TickCount + Game.Ping / 2 >=
-                        LastAATick + Player.AttackCastDelay * 1000 + extraWindup) && Move;
+                return NoCancelChamps.Contains(ObjectManager.Player.ChampionName) ||
+                    (Environment.TickCount + Game.Ping / 2 >=
+                    LastAATick + Player.AttackCastDelay * 1000 + extraWindup) && Move;
             }
 
             return false;
@@ -705,6 +712,10 @@ namespace LeagueSharp.Common
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed)
                 {
                     result = ObjectManager.Get<Obj_AI_Minion>().Where(mob =>mob.IsValidTarget() && InAutoAttackRange(mob) && mob.Team == GameObjectTeam.Neutral).MaxOrDefault(mob => mob.MaxHealth);
+                    if (result != null)
+                    {
+                        return result;
+                    }
                 }
 
                 /*Lane Clear minions*/
