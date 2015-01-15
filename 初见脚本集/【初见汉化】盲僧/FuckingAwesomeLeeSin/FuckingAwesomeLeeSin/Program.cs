@@ -8,6 +8,7 @@ ___________             __   .__                    _____                       
 */
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Messaging;
 using System.Security.AccessControl;
 using LeagueSharp;
@@ -15,6 +16,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using System;
 using System.Linq;
+using Color = System.Drawing.Color;
 
 namespace FuckingAwesomeLeeSin
 {
@@ -43,10 +45,25 @@ namespace FuckingAwesomeLeeSin
         public static float TimeOffset;
         public static Vector3 lastWardPos;
         public static float lastPlaced;
+        public static int passiveStacks;
+        public static float passiveTimer;
+        public static bool waitforjungle;
+        public static bool waitingForQ2 = false;
+        public static bool q2Done = false;
+        public static float q2Timer;
+        public static int clickCount;
+        public static Vector3 insecClickPos;
+        public static float resetTime;
+        public static bool clicksecEnabled;
+        public static float doubleClickReset;
+        public static Vector3 lastClickPos;
+        public static bool lastClickBool;
 
+
+        public static bool textRendered;
         private static readonly string[] epics =
         {
-            "SRU_BaronSpawn", "SRU_Dragon"
+            "SRU_Baron", "SRU_Dragon"
         };
         private static readonly string[] buffs =
         {
@@ -54,17 +71,70 @@ namespace FuckingAwesomeLeeSin
         };
         private static readonly string[] buffandepics =
         {
-            "SRU_Red", "SRU_Blue", "SRU_Dragon", "SRU_BaronSpawn"
+            "SRU_Red", "SRU_Blue", "SRU_Dragon", "SRU_Baron"
         };
-
+        private static readonly string[] bigjungleminions =
+        {
+            "SRU_Red", "SRU_Blue", "SRU_Dragon", "SRU_Baron", "SRU_Murkwolf", "SRU_Razorbeak", "SRU_Gromp", "SRU_Krug"
+        };
+        private static readonly string[] spells =
+        {
+            "BlindMonkQOne", "BlindMonkWOne", "BlindMonkEOne", "blindmonkwtwo", "blindmonkqtwo", "blindmonketwo", "BlindMonkRKick"
+        };
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
+            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            GameObject.OnDelete += GameObject_OnDelete;
+            Game.OnWndProc += Game_OnWndProc;
+        }
+
+        static void Game_OnWndProc(WndEventArgs args)
+        {
+            if (args.Msg != (uint)WindowsMessages.WM_LBUTTONDOWN || !paramBool("clickInsec"))
+                return;
+            var asec = ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy && a.Distance(Game.CursorPos) < 200 && a.IsValid && !a.IsDead);
+            if (asec.Any())
+                return;
+            if (!lastClickBool || clickCount == 0)
+            {
+                clickCount++;
+                lastClickPos = Game.CursorPos;
+                lastClickBool = true;
+                doubleClickReset = Environment.TickCount + 600;
+                return;
+            }
+            if (lastClickBool && lastClickPos.Distance(Game.CursorPos) < 200)
+            {
+                clickCount++;
+                lastClickBool = false;
+            }
+        }
+
+        static void Orbwalking_AfterAttack(AttackableUnit unit, AttackableUnit target)
+        {
+            if (unit.IsMe && passiveStacks > 0)
+            {
+                passiveStacks = passiveStacks - 1;
+            }
+            
         }
 
         public static SpellSlot IgniteSlot;
         #endregion
+
+        public static void GameObject_OnDelete(GameObject sender, EventArgs args)
+        {
+            if (!(sender is Obj_GeneralParticleEmitter))
+                return;
+            if (sender.Name.Contains("blindMonk_Q_resonatingStrike") && waitingForQ2)
+            {
+                waitingForQ2 = false;
+                q2Done = true;
+                q2Timer = Environment.TickCount + 800;
+            }
+        }
 
         #region OnLoad
 
@@ -72,117 +142,131 @@ namespace FuckingAwesomeLeeSin
         {
             if (Player.ChampionName != ChampName) return;
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
-            smiteSlot = Player.GetSpellSlot("SummonerSmite");
             flashSlot = Player.GetSpellSlot("summonerflash");
 
             Q = new Spell(SpellSlot.Q, 1100);
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 430);
             R = new Spell(SpellSlot.R, 375);
+            
             Q.SetSkillshot(Q.Instance.SData.SpellCastTime, Q.Instance.SData.LineWidth, Q.Instance.SData.MissileSpeed,true,SkillshotType.SkillshotLine);
+            
             //Base menu
             Menu = new Menu("【初见汉化】盲僧", ChampName, true);
             //Orbwalker and menu
-            Menu.AddSubMenu(new Menu("|走砍|", "Orbwalker"));
+            Menu.AddSubMenu(new Menu("走砍", "Orbwalker"));
             Orbwalker = new Orbwalking.Orbwalker(Menu.SubMenu("Orbwalker"));
             //Target selector and menu
-            var ts = new Menu("|目标选择|", "Target Selector");
+            var ts = new Menu("目标选择", "Target Selector");
             TargetSelector.AddToMenu(ts);
             Menu.AddSubMenu(ts);
             //Combo menu
-            Menu.AddSubMenu(new Menu("|连招|", "Combo"));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ", "|使用| Q").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ2", "|使用| 二段Q").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useW", "|连招使用顺眼|").SetValue(true));
+            Menu.AddSubMenu(new Menu("连招", "Combo"));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ", "使用 Q").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useQ2", "使用 二段Q").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useW", "连招使用顺眼").SetValue(false));
             Menu.SubMenu("Combo").AddItem(new MenuItem("dsjk", "顺眼如果: "));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("wMode", "> AA 范围 || > Q 范围").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useE", "|使用| E").SetValue(true));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("useR", "|使用| R").SetValue(false));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("ksR", "|能击杀使用|R").SetValue(false));
-            Menu.SubMenu("Combo").AddItem(new MenuItem("starCombo", "|连招|").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("wMode", "> AA 范围  > Q 范围").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useE", "使用 E").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("useR", "使用 R").SetValue(false));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("ksR", "能击杀使用R").SetValue(false));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("starCombo", "连招").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Menu.SubMenu("Combo").AddItem(new MenuItem("random2ejwej", "W->Q->R->Q2"));
             Menu.SubMenu("Combo").AddItem(new MenuItem("aaStacks", "等待被动").SetValue(false));
 
-            var harassMenu = new Menu("|骚扰|", "Harass");
-            harassMenu.AddItem(new MenuItem("q1H", "|使用| Q").SetValue(true));
-            harassMenu.AddItem(new MenuItem("q2H", "|使用| 二段Q").SetValue(true));
+            var harassMenu = new Menu("骚扰", "Harass");
+            harassMenu.AddItem(new MenuItem("q1H", "使用 Q").SetValue(true));
+            harassMenu.AddItem(new MenuItem("q2H", "使用 二段Q").SetValue(true));
             harassMenu.AddItem(new MenuItem("wH", "顺眼/敌人闪现(禁用)").SetValue(true));
-            harassMenu.AddItem(new MenuItem("eH", "|使用| E").SetValue(false));
+            harassMenu.AddItem(new MenuItem("eH", "使用 E").SetValue(false));
             Menu.AddSubMenu(harassMenu);
 
             //Jung/Wave Clear
-            var waveclearMenu = new Menu("|清线/清野|", "wjClear");
-            waveclearMenu.AddItem(new MenuItem("useQClear", "|使用| Q").SetValue(true));
-            waveclearMenu.AddItem(new MenuItem("useWClear", "|使用| W").SetValue(true));
-            waveclearMenu.AddItem(new MenuItem("useEClear", "|使用| E").SetValue(true));
+            var waveclearMenu = new Menu("清线/清野", "wjClear");
+            waveclearMenu.AddItem(new MenuItem("sjasjsdsjs", "清线"));
+            waveclearMenu.AddItem(new MenuItem("useQClear", "使用 Q").SetValue(true));
+            waveclearMenu.AddItem(new MenuItem("useEClear", "使用 E").SetValue(true));
+            waveclearMenu.AddItem(new MenuItem("sjasjjs", "清野"));
+            waveclearMenu.AddItem(new MenuItem("jungActive", "清野按键").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+            waveclearMenu.AddItem(new MenuItem("Qjng", "使用 Q").SetValue(true));
+            waveclearMenu.AddItem(new MenuItem("Wjng", "使用 W").SetValue(true));
+            waveclearMenu.AddItem(new MenuItem("Ejng", "使用 E").SetValue(true));
             Menu.AddSubMenu(waveclearMenu);
 
             //InsecMenu
-            var insecMenu = new Menu("|大招设置|（野区疯狗）", "Insec");
-            insecMenu.AddItem(new MenuItem("InsecEnabled", "|回旋踢|").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Press)));
-            insecMenu.AddItem(new MenuItem("rnshsasdhjk", "|大招 模式:|"));
+            var insecMenu = new Menu("大招设置（野区疯狗）", "Insec");
+            insecMenu.AddItem(new MenuItem("InsecEnabled", "回旋踢").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Press)));
+            insecMenu.AddItem(new MenuItem("rnshsasdhjk", "大招 模式:"));
             insecMenu.AddItem(new MenuItem("insecMode", "左键单击[开启] TS[关闭]").SetValue(true));
             insecMenu.AddItem(new MenuItem("insecOrbwalk", "跟随鼠标").SetValue(true));
             insecMenu.AddItem(new MenuItem("flashInsec", "大招使用闪现").SetValue(false));
             insecMenu.AddItem(new MenuItem("waitForQBuff", "等待Q回复").SetValue(false));
-            insecMenu.AddItem(new MenuItem("22222222222222", "(更快更多的伤害|)"));
-            insecMenu.AddItem(new MenuItem("insec2champs", "|大招向盟友|").SetValue(true));
-            insecMenu.AddItem(new MenuItem("bonusRangeA", "|盟友的奖金范围|").SetValue(new Slider(0, 0, 1000)));
-            insecMenu.AddItem(new MenuItem("insec2tower", "|大招向塔|").SetValue(true));
-            insecMenu.AddItem(new MenuItem("bonusRangeT", "塔给予范围|e").SetValue(new Slider(0, 0, 1000)));
-            insecMenu.AddItem(new MenuItem("insec2orig", "|大招向原始位置|").SetValue(true));
+            insecMenu.AddItem(new MenuItem("22222222222222", "(更快更多的伤害)"));
+            insecMenu.AddItem(new MenuItem("clickInsec", "点击insec").SetValue(true));
+            var lM = insecMenu.AddSubMenu(new Menu("点击insec指令", "clickInstruct"));
+            lM.AddItem(new MenuItem("1223342334", "首先点击你想点的"));
+            lM.AddItem(new MenuItem("122334233", "两次.然后点击你的目标insec"));
+            insecMenu.AddItem(new MenuItem("insec2champs", "大招向盟友").SetValue(true));
+            insecMenu.AddItem(new MenuItem("bonusRangeA", "盟友的奖金范围").SetValue(new Slider(0, 0, 1000)));
+            insecMenu.AddItem(new MenuItem("insec2tower", "大招向塔").SetValue(true));
+            insecMenu.AddItem(new MenuItem("bonusRangeT", "塔给予范围e").SetValue(new Slider(0, 0, 1000)));
+            insecMenu.AddItem(new MenuItem("insec2orig", "大招向原始位置").SetValue(true));
             insecMenu.AddItem(new MenuItem("22222222222", "--"));
-            insecMenu.AddItem(new MenuItem("instaFlashInsec1", "|手动R|"));
-            insecMenu.AddItem(new MenuItem("instaFlashInsec2", "|闪现回旋踢大招位置|"));
-            insecMenu.AddItem(new MenuItem("instaFlashInsec", "|神龙闪|").SetValue(new KeyBind("P".ToCharArray()[0], KeyBindType.Toggle)));
+            insecMenu.AddItem(new MenuItem("instaFlashInsec1", "手动R"));
+            insecMenu.AddItem(new MenuItem("instaFlashInsec2", "闪现回旋踢大招位置"));
+            insecMenu.AddItem(new MenuItem("instaFlashInsec", "神龙闪").SetValue(new KeyBind("P".ToCharArray()[0], KeyBindType.Toggle)));
             Menu.AddSubMenu(insecMenu);
 
-            var autoSmiteSettings = new Menu("| 惩戒设置|", "Auto Smite Settings");
-            autoSmiteSettings.AddItem(new MenuItem("smiteEnabled", "|使用惩戒|").SetValue(new KeyBind("M".ToCharArray()[0], KeyBindType.Toggle)));
+            var autoSmiteSettings = new Menu(" 惩戒设置", "Auto Smite Settings");
+            autoSmiteSettings.AddItem(new MenuItem("smiteEnabled", "使用惩戒").SetValue(new KeyBind("M".ToCharArray()[0], KeyBindType.Toggle)));
+            var itemSelMenu = autoSmiteSettings.AddSubMenu(new Menu("惩戒目标", "sst"));
+            itemSelMenu.AddItem(new MenuItem("SRU_Red", "红Buff").SetValue(true));
+            itemSelMenu.AddItem(new MenuItem("SRU_Blue", "蓝Buff").SetValue(true));
+            itemSelMenu.AddItem(new MenuItem("SRU_Dragon", "小龙").SetValue(true));
+            itemSelMenu.AddItem(new MenuItem("SRU_Baron", "大龙").SetValue(true));
             autoSmiteSettings.AddItem(new MenuItem("qqSmite", "Q->惩戒->Q").SetValue(true));
-            autoSmiteSettings.AddItem(new MenuItem("normSmite", "|正常惩戒|").SetValue(true));
-            autoSmiteSettings.AddItem(new MenuItem("drawSmite", "|惩戒范围|").SetValue(true));
+            autoSmiteSettings.AddItem(new MenuItem("normSmite", "正常惩戒").SetValue(true));
+            autoSmiteSettings.AddItem(new MenuItem("drawSmite", "惩戒范围").SetValue(true));
             Menu.AddSubMenu(autoSmiteSettings);
 
             //SaveMe Menu
-            var SaveMeMenu = new Menu("|惩戒保存设置|", "Smite Save Settings");
-            SaveMeMenu.AddItem(new MenuItem("smiteSave", "|主动保存惩戒设置|").SetValue(true));
-            SaveMeMenu.AddItem(new MenuItem("hpPercentSM", "|WW惩击的|x%").SetValue(new Slider(10, 1)));
+            var SaveMeMenu = new Menu("惩戒保存设置", "Smite Save Settings");
+            SaveMeMenu.AddItem(new MenuItem("smiteSave", "主动保存惩戒设置").SetValue(true));
+            SaveMeMenu.AddItem(new MenuItem("hpPercentSM", "WW惩击的x%").SetValue(new Slider(10, 1)));
             SaveMeMenu.AddItem(new MenuItem("param1", "击杀附近 如果血量ㄧ=x%")); // TBC
             SaveMeMenu.AddItem(new MenuItem("dBuffs", "Buffs").SetValue(true));// TBC
             SaveMeMenu.AddItem(new MenuItem("hpBuffs", "HP %").SetValue(new Slider(30, 1)));// TBC
-            SaveMeMenu.AddItem(new MenuItem("dEpics", "|史诗|").SetValue(true));// TBC
+            SaveMeMenu.AddItem(new MenuItem("dEpics", "史诗").SetValue(true));// TBC
             SaveMeMenu.AddItem(new MenuItem("hpEpics", "HP %").SetValue(new Slider(10, 1)));// TBC
             Menu.AddSubMenu(SaveMeMenu);
             //Wardjump menu
-            var wardjumpMenu = new Menu("|顺眼设置|", "Wardjump");
+            var wardjumpMenu = new Menu("顺眼设置", "Wardjump");
             wardjumpMenu.AddItem(
-                new MenuItem("wjump", "|顺眼键位|").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
-            wardjumpMenu.AddItem(new MenuItem("maxRange", "|总是顺眼最大范围|").SetValue(false));
-            wardjumpMenu.AddItem(new MenuItem("castInRange", "|只顺眼在鼠标位置|").SetValue(false));
-            wardjumpMenu.AddItem(new MenuItem("m2m", "|使用鼠标移动|").SetValue(true));
-            wardjumpMenu.AddItem(new MenuItem("j2m", "|跳向最弱的人|").SetValue(true));
-            wardjumpMenu.AddItem(new MenuItem("j2c", "|跳向最强的人|").SetValue(true));
+                new MenuItem("wjump", "顺眼键位").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Press)));
+            wardjumpMenu.AddItem(new MenuItem("m2m", "使用鼠标移动").SetValue(true));
+            wardjumpMenu.AddItem(new MenuItem("j2m", "跳向最弱的人").SetValue(true));
+            wardjumpMenu.AddItem(new MenuItem("j2c", "跳向最强的人").SetValue(true));
             Menu.AddSubMenu(wardjumpMenu);
 
-            var drawMenu = new Menu("|范围设置|", "Drawing");
-            drawMenu.AddItem(new MenuItem("DrawEnabled", "|连招范围|").SetValue(false));
+            var drawMenu = new Menu("绘制", "Drawing");
+            drawMenu.AddItem(new MenuItem("DrawEnabled", "启用").SetValue(false));
+            drawMenu.AddItem(new MenuItem("drawST", "击杀提示").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawOutLineST", "范围").SetValue(true));
             drawMenu.AddItem(new MenuItem("insecDraw", "绘制INSEC").SetValue(true));
-            drawMenu.AddItem(new MenuItem("WJDraw", "|顺眼范围|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawQ", "|Q 范围|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawW", "|W 范围|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawE", "|E 范围|").SetValue(true));
-            drawMenu.AddItem(new MenuItem("drawR", "|R 范围|").SetValue(true));
+            drawMenu.AddItem(new MenuItem("WJDraw", "绘制跳眼位置").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawQ", "绘制 Q").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawW", "绘制 W").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawE", "绘制 E").SetValue(true));
+            drawMenu.AddItem(new MenuItem("drawR", "绘制 R").SetValue(true));
             Menu.AddSubMenu(drawMenu);
 
-            //Exploits
             var miscMenu = new Menu("杂项设置", "Misc");
             miscMenu.AddItem(new MenuItem("NFE", "使用封包").SetValue(true));
-            miscMenu.AddItem(new MenuItem("QHC", "Q |命中率|").SetValue(new StringList(new []{"低|", "正常", "高|"}, 1)));
+            miscMenu.AddItem(new MenuItem("QHC", "Q 命中率").SetValue(new StringList(new []{"低", "正常", "高"}, 1)));
             miscMenu.AddItem(new MenuItem("IGNks", "使用点燃").SetValue(true));
             miscMenu.AddItem(new MenuItem("qSmite", "惩戒 Q!").SetValue(true));
             Menu.AddSubMenu(miscMenu);
-            //Make the menu visible
+
             Menu.AddToMainMenu();
 Menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
@@ -233,6 +317,11 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
+            if (spells.Contains(args.SData.Name))
+            {
+                passiveStacks = 2;
+                passiveTimer = Environment.TickCount + 3000;
+            }
             if (args.SData.Name == "BlindMonkQOne")
             {
                 CastQAgain = false;
@@ -253,22 +342,26 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 InsecComboStep = InsecComboStepSelect.PRESSR;
                 Utility.DelayAction.Add(80, () => R.CastOnUnit(target, true));
             }
+            if (args.SData.Name == "blindmonkqtwo")
+            {
+                waitingForQ2 = true;
+                Utility.DelayAction.Add(3000, () =>
+                {
+                    waitingForQ2 = false;
+                });
+            }
             if (args.SData.Name == "BlindMonkRKick")
                 InsecComboStep = InsecComboStepSelect.NONE;
-            //if (args.SData.Name == "blindmonkqtwo" && HarassSelect != HarassStatEnum.NONE)
-            //    HarassSelect = HarassStatEnum.WJ;
-            if (args.SData.Name == "BlindMonkWOne" && InsecComboStep == InsecComboStepSelect.NONE)
-            {
-                Obj_AI_Hero target = paramBool("insecMode")
-                    ? TargetSelector.GetSelectedTarget()
-                    : TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical);
-                InsecComboStep = InsecComboStepSelect.PRESSR;
-                Utility.DelayAction.Add(100, () => R.CastOnUnit(target, true));
-            }
         }
 
         public static Vector3 getInsecPos(Obj_AI_Hero target)
         {
+
+            if (clicksecEnabled && paramBool("clickInsec"))
+            {
+                insecLinePos = Drawing.WorldToScreen(insecClickPos);
+                return V2E(insecClickPos, target.Position, target.Distance(insecClickPos) + 230).To3D();
+            }
             if (isNullInsecPos)
             {
                 isNullInsecPos = false;
@@ -304,7 +397,6 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             {
                 if (Player.Distance(getInsecPos(target)) < 200)
                 {
-                    R.CastOnUnit(target, true);
                     InsecComboStep = InsecComboStepSelect.PRESSR;
                 }
                 else if (InsecComboStep == InsecComboStepSelect.NONE &&
@@ -336,9 +428,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                         break;
                     case InsecComboStepSelect.WGAPCLOSE:
                         if (W.IsReady() && W.Instance.Name == "BlindMonkWOne" &&
-                            (paramBool("waitForQBuff")
-                                ? !(target.HasBuff("BlindMonkQOne", true) || target.HasBuff("blindmonkqonechaos", true))
-                                : true))
+                            (paramBool("waitForQBuff") && (Q.Instance.Name == "BlindMonkQOne" || (!Q.IsReady() || Q.Instance.Name == "blindmonkqtwo") && q2Done)) || !paramBool("waitForQBuff"))
                         {
                             WardJump(getInsecPos(target), false, false, true);
                             wardJumped = true;
@@ -451,16 +541,43 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         #region Tick Tasks
         static void Game_OnGameUpdate(EventArgs args)
         {
-            if(Player.IsDead) return;
             smiteSlot = Player.GetSpellSlot(smitetype());
+
+            if (doubleClickReset <= Environment.TickCount && clickCount != 0)
+            {
+                doubleClickReset = float.MaxValue;
+                clickCount = 0;
+            }
+
+            if (clickCount >= 2 && paramBool("clickInsec"))
+            {
+                resetTime = Environment.TickCount + 3000;
+                clicksecEnabled = true;
+                insecClickPos = Game.CursorPos;
+                clickCount = 0;
+            }
+
+            if (passiveTimer <= Environment.TickCount) passiveStacks = 0;
+
+            if (resetTime <= Environment.TickCount && !Menu.Item("InsecEnabled").GetValue<KeyBind>().Active && clicksecEnabled) clicksecEnabled = false;
+
+            if (q2Timer <= Environment.TickCount) q2Done = false;
+
+            if(Player.IsDead) return;
+
+            if (Menu.Item("jungActive").GetValue<KeyBind>().Active) JungleClear();
+
             if ((paramBool("insecMode")
                 ? TargetSelector.GetSelectedTarget()
                 : TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical)) == null)
             {
                 InsecComboStep = InsecComboStepSelect.NONE;
             }
+
             if (Menu.Item("smiteEnabled").GetValue<KeyBind>().Active) smiter();
+
             if (Menu.Item("starCombo").GetValue<KeyBind>().Active) wardCombo();
+
             if (paramBool("smiteSave")) SaveMe();
 
             if (paramBool("IGNks"))
@@ -474,6 +591,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                     Player.Spellbook.CastSpell(IgniteSlot, NewTarget);
                 }
             }
+
             if (Menu.Item("InsecEnabled").GetValue<KeyBind>().Active)
             {
                 if (paramBool("insecOrbwalk"))
@@ -482,8 +600,8 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 }
                 Obj_AI_Hero newTarget = paramBool("insecMode")
                     ? TargetSelector.GetSelectedTarget()
-                    : TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical);
-                
+                    : TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical);  
+
                  if(newTarget != null) InsecCombo(newTarget);
             }
             else
@@ -491,7 +609,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 isNullInsecPos = true;
                 wardJumped = false;
             }
+
             if(Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) InsecComboStep = InsecComboStepSelect.NONE;
+
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -503,11 +623,11 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 case Orbwalking.OrbwalkingMode.Mixed:
                     Harass();
                     break;
-
             }
+
             if(Menu.Item("wjump").GetValue<KeyBind>().Active)
                 wardjumpToMouse();
-        }
+            }
 #endregion
 
         #region Draw
@@ -516,6 +636,10 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             Obj_AI_Hero newTarget = paramBool("insecMode")
                    ? TargetSelector.GetSelectedTarget()
                    : TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Physical);
+            if (clicksecEnabled)
+            {
+                Utility.DrawCircle(insecClickPos, 100, System.Drawing.Color.White);
+            }
             if (Menu.Item("instaFlashInsec").GetValue<KeyBind>().Active) Drawing.DrawText(960, 340, System.Drawing.Color.Red, "FLASH INSEC ENABLED");
             if (newTarget != null && newTarget.IsVisible && Player.Distance(newTarget) < 3000 && paramBool("insecDraw"))
             {
@@ -537,10 +661,10 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 Utility.DrawCircle(JumpPos.To3D(), 20, System.Drawing.Color.Red);
                 Utility.DrawCircle(Player.Position, 600, System.Drawing.Color.Red);
             }
-            if (paramBool("drawQ")) Utility.DrawCircle(Player.Position, Q.Range - 80, Q.IsReady() ? System.Drawing.Color.LightSkyBlue :System.Drawing.Color.Tomato);
-            if (paramBool("drawW")) Utility.DrawCircle(Player.Position, W.Range - 80, W.IsReady() ? System.Drawing.Color.LightSkyBlue :System.Drawing.Color.Tomato);
-            if (paramBool("drawE")) Utility.DrawCircle(Player.Position, E.Range - 80, E.IsReady() ? System.Drawing.Color.LightSkyBlue :System.Drawing.Color.Tomato);
-            if (paramBool("drawR")) Utility.DrawCircle(Player.Position, R.Range - 80, R.IsReady() ? System.Drawing.Color.LightSkyBlue :System.Drawing.Color.Tomato);
+            if (paramBool("drawQ")) Utility.DrawCircle(Player.Position, Q.Range - 80, Q.IsReady() ? System.Drawing.Color.LightSkyBlue : System.Drawing.Color.Tomato);
+            if (paramBool("drawW")) Utility.DrawCircle(Player.Position, W.Range - 80, W.IsReady() ? System.Drawing.Color.LightSkyBlue : System.Drawing.Color.Tomato);
+            if (paramBool("drawE")) Utility.DrawCircle(Player.Position, E.Range - 80, E.IsReady() ? System.Drawing.Color.LightSkyBlue : System.Drawing.Color.Tomato);
+            if (paramBool("drawR")) Utility.DrawCircle(Player.Position, R.Range - 80, R.IsReady() ? System.Drawing.Color.LightSkyBlue : System.Drawing.Color.Tomato);
 
         }
         #endregion
@@ -548,14 +672,10 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         #region Autosmite
         public static void smiter()
         {
-            var minion =
-                MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly,
-                    MinionOrderTypes.MaxHealth).FirstOrDefault();
+            var minion = ObjectManager.Get<Obj_AI_Minion>().Where(a => buffandepics.Contains(a.BaseSkinName) && a.Distance(Player) <= 1300).FirstOrDefault() ;
             if (minion != null)
             {
-                foreach (var name in buffandepics)
-                {
-                    if (minion.BaseSkinName == name)
+                if (Menu.Item(minion.BaseSkinName).GetValue<bool>())
                     {
                         minionerimo = minion;
                         if (SmiteDmg() > minion.Health && minion.IsValidTarget(780) && paramBool("normSmite")) Player.Spellbook.CastSpell(smiteSlot, minion);
@@ -565,7 +685,6 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                             Player.Spellbook.CastSpell(smiteSlot, minion);
                         }
                         if (!Q.IsReady() || !paramBool("qqSmite")) return;
-
                         if (Q2Damage(minion, ((float) SmiteDmg() + Q.GetDamage(minion)), true) + SmiteDmg() >
                             minion.Health &&
                             !(minion.HasBuff("BlindMonkQOne", true) || minion.HasBuff("blindmonkqonechaos", true)))
@@ -586,76 +705,109 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                             Q.CastOnUnit(Player, true);
                         }
                     }
-                }
             }
         }
 
         #endregion
 
         #region WaveClear
-        public static void AllClear()
+
+        public static void JungleClear()
         {
-            var passiveIsActive = Player.HasBuff("blindmonkpassive_cosmetic", true);
-            bool isJung = false;
-            var minion =
-                MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral,
-                    MinionOrderTypes.MaxHealth).FirstOrDefault();
-            if (minion == null) minion = MinionManager.GetMinions(Player.ServerPosition, Q.Range).FirstOrDefault();
-            else isJung = true;
-                useClearItems(minion);
-            if (isJung)
-            {
-                foreach (var name in buffandepics)
+            var minion = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+            if (minion == null)
+                return;
+            var passiveIsActive = passiveStacks > 0;
+            useClearItems(minion);
+            if (Q.IsReady() && paramBool("Qjng"))
                 {
-                    if (minion != null && minion.Name.ToLower().Contains(name.ToLower()))
+                    if ((minion.HasBuff("BlindMonkQOne", true) || minion.HasBuff("blindmonkqonechaos", true)) &&
+                        (CastQAgain) || Q.GetDamage(minion, 1) > minion.Health)
                     {
-                        if (minion.Health < SmiteDmg() + 300) return;
+                        Q.Cast(packets());
                     }
                 }
-            }
+                if (passiveIsActive || waitforjungle)
+                {
+                    return;
+                }
+                if (paramBool("Qjng") && Q2Damage(minion, Q.Instance.Name == "BlindMonkQOne" ? minion.Health - Q.GetDamage(minion) : minion.Health, true) > minion.Health && Q.IsReady())
+                {
+                    if (Q.Instance.Name == "BlindMonkQOne")
+                    {
+                        Q.Cast(minion, packets());
+                        waiter();
+                        return;
+                    }
+                    Q.Cast(packets());
+                    waiter();
+                    return;
+                    
+                }
+                if (paramBool("Wjng") && W.IsReady() && minion.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player) + 200))
+                {
+                    if (W.Instance.Name == "BlindMonkWOne")
+                    {
+                        W.Cast(packets());
+                        waiter();
+                        return;
+                    }
+                    W.Cast(packets());
+                    waiter();
+                    return;
+                }
+                if (paramBool("Qjng") && Q.IsReady() && minion.IsValidTarget(Q.Range))
+                {
+                    if (Q.Instance.Name == "BlindMonkQOne")
+                    {
+                        Q.Cast(minion, packets());
+                        waiter();
+                        return;
+                    }
+                    if ((minion.HasBuff("BlindMonkQOne", true) || minion.HasBuff("blindmonkqonechaos", true)))
+                    {
+                        Q.Cast(packets());
+                        waiter();
+                        return;
+                    }
+                }
+                if (paramBool("Ejng") && E.IsReady() && minion.IsValidTarget(E.Range))
+                {
+                    E.Cast(packets());
+                    waiter();
+                    return;
+                }
+        }
+
+        public static void waiter()
+        {
+            waitforjungle = true;
+            Utility.DelayAction.Add(300, () => waitforjungle = false);
+        }
+        public static void AllClear()
+        {
+            var minion = MinionManager.GetMinions(Player.ServerPosition, Q.Range).FirstOrDefault();
+            useClearItems(minion);
             if (minion == null || minion.Name.ToLower().Contains("ward")) return;
                 if (Menu.Item("useQClear").GetValue<bool>() && Q.IsReady())
                 {
                     if (Q.Instance.Name == "BlindMonkQOne")
                     {
-                        if (!passiveIsActive)
-                        {
                             Q.Cast(minion, true);
-                        }
                     }
                     else if ((minion.HasBuff("BlindMonkQOne", true) ||
-                             minion.HasBuff("blindmonkqonechaos", true)) && (!passiveIsActive || Q.IsKillable(minion, 1)) ||
+                             minion.HasBuff("blindmonkqonechaos", true)) && ( Q.IsKillable(minion, 1)) ||
                              Player.Distance(minion) > 500) Q.Cast();
-                }
-                if (paramBool("useWClear") && isJung && Player.Distance(minion) < Orbwalking.GetRealAutoAttackRange(Player))
-                {
-                    if (W.Instance.Name == "BlindMonkWOne" && !delayW)
-                    {
-                        if (!passiveIsActive)
-                        {
-                            W.CastOnUnit(Player);
-                            delayW = true;
-                            Utility.DelayAction.Add(300, () => delayW = false);
-                        }
-
-                    }
-                    else if (W.Instance.Name != "BlindMonkWOne" && (!passiveIsActive))
-                    {
-                        W.CastOnUnit(Player);
-                    }
                 }
                 if (Menu.Item("useEClear").GetValue<bool>() && E.IsReady())
                 {
                     if (E.Instance.Name == "BlindMonkEOne" && minion.IsValidTarget(E.Range) && !delayW)
                     {
-                        if (!passiveIsActive)
-                        {
                             E.Cast();
                             delayW = true;
                             Utility.DelayAction.Add(300, () => delayW = false);
-                        }
                     }
-                    else if (minion.HasBuff("BlindMonkEOne", true) && (!passiveIsActive || Player.Distance(minion) > 450))
+                    else if (minion.HasBuff("BlindMonkEOne", true) && (Player.Distance(minion) > 450))
                     {
                         E.Cast();
                     }
@@ -666,7 +818,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         #region Wardjump
         public static void wardjumpToMouse()
         {
-            WardJump(Game.CursorPos, paramBool("m2m"), paramBool("maxRange"), paramBool("castInRange"), paramBool("j2m"), paramBool("j2c"));
+            WardJump(Game.CursorPos, paramBool("m2m"), false, false, paramBool("j2m"), paramBool("j2c"));
         }
         private static void WardJump(Vector3 pos, bool m2m = true, bool maxRange = false, bool reqinMaxRange = false, bool minions = true, bool champions = true)
         {
@@ -775,7 +927,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         public static void wardCombo()
         {
             var target = TargetSelector.GetTarget(1500, TargetSelector.DamageType.Physical);
-            Orbwalk(Game.CursorPos);
+
+            Orbwalking.Orbwalk(target ?? null, Game.CursorPos, Menu.Item("ExtraWindup").GetValue<Slider>().Value, Menu.Item("HoldPosRadius").GetValue<Slider>().Value);
+
             if (target == null) return;
             useItems(target);
             if ((target.HasBuff("BlindMonkQOne", true) || target.HasBuff("blindmonkqonechaos", true)))
@@ -814,24 +968,41 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                     Q.Cast();
                 }
             }
-            if ((paramBool("aaStacks") && Player.HasBuff("blindmonkpassive_cosmetic", true)) || target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player))) return;
-            if (R.GetDamage(target) >= target.Health && paramBool("ksR")) R.Cast(target, packets());
             useItems(target);
+            if (R.GetDamage(target) >= target.Health && paramBool("ksR") && !target.IsInvulnerable) R.Cast(target, packets());
+            if (paramBool("aaStacks") && passiveStacks > 0 && target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player) + 100)) return;
+            
             if (paramBool("useW"))
             {
                 if (paramBool("wMode") && target.Distance(Player) > Orbwalking.GetRealAutoAttackRange(Player))
+                {
                     WardJump(target.Position, false, true);
-                else if (!paramBool("wMode") && target.Distance(Player) > Q.Range) WardJump(target.Position, false, true);
+                    return;
+                }
+                if (!paramBool("wMode") && target.Distance(Player) > Q.Range)
+                {
+                    WardJump(target.Position, false, true);
+                    return;
+                }
             }
             if (E.IsReady() && E.Instance.Name == "BlindMonkEOne" && target.IsValidTarget(E.Range) && paramBool("useE"))
+            {
                 E.Cast();
+                return;
+            }
 
             if (E.IsReady() && E.Instance.Name != "BlindMonkEOne" &&
                 !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)) && paramBool("useE"))
+            {
                 E.Cast();
+                return;
+            }
 
             if (Q.IsReady() && Q.Instance.Name == "BlindMonkQOne" && paramBool("useQ"))
+            {
                 CastQ1(target);
+                return;
+            }
 
             if (R.IsReady() && Q.IsReady() &&
                 ((target.HasBuff("BlindMonkQOne", true) || target.HasBuff("blindmonkqonechaos", true))) && paramBool("useR"))
@@ -840,7 +1011,7 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         public static void CastQ1(Obj_AI_Hero target)
         {
             var Qpred = Q.GetPrediction(target);
-            if (Qpred.CollisionObjects.Count == 1 && Player.Spellbook.CanUseSpell(smiteSlot) == SpellState.Ready && paramBool("qSmite") && Q.MinHitChance == HitChance.High && Qpred.CollisionObjects[0].IsValidTarget(780))
+            if ((Qpred.CollisionObjects.Where(a => a.IsValid && !a.IsDead && a.IsMinion).ToList().Count / 2) == 1 && Player.Spellbook.CanUseSpell(smiteSlot) == SpellState.Ready && paramBool("qSmite") && Qpred.CollisionObjects[0].IsValidTarget(780))
             {
                 Player.Spellbook.CastSpell(smiteSlot, Qpred.CollisionObjects[0]);
                 Utility.DelayAction.Add(70, () => Q.Cast(Qpred.CastPosition, packets()));
@@ -964,8 +1135,11 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                     return HitChance.Medium;
                 case 2:
                     return HitChance.High;
+                case 3:
+                    return HitChance.VeryHigh;
+                default:
+                    return HitChance.High;
             }
-            return HitChance.Medium;
         }
 
         public static bool hpLowerParam(Obj_AI_Base obj, String paramName)

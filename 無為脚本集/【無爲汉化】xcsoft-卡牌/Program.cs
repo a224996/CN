@@ -14,12 +14,20 @@ namespace xc_TwistedFate
     internal class Program
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+
         private static Orbwalking.Orbwalker Orbwalker;
+
         private static Spell Q, W;
+
         private static Items.Item Dfg, Bft;
+
         private static Menu Menu;
+
         private static SpellSlot SFlash;
         private static SpellSlot SIgnite;
+
+        private static Vector2 _yasuoWallCastedPos;
+        private static GameObject _yasuoWall;
 
         static void Main(string[] args)
         {
@@ -40,7 +48,7 @@ namespace xc_TwistedFate
             Q = new Spell(SpellSlot.Q, 1450);
             Q.SetSkillshot(0.25f, 40f, 1000f, false, SkillshotType.SkillshotLine);
 
-            W = new Spell(SpellSlot.W, 1000);
+            W = new Spell(SpellSlot.W, 1200);
 
             Menu = new Menu("【無爲汉化】xcsoft-卡牌", "xcoft_TF", true);
 
@@ -52,9 +60,9 @@ namespace xc_TwistedFate
             TargetSelector.AddToMenu(ts);
 
             var wMenu = new Menu("选牌", "pickcard");
-            wMenu.AddItem(new MenuItem("selectgold", "黄牌").SetValue(new KeyBind('W', KeyBindType.Press)));
-            wMenu.AddItem(new MenuItem("selectblue", "蓝牌").SetValue(new KeyBind('E', KeyBindType.Press)));
-            wMenu.AddItem(new MenuItem("selectred", "红牌").SetValue(new KeyBind('T', KeyBindType.Press)));
+            wMenu.AddItem(new MenuItem("selectgold", "黄牌").SetValue(new KeyBind('E', KeyBindType.Press)));
+            wMenu.AddItem(new MenuItem("selectblue", "蓝牌").SetValue(new KeyBind('T', KeyBindType.Press)));
+            wMenu.AddItem(new MenuItem("selectred", "红牌").SetValue(new KeyBind('S', KeyBindType.Press)));
             wMenu.AddItem(new MenuItem("plz1", "-尽量不要用W按键"));
             wMenu.AddItem(new MenuItem("plz2", "-W按键有时是随机选择 :("));
             Menu.AddSubMenu(wMenu);
@@ -172,6 +180,8 @@ namespace xc_TwistedFate
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
+            GameObject.OnCreate += GameObject_OnCreate;
+            GameObject.OnDelete += GameObject_OnDelete;
 
             Orbwalker.SetMovement(!Menu.Item("movement").GetValue<bool>());
 
@@ -226,6 +236,9 @@ namespace xc_TwistedFate
         {
             if (args.Target is Obj_AI_Hero || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
                 args.Process = CardSelector.Status != SelectStatus.Selecting && Environment.TickCount - CardSelector.LastWSent > 300;
+
+            if (!DetectCollision(args.Target))
+                args.Process = false;
         }
 
         static void Game_OnGameUpdate(EventArgs args)
@@ -266,6 +279,11 @@ namespace xc_TwistedFate
             if (sender.IsMe && args.SData.Name == "gate" && Menu.Item("goldR").GetValue<bool>())
             {
                 CardSelector.StartSelecting(Cards.Yellow);
+            }
+
+            if (sender.IsEnemy && args.SData.Name == "YasuoWMovingWall")
+            {
+                _yasuoWallCastedPos = sender.ServerPosition.To2D();
             }
         }
 
@@ -347,8 +365,6 @@ namespace xc_TwistedFate
                     }
                 }
             }
-
-            //Drawing JunglePosition part of Marksman# copy
             if (Game.MapId == (GameMapId)11 && Menu.Item("jgpos").GetValue<bool>())
             {
                 const float circleRange = 100f;
@@ -445,7 +461,7 @@ namespace xc_TwistedFate
 
                     if (Menu.Item("cconly").GetValue<bool>())
                     {
-                        if (pred.Hitchance >= HitChance.VeryHigh)
+                        if (pred.Hitchance >= HitChance.High && DetectCollision(target))
                         {
                             foreach (var buff in target.Buffs)
                             {
@@ -454,7 +470,7 @@ namespace xc_TwistedFate
                             }
                         }
                     }
-                    else if (pred.Hitchance >= HitChance.VeryHigh)
+                    else if (pred.Hitchance >= HitChance.VeryHigh && DetectCollision(target))
                         Q.Cast(target, Menu.Item("usepacket").GetValue<bool>());
                 }
             }
@@ -466,7 +482,7 @@ namespace xc_TwistedFate
 
             if (Q.IsReady() && Menu.Item("harassUseQ").GetValue<bool>() && Utility.ManaPercentage(Player) > Menu.Item("harassmana").GetValue<Slider>().Value)
             {
-                if (target.IsValidTarget(Menu.Item("harassrange").GetValue<Slider>().Value) && Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
+                if (target.IsValidTarget(Menu.Item("harassrange").GetValue<Slider>().Value) && Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh && DetectCollision(target))
                     Q.Cast(target);
             }
         }
@@ -497,7 +513,7 @@ namespace xc_TwistedFate
         {
             if (Q.IsReady() && Menu.Item("laneclearUseQ").GetValue<bool>() && Utility.ManaPercentage(Player) > Menu.Item("laneclearQmana").GetValue<Slider>().Value)
             {
-                var allMinionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range,MinionTypes.All, MinionTeam.Enemy);
+                var allMinionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
                 var locQ = Q.GetLineFarmLocation(allMinionsQ);
 
                 if (locQ.MinionsHit >= Menu.Item("laneclearQmc").GetValue<Slider>().Value)
@@ -506,7 +522,7 @@ namespace xc_TwistedFate
 
             if (W.IsReady() && Menu.Item("laneclearUseW").GetValue<bool>())
             {
-                var minioncount = MinionManager.GetMinions(Player.Position, W.Range).Count;
+                var minioncount = MinionManager.GetMinions(Player.Position, 1500).Count;
 
                 if (minioncount > 0)
                 {
@@ -525,7 +541,7 @@ namespace xc_TwistedFate
 
         static void JungleClear()
         {
-            var mobs = MinionManager.GetMinions(Player.ServerPosition, Orbwalking.GetRealAutoAttackRange(Player), MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
+            var mobs = MinionManager.GetMinions(Player.ServerPosition, Orbwalking.GetRealAutoAttackRange(Player) + 100, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
             if (mobs.Count <= 0)
                 return;
@@ -556,66 +572,61 @@ namespace xc_TwistedFate
             var Truedmg = 0d;
             bool card = false;
 
-            //AP데미지
             if(Q.IsReady())
                 APdmg += Player.GetSpellDamage(enemy, SpellSlot.Q);
 
-            if (W.IsReady())//카드 돌리고있을때
-                APdmg += Player.GetSpellDamage(enemy, SpellSlot.W, 2);//골드카드데미지추가
-            else//카드뽑았나?
+            if (W.IsReady())
+                APdmg += Player.GetSpellDamage(enemy, SpellSlot.W, 2);
+            else
             {
-                card = true;//넌 카드를 들고있다고 생각한다.
-                foreach (var buff in Player.Buffs)//패건들지마손모가지날아가붕게
-                {//버프이름 JeonHelperForDev 어셈으로 찾음
-                    if (buff.Name == "bluecardpreattack")//블루카드들고있네
-                        APdmg += Player.GetSpellDamage(enemy, SpellSlot.W);//블루카드데미지추가
-                    else if (buff.Name == "redcardpreattack")//레드카드들고있네
-                        APdmg += Player.GetSpellDamage(enemy, SpellSlot.W, 1);//레드카드데미지추가
-                    else if (buff.Name == "goldcardpreattack")//골드카드들고있네
-                        APdmg += Player.GetSpellDamage(enemy, SpellSlot.W, 2);//골드카드데미지추가
-                    else card = false;//카드없네
+                card = true;
+                foreach (var buff in Player.Buffs)
+                {
+                    if (buff.Name == "bluecardpreattack")
+                        APdmg += Player.GetSpellDamage(enemy, SpellSlot.W);
+                    else if (buff.Name == "redcardpreattack")
+                        APdmg += Player.GetSpellDamage(enemy, SpellSlot.W, 1);
+                    else if (buff.Name == "goldcardpreattack")
+                        APdmg += Player.GetSpellDamage(enemy, SpellSlot.W, 2);
+                    else card = false;
                 }
             }
 
             bool passive = false;
             foreach (var buff in Player.Buffs)
             {
-                if (buff.Name == "cardmasterstackparticle")//E패시브있네
+                if (buff.Name == "cardmasterstackparticle")
                 {
-                    APdmg += Player.GetSpellDamage(enemy, SpellSlot.E);//패시브딜추가
+                    APdmg += Player.GetSpellDamage(enemy, SpellSlot.E);
                     passive = true;
                 }
 
-                if (buff.Name == "lichbane")//리치베인패시브있네?
+                if (buff.Name == "lichbane")
                 {
                     APdmg += Damage.CalcDamage(Player, enemy, Damage.DamageType.Magical, (Player.BaseAttackDamage * 0.75) + ((Player.BaseAbilityDamage + Player.FlatMagicDamageMod) * 0.5));//리치베인딜 추가
                     passive = true;
                 }
 
-                if (buff.Name == "sheen")//광휘의검(=삼위일체) 패시브있네?
+                if (buff.Name == "sheen")
                 {
-                    ADdmg += Player.GetAutoAttackDamage(enemy, false);//광휘의검딜추가
+                    ADdmg += Player.GetAutoAttackDamage(enemy, false);
                     passive = true;
                 }
             }
 
-            if (!card && passive)//카드없네 평타로 패시브터트릴건가보네
-                ADdmg += Player.GetAutoAttackDamage(enemy, false);//평타딜추가
+            if (!card && passive)
+                ADdmg += Player.GetAutoAttackDamage(enemy, false);
 
             if (Dfg.IsReady() && Menu.Item("usedfg").GetValue<bool>())
             {
-                APdmg += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg);//데파딜추가
-                APdmg = APdmg * 1.2;//20%추가피해
+                APdmg += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg);
+                APdmg = APdmg * 1.2;
             }
             else if (Bft.IsReady() && Menu.Item("usebft").GetValue<bool>())
             {
-                APdmg += Player.GetItemDamage(enemy, Damage.DamageItems.BlackFireTorch);//어둠불꽃횃불딜추가(뒤틀린숲전용)
-                APdmg = APdmg * 1.2;//20%추가피해
+                APdmg += Player.GetItemDamage(enemy, Damage.DamageItems.BlackFireTorch);
+                APdmg = APdmg * 1.2;
             }
-
-            //true데미지
-            //if (SIgnite != SpellSlot.Unknown && Player.Spellbook.CanUseSpell(SIgnite) == SpellState.Ready)//점화있음?
-            //    Truedmg += Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);//점화딜추가
 
             return (float)ADdmg + (float)APdmg + (float)Truedmg;
         }
@@ -631,7 +642,7 @@ namespace xc_TwistedFate
                 {
                     if (Q.GetDamage(target) > target.Health + 20 & Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
                     {
-                        if (Q.IsReady())
+                        if (Q.IsReady() && DetectCollision(target))
                             Q.Cast(target, Menu.Item("usepacket").GetValue<bool>());
 
                         Render.Circle.DrawCircle(target.Position, 100, Color.Red, 5);
@@ -650,11 +661,43 @@ namespace xc_TwistedFate
             {
                 float ignitedamage = 50 + 20 * Player.Level;
 
-                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x != null && x.IsValid && !x.IsDead && Player.ServerPosition.Distance(x.ServerPosition) < 600 && !x.IsMe && !x.IsAlly && (x.Health + x.HPRegenRate * 2) <= ignitedamage))
+                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x != null && x.IsValid && !x.IsDead && Player.ServerPosition.Distance(x.ServerPosition) < 600 && !x.IsMe && !x.IsAlly && (x.Health + x.HPRegenRate * 1) <= ignitedamage))
                 {
                     Player.Spellbook.CastSpell(SIgnite, target);
                 }
             }
+        }
+
+        private static void GameObject_OnCreate(GameObject obj, EventArgs args)
+        {
+            if (Player.Distance(obj.Position) > 1500 || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return;
+
+            if (obj.IsValid &&System.Text.RegularExpressions.Regex.IsMatch(obj.Name, "_w_windwall.\\.troy",System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                _yasuoWall = obj;
+        }
+
+        private static void GameObject_OnDelete(GameObject obj, EventArgs args)
+        {
+            if (Player.Distance(obj.Position) > 1500 || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return;
+
+            if (obj.IsValid && System.Text.RegularExpressions.Regex.IsMatch(obj.Name, "_w_windwall.\\.troy",System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                _yasuoWall = null;
+        }
+
+        private static bool DetectCollision(GameObject target)
+        {
+            if (_yasuoWall == null || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return true;
+
+            var level = _yasuoWall.Name.Substring(_yasuoWall.Name.Length - 6, 1);
+            var wallWidth = (300 + 50 * Convert.ToInt32(level));
+            var wallDirection = (_yasuoWall.Position.To2D() - _yasuoWallCastedPos).Normalized().Perpendicular();
+            var wallStart = _yasuoWall.Position.To2D() + ((int)(wallWidth / 2)) * wallDirection;
+            var wallEnd = wallStart - wallWidth * wallDirection;
+
+            var intersection = wallStart.Intersection(wallEnd, Player.Position.To2D(), target.Position.To2D());
+
+            return !intersection.Point.IsValid();
+
         }
     }
 }
