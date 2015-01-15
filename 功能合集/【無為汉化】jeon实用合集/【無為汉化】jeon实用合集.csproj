@@ -76,17 +76,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>E:\L#\\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\ee\\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>E:\L#\\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\ee\\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>E:\L#\\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\ee\\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

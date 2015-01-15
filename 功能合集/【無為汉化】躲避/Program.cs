@@ -455,16 +455,6 @@ namespace Evade
                 return;
             }
 
-            /**/
-            if (EvadeToPoint.IsValid() && DetectedSkillshots.Count > 0)
-            {
-                if (Environment.TickCount - LastSentMovePacketT2 > 1000 / 10)
-                {
-                    ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, EvadeToPoint.To3D());
-                    LastSentMovePacketT2 = Environment.TickCount;
-                }
-            }
-
             //Shield allies.
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>())
             {
@@ -505,6 +495,16 @@ namespace Evade
             if (IsSpellShielded(ObjectManager.Player))
             {
                 return;
+            }
+
+            /**/
+            if (EvadeToPoint.IsValid() && DetectedSkillshots.Count > 0)
+            {
+                if (Environment.TickCount - LastSentMovePacketT2 > 1000 / 10)
+                {
+                    ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, EvadeToPoint.To3D());
+                    LastSentMovePacketT2 = Environment.TickCount;
+                }
             }
 
             NoSolutionFound = false;

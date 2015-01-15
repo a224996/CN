@@ -136,6 +136,7 @@ namespace Evade
 
             var misc = new Menu("杂项", "Misc");
             misc.AddItem(new MenuItem("DisableFow", "禁用战争迷雾闪现").SetValue(false));
+            misc.AddItem(new MenuItem("ShowEvadeStatus", "显示躲避状况").SetValue(false));
             Menu.AddSubMenu(misc);
 
             Menu.AddItem(
@@ -147,7 +148,7 @@ namespace Evade
 			var QQ = new Menu("無為汉化", "QQ");
             QQ.AddItem(new MenuItem("QQ2", "汉化群：386289593"));
             Menu.AddSubMenu(QQ);
-			
+
             Menu.AddToMainMenu();
         }
     }
