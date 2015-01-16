@@ -124,6 +124,14 @@ namespace LeagueSharp.Common
             return new Vector3(v.X, v.Y, ObjectManager.Player.ServerPosition.Z);
         }
 
+        /// <summary>
+        ///     Converts the Vector2 to Vector3. (Z = NavMesh.GetHeightForPosition)
+        /// </summary>
+        public static Vector3 To3D2(this Vector2 v)
+        {
+            return new Vector3(v.X, v.Y, NavMesh.GetHeightForPosition(v.X, v.Y));
+        }
+
         public static Vector3 SetZ(this Vector3 v, float? value = null)
         {
             if (value == null)
@@ -521,7 +529,7 @@ namespace LeagueSharp.Common
         {
             var D = center1.Distance(center2);
             //The Circles dont intersect:
-            if (D > radius1 + radius2)
+            if (D > radius1 + radius2 || (D <= Math.Abs(radius1 - radius2)))
             {
                 return new Vector2[] { };
             }
@@ -609,6 +617,54 @@ namespace LeagueSharp.Common
             return p;
         }
 
+        /// <summary>
+        ///     Returns a Vector2 at center of the polygone.
+        /// </summary>
+        public static Vector2 CenterOfPolygone(this Polygon p)
+        {
+            var cX = 0f;
+            var cY = 0f;
+            var pc = p.Points.Count;
+            foreach (var point in p.Points)
+            {
+                cX += point.X;
+                cY += point.Y;
+            }
+            return new Vector2(cX / pc, cY / pc);
+        }
+
+        /// <summary>
+        ///     Joins all the polygones in the list in one polygone if they interect.
+        /// </summary>
+        public static List<Polygon> JoinPolygons(this List<Polygon> sList)
+        {
+            var p = ClipPolygons(sList);
+            List<List<IntPoint>> tList = new List<List<IntPoint>>();
+
+            Clipper c = new Clipper();
+            c.AddPaths(p, PolyType.ptClip, true);
+            c.Execute(ClipType.ctUnion, tList, PolyFillType.pftNonZero, PolyFillType.pftNonZero);
+
+            return ToPolygons(tList);
+        }
+        
+        /// <summary>
+        ///     Joins all the polygones.
+        ///     ClipType: http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Types/ClipType.htm
+        ///     PolyFillType: http://www.angusj.com/delphi/clipper/documentation/Docs/Units/ClipperLib/Types/PolyFillType.htm
+        /// </summary>
+        public static List<Polygon> JoinPolygons(this List<Polygon> sList, ClipType cType, PolyType pType = PolyType.ptClip, PolyFillType pFType1 = PolyFillType.pftNonZero, PolyFillType pFType2 = PolyFillType.pftNonZero)
+        {
+            var p = ClipPolygons(sList);
+            List<List<IntPoint>> tList = new List<List<IntPoint>>();
+
+            Clipper c = new Clipper();
+            c.AddPaths(p, pType, true);
+            c.Execute(cType, tList, pFType1, pFType2);
+
+            return ToPolygons(tList);
+        }
+
         public static List<Polygon> ToPolygons(this List<List<IntPoint>> v)
         {
             return v.Select(path => path.ToPolygon()).ToList();
@@ -687,81 +743,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        public class Arc
-        {
-            public float Angle;
-            public Vector2 EndPos;
-            public float Radius;
-            public Vector2 StartPos;
-            private readonly int _quality;
-
-            public Arc(Vector2 start, Vector2 end, float angle, float radius, int quality = 20)
-            {
-                StartPos = start;
-                EndPos = (end - start).Normalized();
-                Angle = angle;
-                Radius = radius;
-                _quality = quality;
-            }
-
-            public Polygon ToPolygon(int offset = 0)
-            {
-                var result = new Polygon();
-                var outRadius = (Radius + offset) / (float) Math.Cos(2 * Math.PI / _quality);
-                var side1 = EndPos.Rotated(-Angle * 0.5f);
-                for (var i = 0; i <= _quality; i++)
-                {
-                    var cDirection = side1.Rotated(i * Angle / _quality).Normalized();
-                    result.Add(
-                        new Vector2(StartPos.X + outRadius * cDirection.X, StartPos.Y + outRadius * cDirection.Y));
-                }
-                return result;
-            }
-
-            public List<IntPoint> ToClipperPath()
-            {
-                var poly = ToPolygon();
-                var result = new List<IntPoint>(poly.Points.Count);
-                result.AddRange(poly.Points.Select(point => new IntPoint(point.X, point.Y)));
-
-                return result;
-            }
-
-            public bool IsOutside(Vector2 point)
-            {
-                var p = new IntPoint(point.X, point.Y);
-                return Clipper.PointInPolygon(p, ToClipperPath()) != 1;
-            }
-        }
-
-        public class Line
-        {
-            public float Length;
-            public Vector2 LineEnd;
-            public Vector2 LineStart;
-
-            public Line(Vector2 start, Vector2 end, float length)
-            {
-                LineStart = start;
-                LineEnd = (end - start).Normalized() * length + start;
-                Length = length;
-            }
-
-            public void ChangeLength(float newLenght)
-            {
-                LineEnd = LineEnd.Normalized() * newLenght;
-                Length = newLenght;
-            }
-
-            public Polygon ToPolygon()
-            {
-                var result = new Polygon();
-                result.Add(LineStart);
-                result.Add(LineEnd);
-                return result;
-            }
-        }
-
         public class Polygon
         {
             public List<Vector2> Points = new List<Vector2>();
@@ -769,6 +750,11 @@ namespace LeagueSharp.Common
             public void Add(Vector2 point)
             {
                 Points.Add(point);
+            }
+
+            public void Add(Vector3 point)
+            {
+                Points.Add(point.To2D());
             }
 
             public void Add(Polygon polygon)
@@ -786,49 +772,30 @@ namespace LeagueSharp.Common
                 return result;
             }
 
-            public bool IsOutside(Vector2 point)
+            public virtual void Draw(Color color, int width = 1)
             {
-                var p = new IntPoint(point.X, point.Y);
-                return Clipper.PointInPolygon(p, ToClipperPath()) != 1;
-            }
-        }
-
-        public class Circle
-        {
-            public Vector2 Center;
-            public float Radius;
-            private readonly int _quality;
-
-            public Circle(Vector2 center, float radius, int quality = 20)
-            {
-                Center = center;
-                Radius = radius;
-                _quality = quality;
-            }
-
-            public Polygon ToPolygon(int offset = 0, float overrideWidth = -1)
-            {
-                var result = new Polygon();
-                var outRadius = (overrideWidth > 0
-                    ? overrideWidth
-                    : (offset + Radius) / (float) Math.Cos(2 * Math.PI / _quality));
-                for (var i = 1; i <= _quality; i++)
+                for (var i = 0; i <= Points.Count - 1; i++)
                 {
-                    var angle = i * 2 * Math.PI / _quality;
-                    var point = new Vector2(
-                        Center.X + outRadius * (float) Math.Cos(angle), Center.Y + outRadius * (float) Math.Sin(angle));
-                    result.Add(point);
+                    var nextIndex = (Points.Count - 1 == i) ? 0 : (i + 1);
+                    var from = Drawing.WorldToScreen(Points[i].To3D());
+                    var to = Drawing.WorldToScreen(Points[nextIndex].To3D());
+                    Drawing.DrawLine(from[0], from[1], to[0], to[1], width, color);
                 }
-                return result;
             }
 
-            public List<IntPoint> ToClipperPath()
+            public bool IsInside(Vector2 point)
             {
-                var poly = ToPolygon();
-                var result = new List<IntPoint>(poly.Points.Count);
-                result.AddRange(poly.Points.Select(point => new IntPoint(point.X, point.Y)));
+                return !IsOutside(point);
+            }
 
-                return result;
+            public bool IsInside(Vector3 point)
+            {
+                return !IsOutside(point.To2D());
+            }
+
+            public bool IsInside(GameObject point)
+            {
+                return !IsOutside(point.Position.To2D());
             }
 
             public bool IsOutside(Vector2 point)
@@ -836,261 +803,210 @@ namespace LeagueSharp.Common
                 var p = new IntPoint(point.X, point.Y);
                 return Clipper.PointInPolygon(p, ToClipperPath()) != 1;
             }
-        }
 
-        public class Rectangle
-        {
-            public Vector2 Direction;
-            public Vector2 Perpendicular;
-            public Vector2 REnd;
-            public Vector2 RStart;
-            public float Width;
-
-            public Rectangle(Vector2 start, Vector2 end, float width)
+            public class Arc : Polygon
             {
-                RStart = start;
-                REnd = end;
-                Width = width;
-                Direction = (end - start).Normalized();
-                Perpendicular = Direction.Perpendicular();
-            }
+                public float Angle;
+                public Vector2 EndPos;
+                public float Radius;
+                public Vector2 StartPos;
+                private readonly int _quality;
 
-            public Polygon ToPolygon(int offset = 0, float overrideWidth = -1)
-            {
-                var result = new Polygon();
-                result.Add(
-                    RStart + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
-                result.Add(
-                    RStart - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
-                result.Add(
-                    REnd - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
-                result.Add(
-                    REnd + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
-                return result;
-            }
+                public Arc(Vector3 start, Vector3 direction, float angle, float radius, int quality = 20)
+                    : this(start.To2D(), direction.To2D(), angle, radius, quality) {}
 
-            public List<IntPoint> ToClipperPath()
-            {
-                var poly = ToPolygon();
-                var result = new List<IntPoint>(poly.Points.Count);
-                result.AddRange(poly.Points.Select(point => new IntPoint(point.X, point.Y)));
-
-                return result;
-            }
-
-            public bool IsOutside(Vector2 point)
-            {
-                var p = new IntPoint(point.X, point.Y);
-                return Clipper.PointInPolygon(p, ToClipperPath()) != 1;
-            }
-        }
-
-        public class Ring
-        {
-            public Vector2 Center;
-            public float InnerRadius;
-            public float OuterRadius;
-            private readonly int _quality;
-
-            public Ring(Vector2 center, float innerRadius, float outerRadius, int quality = 20)
-            {
-                Center = center;
-                InnerRadius = innerRadius;
-                OuterRadius = outerRadius;
-                _quality = quality;
-            }
-
-            public Polygon ToPolygon(int offset = 0)
-            {
-                var result = new Polygon();
-                var outRadius = (offset + InnerRadius + OuterRadius) / (float) Math.Cos(2 * Math.PI / _quality);
-                var innerRadius = InnerRadius - OuterRadius - offset;
-                for (var i = 0; i <= _quality; i++)
+                public Arc(Vector2 start, Vector2 direction, float angle, float radius, int quality = 20)
                 {
-                    var angle = i * 2 * Math.PI / _quality;
-                    var point = new Vector2(
-                        Center.X - outRadius * (float) Math.Cos(angle), Center.Y - outRadius * (float) Math.Sin(angle));
-                    result.Add(point);
+                    StartPos = start;
+                    EndPos = (direction - start).Normalized();
+                    Angle = angle;
+                    Radius = radius;
+                    _quality = quality;
+                    UpdatePolygon();
                 }
-                for (var i = 0; i <= _quality; i++)
+
+                public void UpdatePolygon(int offset = 0)
                 {
-                    var angle = i * 2 * Math.PI / _quality;
-                    var point = new Vector2(
-                        Center.X + innerRadius * (float) Math.Cos(angle),
-                        Center.Y - innerRadius * (float) Math.Sin(angle));
-                    result.Add(point);
-                }
-                return result;
-            }
-
-            public List<IntPoint> ToClipperPath()
-            {
-                var poly = ToPolygon();
-                var result = new List<IntPoint>(poly.Points.Count);
-                result.AddRange(poly.Points.Select(point => new IntPoint(point.X, point.Y)));
-
-                return result;
-            }
-
-            public bool IsOutside(Vector2 point)
-            {
-                var p = new IntPoint(point.X, point.Y);
-                return Clipper.PointInPolygon(p, ToClipperPath()) != 1;
-            }
-        }
-
-        public class Sector
-        {
-            public float Angle;
-            public Vector2 Center;
-            public Vector2 Direction;
-            public float Radius;
-            private readonly int _quality;
-
-            public Sector(Vector2 center, Vector2 direction, float angle, float radius, int quality = 20)
-            {
-                Center = center;
-                Direction = (direction - center).Normalized();
-                Angle = angle;
-                Radius = radius;
-                _quality = quality;
-            }
-
-            public Polygon ToPolygon(int offset = 0)
-            {
-                var result = new Polygon();
-                var outRadius = (Radius + offset) / (float) Math.Cos(2 * Math.PI / _quality);
-                result.Add(Center);
-                var side1 = Direction.Rotated(-Angle * 0.5f);
-                for (var i = 0; i <= _quality; i++)
-                {
-                    var cDirection = side1.Rotated(i * Angle / _quality).Normalized();
-                    result.Add(new Vector2(Center.X + outRadius * cDirection.X, Center.Y + outRadius * cDirection.Y));
-                }
-                return result;
-            }
-
-            public List<IntPoint> ToClipperPath()
-            {
-                var poly = ToPolygon();
-                var result = new List<IntPoint>(poly.Points.Count);
-                result.AddRange(poly.Points.Select(point => new IntPoint(point.X, point.Y)));
-
-                return result;
-            }
-
-            public bool IsOutside(Vector2 point)
-            {
-                var p = new IntPoint(point.X, point.Y);
-                return Clipper.PointInPolygon(p, ToClipperPath()) != 1;
-            }
-        }
-
-        public static class Draw
-        {
-            public static void DrawArc(Arc arc, Color color, int width = 1)
-            {
-                var a = arc.ToPolygon();
-                DrawPolygon(a, color, width);
-            }
-
-            public static void DrawLine(Line line, Color color, int width)
-            {
-                var from = Drawing.WorldToScreen(line.LineStart.To3D());
-                var to = Drawing.WorldToScreen(line.LineEnd.To3D());
-                Drawing.DrawLine(from, to, width, color);
-            }
-
-            public static void DrawLine(Vector2 start, Vector2 end, Color color, int width = 1)
-            {
-                var from = Drawing.WorldToScreen(start.To3D());
-                var to = Drawing.WorldToScreen(end.To3D());
-                Drawing.DrawLine(from[0], from[1], to[0], to[1], width, color);
-            }
-
-            public static void DrawLine(Vector3 start, Vector3 end, Color color, int width = 1)
-            {
-                var from = Drawing.WorldToScreen(start);
-                var to = Drawing.WorldToScreen(end);
-                Drawing.DrawLine(from[0], from[1], to[0], to[1], width, color);
-            }
-
-            public static void DrawText(Vector2 position, string text, Color color)
-            {
-                var pos = Drawing.WorldToScreen(position.To3D());
-                Drawing.DrawText(pos.X, pos.Y, color, text);
-            }
-
-            public static void DrawText(Vector3 position, string text, Color color)
-            {
-                var pos = Drawing.WorldToScreen(position);
-                Drawing.DrawText(pos.X, pos.Y, color, text);
-            }
-
-            public static void DrawCircle(Vector3 center,
-                float radius,
-                Color color,
-                int width = 1,
-                int quality = 30,
-                bool onMiniMap = false)
-            {
-                Utility.DrawCircle(center, radius, color, width, quality, onMiniMap);
-            }
-
-            public static void DrawCircle(Circle circle,
-                Color color,
-                int width = 1,
-                int quality = 30,
-                bool onMiniMap = false)
-            {
-                Utility.DrawCircle(circle.Center.To3D(), circle.Radius, color, width, quality, onMiniMap);
-            }
-
-            public static void DrawPolygon(Polygon polygon, Color color, int width = 1)
-            {
-                for (var i = 0; i <= polygon.Points.Count - 1; i++)
-                {
-                    var nextIndex = (polygon.Points.Count - 1 == i) ? 0 : (i + 1);
-                    DrawLine(polygon.Points[i].To3D(), polygon.Points[nextIndex].To3D(), color, width);
+                    Points.Clear();
+                    var outRadius = (Radius + offset) / (float)Math.Cos(2 * Math.PI / _quality);
+                    var side1 = EndPos.Rotated(-Angle * 0.5f);
+                    for (var i = 0; i <= _quality; i++)
+                    {
+                        var cDirection = side1.Rotated(i * Angle / _quality).Normalized();
+                        Points.Add(
+                            new Vector2(StartPos.X + outRadius * cDirection.X, StartPos.Y + outRadius * cDirection.Y));
+                    }
                 }
             }
 
-            public static void DrawRectangle(Rectangle rectangle, Color color, int width = 1)
+            public class Line : Polygon
             {
-                var polygone = rectangle.ToPolygon();
+                public Vector2 LineStart;
+                public Vector2 LineEnd;
+                public float Length
+                {
+                    get { return LineStart.Distance(LineEnd); }
+                    set { LineEnd = (LineEnd - LineStart).Normalized() * value + LineStart; }
+                }
 
-                DrawPolygon(polygone, color, width);
+                public Line(Vector3 start, Vector3 end, float length = -1) : this(start.To2D(), end.To2D(), length) {}
+
+                public Line(Vector2 start, Vector2 end, float length = -1)
+                {
+                    LineStart = start;
+                    LineEnd = end;
+                    if (length > 0)
+                    {
+                        Length = length;
+                    }
+                    UpdatePolygon();
+                }
+
+                public void UpdatePolygon()
+                {
+                    Points.Clear();
+                    Points.Add(LineStart);
+                    Points.Add(LineEnd);
+                }
             }
 
-            public static void DrawRectangle(Vector2 start, Vector2 end, Color color, int width = 1)
+            public class Circle : Polygon
             {
-                var rect = new Rectangle(start, end, width);
+                public Vector2 Center;
+                public float Radius;
+                private readonly int _quality;
 
-                DrawRectangle(rect, color, width);
+                public Circle(Vector3 center, float radius, int quality = 20) : this(center.To2D(), radius, quality) {}
+
+                public Circle(Vector2 center, float radius, int quality = 20)
+                {
+                    Center = center;
+                    Radius = radius;
+                    _quality = quality;
+                    UpdatePolygon();
+                }
+
+               public void UpdatePolygon(int offset = 0, float overrideWidth = -1)
+                {
+                   Points.Clear();
+                    var outRadius = (overrideWidth > 0
+                        ? overrideWidth
+                        : (offset + Radius) / (float)Math.Cos(2 * Math.PI / _quality));
+                    for (var i = 1; i <= _quality; i++)
+                    {
+                        var angle = i * 2 * Math.PI / _quality;
+                        var point = new Vector2(
+                            Center.X + outRadius * (float)Math.Cos(angle), Center.Y + outRadius * (float)Math.Sin(angle));
+                        Points.Add(point);
+                    }
+                }
             }
 
-            public static void DrawRing(Ring ring, Color color, int width = 1, int quality = 30, bool onMiniMap = false)
+            public class Rectangle : Polygon
             {
-                DrawCircle(ring.Center.To3D(), ring.InnerRadius, color, width, quality, onMiniMap);
-                DrawCircle(ring.Center.To3D(), ring.OuterRadius, color, width, quality, onMiniMap);
+                public Vector2 Direction { get { return (End - Start).Normalized(); } }
+                public Vector2 Perpendicular { get { return Direction.Perpendicular(); } }
+                public Vector2 End;
+                public Vector2 Start;
+                public float Width;
+                public Rectangle(Vector3 start, Vector3 end, float width) : this(start.To2D(), end.To2D(), width) {}
+
+                public Rectangle(Vector2 start, Vector2 end, float width)
+                {
+                    Start = start;
+                    End = end;
+                    Width = width;
+                    UpdatePolygon();
+                }
+
+                public void UpdatePolygon(int offset = 0, float overrideWidth = -1)
+                {
+                    Points.Clear();
+                    Points.Add(
+                        Start + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
+                    Points.Add(
+                        Start - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
+                    Points.Add(
+                        End - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
+                    Points.Add(
+                        End + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
+                }
             }
 
-            public static void DrawRing(Vector3 center,
-                float innerRadius,
-                float outerRadius,
-                Color color,
-                int width = 1,
-                int quality = 30,
-                bool onMiniMap = false)
+            public class Ring : Polygon
             {
-                DrawCircle(center, innerRadius, color, width, quality, onMiniMap);
-                DrawCircle(center, outerRadius, color, width, quality, onMiniMap);
+                public Vector2 Center;
+                public float InnerRadius;
+                public float OuterRadius;
+                private readonly int _quality;
+
+                public Ring(Vector3 center, float innerRadius, float outerRadius, int quality = 20)
+                    : this(center.To2D(), innerRadius, outerRadius, quality) {}
+
+                public Ring(Vector2 center, float innerRadius, float outerRadius, int quality = 20)
+                {
+                    Center = center;
+                    InnerRadius = innerRadius;
+                    OuterRadius = outerRadius;
+                    _quality = quality;
+                    UpdatePolygon();
+                }
+
+                public void UpdatePolygon(int offset = 0)
+                {
+                    Points.Clear();
+                    var outRadius = (offset + InnerRadius + OuterRadius) / (float)Math.Cos(2 * Math.PI / _quality);
+                    var innerRadius = InnerRadius - OuterRadius - offset;
+                    for (var i = 0; i <= _quality; i++)
+                    {
+                        var angle = i * 2 * Math.PI / _quality;
+                        var point = new Vector2(
+                            Center.X - outRadius * (float)Math.Cos(angle), Center.Y - outRadius * (float)Math.Sin(angle));
+                        Points.Add(point);
+                    }
+                    for (var i = 0; i <= _quality; i++)
+                    {
+                        var angle = i * 2 * Math.PI / _quality;
+                        var point = new Vector2(
+                            Center.X + innerRadius * (float)Math.Cos(angle),
+                            Center.Y - innerRadius * (float)Math.Sin(angle));
+                        Points.Add(point);
+                    }
+                }
             }
 
-            public static void DrawSector(Sector sector, Color color, int width = 1)
+            public class Sector : Polygon
             {
-                var poly = sector.ToPolygon();
-                DrawPolygon(poly, color, width);
+                public float Angle;
+                public Vector2 Center;
+                public Vector2 Direction;
+                public float Radius;
+                private readonly int _quality;
+
+                public Sector(Vector3 center, Vector3 direction, float angle, float radius, int quality = 20)
+                    : this(center.To2D(), direction.To2D(), angle, radius, quality) {}
+
+                public Sector(Vector2 center, Vector2 direction, float angle, float radius, int quality = 20)
+                {
+                    Center = center;
+                    Direction = (direction - center).Normalized();
+                    Angle = angle;
+                    Radius = radius;
+                    _quality = quality;
+                }
+
+                public void UpdatePolygon(int offset = 0)
+                {
+                    Points.Clear();
+                    var outRadius = (Radius + offset) / (float)Math.Cos(2 * Math.PI / _quality);
+                    Points.Add(Center);
+                    var side1 = Direction.Rotated(-Angle * 0.5f);
+                    for (var i = 0; i <= _quality; i++)
+                    {
+                        var cDirection = side1.Rotated(i * Angle / _quality).Normalized();
+                        Points.Add(new Vector2(Center.X + outRadius * cDirection.X, Center.Y + outRadius * cDirection.Y));
+                    }
+                }
             }
         }
     }
