@@ -435,6 +435,7 @@ namespace DevKogMaw
             SkinManager.Add("Lion Dance Kog'Maw");
             SkinManager.Add("Deep Sea Kog'Maw");
             SkinManager.Add("Jurassic Kog'Maw");
+            SkinManager.Add("Battlecast Kog'Maw");
 
             if (mustDebug)
                 Game.PrintChat("InitializeSkinManager Finish");
@@ -689,7 +690,7 @@ namespace DevKogMaw
             Config.SubMenu("Harass").AddItem(new MenuItem("ManaHarass", "蓝量控制").SetValue(new Slider(25, 1, 100)));
             Config.SubMenu("Harass").AddItem(new MenuItem("EManaHarass", "E蓝量控制").SetValue(new Slider(60, 1, 100)));
             
-            Config.AddSubMenu(new Menu("奇怪", "LaneClear"));
+            Config.AddSubMenu(new Menu("清兵", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "使用E").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("EManaLaneClear", "蓝量控制").SetValue(new Slider(50, 1, 100)));
 

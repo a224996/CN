@@ -44,6 +44,7 @@ namespace Xerath
 
             // Listend to some other events
             Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnWndProc += Game_OnWndProc;
             Drawing.OnDraw += Drawing_OnDraw;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
@@ -66,18 +67,40 @@ namespace Xerath
                 ActiveModes.OnFlee();
         }
 
+        private static void Game_OnWndProc(WndEventArgs args)
+        {
+            if (args.Msg == (uint)WindowsMessages.WM_KEYUP && Config.BoolLinks["castEnabled"].Value)
+            {
+                // Single Spell Casts
+                if (args.WParam == Config.KeyLinks["castW"].Value.Key && SpellManager.W.IsReady())
+                {
+                    // Cast W on best target
+                    SpellManager.W.CastOnBestTarget();
+                }
+                else if (args.WParam == Config.KeyLinks["castE"].Value.Key && SpellManager.E.IsReady())
+                {
+                    // Cast E on best target
+                    SpellManager.E.CastOnBestTarget();
+                }
+            }
+        }
+
         private static void Drawing_OnDraw(EventArgs args)
         {
-            // Draw all circles
-            foreach (var circleLink in Config.CircleLinks.Values)
+            // Draw all circles except for R
+            foreach (var circleLink in Config.CircleLinks)
             {
-                if (circleLink.Value.Active)
-                    Render.Circle.DrawCircle(player.Position, circleLink.Value.Radius, circleLink.Value.Color);
+                if (circleLink.Value.Value.Active && circleLink.Key != "drawRangeR")
+                    Render.Circle.DrawCircle(player.Position, circleLink.Value.Value.Radius, circleLink.Value.Value.Color);
             }
 
             // Draw Q while charging
             if (Config.CircleLinks["drawRangeQ"].Value.Active && SpellManager.Q.IsCharging && SpellManager.Q.Range < SpellManager.Q.ChargedMaxRange)
                 Render.Circle.DrawCircle(player.Position, SpellManager.Q.Range, Config.CircleLinks["drawRangeQ"].Value.Color);
+
+            // Draw R range
+            if (Config.CircleLinks["drawRangeR"].Value.Active)
+                Render.Circle.DrawCircle(player.Position, SpellManager.R.Range, Config.CircleLinks["drawRangeR"].Value.Color);
 
             // Draw R on minimap
             if (Config.CircleLinks["drawRangeR"].Value.Active && SpellManager.R.Level > 0)

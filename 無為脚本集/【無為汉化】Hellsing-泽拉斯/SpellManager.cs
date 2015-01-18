@@ -15,6 +15,9 @@ namespace Xerath
     {
         private static readonly Obj_AI_Hero player = ObjectManager.Player;
 
+        public delegate void TapKeyPressedEventHandler();
+        public static event TapKeyPressedEventHandler OnTapKeyPressed;
+
         public static Spell Q { get; private set; }
         public static Spell W { get; private set; }
         public static Spell E { get; private set; }
@@ -40,7 +43,7 @@ namespace Xerath
 
             // Finetune spells
             Q.SetSkillshot(0.6f, 100, float.MaxValue, false, SkillshotType.SkillshotLine);
-            W.SetSkillshot(0.7f, 200, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.7f, 150, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, 70, 1600, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.6f, 120, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
@@ -54,38 +57,33 @@ namespace Xerath
 
         static void Game_OnWndProc(WndEventArgs args)
         {
-            if (args.Msg == (uint)WindowsMessages.WM_KEYUP && args.WParam == Config.KeyLinks["ultSettingsKeyPress"].Value.Key)
+            if (IsCastingUlt && args.Msg == (uint)WindowsMessages.WM_KEYUP && args.WParam == Config.KeyLinks["ultSettingsKeyPress"].Value.Key)
             {
                 // Only handle the tap key if the mode is set to tap key
-                if (Config.StringListLinks["ultSettingsMode"].Value.SelectedIndex == 3)
+                switch (Config.StringListLinks["ultSettingsMode"].Value.SelectedIndex)
                 {
-                    // Check if ult is activated
-                    if (!IsCastingUlt && R.IsReady())
-                    {
-                        // Activate ult
-                        R.Cast();
-                        TapKeyPressed = false;
-                    }
-                    else if (IsCastingUlt)
-                    {
+                    // Auto
+                    case 3:
+                    // Near mouse
+                    case 4:
+
                         // Tap key has been pressed
+                        if (OnTapKeyPressed != null)
+                            OnTapKeyPressed();
                         TapKeyPressed = true;
-                    }
+                        break;
                 }
             }
         }
 
+        private static float previousLevel = 0;
         private static void Game_OnGameUpdate(EventArgs args)
         {
             // Adjust R range
-            switch (R.Level)
+            if (previousLevel < R.Level)
             {
-                case 2:
-                    R.Range = 4400;
-                    break;
-                case 3:
-                    R.Range = 5600;
-                    break;
+                R.Range = 2000 + 1200 * R.Level;
+                previousLevel = R.Level;
             }
         }
 

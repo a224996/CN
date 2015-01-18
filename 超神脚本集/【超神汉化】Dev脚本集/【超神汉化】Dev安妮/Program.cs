@@ -281,8 +281,9 @@ namespace DevAnnie
 
                         summonerSpellManager.CastFlash(predict);
 
-                        if (itemManager.IsReadyDFG())
-                            itemManager.CastDFG(enemy);
+
+                        if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
+                            itemManager.UseItem(ItemName.DeathfireGrasp, enemy);
 
                         if (R.IsReady())
                             R.Cast(predict, packetCast);
@@ -305,10 +306,10 @@ namespace DevAnnie
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.Q);
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.W);
 
-            if (itemManager.IsReadyDFG())
+            if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
                 totalComboDamage = totalComboDamage * 1.2;
 
-            if (itemManager.IsReadyDFG())
+            if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
                 totalComboDamage += Player.GetItemDamage(eTarget, Damage.DamageItems.Dfg);
 
             if (summonerSpellManager.IsReadyIgnite())
@@ -341,10 +342,10 @@ namespace DevAnnie
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.Q);
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.W);
 
-            if (itemManager.IsReadyDFG())
+            if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
                 totalComboDamage = totalComboDamage * 1.2;
 
-            if (itemManager.IsReadyDFG())
+            if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
                 totalComboDamage += Player.GetItemDamage(eTarget, Damage.DamageItems.Dfg);
 
             totalComboDamage += summonerSpellManager.IsReadyIgnite() ? Player.GetSummonerSpellDamage(eTarget, Damage.SummonerSpell.Ignite) : 0;
@@ -369,8 +370,8 @@ namespace DevAnnie
                     if (mustDebug)
                         Game.PrintChat("BurstCombo R -> " + eTarget.BaseSkinName);
 
-                    if (itemManager.IsReadyDFG())
-                        itemManager.CastDFG(eTarget);
+                    if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
+                        itemManager.UseItem(ItemName.DeathfireGrasp, eTarget);
 
                     if (R.IsReady() && useR)
                     {
@@ -389,8 +390,8 @@ namespace DevAnnie
             {
                 if (DevHelper.CountEnemyInPositionRange(eTarget.ServerPosition, 250) >= UseRMinEnemies)
                 {
-                    if (itemManager.IsReadyDFG())
-                        itemManager.CastDFG(eTarget);
+                    if (itemManager.IsItemReady(ItemName.DeathfireGrasp))
+                        itemManager.UseItem(ItemName.DeathfireGrasp, eTarget);
 
                     var pred = R.GetPrediction(eTarget, true);
                     R.Cast(pred.CastPosition, packetCast);
@@ -806,10 +807,10 @@ namespace DevAnnie
             Config.SubMenu("JungleClear").AddItem(new MenuItem("UseQJungleClear", "使用Q").SetValue(true));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("UseWJungleClear", "使用W").SetValue(true));
 
-            Config.AddSubMenu(new Menu("杂项", "Extra"));
-            Config.SubMenu("Extra").AddItem(new MenuItem("PacketCast", "封包").SetValue(true));
-            Config.SubMenu("Extra").AddItem(new MenuItem("UseEAgainstAA", "E+A").SetValue(true));
-            Config.SubMenu("Extra").AddItem(new MenuItem("UseRInterrupt", "R打断").SetValue(true));
+            Config.AddSubMenu(new Menu("杂项", "Misc"));
+            Config.SubMenu("Misc").AddItem(new MenuItem("PacketCast", "封包").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("UseEAgainstAA", "E+A").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("UseRInterrupt", "R打断").SetValue(true));
 
             Config.AddSubMenu(new Menu("防突", "GapCloser"));
             Config.SubMenu("GapCloser").AddItem(new MenuItem("UseEGapCloser", "使用E").SetValue(true));
@@ -822,10 +823,9 @@ namespace DevAnnie
             Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
             Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R范围").SetValue(new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
             Config.SubMenu("Drawings").AddItem(new MenuItem("ComboDamage", "显示伤害").SetValue(true));
+			Config.AddSubMenu(new Menu("超神汉化", "by wuwei"));
+			Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "L#汉化群：386289593"));
 
-			Config.AddSubMenu(new Menu("超神汉化", "by weilai"));
-				Config.SubMenu("by weilai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
-				
             skinManager.AddToMenu(ref Config);
 
             levelUpManager.AddToMenu(ref Config);

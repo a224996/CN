@@ -308,7 +308,7 @@ namespace JeonUtility
             baseMenu.AddSubMenu(menu_ins);
 
 
-            var menu_Potion = new Menu("Potion", "Potion");
+            var menu_Potion = new Menu("药瓶", "Potion");
             menu_ins.AddSubMenu(menu_Potion);
             menu_Potion.AddItem(new MenuItem("useitem_flask", "使用水晶瓶").SetValue(true));
             menu_Potion.AddItem(new MenuItem("useitem_p_fla", "最低血量(%)").SetValue(new Slider(50, 0, 100)));

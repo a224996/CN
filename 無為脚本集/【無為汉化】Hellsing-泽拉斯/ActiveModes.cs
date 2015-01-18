@@ -48,7 +48,7 @@ namespace Xerath
                 if (killableTargets.Count() > 0)
                 {
                     lastAltert = Environment.TickCount;
-                    var time = TimeSpan.FromSeconds(Game.Time);
+                    var time = TimeSpan.FromSeconds(Game.ClockTime);
                     Game.PrintChat(string.Format("[{0}:{1:D2}] Targets killable: {2}", Math.Floor(time.TotalMinutes), time.Seconds, string.Join(", ", killableTargets.Select(t => t.ChampionName))));
                 }
             }
@@ -114,7 +114,7 @@ namespace Xerath
                                     if (Config.StringListLinks["ultSettingsMode"].Value.SelectedIndex == 0)
                                     {
                                         // Calculate smart target change time
-                                        var waitTime = Math.Max(1500, target.Distance(SpellManager.LastChargePosition, false));
+                                        var waitTime = Math.Max(1500, target.Distance(SpellManager.LastChargePosition, false) / 2);
                                         if (Environment.TickCount - SpellManager.LastChargeTime + waitTime < 0)
                                             break;
                                     }
@@ -147,11 +147,21 @@ namespace Xerath
                         var targets = ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsValidTarget(R.Range) && h.Distance(Game.CursorPos, true) < 500 * 500);
                         if (targets.Count() > 0)
                         {
-                            // Get the best target out of the found targets
-                            var target = targets.OrderByDescending(t => R.GetRealDamage(t)).FirstOrDefault();
+                            // Get a killable target
+                            var killable = targets.Where(t => t.Health < R.GetRealDamage(t) * SpellManager.ChargesRemaining).OrderByDescending(t => R.GetRealDamage(t)).FirstOrDefault();
+                            if (killable != null)
+                            {
+                                // Shoot on the killable target
+                                R.Cast(killable);
+                            }
+                            else
+                            {
+                                // Get the best target out of the found targets
+                                var target = targets.OrderByDescending(t => R.GetRealDamage(t)).FirstOrDefault();
 
-                            // Shoot
-                            R.Cast(target);
+                                // Shoot
+                                R.Cast(target);
+                            }
                         }
 
                         break;
@@ -215,6 +225,10 @@ namespace Xerath
 
         public static void OnHarass()
         {
+            // Check mana
+            if (Config.SliderLinks["harassMana"].Value.Value > player.ManaPercentage())
+                return;
+
             if (Q.IsEnabledAndReady(Mode.HARASS))
             {
                 var target = TargetSelector.GetTarget(Q.ChargedMaxRange, TargetSelector.DamageType.Magical);
@@ -253,6 +267,10 @@ namespace Xerath
 
         public static void OnWaveClear()
         {
+            // Check mana
+            if (Config.SliderLinks["waveMana"].Value.Value > player.ManaPercentage())
+                return;
+
             // Validate Q and W are ready
             if (!Q.IsEnabledAndReady(Mode.WAVE) && !W.IsEnabledAndReady(Mode.WAVE))
                 return;
@@ -264,15 +282,23 @@ namespace Xerath
 
             if (Q.IsEnabledAndReady(Mode.WAVE))
             {
-                if (minions.Count >= Config.SliderLinks["waveNumQ"].Value.Value)
+                if (Q.IsCharging)
                 {
-                    var farmLocation = Q.GetLineFarmLocation(minions);
-                    if (farmLocation.MinionsHit >= Config.SliderLinks["waveNumQ"].Value.Value)
+                    // Check if we are on max range with the minions
+                    if (minions.Max(m => m.Distance(player, true)) < Q.RangeSqr)
                     {
-                        if (!Q.IsCharging)
-                            Q.StartCharging();
-                        else
-                            Q.Cast(farmLocation.Position);
+                        // Check if we can hit more minions
+                        if (minions.Max(m => m.Distance(player, true)) < Q.RangeSqr)
+                            Q.Cast(Q.GetLineFarmLocation(minions).Position);
+                    }
+                }
+                else if (minions.Count >= Config.SliderLinks["waveNumQ"].Value.Value)
+                {
+                    // Check if we would hit enough minions
+                    if (Q.GetLineFarmLocation(minions).MinionsHit >= Config.SliderLinks["waveNumQ"].Value.Value)
+                    {
+                        // Start charging
+                        Q.StartCharging();
                     }
                 }
             }

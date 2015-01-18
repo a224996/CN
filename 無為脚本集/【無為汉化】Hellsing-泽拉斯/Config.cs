@@ -86,6 +86,7 @@ namespace Xerath
             ProcessLink("harassExtraRangeQ", subSubMenu.AddLinkedSlider("Q 额外范围", 200, 0, 200));
             ProcessLink("harassUseW", subMenu.AddLinkedBool("使用 W"));
             ProcessLink("harassUseE", subMenu.AddLinkedBool("使用 E"));
+            ProcessLink("harassMana", subMenu.AddLinkedSlider("最小蓝量 (%)", 30));
             ProcessLink("harassActive", subMenu.AddLinkedKeyBind("骚扰按键", 'C', KeyBindType.Press));
 
             // ----- WaveClear
@@ -94,6 +95,7 @@ namespace Xerath
             ProcessLink("waveNumQ", subMenu.AddLinkedSlider("Q 命中数", 3, 1, 10));
             ProcessLink("waveUseW", subMenu.AddLinkedBool("使用 W"));
             ProcessLink("waveNumW", subMenu.AddLinkedSlider("W 命中数", 3, 1, 10));
+            ProcessLink("waveMana", subMenu.AddLinkedSlider("最小蓝量 (%)", 30));
             ProcessLink("waveActive", subMenu.AddLinkedKeyBind("清兵按键", 'V', KeyBindType.Press));
 
             // ----- JungleClear
@@ -105,7 +107,7 @@ namespace Xerath
 
             // ----- Flee
             subMenu = _menu.MainMenu.AddSubMenu("逃跑");
-            ProcessLink("fleeNothing", subMenu.AddLinkedBool("还没背靠背"));
+            ProcessLink("fleeNothing", subMenu.AddLinkedBool("还没功能"));
             ProcessLink("fleeActive", subMenu.AddLinkedKeyBind("逃跑按键", 'Z', KeyBindType.Press));
 
             // ----- Ultimate Settings
@@ -123,6 +125,12 @@ namespace Xerath
             ProcessLink("miscGapcloseE", subMenu.AddLinkedBool("使用 E 防突进"));
             ProcessLink("miscInterruptE", subMenu.AddLinkedBool("使用 E 打断危险技能"));
             ProcessLink("miscAlerter", subMenu.AddLinkedBool("R 可击杀时聊天框提示"));
+
+            // ----- Single Spell Casting
+            subMenu = _menu.MainMenu.AddSubMenu("单独使用法术");
+            ProcessLink("castEnabled", subMenu.AddLinkedBool("启用"));
+            ProcessLink("castW", subMenu.AddLinkedKeyBind("投掷 W", 'A', KeyBindType.Press));
+            ProcessLink("castE", subMenu.AddLinkedKeyBind("投掷 E", 'S', KeyBindType.Press));
 
             // ----- Drawings
             subMenu = _menu.MainMenu.AddSubMenu("绘制");
