@@ -70,7 +70,7 @@ namespace DevCommom
                 versionCompletedArgs.CurrentCommomVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
                 if (versionCompletedArgs.CurrentCommomVersion != versionCompletedArgs.LastCommomVersion)
-                    Game.PrintChat(string.Format("<font color='#fb762d'>DevCommom Library NEW VERSION available! Please Update while NOT INGAME! {0}</font>", versionCompletedArgs.LastCommomVersion));
+                    Game.PrintChat(string.Format("<font color='#fb762d'>devcommom搴撴湁鏂扮増鏈紒璇烽€氱煡鐒＄偤杩涜鏇存柊! {0}</font>", versionCompletedArgs.LastCommomVersion));
             }
             catch { }
         }
