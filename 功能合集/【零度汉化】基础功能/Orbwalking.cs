@@ -83,12 +83,6 @@ namespace LeagueSharp.Common
             "xenzhaothrust3"
         };
 
-        // Champs whose auto attacks can't be cancelled
-        private static readonly string[] NoCancelChamps =
-        {
-            "Kalista"
-        };
-
         public static int LastAATick;
         public static bool Attack = true;
         public static bool DisableNextAttack;
@@ -106,7 +100,7 @@ namespace LeagueSharp.Common
             Player = ObjectManager.Player;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             GameObject.OnCreate += Obj_SpellMissile_OnCreate;
-            Spellbook.OnStopCast += SpellbookOnStopCast;
+            Obj_AI_Base.OnInstantStopAttack += ObjAiHeroOnOnInstantStopAttack;
         }
 
         private static void Obj_SpellMissile_OnCreate(GameObject sender, EventArgs args)
@@ -278,9 +272,8 @@ namespace LeagueSharp.Common
         {
             if (LastAATick <= Environment.TickCount)
             {
-                return Move && NoCancelChamps.Contains(Player.ChampionName) ?
-                    (Environment.TickCount - LastAATick > 250) :
-                    (Environment.TickCount + Game.Ping / 2 >= LastAATick + Player.AttackCastDelay * 1000 + extraWindup);
+                return (Environment.TickCount + Game.Ping / 2 >=
+                        LastAATick + Player.AttackCastDelay * 1000 + extraWindup) && Move;
             }
 
             return false;
@@ -405,9 +398,9 @@ namespace LeagueSharp.Common
             LastAATick = 0;
         }
 
-        private static void SpellbookOnStopCast(Spellbook spellbook, SpellbookStopCastEventArgs args)
+        private static void ObjAiHeroOnOnInstantStopAttack(Obj_AI_Base sender, GameObjectInstantStopAttackEventArgs args)
         {
-            if (spellbook.Owner.IsValid && spellbook.Owner.IsMe && args.DestroyMissile && args.StopAnimation)
+            if (sender.IsValid && sender.IsMe && (args.BitData & 1) == 0 && ((args.BitData >> 4) & 1) == 1)
             {
                 ResetAutoAttackTimer();
             }

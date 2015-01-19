@@ -1,4 +1,4 @@
-// Copyright 2014 - 2014 Esk0r
+﻿// Copyright 2014 - 2014 Esk0r
 // Program.cs is part of Evade.
 // 
 // Evade is free software: you can redistribute it and/or modify
@@ -149,8 +149,8 @@ namespace Evade
             //Initialze the collision
             Collision.Init();
 
-            Game.PrintChat("<font color=\"#00BFFF\">【無為汉化】evade躲避# -</font> <font color=\"#FFFFFF\">加载成功</font>");
-			Game.PrintChat("<font color=\"#FFFFFF\">    更多汉化脚本请加</font> <font color=\"#FFFF00\">   L#汉化群：386289593</font> ");
+            Game.PrintChat("<font color=\"#00BFFF\">銆愮劇鐐烘眽鍖栥€慹vade韬查伩# -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛</font>");
+			Game.PrintChat("<font color=\"#FFFFFF\">    鏇村姹夊寲鑴氭湰璇峰姞</font> <font color=\"#FFFF00\">   L#姹夊寲缇わ細386289593</font> ");
 
 
             if (Config.PrintSpellData)
@@ -555,9 +555,9 @@ namespace Evade
             }
         }
 
-        static void Spellbook_OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        static void Spellbook_OnCastSpell(GameObject sender, SpellbookCastSpellEventArgs args)
         {
-            if (sender.Owner.IsValid && sender.Owner.IsMe)
+            if (sender.IsValid && sender.IsMe)
             {
                 if (args.Slot == SpellSlot.Recall)
                 {

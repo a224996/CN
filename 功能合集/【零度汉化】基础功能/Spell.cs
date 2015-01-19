@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LeagueSharp.Network.Packets;
 using SharpDX;
 
 #endregion
@@ -54,9 +55,7 @@ namespace LeagueSharp.Common
         private Vector3 _rangeCheckFrom;
         private float _width;
 
-        public Spell(SpellSlot slot,
-            float range = float.MaxValue,
-            TargetSelector.DamageType damageType = TargetSelector.DamageType.Physical)
+        public Spell(SpellSlot slot, float range = float.MaxValue, TargetSelector.DamageType damageType = TargetSelector.DamageType.Physical)
         {
             Slot = slot;
             Range = range;
@@ -195,7 +194,7 @@ namespace LeagueSharp.Common
 
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Game.OnGameSendPacket += Game_OnGameSendPacket;
-            Spellbook.OnCastSpell += SpellbookOnCastSpell;
+            Spellbook.OnCastSpell += Spellbook_OnCastSpell;
         }
 
         /// <summary>
@@ -224,7 +223,7 @@ namespace LeagueSharp.Common
 
         private void Game_OnGameSendPacket(GamePacketEventArgs args)
         {
-            /* if (args.GetPacketId() == Network.Packets.Packet.GetPacketId<PKT_ChargedSpell>() &&
+            if (args.GetPacketId() == Network.Packets.Packet.GetPacketId<PKT_ChargedSpell>() &&
                 Environment.TickCount - _chargedReqSentT < 3000)
             {
                 var chargedData = new PKT_ChargedSpell();
@@ -237,10 +236,9 @@ namespace LeagueSharp.Common
 
                 args.Process = false;
             }
-            */
         }
 
-        private void SpellbookOnCastSpell(Spellbook spellbook, SpellbookCastSpellEventArgs args)
+        private void Spellbook_OnCastSpell(GameObject sender, SpellbookCastSpellEventArgs args)
         {
             if (args.Slot != Slot)
             {
@@ -512,7 +510,7 @@ namespace LeagueSharp.Common
 
         private static void ShootChargedSpell(Vector3 position)
         {
-            /*new PKT_ChargedSpell
+            new PKT_ChargedSpell
             {
                 NetworkId = ObjectManager.Player.NetworkId,
                 SpellSlot = (byte) SpellSlot.Q,
@@ -520,8 +518,6 @@ namespace LeagueSharp.Common
                 Unknown1 = true,
                 Unknown2 = false
             }.Encode().SendAsPacket();
-        
-             */
         }
 
         /// <summary>
@@ -671,6 +667,21 @@ namespace LeagueSharp.Common
         }
 
         /// <summary>
+        ///     Returns if the point is in range of the spell.
+        /// </summary>
+        [Obsolete("Use IsInRange(Vector3 obj, float range)", false)]
+        public bool InRange(Vector3 point, float r = -1)
+        {
+            return IsInRange(point, r);
+        }
+
+        [Obsolete("Use IsInRange(GameObject obj, float range)", false)]
+        public bool InRange(Obj_AI_Base unit, float r = -1)
+        {
+            return IsInRange(unit, r);
+        }
+
+        /// <summary>
         ///     Returns if the GameObject is in range of the spell.
         /// </summary>
         public bool IsInRange(GameObject obj, float range = -1)
@@ -697,8 +708,7 @@ namespace LeagueSharp.Common
 
         /// <summary>
         ///     Returns the best target found using the current TargetSelector mode.
-        ///     Please make sure to set the Spell.DamageType Property to the type of damage this spell does (if not done on
-        ///     initialization).
+        ///     Please make sure to set the Spell.DamageType Property to the type of damage this spell does (if not done on initialization).
         /// </summary>
         public Obj_AI_Hero GetTarget(float extraRange = 0, IEnumerable<Obj_AI_Hero> champsToIgnore = null)
         {
@@ -708,10 +718,10 @@ namespace LeagueSharp.Common
         /// <summary>
         ///     Spell will be casted on the best target found with the Spell.GetTarget method.
         /// </summary>
-        public CastStates CastOnBestTarget(float extraRange = 0, bool packetCast = false, bool aoe = false)
+        public CastStates CastOnBestTarget()
         {
-            var target = GetTarget(extraRange);
-            return target != null ? Cast(target, packetCast, aoe) : CastStates.NotCasted;
+            var target = GetTarget();
+            return target != null ? Cast(target) : CastStates.NotCasted;
         }
     }
 }

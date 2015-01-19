@@ -1,4 +1,4 @@
-// Copyright 2014 - 2014 Esk0r
+ï»¿// Copyright 2014 - 2014 Esk0r
 // Config.cs is part of Evade.
 // 
 // Evade is free software: you can redistribute it and/or modify
@@ -50,31 +50,31 @@ namespace Evade
 
         public static void CreateMenu()
         {
-            Menu = new Menu("¡¾Ÿoéºº»¯¡¿¶ã±Ü", "Evade", true);
+            Menu = new Menu("ã€ç„¡ç‚ºæ±‰åŒ–ã€‘èº²é¿", "Evade", true);
 
             //Create the evade spells submenus.
-            var evadeSpells = new Menu("¶ã±ÜÊ¹ÓÃ·¨Êõ", "evadeSpells");
+            var evadeSpells = new Menu("èº²é¿ä½¿ç”¨æ³•æœ¯", "evadeSpells");
             foreach (var spell in EvadeSpellDatabase.Spells)
             {
                 var subMenu = new Menu(spell.Name, spell.Name);
 
                 subMenu.AddItem(
-                    new MenuItem("DangerLevel" + spell.Name, "Î£ÏÕµÈ¼¶").SetValue(
+                    new MenuItem("DangerLevel" + spell.Name, "å±é™©ç­‰çº§").SetValue(
                         new Slider(spell.DangerLevel, 5, 1)));
 
                 if (spell.IsTargetted && spell.ValidTargets.Contains(SpellValidTargets.AllyWards))
                 {
-                    subMenu.AddItem(new MenuItem("WardJump" + spell.Name, "ÌøÑÛ").SetValue(true));
+                    subMenu.AddItem(new MenuItem("WardJump" + spell.Name, "è·³çœ¼").SetValue(true));
                 }
 
-                subMenu.AddItem(new MenuItem("Enabled" + spell.Name, "ÆôÓÃ").SetValue(true));
+                subMenu.AddItem(new MenuItem("Enabled" + spell.Name, "å¯ç”¨").SetValue(true));
 
                 evadeSpells.AddSubMenu(subMenu);
             }
             Menu.AddSubMenu(evadeSpells);
 
             //Create the skillshots submenus.
-            var skillShots = new Menu("¶ã±Ü¼¼ÄÜ", "Skillshots");
+            var skillShots = new Menu("èº²é¿æŠ€èƒ½", "Skillshots");
 
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
             {
@@ -87,15 +87,15 @@ namespace Evade
                             var subMenu = new Menu(spell.MenuItemName, spell.MenuItemName);
 
                             subMenu.AddItem(
-                                new MenuItem("DangerLevel" + spell.MenuItemName, "Î£ÏÕµÈ¼¶").SetValue(
+                                new MenuItem("DangerLevel" + spell.MenuItemName, "å±é™©ç­‰çº§").SetValue(
                                     new Slider(spell.DangerValue, 5, 1)));
 
                             subMenu.AddItem(
-                                new MenuItem("IsDangerous" + spell.MenuItemName, "ÊÇÎ£ÏÕµÄ").SetValue(
+                                new MenuItem("IsDangerous" + spell.MenuItemName, "æ˜¯å±é™©çš„").SetValue(
                                     spell.IsDangerous));
 
-                            subMenu.AddItem(new MenuItem("Draw" + spell.MenuItemName, "»­Ïß").SetValue(true));
-                            subMenu.AddItem(new MenuItem("Enabled" + spell.MenuItemName, "ÆôÓÃ").SetValue(true));
+                            subMenu.AddItem(new MenuItem("Draw" + spell.MenuItemName, "ç”»çº¿").SetValue(true));
+                            subMenu.AddItem(new MenuItem("Enabled" + spell.MenuItemName, "å¯ç”¨").SetValue(true));
 
                             skillShots.AddSubMenu(subMenu);
                         }
@@ -105,48 +105,48 @@ namespace Evade
 
             Menu.AddSubMenu(skillShots);
 
-            var shielding = new Menu("»¤¶Ü", "Shielding");
+            var shielding = new Menu("æŠ¤ç›¾", "Shielding");
 
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>())
             {
                 if (ally.IsAlly && !ally.IsMe)
                 {
                     shielding.AddItem(
-                        new MenuItem("shield" + ally.ChampionName, "»¤¶Ü" + ally.ChampionName).SetValue(true));
+                        new MenuItem("shield" + ally.ChampionName, "æŠ¤ç›¾" + ally.ChampionName).SetValue(true));
                 }
             }
             Menu.AddSubMenu(shielding);
 
-            var collision = new Menu("Åö×²¼ì²â", "Collision");
-            collision.AddItem(new MenuItem("MinionCollision", "Ğ¡±ø").SetValue(false));
-            collision.AddItem(new MenuItem("HeroCollision", "Ó¢ĞÛ").SetValue(false));
-            collision.AddItem(new MenuItem("YasuoCollision", "ÑÇË÷·çÇ½").SetValue(true));
-            collision.AddItem(new MenuItem("EnableCollision", "ÆôÓÃ").SetValue(true));
+            var collision = new Menu("ç¢°æ’æ£€æµ‹", "Collision");
+            collision.AddItem(new MenuItem("MinionCollision", "å°å…µ").SetValue(false));
+            collision.AddItem(new MenuItem("HeroCollision", "è‹±é›„").SetValue(false));
+            collision.AddItem(new MenuItem("YasuoCollision", "äºšç´¢é£å¢™").SetValue(true));
+            collision.AddItem(new MenuItem("EnableCollision", "å¯ç”¨").SetValue(true));
             //TODO add mode.
             Menu.AddSubMenu(collision);
 
-            var drawings = new Menu("·¶Î§ÏÔÊ¾", "Drawings");
-            drawings.AddItem(new MenuItem("EnabledColor", "ÆôÓÃ·¨ÊõÑÕÉ«").SetValue(Color.White));
-            drawings.AddItem(new MenuItem("DisabledColor", "½ûÓÃ·¨ÊõÑÕÉ«").SetValue(Color.Red));
-            drawings.AddItem(new MenuItem("MissileColor", "µ¼µ¯ÑÕÉ«").SetValue(Color.LimeGreen));
-            drawings.AddItem(new MenuItem("Border", "±ß¿ò¿í¶È").SetValue(new Slider(1, 5, 1)));
+            var drawings = new Menu("èŒƒå›´æ˜¾ç¤º", "Drawings");
+            drawings.AddItem(new MenuItem("EnabledColor", "å¯ç”¨æ³•æœ¯é¢œè‰²").SetValue(Color.White));
+            drawings.AddItem(new MenuItem("DisabledColor", "ç¦ç”¨æ³•æœ¯é¢œè‰²").SetValue(Color.Red));
+            drawings.AddItem(new MenuItem("MissileColor", "å¯¼å¼¹é¢œè‰²").SetValue(Color.LimeGreen));
+            drawings.AddItem(new MenuItem("Border", "è¾¹æ¡†å®½åº¦").SetValue(new Slider(1, 5, 1)));
 
-            drawings.AddItem(new MenuItem("EnableDrawings", "ÆôÓÃ").SetValue(true));
+            drawings.AddItem(new MenuItem("EnableDrawings", "å¯ç”¨").SetValue(true));
             Menu.AddSubMenu(drawings);
 
-            var misc = new Menu("ÔÓÏî", "Misc");
-            misc.AddItem(new MenuItem("DisableFow", "½ûÓÃÕ½ÕùÃÔÎíÉÁÏÖ").SetValue(false));
-            misc.AddItem(new MenuItem("ShowEvadeStatus", "ÏÔÊ¾¶ã±Ü×´¿ö").SetValue(false));
+            var misc = new Menu("æ‚é¡¹", "Misc");
+            misc.AddItem(new MenuItem("DisableFow", "ç¦ç”¨æˆ˜äº‰è¿·é›¾é—ªç°").SetValue(false));
+            misc.AddItem(new MenuItem("ShowEvadeStatus", "æ˜¾ç¤ºèº²é¿çŠ¶å†µ").SetValue(false));
             Menu.AddSubMenu(misc);
 
             Menu.AddItem(
-                new MenuItem("Enabled", "ÆôÓÃ").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true)));
+                new MenuItem("Enabled", "å¯ç”¨").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true)));
 
             Menu.AddItem(
-                new MenuItem("OnlyDangerous", "Ö»¶ã±ÜÎ£ÏÕ¼¼ÄÜ¡Ã").SetValue(new KeyBind(32, KeyBindType.Press)));
+                new MenuItem("OnlyDangerous", "åªèº²é¿å±é™©æŠ€èƒ½âˆ¶").SetValue(new KeyBind(32, KeyBindType.Press)));
 				
-			var QQ = new Menu("Ÿoéºº»¯", "QQ");
-            QQ.AddItem(new MenuItem("QQ2", "ºº»¯Èº£º386289593"));
+			var QQ = new Menu("ç„¡ç‚ºæ±‰åŒ–", "QQ");
+            QQ.AddItem(new MenuItem("QQ2", "æ±‰åŒ–ç¾¤ï¼š386289593"));
             Menu.AddSubMenu(QQ);
 
             Menu.AddToMainMenu();

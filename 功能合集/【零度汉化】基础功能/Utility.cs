@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LeagueSharp.Network.Packets;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -37,23 +38,6 @@ namespace LeagueSharp.Common
     /// </summary>
     public static class Utility
     {
-        /// <summary>
-        ///     Searches for an element that matches the conditions defined by the specified predicate, and returns the first
-        ///     occurrence within the entire IEnumerable.
-        /// </summary>
-        public static TSource Find<TSource>(this IEnumerable<TSource> source, Predicate<TSource> match)
-        {
-            return (source as List<TSource> ?? source.ToList()).Find(match);
-        }
-
-        /// <summary>
-        ///     Retrieves all the elements that match the conditions defined by the specified predicate.
-        /// </summary>
-        public static List<TSource> FindAll<TSource>(this IEnumerable<TSource> source, Predicate<TSource> match)
-        {
-            return (source as List<TSource> ?? source.ToList()).FindAll(match);
-        }
-
         /// <summary>
         ///     Returns if the source is facing the target.
         /// </summary>
@@ -162,12 +146,6 @@ namespace LeagueSharp.Common
             return target.BaseAttackDamage + target.FlatPhysicalDamageMod;
         }
 
-        public static bool IsChampion(this Obj_AI_Base unit, string championName)
-        {
-            var hero = unit as Obj_AI_Hero;
-            return hero != null && hero.IsValid && hero.ChampionName.Equals(championName);
-        }
-
         public static bool IsRecalling(this Obj_AI_Hero unit)
         {
             return unit.Buffs.Any(buff => buff.Name.ToLower().Contains("recall"));
@@ -250,15 +228,12 @@ namespace LeagueSharp.Common
 
         public static void LevelUpSpell(this Spellbook book, SpellSlot slot, bool evolve = false)
         {
-            book.LevelSpell(slot);
-            /*
             new PKT_NPC_UpgradeSpellReq
             {
                 NetworkId = ObjectManager.Player.NetworkId,
                 SpellSlot = (byte) slot,
                 Evolve = evolve
             }.Encode();
-             */
         }
 
         public static List<Vector2> CutPath(this List<Vector2> path, float distance)
@@ -303,28 +278,6 @@ namespace LeagueSharp.Common
                 {
                     result = CutPath(path, (int) (unit.MoveSpeed * timePassed));
                 }
-            }
-
-            return result;
-        }
-
-        public static List<Vector2Time> GetWaypointsWithTime(this Obj_AI_Base unit)
-        {
-            var wp = unit.GetWaypoints();
-
-            if (wp.Count < 1)
-            {
-                return null;
-            }
-
-            var result = new List<Vector2Time>();
-            var speed = unit.MoveSpeed;
-            var lastPoint = wp[0];
-
-            foreach (var point in wp)
-            {
-                result.Add(new Vector2Time(point, point.Distance(lastPoint) / speed));
-                lastPoint = point;
             }
 
             return result;
@@ -814,18 +767,6 @@ namespace LeagueSharp.Common
                 }
             }
             return true;
-        }
-    }
-
-    public class Vector2Time
-    {
-        public Vector2 Position;
-        public float Time;
-
-        public Vector2Time(Vector2 pos, float time)
-        {
-            Position = pos;
-            Time = time;
         }
     }
 }

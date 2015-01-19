@@ -60,6 +60,6 @@ using System.Resources;
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.231")]
-[assembly: AssemblyFileVersion("1.0.0.231")]
+[assembly: AssemblyVersion("1.0.0.221")]
+[assembly: AssemblyFileVersion("1.0.0.221")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
