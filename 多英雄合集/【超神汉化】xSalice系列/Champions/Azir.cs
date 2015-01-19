@@ -42,14 +42,13 @@ namespace xSaliceReligionAIO.Champions
 
             var key = new Menu("热键", "Key");
             {
-                key.AddItem(new MenuItem("ComboActive", "连招",true).SetValue(new KeyBind(32, KeyBindType.Press)));
-                key.AddItem(new MenuItem("HarassActive", "骚扰",true).SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("HarassActiveT", "骚扰 (锁定)",true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
-                key.AddItem(new MenuItem("LaneClearActive", "补兵",true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("escape", "逃跑", true).SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("insec", "锁定目标t",true).SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("qeCombo", "Q->E晕附近目标",true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("qMulti", "2个士兵使用Q",true).SetValue(new KeyBind("I".ToCharArray()[0], KeyBindType.Toggle)));
+                key.AddItem(new MenuItem("ComboActive", "连招").SetValue(new KeyBind(32, KeyBindType.Press)));
+                key.AddItem(new MenuItem("HarassActive", "骚扰").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+                key.AddItem(new MenuItem("HarassActiveT", "骚扰 (锁定)").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
+                key.AddItem(new MenuItem("LaneClearActive", "补兵").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
+                key.AddItem(new MenuItem("escape", "逃跑").SetValue(new KeyBind(menu.Item("Flee_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
+                key.AddItem(new MenuItem("insec", "锁定目标t").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
+                key.AddItem(new MenuItem("qeCombo", "Q->E晕附近目标").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
                 //add to menu
                 menu.AddSubMenu(key);
             }
@@ -59,31 +58,32 @@ namespace xSaliceReligionAIO.Champions
             {
 
                 var qMenu = new Menu("Q", "QSpell"); { 
-                    qMenu.AddItem(new MenuItem("qOutRange", "当敌人超出范围",true).SetValue(false));
-                    qMenu.AddItem(new MenuItem("qExtend", "使用最大Q范围",true).SetValue(true));
-                    qMenu.AddItem(new MenuItem("qHit", "Q击中",true).SetValue(new Slider(3, 1, 3)));
+                    qMenu.AddItem(new MenuItem("qOutRange", "当敌人超出范围").SetValue(false));
+                    qMenu.AddItem(new MenuItem("qExtend", "使用最大Q范围").SetValue(true));
+                    qMenu.AddItem(new MenuItem("qMulti", "士兵大于2使用Q").SetValue(true));
+                    qMenu.AddItem(new MenuItem("qHit", "Q击中").SetValue(new Slider(3, 1, 3)));
                     spell.AddSubMenu(qMenu);
                 }
                 //W Menu
                 var wMenu = new Menu("W", "WSpell"); {
-                    wMenu.AddItem(new MenuItem("wAtk", "总是攻击敌人",true).SetValue(true));
-                    wMenu.AddItem(new MenuItem("wQ", "使用WQ Poke",true).SetValue(true));
+                    wMenu.AddItem(new MenuItem("wAtk", "总是攻击敌人").SetValue(true));
+                    wMenu.AddItem(new MenuItem("wQ", "使用WQ Poke").SetValue(true));
                     spell.AddSubMenu(wMenu);
                 }
                 //E Menu
                 var eMenu =  new Menu("E", "ESpell");
                 {
-                    eMenu.AddItem(new MenuItem("eGap", "超出Q范围突进",true).SetValue(false));
-                    eMenu.AddItem(new MenuItem("eKill", "连招可杀",true).SetValue(false));
-                    eMenu.AddItem(new MenuItem("eKnock", "总是击飞",true).SetValue(false));
-                    eMenu.AddItem(new MenuItem("eHP", "血量大于",true).SetValue(new Slider(100)));
+                    eMenu.AddItem(new MenuItem("eGap", "超出Q范围突进").SetValue(false));
+                    eMenu.AddItem(new MenuItem("eKill", "连招可杀").SetValue(false));
+                    eMenu.AddItem(new MenuItem("eKnock", "总是击飞").SetValue(false));
+                    eMenu.AddItem(new MenuItem("eHP", "血量大于").SetValue(new Slider(60)));
                     spell.AddSubMenu(eMenu);
                 }
                 //R Menu
                 var rMenu = new Menu("R", "RSpell");{
-                    rMenu.AddItem(new MenuItem("rHP", "血量小于",true).SetValue(new Slider(20)));
-                    rMenu.AddItem(new MenuItem("rHit", "击中目标大于",true).SetValue(new Slider(3, 0, 5)));
-                    rMenu.AddItem(new MenuItem("rWall", "R敌人到墙",true).SetValue(true));
+                    rMenu.AddItem(new MenuItem("rHP", "血量小于").SetValue(new Slider(20)));
+                    rMenu.AddItem(new MenuItem("rHit", "击中目标大于").SetValue(new Slider(3, 0, 5)));
+                    rMenu.AddItem(new MenuItem("rWall", "R敌人到墙").SetValue(true));
                     spell.AddSubMenu(rMenu);
                 }
                 menu.AddSubMenu(spell);
@@ -92,61 +92,63 @@ namespace xSaliceReligionAIO.Champions
             //Combo menu:
             var combo = new Menu("连招", "Combo");
             {
-                combo.AddItem(new MenuItem("UseQCombo", "使用Q",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseWCombo", "使用W",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseECombo", "使用E",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseRCombo", "使用R",true).SetValue(true));
+                combo.AddItem(new MenuItem("UseQCombo", "使用Q").SetValue(true));
+                combo.AddItem(new MenuItem("UseWCombo", "使用W").SetValue(true));
+                combo.AddItem(new MenuItem("UseECombo", "使用E").SetValue(true));
+                combo.AddItem(new MenuItem("UseRCombo", "使用R").SetValue(true));
+                combo.AddItem(new MenuItem("ignite", "使用点燃").SetValue(true));
+                combo.AddItem(new MenuItem("igniteMode", "模式").SetValue(new StringList(new[] {"连招", "抢人头"})));
                 menu.AddSubMenu(combo);
             }
 
             //Harass menu:
             var harass = new Menu("骚扰", "Harass");
             {
-                harass.AddItem(new MenuItem("UseQHarass", "使用Q",true).SetValue(true));
-                harass.AddItem(new MenuItem("UseWHarass", "使用W",true).SetValue(true));
-                harass.AddItem(new MenuItem("UseEHarass", "使用E",true).SetValue(false));
+                harass.AddItem(new MenuItem("UseQHarass", "使用Q").SetValue(true));
+                harass.AddItem(new MenuItem("UseWHarass", "使用W").SetValue(true));
+                harass.AddItem(new MenuItem("UseEHarass", "使用E").SetValue(false));
                 menu.AddSubMenu(harass);
             }
 
             //killsteal
             var killSteal = new Menu("抢人头", "KillSteal");
             {
-                killSteal.AddItem(new MenuItem("smartKS", "智能抢人头",true).SetValue(true));
-                killSteal.AddItem(new MenuItem("eKS", "使用E",true).SetValue(false));
-                killSteal.AddItem(new MenuItem("wqKS", "使用WQ",true).SetValue(true));
-                killSteal.AddItem(new MenuItem("qeKS", "使用WQE",true).SetValue(false));
-                killSteal.AddItem(new MenuItem("rKS", "使用R",true).SetValue(true));
+                killSteal.AddItem(new MenuItem("smartKS", "智能抢人头").SetValue(true));
+                killSteal.AddItem(new MenuItem("eKS", "使用E").SetValue(false));
+                killSteal.AddItem(new MenuItem("wqKS", "使用WQ").SetValue(true));
+                killSteal.AddItem(new MenuItem("qeKS", "使用WQE").SetValue(false));
+                killSteal.AddItem(new MenuItem("rKS", "使用R").SetValue(true));
                 menu.AddSubMenu(killSteal);
             }
 
             //farm menu
             var farm = new Menu("补兵", "Farm");
             {
-                farm.AddItem(new MenuItem("UseQFarm", "使用Q",true).SetValue(false));
-                farm.AddItem(new MenuItem("qFarm", "小兵大于X",true).SetValue(new Slider(3, 0, 5)));
+                farm.AddItem(new MenuItem("UseQFarm", "使用Q").SetValue(false));
+                farm.AddItem(new MenuItem("qFarm", "小兵大于X").SetValue(new Slider(3, 0, 5)));
                 menu.AddSubMenu(farm);
             }
 
             //Misc Menu:
             var misc = new Menu("杂项", "Misc");
             {
-                misc.AddItem(new MenuItem("UseInt", "使用E打断",true).SetValue(true));
-                misc.AddItem(new MenuItem("UseGap", "使用E防突",true).SetValue(true));
-                misc.AddItem(new MenuItem("fastEscape", "逃跑模式2",true).SetValue(true));
+                misc.AddItem(new MenuItem("UseInt", "使用E打断").SetValue(true));
+                misc.AddItem(new MenuItem("UseGap", "使用E防突").SetValue(true));
+                misc.AddItem(new MenuItem("fastEscape", "逃跑模式2").SetValue(true));
                 menu.AddSubMenu(misc);
             }
 
             //Drawings menu:
             var draw = new Menu("显示", "Drawings"); { 
-                draw.AddItem(new MenuItem("QRange", "Q范围",true).SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
-                draw.AddItem(new MenuItem("QExtendRange", "Q最大范围",true).SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
-                draw.AddItem(new MenuItem("WRange", "W范围",true).SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
-                draw.AddItem(new MenuItem("ERange", "E范围",true).SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
-                draw.AddItem(new MenuItem("RRange", "R范围",true).SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
-                draw.AddItem(new MenuItem("slaveDmg", "显示小兵攻击",true).SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                draw.AddItem(new MenuItem("QRange", "Q范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                draw.AddItem(new MenuItem("QExtendRange", "Q最大范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                draw.AddItem(new MenuItem("WRange", "W范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                draw.AddItem(new MenuItem("ERange", "E范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                draw.AddItem(new MenuItem("RRange", "R范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
+                draw.AddItem(new MenuItem("slaveDmg", "显示小兵攻击").SetValue(new Circle(false, Color.FromArgb(100, 255, 0, 255))));
 
-                MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示连招伤害",true).SetValue(true);
-                MenuItem drawFill = new MenuItem("Draw_Fill", "显示补充伤害",true).SetValue(new Circle(true, Color.FromArgb(90, 255, 169, 4)));
+                MenuItem drawComboDamageMenu = new MenuItem("Draw_ComboDamage", "显示伤害").SetValue(true);
+                MenuItem drawFill = new MenuItem("Draw_Fill", "显示连招伤害").SetValue(new Circle(true, Color.FromArgb(90, 255, 169, 4)));
                 draw.AddItem(drawComboDamageMenu);
                 draw.AddItem(drawFill);
                 DamageIndicator.DamageToUnit = GetComboDamage;
@@ -187,8 +189,6 @@ namespace xSaliceReligionAIO.Champions
             if (R.IsReady())
                 damage += Player.GetSpellDamage(enemy, SpellSlot.R);
 
-            damage = ActiveItems.CalcDamage(enemy, damage);
-
             return (float)damage;
         }
 
@@ -216,27 +216,30 @@ namespace xSaliceReligionAIO.Champions
 
         private void Combo()
         {
-            UseSpells(menu.Item("UseQCombo", true).GetValue<bool>(), menu.Item("UseWCombo", true).GetValue<bool>(),
-                menu.Item("UseECombo", true).GetValue<bool>(), menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
+            UseSpells(menu.Item("UseQCombo").GetValue<bool>(), menu.Item("UseWCombo").GetValue<bool>(),
+                menu.Item("UseECombo").GetValue<bool>(), menu.Item("UseRCombo").GetValue<bool>());
         }
 
         private void Harass()
         {
-            UseSpells(menu.Item("UseQHarass", true).GetValue<bool>(), menu.Item("UseWHarass", true).GetValue<bool>(),
-                menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
+            UseSpells(menu.Item("UseQHarass").GetValue<bool>(), menu.Item("UseWHarass").GetValue<bool>(),
+                menu.Item("UseEHarass").GetValue<bool>(), false);
         }
 
-        private void UseSpells(bool useQ, bool useW, bool useE, bool useR, string source)
+        private void UseSpells(bool useQ, bool useW, bool useE, bool useR)
         {
             var qTarget = TargetSelector.GetTarget(QExtend.Range, TargetSelector.DamageType.Magical);
             var soilderTarget = TargetSelector.GetTarget(1200, TargetSelector.DamageType.Magical);
+
+            // Game.PrintChat("Spell state: " + qSpell.State);
+            var igniteMode = menu.Item("igniteMode").GetValue<StringList>().SelectedIndex;
 
             //R
             if (useR && R.IsReady() && ShouldR(qTarget) && Player.Distance(qTarget) < R.Range)
                 R.Cast(qTarget);
 
             //WQ
-            if (soilderCount() == 0 && useQ && useW && W.IsReady() && (Q.IsReady() || qSpell.State == SpellState.Surpressed) && menu.Item("wQ", true).GetValue<bool>())
+            if (soilderCount() == 0 && useQ && useW && W.IsReady() && (Q.IsReady() || qSpell.State == SpellState.Surpressed) && menu.Item("wQ").GetValue<bool>())
             {
                 CastWq(qTarget);
             }
@@ -254,20 +257,12 @@ namespace xSaliceReligionAIO.Champions
                 return;
             }
 
-            //items
-            if (source == "Combo")
+            //Ignite
+            if (qTarget != null && menu.Item("ignite").GetValue<bool>() && IgniteSlot != SpellSlot.Unknown && Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
             {
-                var itemTarget = TargetSelector.GetTarget(750, TargetSelector.DamageType.Physical);
-                var dmg = GetComboDamage(itemTarget);
-                if (itemTarget != null)
+                if (igniteMode == 0 && GetComboDamage(qTarget) > qTarget.Health)
                 {
-                    ActiveItems.Target = itemTarget;
-
-                    //see if killable
-                    if (dmg > itemTarget.Health - 50)
-                        ActiveItems.KillableTarget = true;
-
-                    ActiveItems.UseTargetted = true;
+                    Player.Spellbook.CastSpell(IgniteSlot, qTarget);
                 }
             }
 
@@ -294,15 +289,27 @@ namespace xSaliceReligionAIO.Champions
 
         private void SmartKs()
         {
-            if (!menu.Item("smartKS", true).GetValue<bool>())
+            if (!menu.Item("smartKS").GetValue<bool>())
                 return;
+            var nearChamps = (from champ in ObjectManager.Get<Obj_AI_Hero>() where champ.IsValidTarget(1200) select champ).ToList();
 
-            foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1200) && !x.HasBuffOfType(BuffType.Invulnerability)).OrderByDescending(GetComboDamage))
+            foreach (var target in nearChamps)
             {
-                if (target != null)
+                if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability) && target.IsValidTarget(1200))
                 {
+                    //ignite
+                    if (menu.Item("ignite").GetValue<bool>() && IgniteSlot != SpellSlot.Unknown &&
+                            Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && Player.Distance(target.ServerPosition) <= 600)
+                    {
+                        var igniteMode = menu.Item("igniteMode").GetValue<StringList>().SelectedIndex;
+                        if (igniteMode == 1 && Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite) > target.Health)
+                        {
+                            Player.Spellbook.CastSpell(IgniteSlot, target);
+                        }
+                    }
+
                     //R
-                    if ((Player.GetSpellDamage(target, SpellSlot.R)) > target.Health + 20 && Player.Distance(target) < R.Range && menu.Item("rKS", true).GetValue<bool>())
+                    if ((Player.GetSpellDamage(target, SpellSlot.R)) > target.Health + 20 && Player.Distance(target) < R.Range && menu.Item("rKS").GetValue<bool>())
                     {
                         R.Cast(target);
                     }
@@ -311,13 +318,13 @@ namespace xSaliceReligionAIO.Champions
                         return;
 
                     //WQ
-                    if ((Player.GetSpellDamage(target, SpellSlot.Q)) > target.Health + 20 && menu.Item("wqKS", true).GetValue<bool>())
+                    if ((Player.GetSpellDamage(target, SpellSlot.Q)) > target.Health + 20 && menu.Item("wqKS").GetValue<bool>())
                     {
                         CastWq(target);
                     }
 
                     //qe
-                    if ((Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) > target.Health + 20 && Player.Distance(target) < Q.Range && menu.Item("qeKS", true).GetValue<bool>())
+                    if ((Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) > target.Health + 20 && Player.Distance(target) < Q.Range && menu.Item("qeKS").GetValue<bool>())
                     {
                         CastQe(target);
                     }
@@ -330,7 +337,7 @@ namespace xSaliceReligionAIO.Champions
         {
             Vector3 wVec = Player.ServerPosition + Vector3.Normalize(Game.CursorPos - Player.ServerPosition) * 450;
 
-            if (menu.Item("fastEscape", true).GetValue<bool>())
+            if (menu.Item("fastEscape").GetValue<bool>())
             {
                 if (W.IsReady() || soilderCount() > 0)
                 {
@@ -349,7 +356,7 @@ namespace xSaliceReligionAIO.Champions
                             Vector3 qVec = Player.ServerPosition +
                                            Vector3.Normalize(Game.CursorPos - Player.ServerPosition) * 800;
 
-                            var lastAttempt = (int)qVec.Distance(GetNearestSoilderToMouse().Position) / 1000;
+                            var lastAttempt = (int)qVec.Distance(GetNearestSoilderToMouse().ServerPosition) / 1000;
 
                             Q.Cast(qVec, packets());
                             Q.LastCastAttemptT = Environment.TickCount + lastAttempt;
@@ -359,9 +366,9 @@ namespace xSaliceReligionAIO.Champions
 
                     if ((E.IsReady() || eSpell.State == SpellState.Surpressed))
                     {
-                        if (Player.Distance(Game.CursorPos) > GetNearestSoilderToMouse().Position.Distance(Game.CursorPos) && Environment.TickCount - Q.LastCastAttemptT > Game.Ping)
+                        if (Player.Distance(Game.CursorPos) > GetNearestSoilderToMouse().Distance(Game.CursorPos) && Environment.TickCount - Q.LastCastAttemptT > Game.Ping)
                         {
-                            E.Cast(GetNearestSoilderToMouse().Position, packets());
+                            E.Cast(GetNearestSoilderToMouse().ServerPosition, packets());
                             E.LastCastAttemptT = Environment.TickCount - 250;
                             //Game.PrintChat("Rawr2");
                             return;
@@ -386,13 +393,13 @@ namespace xSaliceReligionAIO.Champions
 
                         var slave = GetNearestSoilderToMouse();
 
-                        var delay = (int)Math.Ceiling(Player.Distance(slave.Position));
+                        var delay = (int)Math.Ceiling(slave.Distance(Player.ServerPosition));
 
                         if (QExtend.IsReady() || qSpell.State == SpellState.Surpressed)
                             Q.Cast(qVec, packets());
 
                         Utility.DelayAction.Add(delay,
-                            () => E.Cast(GetNearestSoilderToMouse().Position, packets()));
+                            () => E.Cast(GetNearestSoilderToMouse().ServerPosition, packets()));
                         return;
                     }
                     if (W.IsReady())
@@ -414,9 +421,10 @@ namespace xSaliceReligionAIO.Champions
             }
         }
 
-        private GameObject GetNearestSoilderToMouse()
+        private Obj_AI_Base GetNearestSoilderToMouse()
         {
-            var soilder = xSLxOrbwalker.Soilders.ToList().OrderBy(x => Game.CursorPos.Distance(x.Position));
+            var soilder = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && Player.Distance(obj.ServerPosition) < 2000 select obj)
+                .ToList().OrderBy(x => Game.CursorPos.Distance(x.ServerPosition));
 
             if (soilder.FirstOrDefault() != null)
                 return soilder.FirstOrDefault();
@@ -430,13 +438,13 @@ namespace xSaliceReligionAIO.Champions
             {
                 if ((Q.IsReady() || qSpell.State == SpellState.Surpressed) && E.IsReady())
                 {
-                    var slaves = xSLxOrbwalker.Soilders.ToList();
+                    var slaves = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && target.Distance(obj.ServerPosition) < 2000 select obj).ToList();
 
                     foreach (var slave in slaves)
                     {
                         if (target != null && Player.Distance(target) < 800)
                         {
-                            var qPred = GetP(slave.Position, QExtend, target, true);
+                            var qPred = GetP(slave.ServerPosition, QExtend, target, true);
 
                             if (Q.IsReady() && Player.Distance(target) < 800 && qPred.Hitchance >= getQHitchance())
                             {
@@ -444,7 +452,7 @@ namespace xSaliceReligionAIO.Champions
                                 var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
 
                                 Q.Cast(castBehind, packets());
-                                E.Cast(slave.Position, packets());
+                                E.Cast(slave.ServerPosition, packets());
                                 return;
 
                             }
@@ -465,7 +473,7 @@ namespace xSaliceReligionAIO.Champions
 
                     W.Cast(wVec);
                     QExtend.Cast(castBehind, packets());
-                    Utility.DelayAction.Add(1, () => E.Cast(getNearestSoilderToEnemy(target).Position, packets()));
+                    Utility.DelayAction.Add(1, () => E.Cast(getNearestSoilderToEnemy(target).ServerPosition, packets()));
                 }
             }
         }
@@ -481,13 +489,13 @@ namespace xSaliceReligionAIO.Champions
             {
                 if ((Q.IsReady() || qSpell.State == SpellState.Surpressed) && E.IsReady())
                 {
-                    var slaves = xSLxOrbwalker.Soilders.ToList();
+                    var slaves = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && target.Distance(obj.ServerPosition) < 2000 select obj).ToList();
 
                     foreach (var slave in slaves)
                     {
                         if (Player.Distance(target) < 800)
                         {
-                            var qPred = GetP(slave.Position, QExtend, target, true);
+                            var qPred = GetP(slave.ServerPosition, QExtend, target, true);
                             var vec = target.ServerPosition - Player.ServerPosition;
                             var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
                             _rVec = qPred.CastPosition - Vector3.Normalize(vec) * 300;
@@ -496,7 +504,7 @@ namespace xSaliceReligionAIO.Champions
                             {
 
                                 Q.Cast(castBehind, packets());
-                                E.Cast(slave.Position, packets());
+                                E.Cast(slave.ServerPosition, packets());
                                 E.LastCastAttemptT = Environment.TickCount;
                             }
                         }
@@ -526,7 +534,7 @@ namespace xSaliceReligionAIO.Champions
 
                     W.Cast(wVec);
                     QExtend.Cast(castBehind, packets());
-                    E.Cast(getNearestSoilderToEnemy(target).Position, packets());
+                    E.Cast(getNearestSoilderToEnemy(target).ServerPosition, packets());
                 }
                 if (R.IsReady())
                 {
@@ -541,9 +549,6 @@ namespace xSaliceReligionAIO.Champions
 
         private void CastWq(Obj_AI_Hero target)
         {
-            if (soilderCount() < 1 && menu.Item("qMulti", true).GetValue<KeyBind>().Active)
-                return;
-
             if (Player.Distance(target) < 1150 && Player.Distance(target) > 450)
             {
                 if (W.IsReady() && (Q.IsReady() || qSpell.State == SpellState.Surpressed))
@@ -565,19 +570,14 @@ namespace xSaliceReligionAIO.Champions
         {
             if (Player.Distance(target) < 1200)
             {
-                if (Player.Level > 11)
+                if (Player.Distance(target) < 450)
                 {
-                    Vector3 wVec = Player.ServerPosition + Vector3.Normalize(target.ServerPosition - Player.ServerPosition) * 450;
-
-                    //Game.PrintChat("W Cast2");
-                    if (W.IsReady())
-                    {
-                        W.Cast(wVec);
-                        if (canAttack())
-                            Utility.DelayAction.Add(200, () => Player.IssueOrder(GameObjectOrder.AttackUnit, target));
-                    }
+                    //Game.PrintChat("W Cast1");
+                    W.Cast(target);
+                    if (canAttack())
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                 }
-                if (Player.Distance(target) < 600)
+                else if (Player.Distance(target) < 600)
                 {
                     Vector3 wVec = Player.ServerPosition + Vector3.Normalize(target.ServerPosition - Player.ServerPosition) * 450;
 
@@ -586,7 +586,7 @@ namespace xSaliceReligionAIO.Champions
                     {
                         W.Cast(wVec);
                         if (canAttack())
-                            Utility.DelayAction.Add(200, () => Player.IssueOrder(GameObjectOrder.AttackUnit, target));
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                     }
                 }
                 else if (Player.Distance(target) < 950)
@@ -612,21 +612,21 @@ namespace xSaliceReligionAIO.Champions
             if (soilderCount() < 1)
                 return;
 
-            var slaves = xSLxOrbwalker.Soilders.ToList();
+            var slaves = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && target.Distance(obj.ServerPosition) < 2000 select obj).ToList();
 
             foreach (var slave in slaves)
             {
                 if (target != null && Player.Distance(target) < QExtend.Range && ShouldQ(target, slave))
                 {
 
-                    var qPred = GetP(slave.Position, QExtend, target, true);
+                    var qPred = GetP(slave.ServerPosition, QExtend, target, true);
 
                     if (Q.IsReady() && Player.Distance(target) < 800 && qPred.Hitchance >= getQHitchance())
                     {
                         Q.Cast(qPred.CastPosition, packets());
                         return;
                     }
-                    if (Q.IsReady() && Player.Distance(target) > 800 && qPred.Hitchance >= getQHitchance() && menu.Item("qExtend", true).GetValue<bool>())
+                    if (Q.IsReady() && Player.Distance(target) > 800 && qPred.Hitchance >= getQHitchance() && menu.Item("qExtend").GetValue<bool>())
                     {
                         var qVector = Player.ServerPosition + Vector3.Normalize(qPred.CastPosition - Player.ServerPosition) * 800;
 
@@ -643,45 +643,44 @@ namespace xSaliceReligionAIO.Champions
             if (soilderCount() < 1)
                 return;
 
-            var slaves = xSLxOrbwalker.Soilders.ToList();
+            var slaves = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && target.Distance(obj.ServerPosition) < 2000 select obj).ToList();
 
-            if (Player.Distance(target) > 1200 && menu.Item("eGap", true).GetValue<bool>())
+            if (Player.Distance(target) > 1200 && menu.Item("eGap").GetValue<bool>())
             {
                 var slavetar = getNearestSoilderToEnemy(target);
-                if (slavetar != null && target.Distance(slavetar.Position) < Player.Distance(target))
+                if (slavetar != null && slavetar.Distance(target) < Player.Distance(target))
                 {
-                    E.Cast(slavetar.Position, packets());
+                    E.Cast(slavetar, packets());
                 }
             }
 
             foreach (var slave in slaves)
             {
-                if (target != null && Player.Distance(slave.Position) < E.Range)
+                if (target != null && Player.Distance(slave) < E.Range)
                 {
-                    var ePred = GetP(slave.Position, E, target, true);
-                    Object[] obj = VectorPointProjectionOnLineSegment(Player.ServerPosition.To2D(), slave.Position.To2D(), ePred.UnitPosition.To2D());
+                    var ePred = GetP(slave.ServerPosition, E, target, true);
+                    Object[] obj = VectorPointProjectionOnLineSegment(Player.ServerPosition.To2D(), slave.ServerPosition.To2D(), ePred.UnitPosition.To2D());
                     var isOnseg = (bool)obj[2];
                     var pointLine = (Vector2)obj[1];
 
                     if (E.IsReady() && isOnseg && pointLine.Distance(ePred.UnitPosition.To2D()) < E.Width && ShouldE(target))
                     {
-                        E.Cast(slave.Position, packets());
+                        E.Cast(slave.ServerPosition, packets());
                         return;
                     }
                 }
             }
         }
 
-        private bool ShouldQ(Obj_AI_Hero target, GameObject slave)
+        private bool ShouldQ(Obj_AI_Hero target, Obj_AI_Base slave)
         {
-
-            if (soilderCount() < 2 && menu.Item("qMulti", true).GetValue<KeyBind>().Active)
-                return false;
-
-            if (!menu.Item("qOutRange", true).GetValue<bool>())
+            if (!menu.Item("qOutRange").GetValue<bool>())
                 return true;
 
-            if (target.Distance(slave.Position) > 390)
+            if (slave.Distance(target.ServerPosition) > 390)
+                return true;
+
+            if (soilderCount() > 1 && menu.Item("qMulti").GetValue<bool>())
                 return true;
 
             if (Player.GetSpellDamage(target, SpellSlot.Q) > target.Health + 10)
@@ -692,17 +691,17 @@ namespace xSaliceReligionAIO.Champions
         }
         private bool ShouldE(Obj_AI_Hero target)
         {
-            if (menu.Item("eKnock", true).GetValue<bool>())
+            if (menu.Item("eKnock").GetValue<bool>())
                 return true;
 
-            if (menu.Item("eKill", true).GetValue<bool>() && GetComboDamage(target) > target.Health + 15)
+            if (menu.Item("eKill").GetValue<bool>() && GetComboDamage(target) > target.Health + 15)
                 return true;
 
-            if (menu.Item("eKS", true).GetValue<bool>() && Player.GetSpellDamage(target, SpellSlot.E) > target.Health + 10)
+            if (menu.Item("eKS").GetValue<bool>() && Player.GetSpellDamage(target, SpellSlot.E) > target.Health + 10)
                 return true;
 
             //hp 
-            var hp = menu.Item("eHP", true).GetValue<Slider>().Value;
+            var hp = menu.Item("eHP").GetValue<Slider>().Value;
             var hpPercent = Player.Health / Player.MaxHealth * 100;
 
             if (hpPercent > hp)
@@ -713,20 +712,20 @@ namespace xSaliceReligionAIO.Champions
 
         private bool ShouldR(Obj_AI_Hero target)
         {
-            if (Player.GetSpellDamage(target, SpellSlot.R) > target.Health - 150)
+            if (Player.GetSpellDamage(target, SpellSlot.R) > target.Health + 10)
                 return true;
 
-            var hp = menu.Item("rHP", true).GetValue<Slider>().Value;
+            var hp = menu.Item("rHP").GetValue<Slider>().Value;
             var hpPercent = Player.Health / Player.MaxHealth * 100;
             if (hpPercent < hp)
                 return true;
 
-            var rHit = menu.Item("rHit", true).GetValue<Slider>().Value;
+            var rHit = menu.Item("rHit").GetValue<Slider>().Value;
             var pred = R.GetPrediction(target);
             if (pred.AoeTargetsHitCount >= rHit)
                 return true;
 
-            if (WallStun(target) && GetComboDamage(target) > target.Health / 2 && menu.Item("rWall", true).GetValue<bool>())
+            if (WallStun(target) && GetComboDamage(target) > target.Health / 2 && menu.Item("rWall").GetValue<bool>())
             {
                 //Game.PrintChat("Walled");
                 return true;
@@ -747,11 +746,10 @@ namespace xSaliceReligionAIO.Champions
 
             AttackTarget(soilderTarget);
         }
-
         private HitChance getQHitchance()
         {
             var hitC = HitChance.High;
-            var qHit = menu.Item("qHit", true).GetValue<Slider>().Value;
+            var qHit = menu.Item("qHit").GetValue<Slider>().Value;
 
             // HitChance.Low = 3, Medium , High .... etc..
             switch (qHit)
@@ -775,7 +773,7 @@ namespace xSaliceReligionAIO.Champions
 
         private int soilderCount()
         {
-            return xSLxOrbwalker.Soilders.Count();
+            return ObjectManager.Get<Obj_AI_Base>().Count(obj => obj.Name == "AzirSoldier" && obj.IsAlly);
         }
 
         private bool canAttack()
@@ -789,9 +787,9 @@ namespace xSaliceReligionAIO.Champions
                 return;
 
             var tar = getNearestSoilderToEnemy(target);
-            if (tar != null && Player.Distance(tar.Position) < 800)
+            if (tar != null && Player.Distance(tar) < 800)
             {
-                if (target != null && target.Distance(tar.Position) <= 390 && canAttack())
+                if (target != null && tar.Distance(target) <= 390 && canAttack())
                 {
                     xSLxOrbwalker.Orbwalk(Game.CursorPos, target);
                 }
@@ -799,9 +797,10 @@ namespace xSaliceReligionAIO.Champions
 
         }
 
-        private GameObject getNearestSoilderToEnemy(Obj_AI_Base target)
+        private Obj_AI_Base getNearestSoilderToEnemy(Obj_AI_Base target)
         {
-            var soilder = xSLxOrbwalker.Soilders.ToList().OrderBy(x => target.Distance(x.Position));
+            var soilder = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && target.Distance(obj.ServerPosition) < 2000 select obj)
+                .ToList().OrderBy(x => target.Distance(x.ServerPosition));
 
             if (soilder.FirstOrDefault() != null)
                 return soilder.FirstOrDefault();
@@ -811,11 +810,11 @@ namespace xSaliceReligionAIO.Champions
 
         private void Farm()
         {
-            var allMinionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range + Q.Width, MinionTypes.All, MinionTeam.NotAlly);
-            var allMinionsW = MinionManager.GetMinions(Player.ServerPosition, W.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var allMinionsQ = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range + Q.Width, MinionTypes.All, MinionTeam.NotAlly);
+            var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, W.Range + W.Width, MinionTypes.All, MinionTeam.NotAlly);
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var min = menu.Item("qFarm", true).GetValue<Slider>().Value;
+            var useQ = menu.Item("UseQFarm").GetValue<bool>();
+            var min = menu.Item("qFarm").GetValue<Slider>().Value;
 
 
             if (useQ && (Q.IsReady() || qSpell.State == SpellState.Surpressed))
@@ -823,13 +822,13 @@ namespace xSaliceReligionAIO.Champions
                 int hit;
                 if (soilderCount() > 0)
                 {
-                    var slaves = xSLxOrbwalker.Soilders.ToList();
+                    var slaves = (from obj in ObjectManager.Get<Obj_AI_Base>() where obj.Name == "AzirSoldier" && obj.IsAlly && Player.Distance(obj.ServerPosition) < 2000 select obj).ToList();
                     foreach (var slave in slaves)
                     {
                         foreach (var enemy in allMinionsQ)
                         {
                             hit = 0;
-                            var prediction = GetP(slave.Position, Q, enemy, true);
+                            var prediction = GetP(slave.ServerPosition, Q, enemy, true);
 
                             if (Q.IsReady() && Player.Distance(enemy) <= Q.Range)
                             {
@@ -846,11 +845,10 @@ namespace xSaliceReligionAIO.Champions
                         }
                     }
                 }
-                if (W.IsReady())
+                else if (W.IsReady())
                 {
                     var wpred = W.GetCircularFarmLocation(allMinionsW);
-                    if(wpred.MinionsHit > 0)
-                        W.Cast(wpred.Position);
+                    W.Cast(wpred.Position);
 
                     foreach (var enemy in allMinionsQ)
                     {
@@ -881,23 +879,22 @@ namespace xSaliceReligionAIO.Champions
 
             SmartKs();
 
-            if (menu.Item("escape", true).GetValue<KeyBind>().Active)
+            if (menu.Item("escape").GetValue<KeyBind>().Active)
             {
                 Escape();
             }
-            else if (menu.Item("ComboActive", true).GetValue<KeyBind>().Active)
+            else if (menu.Item("ComboActive").GetValue<KeyBind>().Active)
             {
                 Combo();
             }
-            else if (menu.Item("insec", true).GetValue<KeyBind>().Active)
+            else if (menu.Item("insec").GetValue<KeyBind>().Active)
             {
                 xSLxOrbwalker.Orbwalk(Game.CursorPos, null);
 
-                _insecTarget = TargetSelector.GetSelectedTarget();
                 if (_insecTarget != null)
                     Insec();
             }
-            else if (menu.Item("qeCombo", true).GetValue<KeyBind>().Active)
+            else if (menu.Item("qeCombo").GetValue<KeyBind>().Active)
             {
                 var soilderTarget = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
@@ -906,18 +903,18 @@ namespace xSaliceReligionAIO.Champions
             }
             else
             {
-                if (menu.Item("LaneClearActive", true).GetValue<KeyBind>().Active)
+                if (menu.Item("LaneClearActive").GetValue<KeyBind>().Active)
                 {
                     Farm();
                 }
 
-                if (menu.Item("HarassActive", true).GetValue<KeyBind>().Active)
+                if (menu.Item("HarassActive").GetValue<KeyBind>().Active)
                     Harass();
 
-                if (menu.Item("HarassActiveT", true).GetValue<KeyBind>().Active)
+                if (menu.Item("HarassActiveT").GetValue<KeyBind>().Active)
                     Harass();
 
-                if (menu.Item("wAtk", true).GetValue<bool>())
+                if (menu.Item("wAtk").GetValue<bool>())
                     AutoAtk();
             }
         }
@@ -926,34 +923,43 @@ namespace xSaliceReligionAIO.Champions
         {
             foreach (var spell in SpellList)
             {
-                var menuItem = menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
+                var menuItem = menu.Item(spell.Slot + "Range").GetValue<Circle>();
                 if (menuItem.Active)
-                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
+                    Utility.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
-            if (menu.Item("QExtendRange", true).GetValue<Circle>().Active)
-                Render.Circle.DrawCircle(Player.Position, QExtend.Range, Color.LightBlue);
+            if (menu.Item("QExtendRange").GetValue<Circle>().Active)
+                Utility.DrawCircle(Player.Position, QExtend.Range, Color.LightBlue);
 
-            if (menu.Item("slaveDmg", true).GetValue<Circle>().Active)
+            if (menu.Item("slaveDmg").GetValue<Circle>().Active)
             {
                 foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team && enemy.IsValid && !enemy.IsDead))
                 {
-                    var wtsz = Drawing.WorldToScreen(enemy.Position);
-                    Drawing.DrawText(wtsz[0], wtsz[1], Color.White, "AA To Kill: " + Math.Ceiling((enemy.Health / GetAutoDmg(enemy))));
+                    var wts = Drawing.WorldToScreen(enemy.Position);
+                    Drawing.DrawText(wts[0], wts[1], Color.White, "AA To Kill: " + Math.Ceiling((enemy.Health / GetAutoDmg(enemy))));
                 }
             }
 
-            Vector2 wts = Drawing.WorldToScreen(Player.Position);
-            if (menu.Item("qMulti", true).GetValue<KeyBind>().Active)
-                Drawing.DrawText(wts[0] - 20, wts[1], Color.White, "Q If 2+ Soldier");
-            else
-                Drawing.DrawText(wts[0] - 20, wts[1], Color.Red, "Q If 2+ Soldier");
-            
+        }
 
+        public override void Game_OnSendPacket(GamePacketEventArgs args)
+        {
+            //ty trees
+            if (args.PacketData[0] != Packet.C2S.SetTarget.Header)
+            {
+                return;
+            }
+
+            var decoded = Packet.C2S.SetTarget.Decoded(args.PacketData);
+
+            if (decoded.NetworkId != 0 && decoded.Unit.IsValid && !decoded.Unit.IsMe)
+            {
+                _insecTarget = decoded.Unit;
+            }
         }
 
         public override void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (!menu.Item("UseGap", true).GetValue<bool>()) return;
+            if (!menu.Item("UseGap").GetValue<bool>()) return;
 
             if (R.IsReady() && gapcloser.Sender.IsValidTarget(R.Range))
                 R.Cast(gapcloser.Sender);
@@ -961,7 +967,7 @@ namespace xSaliceReligionAIO.Champions
 
         public override void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
         {
-            if (!menu.Item("UseInt", true).GetValue<bool>()) return;
+            if (!menu.Item("UseInt").GetValue<bool>()) return;
 
             if (Player.Distance(unit) < R.Range && unit != null && R.IsReady())
             {

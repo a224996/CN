@@ -22,9 +22,8 @@ namespace xSaliceReligionAIO
             Game.OnGameSendPacket += Game_OnSendPacket;
             Game.OnGameProcessPacket += Game_OnGameProcessPacket;
             GameObject.OnDelete += GameObject_OnDelete;
-            Obj_AI_Base.OnIssueOrder += ObjAiHeroOnOnIssueOrder;
 
-            if (menu.Item("Orbwalker_Mode", true).GetValue<bool>())
+            if (menu.Item("Orbwalker_Mode").GetValue<bool>())
             {
                 Orbwalking.AfterAttack += AfterAttack;
                 Orbwalking.BeforeAttack += BeforeAttack;
@@ -62,6 +61,7 @@ namespace xSaliceReligionAIO
         public Spell E;
         public Spell E2;
         public Spell R;
+        public Spell R2;
         public Spell _r2;
         public SpellDataInst qSpell = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q);
         public SpellDataInst eSpell = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E);
@@ -72,7 +72,7 @@ namespace xSaliceReligionAIO
         public SpellSlot IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
         
         //items
-        public Items.Item DFG = Utility.Map.GetMap().Type == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
+        public Items.Item DFG = Utility.Map.GetMap()._MapType == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
         public Items.Item Botrk = new Items.Item(3153, 450);
         public Items.Item Bilge = new Items.Item(3144, 450);
         public Items.Item Hex = new Items.Item(3146, 700);
@@ -109,16 +109,11 @@ namespace xSaliceReligionAIO
             //Orbwalker submenu
             orbwalkerMenu.AddItem(new MenuItem("Orbwalker_Mode", "走砍模式").SetValue(false));
             menu.AddSubMenu(orbwalkerMenu);
-            chooseOrbwalker(menu.Item("Orbwalker_Mode", true).GetValue<bool>());
+            chooseOrbwalker(menu.Item("Orbwalker_Mode").GetValue<bool>());
 
             //Packet Menu
             menu.AddSubMenu(new Menu("封包", "Packets"));
             menu.SubMenu("Packets").AddItem(new MenuItem("packet", "封包").SetValue(false));
-
-            //Item Menu
-            var itemMenu = new Menu("Items and Summoners", "Items");
-            ActiveItems.AddToMenu(itemMenu);
-            menu.AddSubMenu(itemMenu);
 
             menu.AddToMainMenu();
 
@@ -157,7 +152,7 @@ namespace xSaliceReligionAIO
         }
         public bool packets()
         {
-            return menu.Item("packet", true).GetValue<bool>();
+            return menu.Item("packet").GetValue<bool>();
         }
 
         public void Use_DFG(Obj_AI_Hero target)
@@ -253,28 +248,9 @@ namespace xSaliceReligionAIO
         public bool manaCheck()
         {
             int totalMana = qMana[Q.Level] + wMana[W.Level] + eMana[E.Level] + rMana[R.Level];
-            var checkMana = menu.Item("mana", true).GetValue<bool>();
+            var checkMana = menu.Item("mana").GetValue<bool>();
 
             if (Player.Mana >= totalMana || !checkMana)
-                return true;
-
-            return false;
-        }
-
-        public bool manaCheck2()
-        {
-            int totalMana = qMana[Q.Level] + wMana[W.Level] + eMana[E.Level] + rMana[R.Level];
-
-            if (Player.Mana >= totalMana)
-                return true;
-
-            return false;
-        }
-
-        public bool IsStunned(Obj_AI_Base target)
-        {
-            if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) ||
-                target.HasBuffOfType(BuffType.Suppression) || target.HasBuffOfType(BuffType.Taunt))
                 return true;
 
             return false;
@@ -397,16 +373,12 @@ namespace xSaliceReligionAIO
             return new object[3] { pointSegment, pointLine, isOnSegment };
         }
 
-        public void CastBasicSkillShot(Spell spell, float range, TargetSelector.DamageType type, HitChance hitChance, bool towerCheck = false)
+        public void CastBasicSkillShot(Spell spell, float range, TargetSelector.DamageType type, HitChance hitChance)
         {
             var target = TargetSelector.GetTarget(range, type);
 
             if (target == null || !spell.IsReady())
                 return;
-
-            if (towerCheck && target.UnderTurret(true))
-                return;
-
             spell.UpdateSourcePosition();
 
             if (spell.GetPrediction(target).Hitchance >= hitChance)
@@ -424,20 +396,18 @@ namespace xSaliceReligionAIO
 
             if (spell.Type == SkillshotType.SkillshotCircle)
             {
-                spell.UpdateSourcePosition();
-
                 var predPosition = spell.GetCircularFarmLocation(minion);
 
+                spell.UpdateSourcePosition();
+
                 if (predPosition.MinionsHit >= 2)
-                {
-                    spell.Cast(predPosition.Position, Player.ChampionName == "Kartus" || packets());
-                }
+                    spell.Cast(predPosition.Position, packets());
             }
             else if (spell.Type == SkillshotType.SkillshotLine)
             {
-                spell.UpdateSourcePosition();
-
                 var predPosition = spell.GetLineFarmLocation(minion);
+
+                spell.UpdateSourcePosition();
 
                 if(predPosition.MinionsHit >= 2)
                     spell.Cast(predPosition.Position, packets());
@@ -446,7 +416,7 @@ namespace xSaliceReligionAIO
 
         public Obj_AI_Hero GetTargetFocus(float range)
         {
-            var focusSelected = menu.Item("selected", true).GetValue<bool>();
+            var focusSelected = menu.Item("selected").GetValue<bool>();
 
             if (TargetSelector.GetSelectedTarget() != null)
                 if (focusSelected && TargetSelector.GetSelectedTarget().Distance(Player.ServerPosition) < range + 100 && TargetSelector.GetSelectedTarget().Type == GameObjectType.obj_AI_Hero)
@@ -460,8 +430,8 @@ namespace xSaliceReligionAIO
         public HitChance GetHitchance(string Source)
         {
             var hitC = HitChance.High;
-            int qHit = menu.Item("qHit", true).GetValue<Slider>().Value;
-            int harassQHit = menu.Item("qHit2", true).GetValue<Slider>().Value;
+            int qHit = menu.Item("qHit").GetValue<Slider>().Value;
+            int harassQHit = menu.Item("qHit2").GetValue<Slider>().Value;
 
             // HitChance.Low = 3, Medium , High .... etc..
             if (Source == "Combo")
@@ -505,12 +475,12 @@ namespace xSaliceReligionAIO
         }
         public void AddManaManagertoMenu(Menu myMenu, String source, int standard)
         {
-            myMenu.AddItem(new MenuItem(source + "_Manamanager", "Mana Manager", true).SetValue(new Slider(standard)));
+            myMenu.AddItem(new MenuItem(source + "_Manamanager", "Mana Manager").SetValue(new Slider(standard)));
         }
 
         public bool HasMana(string source)
         {
-            if (GetManaPercent() > menu.Item(source + "_Manamanager", true).GetValue<Slider>().Value)
+            if (GetManaPercent() > menu.Item(source + "_Manamanager").GetValue<Slider>().Value)
                 return true;
             return false;
         }
@@ -572,11 +542,6 @@ namespace xSaliceReligionAIO
         }
 
         public virtual void BeforeAttack(xSLxOrbwalker.BeforeAttackEventArgs args)
-        {
-            //for champ use
-        }
-
-        public virtual void ObjAiHeroOnOnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
             //for champ use
         }
