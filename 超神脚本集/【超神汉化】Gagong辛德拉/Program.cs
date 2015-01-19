@@ -473,11 +473,11 @@ namespace GagongSyndra
             {
                 var fl1 = Q.GetCircularFarmLocation(rangedMinionsW, W.Width);
                 var fl2 = Q.GetCircularFarmLocation(allMinionsW, W.Width);
-                if (fl1.MinionsHit >= 3 && W.InRange(fl1.Position.To3D()))
+                if (fl1.MinionsHit >= 3 && W.IsInRange(fl1.Position.To3D()))
                 {
                     W.Cast(fl1.Position, Menu.Item("Packets").GetValue<bool>());
                 }
-                else if (fl2.MinionsHit >= 1 && W.InRange(fl2.Position.To3D()) && fl1.MinionsHit <= 2)
+                else if (fl2.MinionsHit >= 1 && W.IsInRange(fl2.Position.To3D()) && fl1.MinionsHit <= 2)
                 {
                     W.Cast(fl2.Position, Menu.Item("Packets").GetValue<bool>());
                 }
@@ -1026,7 +1026,7 @@ namespace GagongSyndra
         private static void Drawing_OnDraw(EventArgs args)
         {
             var menuItem = Menu.Item("DrawQE").GetValue<Circle>();
-            if (menuItem.Active) Utility.DrawCircle(Player.Position, QE.Range, menuItem.Color);
+            if (menuItem.Active) Render.Circle.DrawCircle(Player.Position, QE.Range, menuItem.Color);
             menuItem = Menu.Item("DrawQEC").GetValue<Circle>();
             if (Menu.Item("drawing").GetValue<bool>())
             {
@@ -1101,7 +1101,7 @@ namespace GagongSyndra
 
                     //Draw QE to cursor circle
                     if (Menu.Item("UseQEC").GetValue<KeyBind>().Active && E.IsReady() && Q.IsReady() && menuItem.Active)
-                        Utility.DrawCircle(
+                        Render.Circle.DrawCircle(
                             Game.CursorPos, 150f,
                             (enemy.Distance(Game.CursorPos, true) <= 150 * 150) ? Color.Red : menuItem.Color, 3);
                 }
@@ -1111,7 +1111,7 @@ namespace GagongSyndra
             { // Draw Spell Ranges
                 menuItem = Menu.Item("Draw" + spell.Slot).GetValue<Circle>();
                 if (menuItem.Active)
-                    Utility.DrawCircle(Player.Position, spell.Range, menuItem.Color);
+                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
 
             // Dashboard Indicators
@@ -1138,8 +1138,8 @@ namespace GagongSyndra
                         Player.Spellbook.GetSpell(SpellSlot.E).ManaCost > Player.Mana)
                         color = Color.DarkBlue;
                     var pos = Player.Position + Vector3.Normalize(tPos.UnitPosition - Player.Position) * 700;
-                    Utility.DrawCircle(pos, Q.Width, color);
-                    Utility.DrawCircle(tPos.UnitPosition, Q.Width / 2, color);
+                    Render.Circle.DrawCircle(pos, Q.Width, color);
+                    Render.Circle.DrawCircle(tPos.UnitPosition, Q.Width / 2, color);
                     var sp1 = pos + Vector3.Normalize(Player.Position - pos) * 100f;
                     var sp = Drawing.WorldToScreen(sp1);
                     var ep1 = pos + Vector3.Normalize(pos - Player.Position) * 592;
@@ -1155,7 +1155,7 @@ namespace GagongSyndra
             var pos2 = W.GetPrediction(wTarget, true);
             if (pos2.Hitchance >= HitChance.High)
                 color2 = Color.FromArgb(100, 50, 150, 255);
-            Utility.DrawCircle(pos2.UnitPosition, W.Width, color2);
+            Render.Circle.DrawCircle(pos2.UnitPosition, W.Width, color2);
         }
     }
 }

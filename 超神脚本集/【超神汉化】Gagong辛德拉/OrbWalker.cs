@@ -175,7 +175,7 @@ namespace GagongSyndra
 
             if (Menu.Item("orb_Draw_AARange").GetValue<Circle>().Active)
             {
-                Utility.DrawCircle(MyHero.Position, GetAutoAttackRange(), Menu.Item("orb_Draw_AARange").GetValue<Circle>().Color);
+                Render.Circle.DrawCircle(MyHero.Position, GetAutoAttackRange(), Menu.Item("orb_Draw_AARange").GetValue<Circle>().Color);
             }
 
             if (Menu.Item("orb_Draw_AARange_Enemy").GetValue<Circle>().Active ||
@@ -184,9 +184,9 @@ namespace GagongSyndra
                 foreach (var enemy in AllEnemys.Where(enemy => enemy.IsValidTarget(1500)))
                 {
                     if (Menu.Item("orb_Draw_AARange_Enemy").GetValue<Circle>().Active)
-                        Utility.DrawCircle(enemy.Position, GetAutoAttackRange(enemy, MyHero), Menu.Item("orb_Draw_AARange_Enemy").GetValue<Circle>().Color);
+                        Render.Circle.DrawCircle(enemy.Position, GetAutoAttackRange(enemy, MyHero), Menu.Item("orb_Draw_AARange_Enemy").GetValue<Circle>().Color);
                     if (Menu.Item("orb_Draw_hitbox").GetValue<Circle>().Active)
-                        Utility.DrawCircle(enemy.Position, enemy.BoundingRadius, Menu.Item("orb_Draw_hitbox").GetValue<Circle>().Color);
+                        Render.Circle.DrawCircle(enemy.Position, enemy.BoundingRadius, Menu.Item("orb_Draw_hitbox").GetValue<Circle>().Color);
                 }
             }
 
@@ -194,14 +194,14 @@ namespace GagongSyndra
             {
                 foreach (var enemy in AllEnemys.Where(enemy => enemy.IsValidTarget(1500)))
                 {
-                    Utility.DrawCircle(enemy.Position, GetAutoAttackRange(enemy, MyHero), Menu.Item("orb_Draw_AARange_Enemy").GetValue<Circle>().Color);
+                    Render.Circle.DrawCircle(enemy.Position, GetAutoAttackRange(enemy, MyHero), Menu.Item("orb_Draw_AARange_Enemy").GetValue<Circle>().Color);
 
                 }
             }
 
             if (Menu.Item("orb_Draw_Holdzone").GetValue<Circle>().Active)
             {
-                Utility.DrawCircle(MyHero.Position, Menu.Item("orb_Misc_Holdzone").GetValue<Slider>().Value, Menu.Item("orb_Draw_Holdzone").GetValue<Circle>().Color);
+                Render.Circle.DrawCircle(MyHero.Position, Menu.Item("orb_Misc_Holdzone").GetValue<Slider>().Value, Menu.Item("orb_Draw_Holdzone").GetValue<Circle>().Color);
             }
 
             if (Menu.Item("orb_Draw_MinionHPBar").GetValue<Circle>().Active ||
@@ -231,10 +231,10 @@ namespace GagongSyndra
                     }
                     if (Menu.Item("orb_Draw_Lasthit").GetValue<Circle>().Active &&
                         minion.Health <= MyHero.GetAutoAttackDamage(minion, true))
-                        Utility.DrawCircle(minion.Position, minion.BoundingRadius, Menu.Item("orb_Draw_Lasthit").GetValue<Circle>().Color);
+                        Render.Circle.DrawCircle(minion.Position, minion.BoundingRadius, Menu.Item("orb_Draw_Lasthit").GetValue<Circle>().Color);
                     else if (Menu.Item("orb_Draw_nearKill").GetValue<Circle>().Active &&
                              minion.Health <= MyHero.GetAutoAttackDamage(minion, true) * 2)
-                        Utility.DrawCircle(minion.Position, minion.BoundingRadius, Menu.Item("orb_Draw_nearKill").GetValue<Circle>().Color);
+                        Render.Circle.DrawCircle(minion.Position, minion.BoundingRadius, Menu.Item("orb_Draw_nearKill").GetValue<Circle>().Color);
                 }
             }
         }
