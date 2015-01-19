@@ -105,36 +105,36 @@ namespace Marksman
             var drawReticles = Config.Item("DrawReticles").GetValue<Circle>();
             if (drawOrbwalk.Active)
             {
-                Render.Circle.DrawCircle(GetOrbwalkPos(), 100, drawOrbwalk.Color);
+                Utility.DrawCircle(GetOrbwalkPos(), 100, drawOrbwalk.Color);
             }
             if (drawReticles.Active)
             {
                 foreach (var existingReticle in ExistingReticles)
                 {
-                    Render.Circle.DrawCircle(existingReticle.ReticlePos, 100, drawReticles.Color);
+                    Utility.DrawCircle(existingReticle.ReticlePos, 100, drawReticles.Color);
                 }
             }
 
             if (GetOrbwalkPos() != Game.CursorPos &&
                 (ComboActive || LaneClearActive || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit))
             {
-                Render.Circle.DrawCircle(Game.CursorPos, Config.Item("CatchRadius").GetValue<Slider>().Value, Color.Red);
+                Utility.DrawCircle(Game.CursorPos, Config.Item("CatchRadius").GetValue<Slider>().Value, Color.Red);
             }
             else
             {
-                Render.Circle.DrawCircle(
+                Utility.DrawCircle(
                     Game.CursorPos, Config.Item("CatchRadius").GetValue<Slider>().Value, Color.CornflowerBlue);
             }
 
             var drawE = Config.Item("DrawE").GetValue<Circle>();
             if (drawE.Active)
             {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, drawE.Color);
+                Utility.DrawCircle(ObjectManager.Player.Position, E.Range, drawE.Color);
             }
             var drawR = Config.Item("DrawR").GetValue<Circle>();
             if (drawR.Active)
             {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, 2000, drawR.Color);
+                Utility.DrawCircle(ObjectManager.Player.Position, 2000, drawR.Color);
             }
         }
 

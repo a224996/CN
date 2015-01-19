@@ -77,7 +77,7 @@ namespace Marksman
             {
                 var menuItem = GetValue<Circle>("Draw" + spell.Slot);
                 if (menuItem.Active)
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
+                    Utility.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
             }
 
             var drawQEx = GetValue<Circle>("DrawQEx");
@@ -93,7 +93,7 @@ namespace Marksman
                                         enemy.HasBuff("urgotcorrosivedebuff", true))
                         select enemy)
                 {
-                    Render.Circle.DrawCircle(enemy.Position, 75f, drawQEx.Color);
+                    Utility.DrawCircle(enemy.Position, 75f, drawQEx.Color);
                 }
             }
         }

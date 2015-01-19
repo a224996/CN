@@ -137,8 +137,8 @@ namespace Xerath
             for (int i = 1; i <= 3; i++)
                 Config.SubMenu("R").SubMenu("Custom delays").AddItem(new MenuItem("Delay"+i, "Delay"+i).SetValue(new Slider(0, 1500, 0)));
             Config.SubMenu("R").AddItem(new MenuItem("PingRKillable", "可击杀目标 本地ping)").SetValue(true));
-            Config.SubMenu("R").AddItem(new MenuItem("BlockMovement", "右鍵停止R（再次点击继续）").SetValue(false));
-            Config.SubMenu("R").AddItem(new MenuItem("OnlyNearMouse", "只R鼠标附近的敌人").SetValue(false));
+            Config.SubMenu("R").AddItem(new MenuItem("BlockMovement", "有障碍物时等待投掷R").SetValue(false));
+            Config.SubMenu("R").AddItem(new MenuItem("OnlyNearMouse", "只关注目标附近的敌人").SetValue(false));
             Config.SubMenu("R").AddItem(new MenuItem("MRadius", "半径").SetValue(new Slider(700, 1500, 300)));
 
             //Harass menu:
@@ -420,7 +420,7 @@ namespace Xerath
             if (useW && W.IsReady())
             {
                 var locW = W.GetCircularFarmLocation(rangedMinionsW, W.Width * 0.75f);
-                if (locW.MinionsHit >= 3 && W.IsInRange(locW.Position.To3D()))
+                if (locW.MinionsHit >= 3 && W.InRange(locW.Position.To3D()))
                 {
                     W.Cast(locW.Position);
                     return;
@@ -428,7 +428,7 @@ namespace Xerath
                 else
                 {
                     var locW2 = W.GetCircularFarmLocation(allMinionsQ, W.Width * 0.75f);
-                    if (locW2.MinionsHit >= 1 && W.IsInRange(locW.Position.To3D()))
+                    if (locW2.MinionsHit >= 1 && W.InRange(locW.Position.To3D()))
                     {
                         W.Cast(locW.Position);
                         return;
@@ -539,7 +539,7 @@ namespace Xerath
             if (R.Level == 0) return;
             var menuItem = Config.Item(R.Slot + "RangeM").GetValue<Circle>();
             if (menuItem.Active)
-                Render.Circle.DrawCircle(Player.Position, R.Range, menuItem.Color, 1, true);
+                Utility.DrawCircle(Player.Position, R.Range, menuItem.Color, 2, 30, true);
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -548,7 +548,7 @@ namespace Xerath
             {
                 if (Config.Item("OnlyNearMouse").GetValue<bool>())
                 {
-                    Render.Circle.DrawCircle(Game.CursorPos, Config.Item("MRadius").GetValue<Slider>().Value, Color.White);
+                    Utility.DrawCircle(Game.CursorPos, Config.Item("MRadius").GetValue<Slider>().Value, Color.White);
                 }
             }
 
@@ -557,7 +557,7 @@ namespace Xerath
             {
                 var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();
                 if (menuItem.Active && (spell.Slot != SpellSlot.R || R.Level > 0))
-                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
+                    Utility.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
         }
     }

@@ -63,7 +63,7 @@ namespace Marksman
                 var menuItem = GetValue<Circle>("Draw" + spell.Slot);
                 if (menuItem.Active)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
+                    Utility.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
                 }
             }
 
@@ -71,13 +71,13 @@ namespace Marksman
             {
                 if (FishBoneActive)
                 {
-                    Render.Circle.DrawCircle(
+                    Utility.DrawCircle(
                         ObjectManager.Player.Position, 525f + ObjectManager.Player.BoundingRadius + 65f,
                         drawQbound.Color);
                 }
                 else
                 {
-                    Render.Circle.DrawCircle(
+                    Utility.DrawCircle(
                         ObjectManager.Player.Position,
                         525f + ObjectManager.Player.BoundingRadius + 65f + QAddRange + 20f, drawQbound.Color);
                 }

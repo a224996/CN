@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using LeagueSharp.Network.Packets;
 using SharpDX;
 using SharpDX.Design;
 using Color = System.Drawing.Color;
@@ -201,7 +202,7 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
 
         private static void Game_OnGameSendPacket(GamePacketEventArgs args)
         {
-            /*if (args.GetPacketId() == LeagueSharp.Network.Packets.Packet.GetPacketId<PKT_ChargedSpell>())
+            if (args.GetPacketId() == LeagueSharp.Network.Packets.Packet.GetPacketId<PKT_ChargedSpell>())
             {
                 var decodedPacket = new PKT_ChargedSpell();
                 decodedPacket.Decode(args.PacketData);
@@ -212,7 +213,7 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
                         !(Config.Item("ComboActive").GetValue<KeyBind>().Active &&
                           Config.Item("UseRCombo").GetValue<bool>());
                 }
-            }*/
+            }
         }
 
         private static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
@@ -411,7 +412,7 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
                         if (enemy.ServerPosition.To2D().Distance(Player.ServerPosition.To2D(), endPoint, true) < 400)
                             targets.Add(enemy);
                     }
-                    /*
+
                     if (targets.Count > 0)
                     {
                         var target = targets.OrderBy(t => t.Health / Q.GetDamage(t)).ToList()[0];
@@ -434,7 +435,7 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
                             Unknown1 = true,
                             Unknown2 = true,
                         }.Encode().SendAsPacket();
-                    }*/
+                    }
                 }
 
                 return;
@@ -511,7 +512,7 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
             {
                 var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();
                 if (menuItem.Active)
-                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
+                    Utility.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
         }
     }
