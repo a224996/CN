@@ -91,7 +91,7 @@ namespace SFXUtility
 
         public System.Version Version
         {
-            get { return new System.Version(1, 0, 0, 7); }
+            get { return new System.Version(1, 0, 0, 9); }
         }
 
         #endregion

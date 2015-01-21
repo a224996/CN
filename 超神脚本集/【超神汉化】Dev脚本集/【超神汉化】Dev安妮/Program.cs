@@ -217,8 +217,8 @@ namespace DevAnnie
 
                 TibbersControl();
 
+                //QPassiveStack();
                 EPassiveStack();
-                QPassiveStack();
 
                 skinManager.Update();
 
@@ -248,6 +248,9 @@ namespace DevAnnie
             var FlashComboMinEnemies = Config.Item("FlashComboMinEnemies").GetValue<Slider>().Value;
             var FlashAntiSuicide = Config.Item("FlashAntiSuicide").GetValue<bool>();
             var packetCast = Config.Item("PacketCast").GetValue<bool>();
+
+            var eTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            Orbwalking.Orbwalk(eTarget, Game.CursorPos);
 
             if (!UseFlashCombo)
                 return;
@@ -338,6 +341,12 @@ namespace DevAnnie
             if (R.IsReady())
                 totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.R);
 
+            if (GetPassiveStacks() >= 4)
+            {
+                totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.Q); // supposed extra dmg from stun time
+                totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.Q);
+            }
+                
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.Q);
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.Q);
             totalComboDamage += Player.GetSpellDamage(eTarget, SpellSlot.W);
@@ -354,6 +363,7 @@ namespace DevAnnie
 
             if (R.IsReady())
                 totalManaCost += Player.Spellbook.GetSpell(SpellSlot.R).ManaCost;
+
             totalManaCost += Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost;
 
             if (mustDebug)
@@ -450,6 +460,7 @@ namespace DevAnnie
                 return;
 
             var useQ = Config.Item("UseQHarass").GetValue<bool>();
+            var UseQHarassLastHit = Config.Item("UseQHarassLastHit").GetValue<bool>();
             var useW = Config.Item("UseWHarass").GetValue<bool>();
             var useE = Config.Item("UseEHarass").GetValue<bool>();
             var packetCast = Config.Item("PacketCast").GetValue<bool>();
@@ -464,41 +475,45 @@ namespace DevAnnie
                 W.CastIfHitchanceEquals(eTarget, eTarget.IsMoving ? HitChance.High : HitChance.Medium, packetCast);
             }
 
+            if (UseQHarassLastHit)
+            {
+                QPassiveStack();
+            }
+
         }
 
 
         public static void QPassiveStack()
         {
             var UseQStackPassive = Config.Item("UseQStackPassive").GetValue<bool>();
+            var UseQStackPassiveLastHit = Config.Item("UseQStackPassiveLastHit").GetValue<bool>();
             var UseQStackPassiveNoEnemy = Config.Item("UseQStackPassiveNoEnemy").GetValue<bool>();
             var UseQStackPassiveEverywhere = Config.Item("UseQStackPassiveEverywhere").GetValue<bool>();
             var packetCast = Config.Item("PacketCast").GetValue<bool>();
 
-            if (GetPassiveStacks() >= 4)
+            if (GetPassiveStacks() >= 4 || !UseQStackPassive || !Q.IsReady())
                 UseQStackPassive = false;
 
-            if (UseQStackPassive && Q.IsReady())
+            if (UseQStackPassiveNoEnemy)
             {
-                if (UseQStackPassiveNoEnemy)
+                float extraDist = 1.5f;
+                if (UseQStackPassiveEverywhere)
+                    extraDist = 1;
+
+                var nearestEnemy = Player.GetNearestEnemy();
+                if (Player.Distance(nearestEnemy) > Q.Range * extraDist)
                 {
-                    float extraDist = 1.3f;
-                    if (UseQStackPassiveEverywhere)
-                        extraDist = 1;
+                    var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy).ToList();
+                    var minionLastHit = allMinions.Where(x => Q.GetDamage(x) * 0.9 > x.Health).OrderBy(x => x.Health);
 
-                    var nearestEnemy = Player.GetNearestEnemy();
-                    if (Player.Distance(nearestEnemy) > Q.Range * extraDist)
+                    if (minionLastHit.Any())
                     {
-                        var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy).ToList();
-                        var minionLastHit = allMinions.Where(x => Q.GetDamage(x) * 0.8f > x.Health).OrderBy(x => x.Health);
-
-                        if (minionLastHit.Any())
-                        {
-                            var unit = minionLastHit.First();
-                            Q.CastOnUnit(unit, packetCast);
-                        }
+                        var unit = minionLastHit.First();
+                        Q.CastOnUnit(unit, packetCast);
                     }
                 }
             }
+
         }
 
         public static void EPassiveStack()
@@ -523,7 +538,7 @@ namespace DevAnnie
                 if (UseEStackPassiveNoEnemy && E.IsReady())
                 {
                     var nearestEnemy = Player.GetNearestEnemy();
-                    if (Player.Distance(nearestEnemy) > Q.Range * 1.2f) // save for when its needed
+                    if (Player.Distance(nearestEnemy) > Q.Range * 1.2) // save for when its needed
                         E.Cast(packetCast);
                 }
 
@@ -544,7 +559,7 @@ namespace DevAnnie
 
                 if (tibber != null)
                 {
-                    var nearEnemy = DevCommom.DevHelper.GetEnemyList().Where(x => tibber.ServerPosition.Distance(x.ServerPosition) <= 200).OrderBy(x => x.Health);
+                    var nearEnemy = DevCommom.DevHelper.GetEnemyList().Where(x => tibber.ServerPosition.Distance(x.ServerPosition) <= 400).OrderBy(x => x.Health);
                     if (nearEnemy.Any())
                     {
                         R.Cast(nearEnemy.First(), packetCast);
@@ -555,7 +570,7 @@ namespace DevAnnie
                     }
                     else
                     {
-                        nearEnemy = DevCommom.DevHelper.GetEnemyList().Where(x => tibber.ServerPosition.Distance(x.ServerPosition) <= 1000).OrderBy(x => x.Health);
+                        nearEnemy = DevCommom.DevHelper.GetEnemyList().Where(x => tibber.ServerPosition.Distance(x.ServerPosition) <= 800).OrderBy(x => x.Health);
                         if (nearEnemy.Any())
                         {
                             R.Cast(nearEnemy.First(), packetCast);
@@ -566,7 +581,12 @@ namespace DevAnnie
                         }
                         else
                         {
-                            messageManager.RemoveMessage(0);
+                            var enemy = tibber.GetNearestEnemy();
+                            if (enemy != null)
+                            {
+                                R.Cast(enemy, packetCast);
+                                messageManager.AddMessage(0, "Tibbers Target: " + enemy.SkinName, System.Drawing.Color.Yellow);
+                            }
                         }
                     }
                 }
@@ -589,7 +609,7 @@ namespace DevAnnie
             if (Q.IsReady() && useQ)
             {
                 var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy).ToList();
-                var minionLastHit = allMinions.Where(x => Q.GetDamage(x) > x.Health * 0.75f).OrderBy(x => x.Health);
+                var minionLastHit = allMinions.Where(x => Q.GetDamage(x) * 0.9 > x.Health).OrderBy(x => x.Health);
 
                 if (minionLastHit.Any())
                 {
@@ -742,7 +762,7 @@ namespace DevAnnie
                 var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();
                 if (menuItem.Active && spell.IsReady())
                 {
-                    Utility.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range, spell.IsReady() ? System.Drawing.Color.Green : System.Drawing.Color.Red);
                 }
             }
 
@@ -752,9 +772,15 @@ namespace DevAnnie
 
         private static float GetComboDamage(Obj_AI_Hero enemy)
         {
-            IEnumerable<SpellSlot> spellCombo = new[] { SpellSlot.Q, SpellSlot.W, SpellSlot.R };
+            IEnumerable<SpellSlot> spellCombo = new[] { SpellSlot.Q, SpellSlot.W };
+            if (GetPassiveStacks() >= 4)
+                spellCombo = spellCombo.Concat(new[] { SpellSlot.Q });
+            if (R.IsReady())
+                spellCombo = spellCombo.Concat(new[] { SpellSlot.R });
+
             return (float)Player.GetComboDamage(enemy, spellCombo);
         }
+
 
         private static void InitializeMainMenu()
         {
@@ -776,9 +802,15 @@ namespace DevAnnie
             Config.SubMenu("Passive").AddItem(new MenuItem("UseEStackPassiveFountain", "在基地").SetValue(true));
             Config.SubMenu("Passive").AddItem(new MenuItem("UseEStackPassiveEverywhere", "到哪都是").SetValue(false));
             Config.SubMenu("Passive").AddItem(new MenuItem("UseQStackPassive", "==> 使用Q叠被动").SetValue(true));
+            Config.SubMenu("Passive").AddItem(new MenuItem("UseQStackPassiveLastHit", "只有补兵").SetValue(true));
             Config.SubMenu("Passive").AddItem(new MenuItem("UseQStackPassiveNoEnemy", "当没有敌人靠近").SetValue(true));
             Config.SubMenu("Passive").AddItem(new MenuItem("UseQStackPassiveEverywhere", "到哪都是").SetValue(false));
 
+            Config.AddSubMenu(new Menu("闪现连招", "FlashCombo"));
+            Config.SubMenu("FlashCombo").AddItem(new MenuItem("FlashComboKey", "闪现连招").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("FlashCombo").AddItem(new MenuItem("FlashComboMinEnemies", "闪现连招最少击中").SetValue(new Slider(2, 1, 5)));
+            Config.SubMenu("FlashCombo").AddItem(new MenuItem("FlashAntiSuicide", "闪现反杀").SetValue(true));
+			
             Config.AddSubMenu(new Menu("连招", "Combo"));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用Q").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用W").SetValue(true));
@@ -787,16 +819,11 @@ namespace DevAnnie
             Config.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "使用点燃").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseRMinEnemies", "R 最少击中敌人").SetValue(new Slider(2, 1, 5)));
 
-            Config.AddSubMenu(new Menu("闪现连招", "FlashCombo"));
-            Config.SubMenu("FlashCombo").AddItem(new MenuItem("FlashComboKey", "闪现连招").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
-            Config.SubMenu("FlashCombo").AddItem(new MenuItem("FlashComboMinEnemies", "闪现连招最少击中").SetValue(new Slider(2, 1, 5)));
-            Config.SubMenu("FlashCombo").AddItem(new MenuItem("FlashAntiSuicide", "闪现反杀").SetValue(true));
-
             Config.AddSubMenu(new Menu("骚扰", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用Q").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "使用W").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用E").SetValue(true));
-            //Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarassLastHit", "Use Q LastHit").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "使用 Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarassLastHit", "使用 Q眩晕").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "使用 W").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "使用 E").SetValue(true));
 
             Config.AddSubMenu(new Menu("清线", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "使用Q").SetValue(true));

@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Zyra.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Zyra.cs
 // Created:  25/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -52,6 +52,135 @@ namespace Support.Plugins
             Passive.SetSkillshot(0.5f, 70f, 1400f, false, SkillshotType.SkillshotLine);
         }
 
+        private Spell Passive { get; set; }
+
+        private int WCount
+        {
+            get { return W.Instance.Level > 0 ? W.Instance.Ammo : 0; }
+        }
+
+        private void CastW(Vector3 v)
+        {
+            if (!W.IsReady())
+            {
+                return;
+            }
+
+            if (WCount == 1)
+            {
+                Utility.DelayAction.Add(50, () => W.Cast(new Vector2(v.X - 5, v.Y - 5)));
+            }
+
+            if (WCount == 2)
+            {
+                Utility.DelayAction.Add(50, () => W.Cast(new Vector2(v.X - 5, v.Y - 5)));
+                Utility.DelayAction.Add(180, () => W.Cast(new Vector2(v.X - 5, v.Y - 5)));
+            }
+        }
+
+        public override void OnUpdate(EventArgs args)
+        {
+            try
+            {
+                if (ZyraisZombie())
+                {
+                    CastPassive();
+                    return;
+                }
+
+                if (ComboMode)
+                {
+                    if (Q.CastCheck(Target, "Combo.Q"))
+                    {
+                        if (Q.Cast(Target) == Spell.CastStates.SuccessfullyCasted)
+                        {
+                            CastW(Q.GetPrediction(Target).CastPosition);
+                        }
+                    }
+
+                    if (E.CastCheck(Target, "Combo.E"))
+                    {
+                        if (E.Cast(Target) == Spell.CastStates.SuccessfullyCasted)
+                        {
+                            CastW(E.GetPrediction(Target).CastPosition);
+                        }
+                    }
+
+                    if (R.CastCheck(Target, "Combo.R"))
+                    {
+                        R.CastIfWillHit(Target, ConfigValue<Slider>("Combo.R.Count").Value);
+                    }
+                }
+
+                if (HarassMode)
+                {
+                    if (Q.CastCheck(Target, "Harass.Q"))
+                    {
+                        if (Q.Cast(Target) == Spell.CastStates.SuccessfullyCasted)
+                        {
+                            CastW(Q.GetPrediction(Target).CastPosition);
+                        }
+                    }
+
+                    if (E.CastCheck(Target, "Harass.E"))
+                    {
+                        if (E.Cast(Target) == Spell.CastStates.SuccessfullyCasted)
+                        {
+                            CastW(E.GetPrediction(Target).CastPosition);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public override void OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        {
+            if (E.CastCheck(gapcloser.Sender, "Gapcloser.E"))
+            {
+                if (E.Cast(Target) == Spell.CastStates.SuccessfullyCasted)
+                {
+                    CastW(E.GetPrediction(Target).CastPosition);
+                }
+            }
+        }
+
+        public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        {
+            if (spell.DangerLevel < InterruptableDangerLevel.High || unit.IsAlly)
+            {
+                return;
+            }
+
+            if (R.CastCheck(unit, "Interrupt.R"))
+            {
+                R.Cast(unit);
+            }
+        }
+
+        public override void ComboMenu(Menu config)
+        {
+            config.AddBool("Combo.Q", "使用 Q", true);
+            config.AddBool("Combo.E", "使用 E", true);
+            config.AddBool("Combo.R", "使用 R", true);
+            config.AddSlider("Combo.R.Count", "几个人使用大招", 3, 0, 5);
+        }
+
+        public override void HarassMenu(Menu config)
+        {
+            config.AddBool("Harass.Q", "使用 Q", true);
+            config.AddBool("Harass.E", "使用 E", true);
+        }
+
+        public override void InterruptMenu(Menu config)
+        {
+            config.AddBool("Gapcloser.E", "使用 E 防止突进", true);
+            config.AddBool("Interrupt.R", "使用 R 打断技能", true);
+        }
+
         #region UltimateCarry2 https://github.com/LXMedia1/UltimateCarry2/blob/master/LexxersAIOCarry/Zyra.cs
 
         private bool ZyraisZombie()
@@ -70,138 +199,9 @@ namespace Support.Plugins
             {
                 return;
             }
-            Passive.CastIfHitchanceEquals(Target, HitChance.High, UsePackets);
+            Passive.CastIfHitchanceEquals(Target, HitChance.High);
         }
 
         #endregion
-
-        private Spell Passive { get; set; }
-
-        private int WCount
-        {
-            get { return W.Instance.Level > 0 ? W.Instance.Ammo : 0; }
-        }
-
-        private void CastW(Vector3 v)
-        {
-            if (!W.IsReady())
-            {
-                return;
-            }
-
-            if (WCount == 1)
-            {
-                Utility.DelayAction.Add(50, () => W.Cast(new Vector2(v.X - 5, v.Y - 5), UsePackets));
-            }
-
-            if (WCount == 2)
-            {
-                Utility.DelayAction.Add(50, () => W.Cast(new Vector2(v.X - 5, v.Y - 5), UsePackets));
-                Utility.DelayAction.Add(180, () => W.Cast(new Vector2(v.X - 5, v.Y - 5), UsePackets));
-            }
-        }
-
-        public override void OnUpdate(EventArgs args)
-        {
-            try
-            {
-                if (ZyraisZombie())
-                {
-                    CastPassive();
-                    return;
-                }
-
-                if (ComboMode)
-                {
-                    if (Q.CastCheck(Target, "Combo.Q"))
-                    {
-                        if (Q.Cast(Target, UsePackets) == Spell.CastStates.SuccessfullyCasted)
-                        {
-                            CastW(Q.GetPrediction(Target).CastPosition);
-                        }
-                    }
-
-                    if (E.CastCheck(Target, "Combo.E"))
-                    {
-                        if (E.Cast(Target, UsePackets) == Spell.CastStates.SuccessfullyCasted)
-                        {
-                            CastW(E.GetPrediction(Target).CastPosition);
-                        }
-                    }
-
-                    if (R.CastCheck(Target, "Combo.R"))
-                    {
-                        R.CastIfWillHit(Target, ConfigValue<Slider>("Combo.R.Count").Value, UsePackets);
-                    }
-                }
-
-                if (HarassMode)
-                {
-                    if (Q.CastCheck(Target, "Harass.Q"))
-                    {
-                        if (Q.Cast(Target, UsePackets) == Spell.CastStates.SuccessfullyCasted)
-                        {
-                            CastW(Q.GetPrediction(Target).CastPosition);
-                        }
-                    }
-
-                    if (E.CastCheck(Target, "Harass.E"))
-                    {
-                        if (E.Cast(Target, UsePackets) == Spell.CastStates.SuccessfullyCasted)
-                        {
-                            CastW(E.GetPrediction(Target).CastPosition);
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-        public override void OnEnemyGapcloser(ActiveGapcloser gapcloser)
-        {
-            if (E.CastCheck(gapcloser.Sender, "Gapcloser.E"))
-            {
-                if (E.Cast(Target, UsePackets) == Spell.CastStates.SuccessfullyCasted)
-                {
-                    CastW(E.GetPrediction(Target).CastPosition);
-                }
-            }
-        }
-
-        public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
-        {
-            if (spell.DangerLevel < InterruptableDangerLevel.High || unit.IsAlly)
-            {
-                return;
-            }
-
-            if (R.CastCheck(unit, "Interrupt.R"))
-            {
-                R.Cast(unit, UsePackets);
-            }
-        }
-
-        public override void ComboMenu(Menu config)
-        {
-            config.AddBool("Combo.Q", "使用 Q", true);
-            config.AddBool("Combo.E", "使用 E", true);
-            config.AddBool("Combo.R", "使用 R", true);
-            config.AddSlider("Combo.R.Count", "敌人数量使用大招", 3, 0, 5);
-        }
-
-        public override void HarassMenu(Menu config)
-        {
-            config.AddBool("Harass.Q", "使用 Q", true);
-            config.AddBool("Harass.E", "使用 E", true);
-        }
-
-        public override void InterruptMenu(Menu config)
-        {
-            config.AddBool("Gapcloser.E", "使用 E 防突进", true);
-            config.AddBool("Interrupt.R", "使用 R 打断", true);
-        }
     }
 }

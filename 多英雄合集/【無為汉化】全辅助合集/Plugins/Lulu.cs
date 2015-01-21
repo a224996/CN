@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Lulu.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Lulu.cs
 // Created:  01/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -53,12 +53,12 @@ namespace Support.Plugins
             {
                 if (Q.CastCheck(Target, "ComboQ"))
                 {
-                    Q.Cast(Target, UsePackets);
+                    Q.Cast(Target);
                 }
 
                 if (W.CastCheck(Target, "ComboW"))
                 {
-                    W.CastOnUnit(Target, UsePackets);
+                    W.CastOnUnit(Target);
                 }
             }
 
@@ -66,7 +66,7 @@ namespace Support.Plugins
             {
                 if (Q.CastCheck(Target, "HarassQ"))
                 {
-                    Q.Cast(Target, UsePackets);
+                    Q.Cast(Target);
                 }
             }
         }
@@ -80,7 +80,7 @@ namespace Support.Plugins
 
             if (W.CastCheck(gapcloser.Sender, "GapcloserW"))
             {
-                W.CastOnUnit(gapcloser.Sender, UsePackets);
+                W.CastOnUnit(gapcloser.Sender);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Support.Plugins
 
             if (W.CastCheck(unit, "InterruptW"))
             {
-                W.CastOnUnit(unit, UsePackets);
+                W.CastOnUnit(unit);
             }
         }
 
@@ -110,9 +110,9 @@ namespace Support.Plugins
 
         public override void InterruptMenu(Menu config)
         {
-            config.AddBool("GapcloserW", "使用 W 防突进", true);
+            config.AddBool("GapcloserW", "使用 W 防止突进", true);
 
-            config.AddBool("InterruptW", "使用 W 打断", true);
+            config.AddBool("InterruptW", "使用 W 打断技能", true);
         }
     }
 }

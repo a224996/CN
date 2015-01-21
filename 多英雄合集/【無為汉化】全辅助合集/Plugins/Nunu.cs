@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Nunu.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Nunu.cs
 // Created:  16/11/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -38,27 +38,12 @@ namespace Support.Plugins
 
     public class Nunu : PluginBase
     {
-        private int LastLaugh { get; set; }
-
         public Nunu()
         {
             Q = new Spell(SpellSlot.Q, 125);
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 550);
             R = new Spell(SpellSlot.R, 650);
-        }
-
-        public override void OnProcessPacket(GamePacketEventArgs args)
-        {
-            if (args.PacketData[0] == Packet.S2C.PlayEmote.Header &&
-                ConfigValue<StringList>("Misc.Laugh").SelectedIndex == 2)
-            {
-                var packet = Packet.S2C.PlayEmote.Decoded(args.PacketData);
-                if (packet.NetworkId == Player.NetworkId && packet.EmoteId == (byte) Packet.Emotes.Laugh)
-                {
-                    args.Process = false;
-                }
-            }
         }
 
         public override void OnUpdate(EventArgs args)
@@ -71,24 +56,24 @@ namespace Support.Plugins
                     var minion = MinionManager.GetMinions(Player.Position, Q.Range).FirstOrDefault();
                     if (minion.IsValidTarget(Q.Range))
                     {
-                        Q.CastOnUnit(minion, UsePackets);
+                        Q.CastOnUnit(minion);
                     }
                 }
 
                 var allys = Helpers.AllyInRange(W.Range).OrderByDescending(h => h.FlatPhysicalDamageMod).ToList();
                 if (W.IsReady() && allys.Count > 0 && ConfigValue<bool>("Combo.W"))
                 {
-                    W.CastOnUnit(allys.FirstOrDefault(), UsePackets);
+                    W.CastOnUnit(allys.FirstOrDefault());
                 }
 
                 if (W.IsReady() && Target.IsValidTarget(AttackRange) && ConfigValue<bool>("Combo.W"))
                 {
-                    W.CastOnUnit(Player, UsePackets);
+                    W.CastOnUnit(Player);
                 }
 
                 if (E.IsReady() && Target.IsValidTarget(E.Range) && ConfigValue<bool>("Combo.E"))
                 {
-                    E.CastOnUnit(Target, UsePackets && ConfigValue<bool>("Misc.E.NoFace"));
+                    E.CastOnUnit(Target);
                 }
             }
 
@@ -100,33 +85,25 @@ namespace Support.Plugins
                     var minion = MinionManager.GetMinions(Player.Position, Q.Range).FirstOrDefault();
                     if (minion.IsValidTarget(Q.Range))
                     {
-                        Q.CastOnUnit(minion, UsePackets);
+                        Q.CastOnUnit(minion);
                     }
                 }
 
                 var allys = Helpers.AllyInRange(W.Range).OrderByDescending(h => h.FlatPhysicalDamageMod).ToList();
                 if (W.IsReady() && allys.Count > 0 && ConfigValue<bool>("Harass.W"))
                 {
-                    W.CastOnUnit(allys.FirstOrDefault(), UsePackets);
+                    W.CastOnUnit(allys.FirstOrDefault());
                 }
 
                 if (W.IsReady() && Target.IsValidTarget(AttackRange) && ConfigValue<bool>("Harass.W"))
                 {
-                    W.CastOnUnit(Player, UsePackets);
+                    W.CastOnUnit(Player);
                 }
 
                 if (E.IsReady() && Target.IsValidTarget(E.Range) && ConfigValue<bool>("Harass.E"))
                 {
-                    E.CastOnUnit(Target, UsePackets && ConfigValue<bool>("Misc.E.NoFace"));
+                    E.CastOnUnit(Target);
                 }
-            }
-
-            // most import part!!!
-            if (Environment.TickCount > LastLaugh + 4200 && Player.CountEnemysInRange(2000) > 0 &&
-                ConfigValue<StringList>("Misc.Laugh").SelectedIndex > 0)
-            {
-                Packet.C2S.Emote.Encoded(new Packet.C2S.Emote.Struct((byte) Packet.Emotes.Laugh)).Send();
-                LastLaugh = Environment.TickCount;
             }
         }
 
@@ -139,11 +116,11 @@ namespace Support.Plugins
 
             if (E.CastCheck(gapcloser.Sender, "Gapcloser.E"))
             {
-                E.CastOnUnit(gapcloser.Sender, UsePackets);
+                E.CastOnUnit(gapcloser.Sender);
 
                 if (W.IsReady())
                 {
-                    W.CastOnUnit(Player, UsePackets);
+                    W.CastOnUnit(Player);
                 }
             }
         }
@@ -161,18 +138,17 @@ namespace Support.Plugins
             config.AddBool("Harass.Q", "使用 Q", true);
             config.AddBool("Harass.W", "使用 W", false);
             config.AddBool("Harass.E", "使用 E", true);
-            config.AddSlider("Harass.Q.Health", "消耗血量低??", 50, 1, 100);
+            config.AddSlider("Harass.Q.Health", "消耗血量低", 50, 1, 100);
         }
 
         public override void MiscMenu(Menu config)
         {
             config.AddList("Misc.Laugh", "笑的动作", new[] { "OFF", "ON", "ON + Mute" });
-            config.AddBool("Misc.E.NoFace", "E 开发", false);
         }
 
         public override void InterruptMenu(Menu config)
         {
-            config.AddBool("Gapcloser.E", "使用 E 防突进", true);
+            config.AddBool("Gapcloser.E", "使用 E 防止突进", true);
         }
     }
 }

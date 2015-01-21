@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Braum.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Braum.cs
 // Created:  01/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -64,7 +64,7 @@ namespace Support.Plugins
                 return;
             }
 
-            E.Cast(v, UsePackets);
+            E.Cast(v);
             IsShieldActive = true;
             Utility.DelayAction.Add(4000, () => IsShieldActive = false);
         }
@@ -108,7 +108,7 @@ namespace Support.Plugins
                         return;
                     }
 
-                    W.CastOnUnit(target, UsePackets);
+                    W.CastOnUnit(target);
                     Utility.DelayAction.Add((int) jumpTime, () => CastShield(caster.Position));
                 }
             }
@@ -159,7 +159,7 @@ namespace Support.Plugins
                         return;
                     }
 
-                    W.CastOnUnit(target, UsePackets);
+                    W.CastOnUnit(target);
                     Utility.DelayAction.Add((int) jumpTime, () => CastShield(max.Start.To3D()));
                 }
             }
@@ -175,12 +175,12 @@ namespace Support.Plugins
             {
                 if (Q.CastCheck(Target, "Combo.Q"))
                 {
-                    Q.Cast(Target, UsePackets);
+                    Q.Cast(Target);
                 }
 
                 if (R.CastCheck(Target, "Combo.R"))
                 {
-                    R.CastIfWillHit(Target, ConfigValue<Slider>("Combo.R.Count").Value - 1, UsePackets);
+                    R.CastIfWillHit(Target, ConfigValue<Slider>("Combo.R.Count").Value - 1);
                 }
             }
 
@@ -188,7 +188,7 @@ namespace Support.Plugins
             {
                 if (Q.CastCheck(Target, "Harass.Q"))
                 {
-                    Q.Cast(Target, UsePackets);
+                    Q.Cast(Target);
                 }
             }
         }
@@ -197,7 +197,7 @@ namespace Support.Plugins
         {
             if (Q.CastCheck(gapcloser.Sender, "Gapcloser.Q"))
             {
-                Q.Cast(gapcloser.Sender, UsePackets);
+                Q.Cast(gapcloser.Sender);
             }
         }
 
@@ -210,7 +210,7 @@ namespace Support.Plugins
 
             if (R.CastCheck(unit, "Interrupt.R"))
             {
-                R.Cast(unit, UsePackets);
+                R.Cast(unit);
             }
         }
 
@@ -218,7 +218,7 @@ namespace Support.Plugins
         {
             config.AddBool("Combo.Q", "使用 Q", true);
             config.AddBool("Combo.R", "使用 R", true);
-            config.AddSlider("Combo.R.Count", "敌人数量使用 R", 2, 1, 5);
+            config.AddSlider("Combo.R.Count", "敌人数量使用R", 2, 1, 5);
         }
 
         public override void HarassMenu(Menu config)
@@ -228,15 +228,15 @@ namespace Support.Plugins
 
         public override void MiscMenu(Menu config)
         {
-            config.AddBool("Misc.Shield.Skill", "盾抵挡射击ㄧ", true);
+            config.AddBool("Misc.Shield.Skill", "盾抵挡射击", true);
             config.AddBool("Misc.Shield.Target", "盾的目标", true);
-            config.AddSlider("Misc.Shield.Health", "盾AA下面 HP", 30, 1, 100);
+            config.AddSlider("Misc.Shield.Health", "盾AA下面血量", 30, 1, 100);
         }
 
         public override void InterruptMenu(Menu config)
         {
-            config.AddBool("Gapcloser.Q", "使用 Q 防突进", true);
-            config.AddBool("Interrupt.R", "使用 R 打断", true);
+            config.AddBool("Gapcloser.Q", "使用 Q 防止突进", true);
+            config.AddBool("Interrupt.R", "使用 R 打断技能", true);
         }
     }
 }

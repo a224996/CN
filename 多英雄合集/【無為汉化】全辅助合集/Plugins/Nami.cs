@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Nami.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Nami.cs
 // Created:  01/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -85,7 +85,7 @@ namespace Support.Plugins
 
             if (E.IsReady() && E.IsInRange(missile.SpellCaster) && ConfigValue<bool>("Misc.E.AA." + caster.ChampionName))
             {
-                E.CastOnUnit(caster, UsePackets); // add delay
+                E.CastOnUnit(caster); // add delay
             }
         }
 
@@ -97,7 +97,7 @@ namespace Support.Plugins
                 {
                     if (Q.CastCheck(Target, "ComboQ")) // TODO: add check for slowed targets by E or FrostQeen
                     {
-                        Q.Cast(Target, UsePackets);
+                        Q.Cast(Target);
                     }
 
                     if (W.IsReady() && ConfigValue<bool>("ComboW"))
@@ -107,7 +107,7 @@ namespace Support.Plugins
 
                     if (R.CastCheck(Target, "ComboR"))
                     {
-                        R.CastIfWillHit(Target, ConfigValue<Slider>("ComboCountR").Value, UsePackets);
+                        R.CastIfWillHit(Target, ConfigValue<Slider>("ComboCountR").Value);
                     }
                 }
 
@@ -115,7 +115,7 @@ namespace Support.Plugins
                 {
                     if (Q.CastCheck(Target, "HarassQ"))
                     {
-                        Q.Cast(Target, UsePackets);
+                        Q.Cast(Target);
                     }
 
                     if (W.IsReady() && ConfigValue<bool>("HarassW"))
@@ -145,7 +145,7 @@ namespace Support.Plugins
                     ObjectManager.Get<Obj_AI_Hero>()
                         .SingleOrDefault(hero => hero.IsValidAlly(W.Range) && hero.Distance(Target) < W.Range);
 
-                if (bounceTarget != null && bounceTarget.MaxHealth - bounceTarget.Health > WHeal) // use bounce & heal
+                if (bounceTarget != null && bounceTarget.MaxHealth - bounceTarget.Health > WHeal) // 使用 bounce & heal
                 {
                     W.CastOnUnit(bounceTarget);
                 }
@@ -165,12 +165,12 @@ namespace Support.Plugins
 
             if (Q.CastCheck(gapcloser.Sender, "GapcloserQ"))
             {
-                Q.Cast(gapcloser.Sender, UsePackets);
+                Q.Cast(gapcloser.Sender);
             }
 
             if (R.CastCheck(gapcloser.Sender, "GapcloserR"))
             {
-                R.Cast(gapcloser.Sender, UsePackets);
+                R.Cast(gapcloser.Sender);
             }
         }
 
@@ -183,12 +183,12 @@ namespace Support.Plugins
 
             if (Q.CastCheck(unit, "InterruptQ"))
             {
-                Q.Cast(unit, UsePackets);
+                Q.Cast(unit);
             }
 
             if (!Q.IsReady() && R.CastCheck(unit, "InterruptR"))
             {
-                R.Cast(unit, UsePackets);
+                R.Cast(unit);
             }
         }
 
@@ -197,8 +197,8 @@ namespace Support.Plugins
             config.AddBool("ComboQ", "使用 Q", true);
             config.AddBool("ComboW", "使用 W", true);
             config.AddBool("ComboR", "使用 R", true);
-            config.AddSlider("ComboCountR", "几个敌人使用大招", 2, 1, 5);
-            config.AddSlider("ComboHealthW", "健康恢复", 20, 1, 100);
+            config.AddSlider("ComboCountR", "Targets hit to Ult", 2, 1, 5);
+            config.AddSlider("ComboHealthW", "Health to Heal", 20, 1, 100);
         }
 
         public override void HarassMenu(Menu config)
@@ -219,10 +219,10 @@ namespace Support.Plugins
 
         public override void InterruptMenu(Menu config)
         {
-            config.AddBool("GapcloserQ", "使用 Q 防突进", true);
+            config.AddBool("GapcloserQ", "使用 Q 防止突进", true);
 
-            config.AddBool("InterruptQ", "使用 Q 打断", true);
-            config.AddBool("InterruptR", "使用 R 打断", true);
+            config.AddBool("InterruptQ", "使用 Q 打断技能", true);
+            config.AddBool("InterruptR", "使用 R 打断技能", true);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Program.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Program.cs
 // Created:  01/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -28,6 +28,7 @@ namespace Support
     #region
 
     using System;
+    using System.IO;
     using System.Reflection;
     using LeagueSharp;
     using LeagueSharp.Common;
@@ -54,6 +55,7 @@ namespace Support
                     {
                         Helpers.UpdateCheck();
                         Protector.Init();
+                        //SpellDetector.Init();
                         Activator.CreateInstance(type);
                         return;
                     }
@@ -66,7 +68,7 @@ namespace Support
                 }
             };
 
-            //Utils.EnableConsoleEditMode();
+            Utils.EnableConsoleEditMode();
 
             //Drawing.OnDraw += a =>
             //{
@@ -83,12 +85,21 @@ namespace Support
             //Obj_AI_Base.OnProcessSpellCast += (sender, spell) =>
             //{
             //    if (!sender.IsValid<Obj_AI_Hero>())
+            //    {
             //        return;
+            //    }
 
             //    try
             //    {
             //        if (!Orbwalking.IsAutoAttack(spell.SData.Name))
-            //            Console.WriteLine(sender.Name + " | " + spell.SData.Name.ToLower());
+            //        {
+            //            var text = string.Format(
+            //                "{0};{1};{2};{3};{4};{5};{6};{7};{8}{9}\n", Environment.TickCount, sender.BaseSkinName,
+            //                spell.SData.Name, spell.SData.CastRadius[0], spell.SData.CastRange[0],
+            //                spell.SData.CastRangeDisplayOverride[0], spell.SData.LineWidth, spell.SData.MissileSpeed,
+            //                spell.SData.SpellCastTime, spell.SData.SpellTotalTime);
+            //            File.AppendAllText("D:/OnProcessSpellCast-" + Game.Id + ".csv", text);
+            //        }
             //    }
             //    catch (Exception e)
             //    {
@@ -99,12 +110,25 @@ namespace Support
             //GameObject.OnCreate += (sender, eventArgs) =>
             //{
             //    if (!sender.IsValid<Obj_SpellMissile>())
+            //    {
             //        return;
+            //    }
 
             //    try
             //    {
-            //        var miss = (Obj_SpellMissile)sender;
-            //        Console.WriteLine(sender.Name + " | " + miss.SData.Name.ToLower());
+            //        var miss = (Obj_SpellMissile) sender;
+
+            //        if (!miss.SpellCaster.IsValid<Obj_AI_Hero>())
+            //        {
+            //            return;
+            //        }
+
+            //        var text = string.Format(
+            //            "{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10}\n", Environment.TickCount, miss.Type, miss.Name,
+            //            miss.SData.Name, miss.SData.CastRadius[0], miss.SData.CastRange[0],
+            //            miss.SData.CastRangeDisplayOverride[0], miss.SData.LineWidth, miss.SData.MissileSpeed,
+            //            miss.SData.SpellCastTime, miss.SData.SpellTotalTime);
+            //        File.AppendAllText("D:/Obj_SpellMissile-" + Game.Id + ".csv", text);
             //    }
             //    catch (Exception e)
             //    {

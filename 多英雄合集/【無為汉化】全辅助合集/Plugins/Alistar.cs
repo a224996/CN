@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Alistar.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Alistar.cs
 // Created:  01/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -58,9 +58,9 @@ namespace Support.Plugins
 
                 if (Q.IsReady() && W.CastCheck(Target, "Combo.W"))
                 {
-                    W.CastOnUnit(Target, UsePackets);
+                    W.CastOnUnit(Target);
                     var jumpTime = Math.Max(0, Player.Distance(Target) - 500) * 10 / 25 + 25;
-                    Utility.DelayAction.Add((int)jumpTime, () => Q.Cast());
+                    Utility.DelayAction.Add((int) jumpTime, () => Q.Cast());
                 }
 
                 var ally = Helpers.AllyBelowHp(ConfigValue<Slider>("Combo.E.Health").Value, E.Range);
@@ -94,7 +94,7 @@ namespace Support.Plugins
 
             if (W.CastCheck(gapcloser.Sender, "Gapcloser.W"))
             {
-                W.CastOnUnit(gapcloser.Sender, UsePackets);
+                W.CastOnUnit(gapcloser.Sender);
             }
         }
 
@@ -112,32 +112,31 @@ namespace Support.Plugins
 
             if (W.CastCheck(unit, "Interrupt.W"))
             {
-                W.CastOnUnit(unit, UsePackets);
+                W.CastOnUnit(unit);
             }
         }
 
         public override void ComboMenu(Menu config)
         {
-            config.AddBool("ComboQ", "使用 Q", true);
-            config.AddBool("ComboW", "使用 WQ", true);
-            config.AddBool("ComboE", "使用 E", true);
-            config.AddSlider("ComboHealthR", "健康恢复", 20, 1, 100);
+            config.AddBool("Combo.Q", "使用 Q", true);
+            config.AddBool("Combo.W", "使用 WQ", true);
+            config.AddBool("Combo.E", "使用 E", true);
+            config.AddSlider("Combo.E.Health", "健康恢复", 20, 1, 100);
         }
 
         public override void HarassMenu(Menu config)
         {
-            config.AddBool("HarassQ", "使用 Q", true);
-            config.AddBool("HarassE", "使用 E", true);
-            config.AddSlider("HarassHealthR", "健康恢复", 20, 1, 100);
+            config.AddBool("Harass.Q", "使用 Q", true);
+            config.AddBool("Harass.E", "使用 E", true);
+            config.AddSlider("Harass.E.Health", "健康恢复", 20, 1, 100);
         }
 
         public override void InterruptMenu(Menu config)
         {
-            config.AddBool("GapcloserQ", "使用 Q 防突进", true);
-            config.AddBool("GapcloserW", "使用 W 防突进", true);
+            config.AddBool("Gapcloser.W", "使用 W 防止突进", true);
 
-            config.AddBool("InterruptQ", "使用 Q 打断", true);
-            config.AddBool("InterruptW", "使用 W 打断", true);
+            config.AddBool("Interrupt.Q", "使用 Q 打断技能", true);
+            config.AddBool("Interrupt.W", "使用 W 打断技能", true);
         }
     }
 }

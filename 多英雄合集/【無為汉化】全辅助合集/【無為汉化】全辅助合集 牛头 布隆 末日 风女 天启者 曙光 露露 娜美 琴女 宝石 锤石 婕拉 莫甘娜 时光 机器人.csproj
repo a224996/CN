@@ -65,6 +65,9 @@
     <Reference Include="LeagueSharp.Common">
       <HintPath>D:\Games\LeagueSharp\\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
+    <Reference Include="LeagueSharp.Spells">
+      <HintPath>D:\Games\LeagueSharp\\System\LeagueSharp.Spells.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX">
       <HintPath>D:\Games\LeagueSharp\\System\SharpDX.dll</HintPath>
     </Reference>
@@ -73,6 +76,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugins\Annie.cs" />
     <Compile Include="Util\AntiGapcloser.cs" />
     <Compile Include="Util\AutoBushRevealer.cs" />
     <Compile Include="Util\DamageBoostDatabase.cs" />

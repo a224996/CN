@@ -37,6 +37,53 @@ namespace SFXUtility.Feature
 	using Utilities = Class.Utilities;
 
 	#endregion
+	
+	internal class JungleCamp
+	{
+		public String Name;
+		public int NextRespawnTime;
+		public int RespawnTime;
+		public bool IsDead;
+		public bool Visibled;
+		public Vector3 Position;
+		public string[] Names;
+		public readonly int Id;
+		public JungleCamp(String name, int respawnTime, Vector3 position, string[] names, int id)
+		{
+			Name = name;
+			RespawnTime = respawnTime;
+			Position = position;
+			Names = names;
+			IsDead = false;
+			Visibled = false;
+			Id = id;
+		}
+	}
+	
+	internal class DrawText
+	{
+		private int _layer;
+		public Render.Text Text { get; set; }
+		public JungleCamp JungleCamp;
+		public bool format;
+		public DrawText(JungleCamp pos)
+		{
+			Text = new Render.Text(Drawing.WorldToMinimap(pos.Position),"",15,SharpDX.Color.White)
+			{
+				VisibleCondition = sender => (pos.NextRespawnTime > 0 ),
+				TextUpdate = () => FormatTime(pos.NextRespawnTime - (int)Game.ClockTime),
+			};
+			JungleCamp = pos;
+			Text.Add(_layer);
+			_layer++;
+		}
+		private string FormatTime(int time)
+		{
+			var t = TimeSpan.FromSeconds(time);
+			if (format) return string.Format("{0:D1}:{1:D2}", t.Minutes, t.Seconds);
+			else return time.ToString(CultureInfo.InvariantCulture);
+		}
+	}
 
 	internal class JungleTimer : Base
 	{
@@ -362,53 +409,6 @@ namespace SFXUtility.Feature
 		public bool IsFormat()
 		{
 			return Menu.Item(Name + "Format").GetValue<bool>();
-		}
-
-		private class JungleCamp
-		{
-			public String Name;
-			public int NextRespawnTime;
-			public int RespawnTime;
-			public bool IsDead;
-			public bool Visibled;
-			public Vector3 Position;
-			public string[] Names;
-			public readonly int Id;
-			public JungleCamp(String name, int respawnTime, Vector3 position, string[] names, int id)
-			{
-				Name = name;
-				RespawnTime = respawnTime;
-				Position = position;
-				Names = names;
-				IsDead = false;
-				Visibled = false;
-				Id = id;
-			}
-		}
-		
-		private class DrawText
-		{
-			private int _layer;
-			public Render.Text Text { get; set; }
-			public JungleCamp JungleCamp;
-			public bool format;
-			public DrawText(JungleCamp pos)
-			{
-				Text = new Render.Text(Drawing.WorldToMinimap(pos.Position),"",15,SharpDX.Color.White)
-				{
-					VisibleCondition = sender => (pos.NextRespawnTime > 0 ),
-					TextUpdate = () => FormatTime(pos.NextRespawnTime - (int)Game.ClockTime),
-				};
-				JungleCamp = pos;
-				Text.Add(_layer);
-				_layer++;
-			}
-			private string FormatTime(int time)
-			{
-				var t = TimeSpan.FromSeconds(time);
-				if (format) return string.Format("{0:D1}:{1:D2}", t.Minutes, t.Seconds);
-				else return time.ToString(CultureInfo.InvariantCulture);
-			}
 		}
 	}
 }

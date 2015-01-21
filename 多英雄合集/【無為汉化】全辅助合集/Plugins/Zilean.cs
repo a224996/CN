@@ -1,6 +1,6 @@
 ﻿#region LICENSE
 
-// Copyright 2014 Support
+// Copyright 2014-2015 Support
 // Zilean.cs is part of Support.
 // 
 // Support is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Zilean.cs
 // Created:  05/10/2014
-// Date:     26/12/2014/16:23
+// Date:     20/01/2015/11:20
 // Author:   h3h3
 
 #endregion
@@ -53,7 +53,7 @@ namespace Support.Plugins
                 {
                     if (Q.CastCheck(Target, "ComboQ"))
                     {
-                        Q.Cast(Target, UsePackets);
+                        Q.Cast(Target);
                     }
 
                     if (W.IsReady() && !Q.IsReady() && ConfigValue<bool>("ComboW"))
@@ -62,7 +62,7 @@ namespace Support.Plugins
                     }
 
                     // TODO: speed adc/jungler/engage
-                    if (E.IsReady() && Utility.CountEnemysInRange(2000) > 0 && ConfigValue<bool>("ComboE"))
+                    if (E.IsReady() && Player.CountEnemiesInRange(2000) > 0 && ConfigValue<bool>("ComboE"))
                     {
                         E.Cast(Player);
                     }
@@ -72,7 +72,7 @@ namespace Support.Plugins
                 {
                     if (Q.CastCheck(Target, "HarassQ"))
                     {
-                        Q.Cast(Target, UsePackets);
+                        Q.Cast(Target);
                     }
 
                     if (W.IsReady() && !Q.IsReady() && ConfigValue<bool>("HarassW"))
@@ -115,7 +115,7 @@ namespace Support.Plugins
 
         public override void InterruptMenu(Menu config)
         {
-            config.AddBool("GapcloserE", "使用 E 防突进", true);
+            config.AddBool("GapcloserE", "使用 E 防止突进", true);
         }
     }
 }

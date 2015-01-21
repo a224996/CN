@@ -124,8 +124,7 @@ namespace VayneHunterRework
             var hasIT = Items.HasItem(3139) || Items.HasItem(3140) || Items.HasItem(3137);
             if (!VayneHunterRework.isMenuEnabled("UseQSS") || !hasIT) return;
             int numBuffs = UnitBuffs(Player);
-           //Console.WriteLine("Should Cleanse. "+numBuffs +" cause of the bufftype check");
-            if(numBuffs >= 1)Cleanse();
+            if (numBuffs >= VayneHunterRework.Menu.Item("QSSMinBuffs").GetValue<Slider>().Value) Cleanse();
         }
 
         static bool willSpellKillMe(QSSSpell spell)
@@ -157,7 +156,7 @@ namespace VayneHunterRework
             if (DeathMarkCreated &&
                 Player.HasBuff(getSpellByName("Zed R").SpellBuff, true) && getSpellByName("Zed R").onlyKill)
             {
-                Cleanse();
+                Utility.DelayAction.Add(200,() => Cleanse());
             }
         }
 
@@ -239,7 +238,7 @@ namespace VayneHunterRework
 
         static Obj_AI_Hero getByChampName(String Name)
         {
-            return ObjectManager.Get<Obj_AI_Hero>().First(h => h.ChampionName == Name);
+            return ObjectManager.Get<Obj_AI_Hero>().First(h => h.ChampionName == Name && h.IsEnemy);
         }
 
     }

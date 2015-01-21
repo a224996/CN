@@ -120,8 +120,8 @@ namespace SFXUtility.Feature
                     var spellsMenu = new Menu("法术", Name + "Spells");
                     spellsMenu.AddItem(new MenuItem(Name + "SpellsSmite", "使用击打").SetValue(true));
                     spellsMenu.AddItem(new MenuItem(Name + "SpellsNunu", "使用努努 Q").SetValue(true));
-                    spellsMenu.AddItem(new MenuItem(Name + "SpellsChogath", "使用大虫子ㄧ R").SetValue(true));
-                    spellsMenu.AddItem(new MenuItem(Name + "SpellsOlaf", "使用奥拉夫ㄧ E").SetValue(true));
+                    spellsMenu.AddItem(new MenuItem(Name + "SpellsChogath", "使用大虫子 R").SetValue(true));
+                    spellsMenu.AddItem(new MenuItem(Name + "SpellsOlaf", "使用奥拉夫 E").SetValue(true));
 
                     var drawingMenu = new Menu("绘制", Name + "Drawing");
                     drawingMenu.AddItem(new MenuItem(Name + "DrawingUseableColor", "可用颜色").SetValue(Color.Blue));

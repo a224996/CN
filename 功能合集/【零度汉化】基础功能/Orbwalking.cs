@@ -23,6 +23,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using Color = System.Drawing.Color;
@@ -87,6 +88,13 @@ namespace LeagueSharp.Common
         private static readonly string[] NoCancelChamps =
         {
             "Kalista"
+        };
+
+        // Champs and their spells that won't get cancelled when moving
+        private static readonly Dictionary<string, string[]> NoInterruptSpells = new Dictionary<string, string[]>()
+        {
+            { "Varus", new[] { "VarusQ" } },
+            { "Lucian", new[] { "LucianR" } }
         };
 
         public static int LastAATick;
@@ -764,10 +772,11 @@ namespace LeagueSharp.Common
                         return;
                     }
 
-                    //Prevent canceling important channeled spells like Miss Fortunes R.
+                    //Prevent canceling important channeled spells
                     if (Player.IsChannelingImportantSpell())
                     {
-                        return;
+                        if (!NoInterruptSpells.ContainsKey(Player.ChampionName) || !NoInterruptSpells[Player.ChampionName].Contains(Player.LastCastedSpellName()))
+                            return;
                     }
 
                     var target = GetTarget();

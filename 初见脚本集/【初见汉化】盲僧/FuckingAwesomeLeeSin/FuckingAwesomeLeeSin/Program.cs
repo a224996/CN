@@ -85,9 +85,6 @@ namespace FuckingAwesomeLeeSin
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
-            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
-            GameObject.OnDelete += GameObject_OnDelete;
-            Game.OnWndProc += Game_OnWndProc;
         }
 
         static void Game_OnWndProc(WndEventArgs args)
@@ -275,6 +272,9 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
             Game.OnGameUpdate += Game_OnGameUpdate; // adds OnGameUpdate (Same as onTick in bol)
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             GameObject.OnCreate += GameObject_OnCreate;
+            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            GameObject.OnDelete += GameObject_OnDelete;
+            Game.OnWndProc += Game_OnWndProc;
 
             PrintMessage("Loaded!");
         }
@@ -1011,10 +1011,10 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
         public static void CastQ1(Obj_AI_Hero target)
         {
             var Qpred = Q.GetPrediction(target);
-            if ((Qpred.CollisionObjects.Where(a => a.IsValid && !a.IsDead && a.IsMinion).ToList().Count / 2) == 1 && Player.Spellbook.CanUseSpell(smiteSlot) == SpellState.Ready && paramBool("qSmite") && Qpred.CollisionObjects[0].IsValidTarget(780))
+            if ((Qpred.CollisionObjects.Where(a => a.IsValidTarget() && a.IsMinion).ToList().Count) == 1 && Player.Spellbook.CanUseSpell(smiteSlot) == SpellState.Ready && paramBool("qSmite") && Qpred.CollisionObjects[0].IsValidTarget(780))
             {
                 Player.Spellbook.CastSpell(smiteSlot, Qpred.CollisionObjects[0]);
-                Utility.DelayAction.Add(70, () => Q.Cast(Qpred.CastPosition, packets()));
+                Utility.DelayAction.Add(Game.Ping/2, () => Q.Cast(Qpred.CastPosition, packets()));
             }
             else if(Qpred.CollisionObjects.Count == 0)
             {
@@ -1095,11 +1095,11 @@ Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593
                 Items.UseItem(3144, enemy);
             if (Items.CanUseItem(3153) && Player.Distance(enemy) <= 450)
                 Items.UseItem(3153, enemy);
-            if (Items.CanUseItem(3077) && Utility.CountEnemysInRange(350) >= 1)
+            if (Items.CanUseItem(3077) && Utility.CountEnemiesInRange(350) >= 1)
                 Items.UseItem(3077);
-            if (Items.CanUseItem(3074) && Utility.CountEnemysInRange(350) >= 1)
+            if (Items.CanUseItem(3074) && Utility.CountEnemiesInRange(350) >= 1)
                 Items.UseItem(3074);
-            if(Items.CanUseItem(3143) && Utility.CountEnemysInRange(450) >= 1)
+            if (Items.CanUseItem(3143) && Utility.CountEnemiesInRange(450) >= 1)
                 Items.UseItem(3143);
         }
 
