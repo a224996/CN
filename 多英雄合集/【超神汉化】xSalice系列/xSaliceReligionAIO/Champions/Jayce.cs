@@ -87,7 +87,7 @@ namespace xSaliceReligionAIO.Champions
 
             //Drawings menu:
             var drawMenu = new Menu("绘制", "Drawings"); {
-                drawMenu.AddItem(new MenuItem("Draw_Disabled", "绘制全部", true).SetValue(false));
+                drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用", true).SetValue(false));
                 drawMenu.AddItem(new MenuItem("Draw_Q", "绘制 Q 炮形", true).SetValue(true));
                 drawMenu.AddItem(new MenuItem("Draw_QExtend", "绘制 Q 炮形扩展", true).SetValue(true));
                 drawMenu.AddItem(new MenuItem("Draw_E", "绘制 E 炮形", true).SetValue(true));

@@ -115,6 +115,7 @@ namespace xSaliceReligionAIO.Champions
                 harass.AddItem(new MenuItem("UseQHarass", "使用Q",true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "使用W",true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "使用E",true).SetValue(true));
+                AddManaManagertoMenu(harass, "Harass", 30);
                 menu.AddSubMenu(harass);
             }
             //Farming menu:

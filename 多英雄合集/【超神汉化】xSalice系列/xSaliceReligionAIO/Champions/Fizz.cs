@@ -106,7 +106,7 @@ namespace xSaliceReligionAIO.Champions
 
             var drawMenu = new Menu("绘制", "Drawing");
             {
-                drawMenu.AddItem(new MenuItem("Draw_Disabled", "开启全部", true).SetValue(false));
+                drawMenu.AddItem(new MenuItem("Draw_Disabled", "禁用", true).SetValue(false));
                 drawMenu.AddItem(new MenuItem("Draw_Q", "绘制 Q", true).SetValue(true));
                 drawMenu.AddItem(new MenuItem("Draw_E", "绘制 E", true).SetValue(true));
                 drawMenu.AddItem(new MenuItem("Draw_R", "绘制 R", true).SetValue(true));
@@ -328,7 +328,7 @@ namespace xSaliceReligionAIO.Champions
                             Q.CastOnUnit(target, packets());
                             return;
                         }
-                        if(Player.Distance(target) < range && !target.UnderTurret() && target.CountEnemysInRange(600) < 2 && E.IsReady())
+                        if(Player.Distance(target) < range && !target.UnderTurret() && target.CountEnemiesInRange(600) < 2 && E.IsReady())
                         {
                             E.Cast(target);
                             Obj_AI_Hero target1 = target;
@@ -346,7 +346,7 @@ namespace xSaliceReligionAIO.Champions
                         return;
                     }
 
-                    if (Player.Distance(target) < E.Range * 2 - 50 && E.IsReady() && E.IsKillable(target) && !target.UnderTurret() && target.CountEnemysInRange(600) < 2)
+                    if (Player.Distance(target) < E.Range * 2 - 50 && E.IsReady() && E.IsKillable(target) && !target.UnderTurret() && target.CountEnemiesInRange(600) < 2)
                     {
                         CastE(target);
                         return;

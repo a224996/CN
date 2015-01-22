@@ -92,7 +92,7 @@ namespace xSaliceReligionAIO.Champions
             //Drawings menu:
             var drawing = new Menu("绘制", "Drawings");
             {
-                drawing.AddItem(new MenuItem("Draw_Disabled", "启用全部", true).SetValue(false));
+                drawing.AddItem(new MenuItem("Draw_Disabled", "禁用", true).SetValue(false));
                 drawing.AddItem(new MenuItem("Draw_Q", "绘制 Q", true).SetValue(true));
                 drawing.AddItem(new MenuItem("Draw_W", "绘制 Q", true).SetValue(true));
                 drawing.AddItem(new MenuItem("Draw_E", "绘制 E", true).SetValue(true));
@@ -128,7 +128,7 @@ namespace xSaliceReligionAIO.Champions
             if (Q.IsReady())
                 damage += Player.GetSpellDamage(enemy, SpellSlot.Q)*2;
 
-            if (DFG.IsReady())
+            if (Dfg.IsReady())
                 damage += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg) / 1.2;
 
             if (E.IsReady())
@@ -137,7 +137,7 @@ namespace xSaliceReligionAIO.Champions
             if (R.IsReady())
                 damage += Player.GetSpellDamage(enemy, SpellSlot.R) * 3;
 
-            if (DFG.IsReady())
+            if (Dfg.IsReady())
                 damage = damage * 1.2;
 
             damage = ActiveItems.CalcDamage(enemy, damage);
