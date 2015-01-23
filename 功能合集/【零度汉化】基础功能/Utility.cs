@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LeagueSharp.Common.Data;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -422,9 +423,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public static int CountEnemiesInRange(this Vector3 point, float range)
         {
-            return
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(h => h.IsValidTarget() && h.ServerPosition.Distance(point, true) < range * range);
+            return ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsValidTarget(range, true, point));
         }
 
         // Use same interface as CountEnemiesInRange
@@ -437,7 +436,7 @@ namespace LeagueSharp.Common
         }
 
         /// <summary>
-        ///     Counts the enemies in range of the Unit.
+        ///     Counts the allies in range of the Unit.
         /// </summary>
         public static int CountAlliesInRange(this Obj_AI_Base unit, float range)
         {
@@ -445,11 +444,13 @@ namespace LeagueSharp.Common
         }
 
         /// <summary>
-        ///     Counts the enemies in the range of the Point.
+        ///     Counts the allies in the range of the Point.
         /// </summary>
         public static int CountAlliesInRange(this Vector3 point, float range)
         {
-            return ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsAlly).Count(x => x.IsValidTarget(range, false));
+            return ObjectManager.Get<Obj_AI_Hero>()
+                .Where(x => x.IsAlly)
+                .Count(x => x.IsValidTarget(range, false, point));
         }
 
         public static List<Obj_AI_Hero> GetAlliesInRange(this Vector3 point, float range)
@@ -818,6 +819,18 @@ namespace LeagueSharp.Common
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        ///     Checks for a mastery
+        /// </summary>
+        /// <param name="source">Source Object</param>
+        /// <param name="data">Mastery Data</param>
+        /// <returns>True/False Bool</returns>
+        public static bool HasMastery(this Obj_AI_Hero source, MasteryData.Mastery data)
+        {
+            return (source.IsValidTarget()) &&
+                   source.Masteries.Find(m => m.Page == data.Tree && m.Id == data.ByteId) != null;
         }
     }
 

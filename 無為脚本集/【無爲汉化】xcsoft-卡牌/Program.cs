@@ -78,15 +78,6 @@ namespace xc_TwistedFate
             comboMenu.AddItem(new MenuItem("usebft", "使用黑焰火炬").SetValue(true));
             Menu.AddSubMenu(comboMenu);
 
-            var AdditionalsMenu = new Menu("附加选项", "additionals");
-            AdditionalsMenu.AddItem(new MenuItem("goldR", "大招时落地黄牌").SetValue(true));
-            AdditionalsMenu.AddItem(new MenuItem("killsteal", "使用抢人头").SetValue(true));
-            AdditionalsMenu.AddItem(new MenuItem("gapcloser", "反突进").SetValue(true));
-            AdditionalsMenu.AddItem(new MenuItem("interrupt", "自动打断技能").SetValue(true));
-            AdditionalsMenu.AddItem(new MenuItem("usepacket", "使用封包").SetValue(true));
-            AdditionalsMenu.AddItem(new MenuItem("autoIgnite", "使用点燃(可击杀)").SetValue(true));
-            Menu.AddSubMenu(AdditionalsMenu);
-
             var harassMenu = new Menu("骚扰设置", "harassop");
             harassMenu.AddItem(new MenuItem("harassUseQ", "使用 Q").SetValue(true));
             harassMenu.AddItem(new MenuItem("harassrange", "骚扰范围").SetValue(new Slider(1200, (int)Orbwalking.GetRealAutoAttackRange(Player), 1450))).ValueChanged +=
@@ -119,6 +110,15 @@ namespace xc_TwistedFate
             jungleclearMenu.AddItem(new MenuItem("jgtxt", "-自动选择卡牌"));
             Menu.AddSubMenu(jungleclearMenu);
 
+            var AdditionalsMenu = new Menu("附加选项", "additionals");
+            AdditionalsMenu.AddItem(new MenuItem("goldR", "大招时落地黄牌").SetValue(true));
+            AdditionalsMenu.AddItem(new MenuItem("killsteal", "使用抢人头").SetValue(true));
+            AdditionalsMenu.AddItem(new MenuItem("gapcloser", "反突进").SetValue(true));
+            AdditionalsMenu.AddItem(new MenuItem("interrupt", "自动打断技能").SetValue(true));
+            AdditionalsMenu.AddItem(new MenuItem("usepacket", "使用封包").SetValue(true));
+            AdditionalsMenu.AddItem(new MenuItem("autoIgnite", "使用点燃(可击杀)").SetValue(true));
+            Menu.AddSubMenu(AdditionalsMenu);
+
             var Drawings = new Menu("绘制设置", "Drawings");
             Drawings.AddItem(new MenuItem("AAcircle", "AA 范围").SetValue(true));
             Drawings.AddItem(new MenuItem("FAAcircle", "闪现+ AA 范围").SetValue(true));
@@ -150,6 +150,7 @@ namespace xc_TwistedFate
 
             Drawings.AddItem(new MenuItem("jgpos", "丛林的位置").SetValue(true));
             Drawings.AddItem(new MenuItem("manaper", "法力值百分比").SetValue(true));
+            Drawings.AddItem(new MenuItem("kill", "击杀").SetValue(true));
 
             Menu.AddSubMenu(Drawings);
 
@@ -197,7 +198,7 @@ namespace xc_TwistedFate
             {
                 CardSelector.StartSelecting(Cards.Yellow);
 
-                Render.Circle.DrawCircle(gapcloser.Sender.Position, 50, Color.Gold, 5);
+                Render.Circle.DrawCircle(gapcloser.Sender.Position, gapcloser.Sender.BoundingRadius, Color.Gold, 5);
 
                 var targetpos = Drawing.WorldToScreen(gapcloser.Sender.Position);
 
@@ -220,7 +221,7 @@ namespace xc_TwistedFate
             {
                 CardSelector.StartSelecting(Cards.Yellow);
 
-                Render.Circle.DrawCircle(unit.Position, 50, Color.Gold, 5);
+                Render.Circle.DrawCircle(unit.Position, unit.BoundingRadius, Color.Gold, 5);
 
                 var targetpos = Drawing.WorldToScreen(unit.Position);
 
@@ -297,6 +298,11 @@ namespace xc_TwistedFate
             if (Q.IsReady() && Qcircle.Active)
                 Render.Circle.DrawCircle(Player.Position, Menu.Item("qrange").GetValue<Slider>().Value, Qcircle.Color, 5);
 
+            var Rcircle = Menu.Item("Rcircle").GetValue<Circle>();
+
+            if (Rcircle.Active)
+                Render.Circle.DrawCircle(Player.Position, 5500, Rcircle.Color, 5);
+
             if (Menu.Item("AAcircle").GetValue<bool>())
             {
                 if (W.IsReady())
@@ -334,7 +340,7 @@ namespace xc_TwistedFate
 
                     if (!target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)))
                     {
-                        Render.Circle.DrawCircle(target.Position, 50, Color.Gold);
+                        Render.Circle.DrawCircle(target.Position, target.BoundingRadius, Color.Gold);
 
                         var targetpos = Drawing.WorldToScreen(target.Position);
 
@@ -365,6 +371,7 @@ namespace xc_TwistedFate
                     }
                 }
             }
+
             if (Game.MapId == (GameMapId)11 && Menu.Item("jgpos").GetValue<bool>())
             {
                 const float circleRange = 100f;
@@ -386,7 +393,7 @@ namespace xc_TwistedFate
 
             if (Menu.Item("manaper").GetValue<bool>())
             {
-                var targetpos2 = Drawing.WorldToScreen(Player.Position);
+                var targetpos = Drawing.WorldToScreen(Player.Position);
                 var color = Color.Green;
                 var manaper = (int)Utility.ManaPercentage(Player);
 
@@ -399,7 +406,17 @@ namespace xc_TwistedFate
                 else if (manaper > -1)
                     color = Color.Red;
 
-                Drawing.DrawText(targetpos2[0] - 40, targetpos2[1] + 20, color, "Mana:" + manaper + "%");
+                Drawing.DrawText(targetpos[0] - 40, targetpos[1] + 20, color, "Mana:" + manaper + "%");
+            }
+
+            if (Menu.Item("kill").GetValue<bool>())
+            {
+                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x != null && x.IsValid && !x.IsDead && x.IsEnemy && x.Health <= GetComboDamage(x) && x.IsVisible))
+                {
+                    var targetpos = Drawing.WorldToScreen(target.Position);
+                    Render.Circle.DrawCircle(target.Position, target.BoundingRadius, Color.Tomato);
+                    Drawing.DrawText(targetpos[0] - 30, targetpos[1] + 40, Color.Tomato, "Killable");
+                }
             }
         }
 
@@ -407,11 +424,6 @@ namespace xc_TwistedFate
         {
             if (Player.IsDead)
                 return;
-
-            var Rcircle = Menu.Item("Rcircle").GetValue <Circle>();
-
-            if (Rcircle.Active)
-                Render.Circle.DrawCircle(Player.Position, 5500, Rcircle.Color, 5);
 
             var Rcirclemap = Menu.Item("RcircleMap").GetValue<Circle>();
 
@@ -442,9 +454,7 @@ namespace xc_TwistedFate
                     if (Menu.Item("useblue").GetValue<bool>())
                     {
                         if (Utility.ManaPercentage(Player) < 20)
-                        {
                             CardSelector.StartSelecting(Cards.Blue);
-                        }
                         else
                             CardSelector.StartSelecting(Cards.Yellow);
                     }
@@ -603,7 +613,7 @@ namespace xc_TwistedFate
 
                 if (buff.Name == "lichbane")
                 {
-                    APdmg += Damage.CalcDamage(Player, enemy, Damage.DamageType.Magical, (Player.BaseAttackDamage * 0.75) + ((Player.BaseAbilityDamage + Player.FlatMagicDamageMod) * 0.5));//리치베인딜 추가
+                    APdmg += Damage.CalcDamage(Player, enemy, Damage.DamageType.Magical, (Player.BaseAttackDamage * 0.75) + ((Player.BaseAbilityDamage + Player.FlatMagicDamageMod) * 0.5));
                     passive = true;
                 }
 
@@ -640,16 +650,10 @@ namespace xc_TwistedFate
             {
                 if (target != null)
                 {
-                    if (Q.GetDamage(target) > target.Health + 20 & Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
+                    if (Q.GetDamage(target) >= target.Health + 20 & Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
                     {
                         if (Q.IsReady() && DetectCollision(target))
                             Q.Cast(target, Menu.Item("usepacket").GetValue<bool>());
-
-                        Render.Circle.DrawCircle(target.Position, 100, Color.Red, 5);
-
-                        var targetpos = Drawing.WorldToScreen(target.Position);
-
-                        Drawing.DrawText(targetpos[0] - 50, targetpos[1] - 20, Color.Red, "Try killsteal");
                     }
                 }
             }
@@ -661,7 +665,7 @@ namespace xc_TwistedFate
             {
                 float ignitedamage = 50 + 20 * Player.Level;
 
-                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x != null && x.IsValid && !x.IsDead && Player.ServerPosition.Distance(x.ServerPosition) < 600 && !x.IsMe && !x.IsAlly && (x.Health + x.HPRegenRate * 1) <= ignitedamage))
+                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x != null && x.IsValid && !x.IsDead && Player.ServerPosition.Distance(x.ServerPosition) < 600 && !x.IsEnemy && (x.Health + x.HPRegenRate * 1) <= ignitedamage))
                 {
                     Player.Spellbook.CastSpell(SIgnite, target);
                 }

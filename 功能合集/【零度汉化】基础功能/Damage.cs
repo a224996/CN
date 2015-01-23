@@ -3553,8 +3553,8 @@ namespace LeagueSharp.Common
                         Damage =
                             (source, target, level) =>
                                 new double[] { 10, 30, 50, 70, 90 }[level] +
-                                new double[] { 40, 45, 50, 55, 60 }[level] *
-                                (source.BaseAttackDamage + source.FlatPhysicalDamageMod)
+                                ((source.BaseAttackDamage + source.FlatPhysicalDamageMod) / 100) *
+                                new double[] { 40, 45, 50, 55, 60 }[level]
                     },
                     //W
                     new DamageSpell
@@ -5170,8 +5170,22 @@ namespace LeagueSharp.Common
             {
                 if (target is Obj_AI_Hero)
                 {
-                    return 20 + 8 * source.Level;
-                }
+                    var chillingSmite =
+                        source.Spellbook.Spells.FirstOrDefault(h => h.Name.Equals("s5_summonersmiteplayerganker"));
+                    var challengingSmite =
+                        source.Spellbook.Spells.FirstOrDefault(h => h.Name.Equals("s5_summonersmiteduel"));
+
+                    if (chillingSmite != null)
+                    {
+                        return 20 + 8 * source.Level;
+                    }
+
+                    if (challengingSmite != null)
+
+                    {
+                        return 54 + 6 * source.Level;
+                    }
+            }
 
                 return
                     new double[]

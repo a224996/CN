@@ -50,7 +50,7 @@ namespace Mordekaiser
             ItemList.Add(Hex);
 
             /* [ Set Spells ]*/
-            Q = new Spell(SpellSlot.Q, 300);
+            Q = new Spell(SpellSlot.Q);
             SpellList.Add(Q);
 
             W = new Spell(SpellSlot.W, 780);
@@ -77,24 +77,29 @@ namespace Mordekaiser
 
             /* [ Combo ] */
             Config.AddSubMenu(new Menu("连招", "Combo"));
+            {
             Config.SubMenu("Combo").AddItem(new MenuItem("ComboUseQ", "使用 Q").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("ComboUseW", "使用 W").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("ComboUseE", "使用 E").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("ComboUseR", "使用 R").SetValue(true));
 
             Config.SubMenu("Combo").AddSubMenu(new Menu("不使用R给", "DontUlt"));
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team))
-            {
+                {
+                    foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team))
+                    {
+                        Config.SubMenu("Combo")
+                            .SubMenu("DontUlt")
+                            .AddItem(new MenuItem("DontUlt" + enemy.BaseSkinName, enemy.BaseSkinName).SetValue(false));
+                    }
+                }
                 Config.SubMenu("Combo")
-                    .SubMenu("DontUlt")
-                    .AddItem(new MenuItem("DontUlt" + enemy.BaseSkinName, enemy.BaseSkinName).SetValue(false));
+                    .AddItem(
+                        new MenuItem("ComboActive", "连招!").SetValue(
+                            new KeyBind(Config.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
             }
-            Config.SubMenu("Combo")
-                .AddItem(
-                    new MenuItem("ComboActive", "连招!").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
-
             /* [ Harass ] */
             Config.AddSubMenu(new Menu("骚扰", "Harass"));
+            {
             Config.SubMenu("Harass").AddItem(new MenuItem("HarassUseQ", "使用 Q").SetValue(true));
             Config.SubMenu("Harass").AddItem(new MenuItem("HarassUseW", "使用 W").SetValue(true));
             Config.SubMenu("Harass").AddItem(new MenuItem("HarassUseE", "使用 E").SetValue(true));
@@ -104,59 +109,72 @@ namespace Mordekaiser
                         KeyBindType.Toggle)));
             Config.SubMenu("Harass")
                 .AddItem(
-                    new MenuItem("HarassActive", "骚扰!").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
-
+                        new MenuItem("HarassActive", "骚扰!").SetValue(new KeyBind("C".ToCharArray()[0],
+                            KeyBindType.Press)));
+            }
             /* [ Farming ] */
             Config.AddSubMenu(new Menu("清线", "LaneClear"));
+            {
             Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearUseQ", "使用 Q").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearUseW", "使用 W").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearUseE", "使用 E").SetValue(true));
             Config.SubMenu("LaneClear")
                 .AddItem(new MenuItem("LaneClearActive", "清线!").SetValue(new KeyBind("V".ToCharArray()[0],
                         KeyBindType.Press)));
-
+            }
             /* [ JungleFarm ] */
             Config.AddSubMenu(new Menu("清野", "JungleFarm"));
+            {
             Config.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmUseQ", "使用 Q").SetValue(true));
             Config.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmUseW", "使用 W").SetValue(true));
             Config.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmUseE", "使用 E").SetValue(true));
             Config.SubMenu("JungleFarm")
                 .AddItem(new MenuItem("JungleFarmActive", "清野!").SetValue(new KeyBind("V".ToCharArray()[0],
                         KeyBindType.Press)));
-
-
+            }
             /* [ Extras ] */
             MenuExtras = new Menu("额外", "Extras");
+            {
             MenuExtras.AddItem(new MenuItem("ShieldSelf", "自己护盾").SetValue(true));
             MenuExtras.AddItem(new MenuItem("ShieldAlly", "队友护盾").SetValue(false));
             Config.AddSubMenu(MenuExtras);
+            }
 
             /* [ Drawing ] */
-            Config.AddSubMenu(new Menu("范围", "Drawings"));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawW", "W 范围").SetValue(new Circle(true, Color.Pink)));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawWAffectedRange", "W 扩展范围").SetValue(new Circle(true, Color.Pink)));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawE", "E 范围").SetValue(new Circle(true, Color.Pink)));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawR", "R 范围").SetValue(new Circle(true, Color.Pink)));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawEmpty", ""));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawAloneEnemy", "Q 孤立的目标").SetValue(new Circle(true, Color.Pink)));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawSlavePos", "大招灵魂的位置.").SetValue(new Circle(true, Color.Pink)));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawSlaveRange", "大招灵魂的范围").SetValue(new Circle(true, Color.Pink)));
-
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawEmpty", ""));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawDisable", "禁用全部").SetValue(false));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("DrawEmpty", ""));
-
-            /* [ Damage After Combo ] */
-            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "显示连招后伤害").SetValue(true);
-            Config.SubMenu("Drawings").AddItem(dmgAfterComboItem);
-
-            Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
-            Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
-            dmgAfterComboItem.ValueChanged += delegate(object sender, OnValueChangeEventArgs eventArgs)
+            Config.AddSubMenu(new Menu("Dr范围awings", "Drawings"));
             {
-                Utility.HpBarDamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
-            };
+                Config.SubMenu("Drawings")
+                    .AddItem(new MenuItem("DrawW", "W 范围").SetValue(new Circle(true, Color.Pink)));
+                Config.SubMenu("Drawings")
+                    .AddItem(
+                        new MenuItem("DrawWAffectedRange", "W 扩展范围").SetValue(new Circle(true, Color.Pink)));
+                Config.SubMenu("Drawings")
+                    .AddItem(new MenuItem("DrawE", "E 范围").SetValue(new Circle(true, Color.Pink)));
+                Config.SubMenu("Drawings")
+                    .AddItem(new MenuItem("DrawR", "R 范围").SetValue(new Circle(true, Color.Pink)));
 
+                Config.SubMenu("Drawings")
+                    .AddItem(new MenuItem("DrawAloneEnemy", "Q 孤立的目标").SetValue(new Circle(true, Color.Pink)));
+                Config.SubMenu("Drawings")
+                    .AddItem(new MenuItem("DrawSlavePos", "大招灵魂的位置.").SetValue(new Circle(true, Color.Pink)));
+                Config.SubMenu("Drawings")
+                    .AddItem(new MenuItem("DrawSlaveRange", "大招灵魂的范围").SetValue(new Circle(true, Color.Pink)));
+
+                Config.SubMenu("Drawings").AddItem(new MenuItem("DrawEmpty", ""));
+                Config.SubMenu("Drawings").AddItem(new MenuItem("DrawDisable", "禁用全部").SetValue(false));
+                Config.SubMenu("Drawings").AddItem(new MenuItem("DrawEmpty", ""));
+
+                /* [ Damage After Combo ] */
+                var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "显示连招后伤害").SetValue(true);
+                Config.SubMenu("Drawings").AddItem(dmgAfterComboItem);
+
+                Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
+                Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
+                dmgAfterComboItem.ValueChanged += delegate(object sender, OnValueChangeEventArgs eventArgs)
+                {
+                    Utility.HpBarDamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
+                };
+            }
             Config.AddToMainMenu();
 
             Game.OnGameUpdate += Game_OnGameUpdate;
@@ -182,14 +200,11 @@ namespace Mordekaiser
             if (Config.Item("DrawDisable").GetValue<bool>())
                 return;
 
-            var drawThickness = 3;//Config.Item("DrawThickness" ).GetValue<Slider>().Value;
-            var drawQuality = 15;//Config.Item("DrawQuality").GetValue<Slider>().Value;
-
             foreach (var spell in SpellList.Where(spell => spell != Q && spell != W))
             {
                 var menuItem = Config.Item("Draw" + spell.Slot).GetValue<Circle>();
                 if (menuItem.Active && spell.Level > 0)
-                    Utility.DrawCircle(Player.Position, spell.Range, menuItem.Color, drawThickness, drawQuality);
+                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
 
             var drawSlaveRange = Config.Item("DrawSlaveRange").GetValue<Circle>();
@@ -199,12 +214,15 @@ namespace Mordekaiser
                 MordekaiserHaveSlave2();
 
                 if (drawSlaveRange.Active)
-                    Utility.DrawCircle(Player.Position, SlaveActivationRange, drawSlaveRange.Color, drawThickness, drawQuality);
+                    Render.Circle.DrawCircle(Player.Position, SlaveActivationRange, drawSlaveRange.Color);
 
                 if (!Config.Item("DrawSlavePos").GetValue<Circle>().Active) return;
-                var drawSlavePos = Config.Item("DrawSlavePos").GetValue<Circle>();    
+                var drawSlavePos = Config.Item("DrawSlavePos").GetValue<Circle>();
 
-                var xMinion = ObjectManager.Get<Obj_AI_Minion>().Where(minion => Player.Distance(minion) < SlaveActivationRange && Player.IsAlly && !Player.IsDead);
+                var xMinion =
+                    ObjectManager.Get<Obj_AI_Minion>()
+                        .Where(
+                            minion => Player.Distance(minion) < SlaveActivationRange && Player.IsAlly && !Player.IsDead);
                 var xEnemy = ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.IsEnemy);
 
                 var xList = from xM in xMinion
@@ -214,9 +232,10 @@ namespace Mordekaiser
 
                 foreach (var xL in xList)
                 {
-                    Utility.DrawCircle(xL.Position, 70f, Color.White, drawThickness, drawQuality);
-                    Utility.DrawCircle(xL.Position, 75f, drawSlavePos.Color, drawThickness, drawQuality);
-                    Utility.DrawCircle(xL.Position, 80f, Color.White, drawThickness, drawQuality);
+                 //   Game.PrintChat(xL.BaseSkinName);
+                    Render.Circle.DrawCircle(xL.Position, 70f, Color.White);
+                    Render.Circle.DrawCircle(xL.Position, 75f, drawSlavePos.Color);
+                    Render.Circle.DrawCircle(xL.Position, 80f, Color.White);
                 }
             }
         }
@@ -235,7 +254,8 @@ namespace Mordekaiser
                 Combo();
             }
 
-            if (Config.Item("HarassActive").GetValue<KeyBind>().Active || Config.Item("HarassActiveT").GetValue<KeyBind>().Active)
+            if (Config.Item("HarassActive").GetValue<KeyBind>().Active ||
+                Config.Item("HarassActiveT").GetValue<KeyBind>().Active) 
                 Harass();
 
             if (Config.Item("LaneClearActive").GetValue<KeyBind>().Active)
@@ -261,7 +281,8 @@ namespace Mordekaiser
             var useE = Config.Item("ComboUseE").GetValue<bool>();
             var useR = Config.Item("ComboUseR").GetValue<bool>();
 
-            if (useQ && Q.IsReady() && Player.Distance(wTarget) <= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+            if (useQ && Q.IsReady() &&
+                Player.Distance(wTarget) <= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player)) 
                 Q.Cast();
 
             if (useW && wTarget != null && Player.Distance(wTarget) <= WDamageRange)
@@ -297,7 +318,8 @@ namespace Mordekaiser
             var useW = Config.Item("ComboUseW").GetValue<bool>();
             var useE = Config.Item("ComboUseE").GetValue<bool>();
 
-            if (useQ && Q.IsReady() && Player.Distance(wTarget) <= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+            if (useQ && Q.IsReady() &&
+                Player.Distance(wTarget) <= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player)) 
                 Q.Cast();
 
             if (useW && wTarget != null && Player.Distance(wTarget) <= WDamageRange)
@@ -330,7 +352,7 @@ namespace Mordekaiser
             {
                 var rangedMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, W.Range);
                 var minionsW = W.GetCircularFarmLocation(rangedMinionsW, W.Range * 0.3f);
-                if (minionsW.MinionsHit < 1 || !W.InRange(minionsW.Position.To3D()))
+                if (minionsW.MinionsHit < 1 || !W.IsInRange(minionsW.Position.To3D()))
                     return;
                 W.CastOnUnit(Player);
             }
@@ -339,7 +361,7 @@ namespace Mordekaiser
             {
                 var rangedMinionsE = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, E.Range);
                 var minionsE = E.GetCircularFarmLocation(rangedMinionsE, E.Range);
-                if (minionsE.MinionsHit < 1 || !E.InRange(minionsE.Position.To3D()))
+                if (minionsE.MinionsHit < 1 || !E.IsInRange(minionsE.Position.To3D()))
                     return;
                 E.Cast(minionsE.Position);
             }
