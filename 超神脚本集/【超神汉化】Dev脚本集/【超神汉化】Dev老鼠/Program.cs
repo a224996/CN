@@ -326,7 +326,7 @@ namespace DevTwitch
         static void AssemblyUtil_onGetVersionCompleted(OnGetVersionCompletedArgs args)
         {
             if (args.LastAssemblyVersion == Assembly.GetExecutingAssembly().GetName().Version.ToString())
-                Game.PrintChat(string.Format("<font color='#fb762d'>Dev鑰侀紶 鏈夋柊鐗堟湰.</font>"));
+                Game.PrintChat(string.Format("<font color='#fb762d'>Dev鑰侀紶 鏄渶鏂扮増鏈副.</font>"));
             else
                 Game.PrintChat(string.Format("<font color='#fb762d'>Dev鑰侀紶 鏈夋柊鐗堟湰锛佽閫氱煡鐒＄偤杩涜鏇存柊! {0}</font>", args.LastAssemblyVersion));        
         }

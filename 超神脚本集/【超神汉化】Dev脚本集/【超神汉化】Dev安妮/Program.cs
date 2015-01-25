@@ -96,7 +96,7 @@ namespace DevAnnie
         static void AssemblyUtil_onGetVersionCompleted(OnGetVersionCompletedArgs args)
         {
             if (args.LastAssemblyVersion == Assembly.GetExecutingAssembly().GetName().Version.ToString())
-                Game.PrintChat(string.Format("<font color='#fb762d'>Dev瀹夊Ξ: 鏈夋柊鐗堟湰.</font>"));
+                Game.PrintChat(string.Format("<font color='#fb762d'>Dev瀹夊Ξ: 鏄渶鏂扮増鏈副.</font>"));
             else
                 Game.PrintChat(string.Format("<font color='#fb762d'>Dev瀹夊Ξ: 鏈夋柊鐗堟湰锛佽閫氱煡鐒＄偤杩涜鏇存柊! {0}</font>", args.LastAssemblyVersion));
         } 
@@ -249,8 +249,8 @@ namespace DevAnnie
             var FlashAntiSuicide = Config.Item("FlashAntiSuicide").GetValue<bool>();
             var packetCast = Config.Item("PacketCast").GetValue<bool>();
 
-            var eTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            Orbwalking.Orbwalk(eTarget, Game.CursorPos);
+            //var eTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            //Orbwalking.Orbwalk(eTarget, Game.CursorPos);
 
             if (!UseFlashCombo)
                 return;
