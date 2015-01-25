@@ -229,10 +229,10 @@ namespace GagongSyndra
             if (Menu.Item("Orbwalker_Mode").GetValue<bool>()) Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
 
             Game.PrintChat("<font color = \"#FF0020\">Gagong Syndra</font> by <font color = \"#22FF10\">stephenjason89</font>");
-            Game.PrintChat("<font color = \"#FF00FF\">Updates by BarackObama</font>");
+            Game.PrintChat("<font color = \"#FF00FF\">Updates by RaZer</font>");
         }
 
-        private static void ChooseOrbwalker(bool mode)
+               private static void ChooseOrbwalker(bool mode)
         {
             if (mode)
             {
@@ -253,6 +253,7 @@ namespace GagongSyndra
                 Game.PrintChat("xSLx Orbwalker Loaded");
             }
         }
+        
         private static void OnCreate(GameObject obj, EventArgs args)
         {
             if (Player.Distance(obj.Position) > 1500 || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return;
@@ -458,6 +459,7 @@ namespace GagongSyndra
                     foreach (var minion in allMinionsQ.Where(minion => !Orbwalking.InAutoAttackRange(minion) &&
                                                                        minion.Health < 0.75 * Player.GetSpellDamage(minion, SpellSlot.Q)))
                         Q.Cast(minion, Menu.Item("Packets").GetValue<bool>());
+ // will work with this soon        
             if (!useW || !W.IsReady() || allMinionsW.Count <= 3 || !laneClear)
                 return;
             if (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1)
@@ -481,7 +483,7 @@ namespace GagongSyndra
                 {
                     W.Cast(fl2.Position, Menu.Item("Packets").GetValue<bool>());
                 }
-            }
+            } 
         }
         private static void JungleFarm()
         {
@@ -1026,7 +1028,7 @@ namespace GagongSyndra
         private static void Drawing_OnDraw(EventArgs args)
         {
             var menuItem = Menu.Item("DrawQE").GetValue<Circle>();
-            if (menuItem.Active) Render.Circle.DrawCircle(Player.Position, QE.Range, menuItem.Color);
+            if (menuItem.Active) Utility.DrawCircle(Player.Position, QE.Range, menuItem.Color);
             menuItem = Menu.Item("DrawQEC").GetValue<Circle>();
             if (Menu.Item("drawing").GetValue<bool>())
             {
@@ -1101,7 +1103,7 @@ namespace GagongSyndra
 
                     //Draw QE to cursor circle
                     if (Menu.Item("UseQEC").GetValue<KeyBind>().Active && E.IsReady() && Q.IsReady() && menuItem.Active)
-                        Render.Circle.DrawCircle(
+                        Utility.DrawCircle(
                             Game.CursorPos, 150f,
                             (enemy.Distance(Game.CursorPos, true) <= 150 * 150) ? Color.Red : menuItem.Color, 3);
                 }
@@ -1111,7 +1113,7 @@ namespace GagongSyndra
             { // Draw Spell Ranges
                 menuItem = Menu.Item("Draw" + spell.Slot).GetValue<Circle>();
                 if (menuItem.Active)
-                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
+                    Utility.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
 
             // Dashboard Indicators
@@ -1138,8 +1140,8 @@ namespace GagongSyndra
                         Player.Spellbook.GetSpell(SpellSlot.E).ManaCost > Player.Mana)
                         color = Color.DarkBlue;
                     var pos = Player.Position + Vector3.Normalize(tPos.UnitPosition - Player.Position) * 700;
-                    Render.Circle.DrawCircle(pos, Q.Width, color);
-                    Render.Circle.DrawCircle(tPos.UnitPosition, Q.Width / 2, color);
+                    Utility.DrawCircle(pos, Q.Width, color);
+                    Utility.DrawCircle(tPos.UnitPosition, Q.Width / 2, color);
                     var sp1 = pos + Vector3.Normalize(Player.Position - pos) * 100f;
                     var sp = Drawing.WorldToScreen(sp1);
                     var ep1 = pos + Vector3.Normalize(pos - Player.Position) * 592;
@@ -1155,7 +1157,7 @@ namespace GagongSyndra
             var pos2 = W.GetPrediction(wTarget, true);
             if (pos2.Hitchance >= HitChance.High)
                 color2 = Color.FromArgb(100, 50, 150, 255);
-            Render.Circle.DrawCircle(pos2.UnitPosition, W.Width, color2);
+            Utility.DrawCircle(pos2.UnitPosition, W.Width, color2);
         }
     }
 }

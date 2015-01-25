@@ -39,7 +39,7 @@ namespace VayneHunterRework
             VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("supression", "压制").SetValue(true));
             VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("polymorph", "变形").SetValue(true));
             VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("blind", "致盲").SetValue(false));
-            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("slow", "减速|").SetValue(false));
+            VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("slow", "减速").SetValue(false));
             VayneHunterRework.Menu.SubMenu("QSST").AddItem(new MenuItem("poison", "中毒").SetValue(false));
         }
 
@@ -78,11 +78,7 @@ namespace VayneHunterRework
         {
             var hasIT = Items.HasItem(3139) || Items.HasItem(3140) || Items.HasItem(3137);
             if (!VayneHunterRework.isMenuEnabled("UseQSS") || !hasIT) return;
-           List<CC> ccList = new List<CC>();
-            foreach (var spell in qssSpells)
-            {
-                if (Player.HasBuff(spell.SpellBuff)) ccList.Add(new CC(){buffName = spell.SpellBuff,willKillMe = willSpellKillMe(spell)});
-            }
+            var ccList = (from spell in qssSpells where Player.HasBuff(spell.SpellBuff) select new CC { buffName = spell.SpellBuff, willKillMe = willSpellKillMe(spell) }).ToList();
             foreach (var cc in ccList)
             {
                 if (VayneHunterRework.isMenuEnabled("en" + cc.buffName))

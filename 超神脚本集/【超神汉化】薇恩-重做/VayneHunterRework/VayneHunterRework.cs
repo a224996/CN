@@ -276,8 +276,9 @@ namespace VayneHunterRework
             AutoPot();
 
             //Cleanser
-            Cleanser.cleanserBySpell();
             Cleanser.cleanserByBuffType();
+            Cleanser.cleanserBySpell();
+            
 
             switch (COrbwalker.ActiveMode)
             {
