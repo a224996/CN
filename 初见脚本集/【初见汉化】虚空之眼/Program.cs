@@ -183,8 +183,8 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
             Game.OnGameUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
-            Game.OnGameSendPacket += Game_OnGameSendPacket;
             GameObject.OnCreate += Obj_SpellMissile_OnCreate;
+            Spellbook.OnUpdateChargedSpell += Spellbook_OnUpdateChargedSpell;
             Game.PrintChat(ChampionName + " Loaded!");
         }
 
@@ -198,21 +198,14 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
                 QMissile = missile;
             }
         }
-
-        private static void Game_OnGameSendPacket(GamePacketEventArgs args)
+        static void Spellbook_OnUpdateChargedSpell(Spellbook sender, SpellbookUpdateChargedSpellEventArgs args)
         {
-            /*if (args.GetPacketId() == LeagueSharp.Network.Packets.Packet.GetPacketId<PKT_ChargedSpell>())
+            if (sender.Owner.IsMe)
             {
-                var decodedPacket = new PKT_ChargedSpell();
-                decodedPacket.Decode(args.PacketData);
-
-                if (decodedPacket.NetworkId == Player.NetworkId)
-                {
-                    args.Process =
+                args.Process =
                         !(Config.Item("ComboActive").GetValue<KeyBind>().Active &&
                           Config.Item("UseRCombo").GetValue<bool>());
-                }
-            }*/
+            }
         }
 
         private static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
@@ -411,30 +404,15 @@ Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994
                         if (enemy.ServerPosition.To2D().Distance(Player.ServerPosition.To2D(), endPoint, true) < 400)
                             targets.Add(enemy);
                     }
-                    /*
                     if (targets.Count > 0)
                     {
                         var target = targets.OrderBy(t => t.Health / Q.GetDamage(t)).ToList()[0];
-                        new PKT_ChargedSpell
-                        {
-                            NetworkId = ObjectManager.Player.NetworkId,
-                            SpellSlot = (byte) SpellSlot.R,
-                            TargetPosition = target.ServerPosition,
-                            Unknown1 = true,
-                            Unknown2 = true,
-                        }.Encode().SendAsPacket();
+                        ObjectManager.Player.Spellbook.UpdateChargedSpell(SpellSlot.R, target.ServerPosition, false, false);
                     }
                     else
                     {
-                        new PKT_ChargedSpell
-                        {
-                            NetworkId = ObjectManager.Player.NetworkId,
-                            SpellSlot = (byte)SpellSlot.R,
-                            TargetPosition = Game.CursorPos,
-                            Unknown1 = true,
-                            Unknown2 = true,
-                        }.Encode().SendAsPacket();
-                    }*/
+                        ObjectManager.Player.Spellbook.UpdateChargedSpell(SpellSlot.R, Game.CursorPos, false, false);
+                    }
                 }
 
                 return;

@@ -76,10 +76,10 @@ namespace DZDraven_Reloaded
 
             var menuMisc = new Menu("杂项", "orb_Misc");
             menuMisc.AddItem(new MenuItem("orb_Misc_Holdzone", "防守").SetValue(new Slider(50, 0, 200)));
-            menuMisc.AddItem(new MenuItem("orb_Misc_Farmdelay", "补兵延迟").SetValue(new Slider(0, 200, 0)));
+            menuMisc.AddItem(new MenuItem("orb_Misc_Farmdelay", "补兵延迟").SetValue(new Slider(0, 0, 300)));
             if (MyHero.ChampionName == "Azir")
-            menuMisc.AddItem(new MenuItem("orb_Misc_ExtraWindUp", "额外").SetValue(new Slider(80, 200, 0)));
-            menuMisc.AddItem(new MenuItem("orb_Misc_AutoWindUp", "自动设置").SetValue(false));
+            menuMisc.AddItem(new MenuItem("azir_Misc_Farmdelay", "额外").SetValue(new Slider(0, 0, 300)));
+            menuMisc.AddItem(new MenuItem("orb_Misc_ExtraWindUp", "自动设置").SetValue(new Slider(80, 200, 0)));
             menuMisc.AddItem(new MenuItem("orb_Misc_AutoWindUp", "自动终结").SetValue(new KeyBind("O".ToCharArray()[0], KeyBindType.Press)));
             menuMisc.AddItem(new MenuItem("orb_Misc_Priority_Unit", "优先").SetValue(new StringList(new[] { "Minion", "Hero" })));
             menuMisc.AddItem(new MenuItem("orb_Misc_Humanizer", "延迟").SetValue(new Slider(80, 50, 500)));
