@@ -124,7 +124,7 @@ namespace LeagueSharp.Common
                     SpellName = "ShenStandUnited",
                     DangerLevel = InterruptableDangerLevel.Low,
                     Slot = SpellSlot.R,
-                    BuffName = "NobodyPlaysShen:^)"
+                    BuffName = "shenstandunitedlock"
                 });
 
             #endregion
@@ -139,6 +139,7 @@ namespace LeagueSharp.Common
                     DangerLevel = InterruptableDangerLevel.High,
                     Slot = SpellSlot.R,
                     BuffName = "alzaharnethergraspsound",
+                    ExtraDuration = 2000
                 });
 
             #endregion

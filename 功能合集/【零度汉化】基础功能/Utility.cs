@@ -111,7 +111,8 @@ namespace LeagueSharp.Common
 
         public static bool IsReady(this SpellSlot slot, int t = 0)
         {
-            return IsReady(ObjectManager.Player.Spellbook.GetSpell(slot), t);
+            var s = ObjectManager.Player.Spellbook.GetSpell(slot);
+            return s != null && IsReady(s, t);
         }
 
         public static bool IsValid<T>(this GameObject obj) where T : GameObject
@@ -201,6 +202,11 @@ namespace LeagueSharp.Common
         public static bool IsWall(this Vector2 position)
         {
             return position.To3D().IsWall();
+        }
+
+        public static bool IsCasted(this Spell.CastStates state)
+        {
+            return state == Spell.CastStates.SuccessfullyCasted;
         }
 
         public static int GetRecallTime(Obj_AI_Hero obj)
@@ -313,7 +319,7 @@ namespace LeagueSharp.Common
         }
 
         /// <summary>
-        /// Returns true if the buff is active and didn't expire.
+        ///     Returns true if the buff is active and didn't expire.
         /// </summary>
         public static bool IsValidBuff(this BuffInstance buff)
         {
@@ -331,7 +337,10 @@ namespace LeagueSharp.Common
             return
                 unit.Buffs.Any(
                     buff =>
-                        ((dontUseDisplayName && String.Equals(buff.Name, buffName, StringComparison.CurrentCultureIgnoreCase)) || (!dontUseDisplayName && String.Equals(buff.DisplayName, buffName, StringComparison.CurrentCultureIgnoreCase))) &&
+                        ((dontUseDisplayName &&
+                          String.Equals(buff.Name, buffName, StringComparison.CurrentCultureIgnoreCase)) ||
+                         (!dontUseDisplayName &&
+                          String.Equals(buff.DisplayName, buffName, StringComparison.CurrentCultureIgnoreCase))) &&
                         buff.IsValidBuff());
         }
 
