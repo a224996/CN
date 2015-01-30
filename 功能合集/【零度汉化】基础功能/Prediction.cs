@@ -543,8 +543,8 @@ namespace LeagueSharp.Common
             var result = new List<PossibleTarget>();
             var originalUnit = input.Unit;
             foreach (var enemy in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(
+                HeroManager.Enemies
+                    .FindAll(
                         h =>
                             h.NetworkId != originalUnit.NetworkId &&
                             h.IsValidTarget((input.Range + 200 + input.RealRadius), true, input.RangeCheckFrom)))
@@ -866,8 +866,8 @@ namespace LeagueSharp.Common
                         case CollisionableObjects.Heroes:
                             foreach (
                                 var hero in
-                                    ObjectManager.Get<Obj_AI_Hero>()
-                                        .Where(
+                                    HeroManager.Enemies
+                                        .FindAll(
                                             hero =>
                                                 hero.IsValidTarget(
                                                     Math.Min(input.Range + input.Radius + 100, 2000), true,

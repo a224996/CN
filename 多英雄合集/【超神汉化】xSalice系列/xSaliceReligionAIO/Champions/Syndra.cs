@@ -68,7 +68,7 @@ namespace xSaliceReligionAIO.Champions
                 {
                     rMenu.AddItem(new MenuItem("R_Overkill_Check", "击杀检查",true).SetValue(true));
 
-                    rMenu.AddSubMenu(new Menu("不R", "Dont_R"));
+                    rMenu.AddSubMenu(new Menu("不使用R", "Dont_R"));
                     foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team)
                     )
                         rMenu.SubMenu("Dont_R")
@@ -292,7 +292,9 @@ namespace xSaliceReligionAIO.Champions
                 return;
 
             if (Q.IsReady())
+            {
                 Q.Cast(qTarget, packets());
+            }
         }
 
         private void Cast_W(bool mode)
@@ -395,7 +397,7 @@ namespace xSaliceReligionAIO.Champions
 
                 var projection = targetPos.UnitPosition.To2D().ProjectOn(startPos.To2D(), endPos.To2D());
 
-                if (!projection.IsOnSegment || targetPos.Hitchance < HitChance.Medium || !(projection.LinePoint.Distance(targetPos.UnitPosition.To2D()) < _qe.Width + target.BoundingRadius))
+                if (!projection.IsOnSegment || targetPos.Hitchance < HitChance.Medium || !(projection.LinePoint.Distance(targetPos.UnitPosition.To2D()) < _qe.Width))
                     return;
 
                 E.Cast(startPos, packets());
@@ -448,7 +450,7 @@ namespace xSaliceReligionAIO.Champions
             var qePred = _qe.GetPrediction(qeTarget);
             var projection = qePred.UnitPosition.To2D().ProjectOn(startPos.To2D(), endPos.To2D());
 
-            if (!projection.IsOnSegment || !(projection.LinePoint.Distance(qePred.UnitPosition.To2D()) < _qe.Width + qeTarget.BoundingRadius))
+            if (!projection.IsOnSegment || !(projection.LinePoint.Distance(qePred.UnitPosition.To2D()) < _qe.Width))
                 return;
 
             if (qePred.Hitchance >= HitChance.Medium || !usePred)
@@ -561,7 +563,7 @@ namespace xSaliceReligionAIO.Champions
                 var qePred = _qe.GetPrediction(qeTarget);
                 var projection = qePred.UnitPosition.To2D().ProjectOn(startPos.To2D(), endPos.To2D());
 
-                if (!projection.IsOnSegment || !(projection.LinePoint.Distance(qePred.UnitPosition.To2D()) < _qe.Width + qeTarget.BoundingRadius))
+                if (!projection.IsOnSegment || !(projection.LinePoint.Distance(qePred.UnitPosition.To2D()) < _qe.Width))
                     return;
 
                 if (qePred.Hitchance >= HitChance.Medium)

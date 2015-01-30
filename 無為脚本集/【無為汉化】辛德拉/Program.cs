@@ -30,8 +30,6 @@ namespace Syndra
 
         public static SpellSlot IgniteSlot;
 
-        public static Items.Item DFG;
-
         //Menu
         public static Menu Config;
         private static int QEComboT;
@@ -59,7 +57,7 @@ namespace Syndra
 
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
 
-            DFG = Utility.Map.GetMap().Type == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
+//            DFG = Utility.Map.GetMap().Type == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
 
             Q.SetSkillshot(0.6f, 125f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(0.25f, 140f, 1600f, false, SkillshotType.SkillshotCircle);
@@ -193,9 +191,24 @@ namespace Syndra
             Game.OnGameUpdate += Game_OnGameUpdate;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Drawing.OnDraw += Drawing_OnDraw;
-            Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
+            Interrupter2.OnInterruptableTarget += Interrupter2_OnInterruptableTarget;
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
             Game.PrintChat(ChampionName + " Loaded!");
+        }
+
+        static void Interrupter2_OnInterruptableTarget(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
+        {
+            if (!Config.Item("InterruptSpells").GetValue<bool>()) return;
+
+            if (Player.Distance(sender) < E.Range && E.IsReady())
+            {
+                Q.Cast(sender.ServerPosition);
+                E.Cast(sender.ServerPosition);
+            }
+            else if (Player.Distance(sender) < EQ.Range && E.IsReady() && Q.IsReady())
+            {
+                UseQE(sender);
+            }
         }
 
         static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
@@ -204,20 +217,7 @@ namespace Syndra
                 args.Process = !(Q.IsReady() || W.IsReady());
         }
 
-        private static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
-        {
-            if (!Config.Item("InterruptSpells").GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < E.Range && E.IsReady())
-            {
-                Q.Cast(unit.ServerPosition);
-                E.Cast(unit.ServerPosition);
-            }
-            else if (Player.Distance(unit) < EQ.Range && E.IsReady() && Q.IsReady())
-            {
-                UseQE(unit);
-            }
-        }
 
         private static void Combo()
         {
@@ -285,9 +285,6 @@ namespace Syndra
             if (Q.IsReady(420))
                 damage += Player.GetSpellDamage(enemy, SpellSlot.Q);
 
-            if (DFG.IsReady())
-                damage += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg) / 1.2;
-
             if (W.IsReady())
                 damage += Player.GetSpellDamage(enemy, SpellSlot.W);
 
@@ -300,7 +297,7 @@ namespace Syndra
             if (R.IsReady())
                 damage += Math.Min(7, Player.Spellbook.GetSpell(SpellSlot.R).Ammo) * Player.GetSpellDamage(enemy, SpellSlot.R, 1);
 
-            return (float)damage * (DFG.IsReady() ? 1.2f : 1);
+            return (float)damage;
         }
 
         private static void UseSpells(bool useQ, bool useW, bool useE, bool useR, bool useQE, bool useIgnite, bool isHarass)
@@ -350,10 +347,8 @@ namespace Syndra
                 useR = (Config.Item("DontUlt" + rTarget.BaseSkinName) != null &&
                         Config.Item("DontUlt" + rTarget.BaseSkinName).GetValue<bool>() == false) && useR;
 
-            //DFG (and ult if ready)
-            if (rTarget != null && useR && comboDamage > rTarget.Health && DFG.IsReady())
+            if (rTarget != null && useR && comboDamage > rTarget.Health)
             {
-                DFG.Cast(rTarget);
                 if (R.IsReady())
                 {
                     R.Cast(rTarget);
@@ -361,7 +356,7 @@ namespace Syndra
             }
 
             //R
-            if (rTarget != null && useR && R.IsReady() && !Q.IsReady() && !DFG.IsReady())
+            if (rTarget != null && useR && R.IsReady() && !Q.IsReady())
             {
                 if (comboDamage > rTarget.Health)
                 {

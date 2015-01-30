@@ -149,6 +149,7 @@ namespace Marksman
         public override bool ComboMenu(Menu config)
         {
             config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
+            config.AddItem(new MenuItem("UseQMC", "使用 Q (小兵与英雄)").SetValue(true));
             config.AddItem(new MenuItem("UseWC" + Id, "使用 W").SetValue(true));
             config.AddItem(new MenuItem("UseEC" + Id, "使用 E").SetValue(true));
 

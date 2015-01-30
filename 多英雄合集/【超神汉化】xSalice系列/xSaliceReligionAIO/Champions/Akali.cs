@@ -23,7 +23,7 @@ namespace xSaliceReligionAIO.Champions
 
             E = new Spell(SpellSlot.E, 325);
 
-            R = new Spell(SpellSlot.R, 800);
+            R = new Spell(SpellSlot.R, 700);
         }
 
         private void LoadMenu()
@@ -68,7 +68,6 @@ namespace xSaliceReligionAIO.Champions
 
             var combo = new Menu("连招", "Combo");
             {
-                combo.AddItem(new MenuItem("selected", "锁定目标",true).SetValue(true));
                 combo.AddItem(new MenuItem("Combo_mode", "连招模式",true).SetValue(new StringList(new[] { "正常", "Q-R-AA-Q-E", "Q-Q-R-E-AA" })));
                 combo.AddItem(new MenuItem("Combo_Switch", "切换热键",true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
                 combo.AddItem(new MenuItem("UseQCombo", "使用Q",true).SetValue(true));
@@ -211,16 +210,6 @@ namespace xSaliceReligionAIO.Champions
                     if (useW)
                         Cast_W();
                     break;
-                case 2:
-                    if (useQ)
-                        Cast_Q(true, 2);
-                    if (useR)
-                        Cast_R(2);
-                    if (useE)
-                        Cast_E(true, 2);
-                    if (useW)
-                        Cast_W();
-                    break;
             }
 
             if (source == "Combo")
@@ -238,16 +227,9 @@ namespace xSaliceReligionAIO.Champions
                     ActiveItems.UseTargetted = true;
                 }
             }
-
-            if (source == "Harass")
-            {
-                if (menu.Item("UseQFarmH", true).GetValue<bool>() && Q.IsReady())
-                    Cast_Q(false);
-            }
-
         }
 
-        public void Farm()
+        private void Farm()
         {
             if (menu.Item("UseQFarm", true).GetValue<bool>())
                 Cast_Q(false);
@@ -268,11 +250,6 @@ namespace xSaliceReligionAIO.Champions
             {
                 var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
-                //focus target
-                float range = Q.Range;
-                if (GetTargetFocus(range) != null)
-                    target = GetTargetFocus(range);
-
                 if (!target.IsValidTarget(Q.Range))
                     return;
 
@@ -288,17 +265,13 @@ namespace xSaliceReligionAIO.Champions
                     if (!HasBuff(target, "AkaliMota"))
                         Q.Cast(target);
                 }
-                else if (mode == 2)
-                {
-                    Q.Cast(target);
-                    if (HasBuff(target, "AkaliMota"))
-                        Q.LastCastAttemptT = Environment.TickCount + 400;
-                }
             }
             else
             {
-                foreach (var minion in MinionManager.GetMinions(Player.Position, Q.Range).Where(minion => HasBuff(minion, "AkaliMota") && xSLxOrbwalker.InAutoAttackRange(minion)))
-                    xSLxOrbwalker.ForcedTarget = minion;
+                if (MinionManager.GetMinions(Player.Position, Q.Range).Any(minion => HasBuff(minion, "AkaliMota") && xSLxOrbwalker.InAutoAttackRange(minion)))
+                {
+                    return;
+                }
 
                 foreach (var minion in MinionManager.GetMinions(Player.Position, Q.Range).Where(minion => HealthPrediction.GetHealthPrediction(minion,
                         (int)(E.Delay + (minion.Distance(Player) / E.Speed)) * 1000) <
@@ -334,10 +307,6 @@ namespace xSaliceReligionAIO.Champions
             {
                 var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
-                float range = E.Range;
-                if (GetTargetFocus(range) != null)
-                    target = GetTargetFocus(range);
-
                 if (target == null || !target.IsValidTarget(E.Range))
                     return;
 
@@ -346,32 +315,20 @@ namespace xSaliceReligionAIO.Champions
 
                 if (mode == 0)
                 {
-                    if (HasBuff(target, "AkaliMota") && !Q.IsReady())
+                    if (Player.Mana >= menu.Item("E_Energy", true).GetValue<Slider>().Value)
                         E.Cast();
                     else if (E.IsKillable(target) && menu.Item("E_On_Killable", true).GetValue<bool>())
-                        E.Cast();
-                    else if (!menu.Item("E_Wait_Q", true).GetValue<bool>())
                         E.Cast();
                 }
                 else if (mode == 1)
                 {
-                    if (HasBuff(target, "AkaliMota") && xSLxOrbwalker.InAutoAttackRange(target))
-                        xSLxOrbwalker.ForcedTarget = target;
-                    else if (HasBuff(target, "AkaliMota") && !Q.IsReady())
-                        E.Cast();
-                    else if (E.IsKillable(target) && menu.Item("E_On_Killable", true).GetValue<bool>())
-                        E.Cast();
-                    else if (!menu.Item("E_Wait_Q", true).GetValue<bool>())
-                        E.Cast();
-                }
-                else if (mode == 2)
-                {
                     if (HasBuff(target, "AkaliMota"))
-                    {
+                        return;
+                    if (HasBuff(target, "AkaliMota") && !Q.IsReady())
+                        return;
+                    if (Player.Mana >= menu.Item("E_Energy", true).GetValue<Slider>().Value)
                         E.Cast();
-                        menu.Item("Combo_mode",true).SetValue(new StringList(new[] { "Normal", "Q-R-AA-Q-E", "Q-Q-R-E-AA" }));
-                    }
-                    else if (E.IsKillable(target) && menu.Item("E_On_Killable", true).GetValue<bool>())
+                    if (E.IsKillable(target) && menu.Item("E_On_Killable", true).GetValue<bool>())
                         E.Cast();
                 }
             }
@@ -405,10 +362,6 @@ namespace xSaliceReligionAIO.Champions
         {
             var target = TargetSelector.GetTarget(R.Range + Player.BoundingRadius, TargetSelector.DamageType.Magical);
 
-            float range = R.Range + Player.BoundingRadius;
-            if (GetTargetFocus(range) != null)
-                target = GetTargetFocus(range);
-
             if (target == null)
                 return;
 
@@ -424,6 +377,9 @@ namespace xSaliceReligionAIO.Champions
 
                 if (countEnemiesNearPosition(target.ServerPosition, 500) >=
                     menu.Item("Dont_R_If", true).GetValue<Slider>().Value)
+                    return;
+
+                if(Player.Distance(target) < menu.Item("R_Min", true).GetValue<Slider>().Value)
                     return;
 
                 if (mode == 0)
@@ -445,14 +401,7 @@ namespace xSaliceReligionAIO.Champions
                     if (HasBuff(target, "AkaliMota") && Q.IsReady())
                     {
                         R.Cast(target, packets());
-                        menu.Item("Combo_mode",true).SetValue(new StringList(new[] { "Normal", "Q-R-AA-Q-E", "Q-Q-R-E-AA" }));
-                    }
-                }
-                else if (mode == 2)
-                {
-                    if (HasBuff(target, "AkaliMota") && Environment.TickCount - Q.LastCastAttemptT < Game.Ping)
-                    {
-                        R.Cast(target, packets());
+                        menu.Item("Combo_mode", true).SetValue(new StringList(new[] { "Normal", "Q-Delay-R-AA-Q-AA" }));
                     }
                 }
             }
@@ -469,17 +418,12 @@ namespace xSaliceReligionAIO.Champions
             {
                 if (mode == 0)
                 {
-                    menu.Item("Combo_mode",true).SetValue(new StringList(new[] { "Normal", "Q-R-AA-Q-E", "Q-Q-R-E-AA" }, 1));
-                    _lasttick = Environment.TickCount + 300;
-                }
-                else if (mode == 1)
-                {
-                    menu.Item("Combo_mode",true).SetValue(new StringList(new[] { "Normal", "Q-R-AA-Q-E", "Q-Q-R-E-AA" }, 2));
+                    menu.Item("Combo_mode", true).SetValue(new StringList(new[] { "Normal", "Q-Delay-R-AA-Q-AA" }, 1));
                     _lasttick = Environment.TickCount + 300;
                 }
                 else
                 {
-                    menu.Item("Combo_mode",true).SetValue(new StringList(new[] { "Normal", "Q-R-AA-Q-E", "Q-Q-R-E-AA" }));
+                    menu.Item("Combo_mode", true).SetValue(new StringList(new[] { "Normal", "Q-Delay-R-AA-Q-AA" }));
                     _lasttick = Environment.TickCount + 300;
                 }
             }
@@ -540,9 +484,7 @@ namespace xSaliceReligionAIO.Champions
                 if (mode == 0)
                     Drawing.DrawText(wts[0] - 20, wts[1], Color.White, "Normal");
                 else if (mode == 1)
-                    Drawing.DrawText(wts[0] - 20, wts[1], Color.White, "Q-R-AA-Q-E");
-                else if (mode == 2)
-                    Drawing.DrawText(wts[0] - 20, wts[1], Color.White, "Q-Q-R-E-AA");
+                    Drawing.DrawText(wts[0] - 20, wts[1], Color.White, "Q-Delay-R-AA-Q-AA");
             }
         }
     }

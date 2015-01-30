@@ -90,13 +90,6 @@ namespace LeagueSharp.Common
             "Kalista"
         };
 
-        // Champs and their spells that won't get cancelled when moving
-        private static readonly Dictionary<string, string[]> NoInterruptSpells = new Dictionary<string, string[]>()
-        {
-            { "Varus", new[] { "VarusQ" } },
-            { "Lucian", new[] { "LucianR" } }
-        };
-
         public static int LastAATick;
         public static bool Attack = true;
         public static bool DisableNextAttack;
@@ -437,7 +430,9 @@ namespace LeagueSharp.Common
                     return;
                 }
 
-                if (unit.IsMe && Spell.Target is Obj_AI_Base)
+                if (unit.IsMe && (Spell.Target is Obj_AI_Base || 
+                    Spell.Target is Obj_BarracksDampener ||
+                    Spell.Target is Obj_HQ))
                 {
                     LastAATick = Environment.TickCount - Game.Ping / 2;
                     var target = (Obj_AI_Base) Spell.Target;
@@ -772,11 +767,10 @@ namespace LeagueSharp.Common
                         return;
                     }
 
-                    //Prevent canceling important channeled spells
-                    if (Player.IsChannelingImportantSpell())
+                    //Prevent canceling important spells
+                    if (Player.IsCastingInterruptableSpell(true))
                     {
-                        if (!NoInterruptSpells.ContainsKey(Player.ChampionName) || !NoInterruptSpells[Player.ChampionName].Contains(Player.LastCastedSpellName()))
-                            return;
+                        return;
                     }
 
                     var target = GetTarget();
@@ -803,7 +797,7 @@ namespace LeagueSharp.Common
                 if (_config.Item("AACircle2").GetValue<Circle>().Active)
                 {
                     foreach (var target in
-                        ObjectManager.Get<Obj_AI_Hero>().Where(target => target.IsValidTarget(1175)))
+                        HeroManager.Enemies.FindAll(target => target.IsValidTarget(1175)))
                     {
                         Render.Circle.DrawCircle(
                             target.Position, GetRealAutoAttackRange(target) + 65,

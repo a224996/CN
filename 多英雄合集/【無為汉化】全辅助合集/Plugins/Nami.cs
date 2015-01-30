@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/Nami.cs
 // Created:  01/10/2014
-// Date:     20/01/2015/11:20
+// Date:     24/01/2015/13:14
 // Author:   h3h3
 
 #endregion
@@ -145,7 +145,7 @@ namespace Support.Plugins
                     ObjectManager.Get<Obj_AI_Hero>()
                         .SingleOrDefault(hero => hero.IsValidAlly(W.Range) && hero.Distance(Target) < W.Range);
 
-                if (bounceTarget != null && bounceTarget.MaxHealth - bounceTarget.Health > WHeal) // 使用 bounce & heal
+                if (bounceTarget != null && bounceTarget.MaxHealth - bounceTarget.Health > WHeal) // use bounce & heal
                 {
                     W.CastOnUnit(bounceTarget);
                 }

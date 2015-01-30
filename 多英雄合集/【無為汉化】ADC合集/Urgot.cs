@@ -281,6 +281,7 @@ namespace Marksman
                 new MenuItem("DrawR" + Id, "R 范围").SetValue(new Circle(false, Color.LightGray)));
             config.AddItem(
                 new MenuItem("DrawQEx" + Id, "Corrosive Charge").SetValue(new Circle(true, Color.LightGray)));
+
             return true;
         }
 

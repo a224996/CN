@@ -78,6 +78,7 @@ namespace xSaliceReligionAIO.Champions
                     rMenu.AddSubMenu(new Menu("不R", "DontUlt"));
                     foreach (Obj_AI_Hero enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team))
                         rMenu.SubMenu("DontUlt").AddItem(new MenuItem("DontUlt" + enemy.BaseSkinName, enemy.BaseSkinName, true).SetValue(false));
+                    rMenu.AddItem(new MenuItem("R_Max_Dist", "R 最大距离", true).SetValue(new Slider(1000, 200, 1300)));
                     spell.AddSubMenu(rMenu);
                 }
                 menu.AddSubMenu(spell);
@@ -86,7 +87,6 @@ namespace xSaliceReligionAIO.Champions
             //Combo menu:
             var combo = new Menu("连招", "Combo");
             {
-                combo.AddItem(new MenuItem("selected", "锁定目标",true).SetValue(true));
                 combo.AddItem(new MenuItem("UseQCombo", "使用Q",true).SetValue(true));
                 combo.AddItem(new MenuItem("qHit", "Q击中几率",true).SetValue(new Slider(3, 1, 4)));
                 combo.AddItem(new MenuItem("UseWCombo", "使用W",true).SetValue(true));
@@ -258,12 +258,8 @@ namespace xSaliceReligionAIO.Champions
         private void UseSpells(bool useQ, bool useW, bool useE, bool useR, string source)
         {
             var range = R.IsReady() ? R.Range : Q.Range;
-            var focusSelected = menu.Item("selected", true).GetValue<bool>();
 
             Obj_AI_Hero target = TargetSelector.GetTarget(range, TargetSelector.DamageType.Magical);
-            if (TargetSelector.GetSelectedTarget() != null)
-                if (focusSelected && TargetSelector.GetSelectedTarget().Distance(Player.ServerPosition) < range)
-                    target = TargetSelector.GetSelectedTarget();
 
             Obj_AI_Hero qDummyTarget = TargetSelector.GetTarget(_qDummy.Range, TargetSelector.DamageType.Magical);
 
@@ -285,6 +281,7 @@ namespace xSaliceReligionAIO.Champions
                 E.GetPrediction(target).Hitchance >= HitChance.High)
             {
                 E.Cast(target, packets());
+                return;
             }
 
             //items
@@ -303,19 +300,19 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
+            if (useQ && Q.IsReady())
+            {
+                CastQ(target, qDummyTarget, source);
+                return;
+            }
+
             if (useR && R.IsReady() && Player.Distance(target) < R.Range)
             {
                 if (GetUltDmg(target) >= target.Health)
                 {
                     R.Cast(target.ServerPosition);
-                    return;
                 }
 
-            }
-
-            if (useQ && Q.IsReady())
-            {
-                CastQ(target, qDummyTarget, source);
             }
         }
 
@@ -410,33 +407,33 @@ namespace xSaliceReligionAIO.Champions
 
         private void SplitMissle()
         {
-            //Game.PrintChat("bleh");
-
-            var range = R.IsReady() ? R.Range : Q.Range;
-            var focusSelected = menu.Item("selected", true).GetValue<bool>();
-
-            Obj_AI_Hero target = TargetSelector.GetTarget(range, TargetSelector.DamageType.Magical);
-            if (TargetSelector.GetSelectedTarget() != null)
-                if (focusSelected && TargetSelector.GetSelectedTarget().Distance(Player.ServerPosition) < range)
-                    target = TargetSelector.GetSelectedTarget();
-
-            _qSplit.From = _qMissle.Position;
-            PredictionOutput pred = _qSplit.GetPrediction(target);
-
-            Vector2 perpendicular = (_qMissle.EndPosition - _qMissle.StartPosition).To2D().Normalized().Perpendicular();
-
-            Vector2 lineSegment1End = _qMissle.Position.To2D() + perpendicular * _qSplit.Range;
-            Vector2 lineSegment2End = _qMissle.Position.To2D() - perpendicular * _qSplit.Range;
-
-            float d1 = pred.UnitPosition.To2D().Distance(_qMissle.Position.To2D(), lineSegment1End, true);
-            float d2 = pred.UnitPosition.To2D().Distance(_qMissle.Position.To2D(), lineSegment2End, true);
-
-            //cast split
-            if (pred.CollisionObjects.Count == 0 && (d1 < _qSplit.Width || d2 < _qSplit.Width))
+            foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1500)))
             {
-                Q.Cast();
-                _qMissle = null;
+                if (_qMissle != null)
+                {
+                    _qSplit.UpdateSourcePosition(_qMissle.Position, _qMissle.Position);
+                    PredictionOutput pred = _qSplit.GetPrediction(target);
+
+                    Vector2 perpendicular = (_qMissle.EndPosition - _qMissle.StartPosition).To2D().Normalized().Perpendicular();
+
+                    Vector2 lineSegment1End = _qMissle.Position.To2D() + perpendicular * _qSplit.Range;
+                    Vector2 lineSegment2End = _qMissle.Position.To2D() - perpendicular * _qSplit.Range;
+
+                    float d1 = pred.UnitPosition.To2D().Distance(_qMissle.Position.To2D(), lineSegment1End, true);
+                    //Render.Circle.DrawCircle(lineSegment1End.To3D(), 50, Color.Blue);
+                    float d2 = pred.UnitPosition.To2D().Distance(_qMissle.Position.To2D(), lineSegment2End, true);
+                    //Render.Circle.DrawCircle(lineSegment2End.To3D(), 50, Color.Red);
+
+                    //cast split
+                    if ((d1 < _qSplit.Width || d2 < _qSplit.Width) && pred.Hitchance >= HitChance.Medium)
+                    {
+                        Q.Cast();
+                        _qMissle = null;
+                        //Game.PrintChat("splitted");
+                    }
+                }
             }
+
         }
 
         private void SmartKs()
@@ -495,26 +492,23 @@ namespace xSaliceReligionAIO.Champions
 
         protected override void Game_OnGameUpdate(EventArgs args)
         {
+            //Console.Clear();
             //check if player is dead
             if (Player.IsDead) return;
 
             if (Player.IsChannelingImportantSpell())
             {
                 var range = R.IsReady() ? R.Range : Q.Range;
-                var focusSelected = menu.Item("selected", true).GetValue<bool>();
-
                 Obj_AI_Hero target = TargetSelector.GetTarget(range, TargetSelector.DamageType.Magical);
-                if (TargetSelector.GetSelectedTarget() != null)
-                    if (focusSelected && TargetSelector.GetSelectedTarget().Distance(Player.ServerPosition) < range)
-                        target = TargetSelector.GetSelectedTarget();
 
-                int aimMode = menu.Item("rAimer", true).GetValue<StringList>().SelectedIndex;
+                if (target != null)
+                {
+                    int aimMode = menu.Item("rAimer", true).GetValue<StringList>().SelectedIndex;
 
-                if (target != null && aimMode == 0)
-                    Player.Spellbook.UpdateChargedSpell(SpellSlot.R, target.ServerPosition, false, false);
-                else
-                    Player.Spellbook.UpdateChargedSpell(SpellSlot.R, Game.CursorPos, false, false);
-                
+                    Player.Spellbook.UpdateChargedSpell(SpellSlot.R,
+                        aimMode == 0 ? target.ServerPosition : Game.CursorPos, false, false);
+                }
+                Player.Spellbook.UpdateChargedSpell(SpellSlot.R, Game.CursorPos, false, false);
                 return;
             }
 
@@ -541,6 +535,8 @@ namespace xSaliceReligionAIO.Champions
 
             if (menu.Item("R_Mouse", true).GetValue<KeyBind>().Active)
                 R.Cast(Game.CursorPos);
+
+            R.Range = menu.Item("R_Max_Dist", true).GetValue<Slider>().Value;
         }
 
         protected override void Drawing_OnDraw(EventArgs args)

@@ -96,8 +96,8 @@ namespace LeagueSharp.Common
                 return;
             }
             _selectedTargetObjAiHero =
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(hero => hero.IsValidTarget() && hero.Distance(Game.CursorPos, true) < 40000) // 200 * 200
+                HeroManager.Enemies
+                    .FindAll(hero => hero.IsValidTarget() && hero.Distance(Game.CursorPos, true) < 40000) // 200 * 200
                     .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
         }
 
@@ -215,8 +215,7 @@ namespace LeagueSharp.Common
             var autoPriorityItem = new MenuItem("AutoPriority", "自动排列优先目标").SetShared().SetValue(false);
             autoPriorityItem.ValueChanged += autoPriorityItem_ValueChanged;
 
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.Team != ObjectManager.Player.Team)
-                )
+            foreach (var enemy in HeroManager.Enemies)
             {
                 config.AddItem(
                     new MenuItem("TargetSelector" + enemy.ChampionName + "Priority", enemy.ChampionName).SetShared()
@@ -243,8 +242,7 @@ namespace LeagueSharp.Common
             {
                 return;
             }
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.Team != ObjectManager.Player.Team)
-                )
+            foreach (var enemy in HeroManager.Enemies)
             {
                 _configMenu.Item("TargetSelector" + enemy.ChampionName + "Priority")
                     .SetValue(new Slider(GetPriorityFromDb(enemy.ChampionName), 5, 1));
@@ -366,8 +364,8 @@ namespace LeagueSharp.Common
                 }
 
                 var targets =
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(
+                    HeroManager.Enemies
+                        .FindAll(
                             hero =>
                                 ignoredChamps.All(ignored => ignored.NetworkId != hero.NetworkId) &&
                                 IsValidTarget(hero, range, type, ignoreShieldSpells, rangeCheckFrom));
@@ -391,7 +389,7 @@ namespace LeagueSharp.Common
                                         hero.ServerPosition, true));
 
                     case TargetingMode.NearMouse:
-                        return targets.FirstOrDefault(hero => hero.Distance(Game.CursorPos, true) < 22500); // 150 * 150
+                        return targets.Find(hero => hero.Distance(Game.CursorPos, true) < 22500); // 150 * 150
 
                     case TargetingMode.AutoPriority:
                         return

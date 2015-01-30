@@ -168,6 +168,7 @@ namespace Marksman
             config.AddItem(new MenuItem("UseEInterrupt" + Id, "使用E (锁定)").SetValue(true));
             config.AddItem(
                 new MenuItem("PushDistance" + Id, "E距离").SetValue(new Slider(425, 475, 300)));
+            config.AddItem(new MenuItem("CompleteSilverBuff" + Id, "Complete Silver Buff With Q").SetValue(true));
             return true;
         }
 

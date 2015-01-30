@@ -1,36 +1,51 @@
 #region
-
 using System;
-using System.Configuration;
-using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-
+using SharpDX.Direct3D9;
+using Font = SharpDX.Direct3D9.Font;
 #endregion
 
 namespace Marksman
 {
     internal class Ezreal : Champion
     {
-        public Spell Q;
-        public Spell R;
-        public Spell W;
+        public static Spell Q;
+        public static Spell E;
+        public static Spell W;
+        public static Spell R;
+        public static Font vText;
 
         public static Items.Item Dfg = new Items.Item(3128, 750);
+
         public Ezreal()
         {
-            Utils.PrintMessage("Ezreal loaded.");
-
-            Q = new Spell(SpellSlot.Q, 1200);
+            Q = new Spell(SpellSlot.Q, 1190);
             Q.SetSkillshot(0.25f, 60f, 2000f, true, SkillshotType.SkillshotLine);
 
-            W = new Spell(SpellSlot.W, 850);
+            W = new Spell(SpellSlot.W, 800);
             W.SetSkillshot(0.25f, 80f, 1600f, false, SkillshotType.SkillshotLine);
 
+            E = new Spell(SpellSlot.E);
+            
             R = new Spell(SpellSlot.R, 2500);
             R.SetSkillshot(1f, 160f, 2000f, false, SkillshotType.SkillshotLine);
 
+            Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
+            Utility.HpBarDamageIndicator.Enabled = true;
+
+            vText = new Font(
+                Drawing.Direct3DDevice,
+                new FontDescription
+                {
+                    FaceName = "Courier new",
+                    Height = 15,
+                    OutputPrecision = FontPrecision.Default,
+                    Quality = FontQuality.Default,
+                });
+
+            Utils.PrintMessage("Ezreal loaded.");
         }
 
         public override void Orbwalking_AfterAttack(AttackableUnit unit, AttackableUnit target)
@@ -61,27 +76,57 @@ namespace Marksman
                 if (menuItem.Active)
                     Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
             }
+
+            var drawRMin = Program.Config.SubMenu("Combo").Item("DrawRMin").GetValue<Circle>();
+            if (drawRMin.Active)
+            {
+                var minRRange = Program.Config.SubMenu("Combo").Item("UseRCMinRange").GetValue<Slider>().Value;
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, minRRange, drawRMin.Color, 2);
+            }
+
+            var drawRMax = Program.Config.SubMenu("Combo").Item("DrawRMax").GetValue<Circle>();
+            if (drawRMax.Active)
+            {
+                var maxRRange = Program.Config.SubMenu("Combo").Item("UseRCMaxRange").GetValue<Slider>().Value;
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, maxRRange, drawRMax.Color, 2);
+            }
+
+            if (Program.Config.Item("DrawHarassToggleStatus").GetValue<bool>())
+            {
+                DrawHarassToggleStatus();
+            }
+
+            if (Program.Config.Item("ShowKillableStatus").GetValue<bool>())
+            {
+                ShowKillableStatus();
+            }
         }
 
         public override void Game_OnGameUpdate(EventArgs args)
         {
             Obj_AI_Hero t;
 
-            if (Q.IsReady() &&  GetValue<KeyBind>("UseQTH").Active && ToggleActive)
+            if (Q.IsReady() && Program.Config.Item("UseQTH").GetValue<KeyBind>().Active && ToggleActive)
             {
-                if(ObjectManager.Player.HasBuff("Recall"))
+                if (ObjectManager.Player.HasBuff("Recall"))
                     return;
+
                 t = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                if (t != null)
+
+                var useQt = (Program.Config.Item("DontQToggleHarass" + t.ChampionName) != null &&
+                             Program.Config.Item("DontQToggleHarass" + t.ChampionName).GetValue<bool>() == false);
+                if (useQt)
                     Q.Cast(t);
             }
 
-            if (W.IsReady() &&  GetValue<KeyBind>("UseWTH").Active && ToggleActive)
+            if (W.IsReady() && Program.Config.Item("UseWTH").GetValue<KeyBind>().Active && ToggleActive)
             {
-                if(ObjectManager.Player.HasBuff("Recall"))
+                if (ObjectManager.Player.HasBuff("Recall"))
                     return;
                 t = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
-                if (t != null)
+                var useWt = (Program.Config.Item("DontWToggleHarass" + t.ChampionName) != null &&
+                             Program.Config.Item("DontWToggleHarass" + t.ChampionName).GetValue<bool>() == false);
+                if (useWt)
                     W.Cast(t);
             }
 
@@ -89,6 +134,7 @@ namespace Marksman
             {
                 var useQ = GetValue<bool>("UseQ" + (ComboActive ? "C" : "H"));
                 var useW = GetValue<bool>("UseW" + (ComboActive ? "C" : "H"));
+                var useR = Program.Config.SubMenu("Combo").Item("UseRC").GetValue<bool>();
 
                 if (Orbwalking.CanMove(100))
                 {
@@ -111,65 +157,190 @@ namespace Marksman
                         if (t != null)
                             W.Cast(t);
                     }
+
+                    if (R.IsReady() && useR)
+                    {
+                        var minRRange = Program.Config.SubMenu("Combo").Item("UseRCMinRange").GetValue<Slider>().Value;
+                        var maxRRange = Program.Config.SubMenu("Combo").Item("UseRCMaxRange").GetValue<Slider>().Value;
+
+                        t = TargetSelector.GetTarget(maxRRange, TargetSelector.DamageType.Physical);
+
+                        if (Q.IsReady() && t.IsValidTarget(Q.Range) && Q.GetPrediction(t).CollisionObjects.Count == 0 &&
+                            t.Health < ObjectManager.Player.GetSpellDamage(t, SpellSlot.Q))
+                            return;
+                        
+                        if (t.IsValidTarget() && ObjectManager.Player.Distance(t) >= minRRange &&
+                            t.Health <= ObjectManager.Player.GetSpellDamage(t, SpellSlot.R))
+                        {
+                            R.Cast(t);
+                        }
+                    }
                 }
             }
 
             if (LaneClearActive)
             {
-                bool useQ = GetValue<bool>("UseQL");
+                var useQ = GetValue<bool>("UseQL");
 
                 if (Q.IsReady() && useQ)
                 {
                     var vMinions = MinionManager.GetMinions(ObjectManager.Player.Position, Q.Range);
-                    foreach (
-                        Obj_AI_Base minions in
-                            vMinions.Where(
-                                minions => minions.Health < ObjectManager.Player.GetSpellDamage(minions, SpellSlot.Q)))
+                    foreach (Obj_AI_Base minions in
+                        vMinions.Where(
+                            minions => minions.Health < ObjectManager.Player.GetSpellDamage(minions, SpellSlot.Q)))
                         Q.Cast(minions);
                 }
             }
 
+            if (R.IsReady() && GetValue<KeyBind>("CastR").Active)
+            {
+                t = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+                if (t.IsValidTarget())
+                    R.Cast(t);
+            }
+        }
 
-            if (!R.IsReady() || !GetValue<KeyBind>("CastR").Active) return;
-            t = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
-            if (t != null)
-                R.Cast(t);
+        private static float GetComboDamage(Obj_AI_Hero t)
+        {
+            var fComboDamage = 0f;
+
+            if (Q.IsReady())
+                fComboDamage += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.Q);
+
+            if (W.IsReady())
+                fComboDamage += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.W);
+
+            if (E.IsReady())
+                fComboDamage += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.E);
+
+            if (R.IsReady())
+                fComboDamage += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.R);
+
+            if (ObjectManager.Player.GetSpellSlot("summonerdot") != SpellSlot.Unknown &&
+                ObjectManager.Player.Spellbook.CanUseSpell(ObjectManager.Player.GetSpellSlot("summonerdot")) ==
+                SpellState.Ready && ObjectManager.Player.Distance(t) < 550)
+                fComboDamage += (float) ObjectManager.Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite);
+
+            if (Items.CanUseItem(3144) && ObjectManager.Player.Distance(t) < 550)
+                fComboDamage += (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.Bilgewater);
+
+            if (Items.CanUseItem(3153) && ObjectManager.Player.Distance(t) < 550)
+                fComboDamage += (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.Botrk);
+
+            if (Items.CanUseItem(3128) && ObjectManager.Player.Distance(t) < 550)
+                fComboDamage += (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.Dfg);
+
+            return fComboDamage;
         }
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "使用Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWC" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, "Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, "W").SetValue(true));
+
+            var xRMenu = new Menu("R", "ComboR");
+            {
+                xRMenu.AddItem(new MenuItem("UseRC", "使用").SetValue(true));
+                xRMenu.AddItem(new MenuItem("UseRCMinRange", "最小范围").SetValue(new Slider(200, 200, 1000)));
+                xRMenu.AddItem(new MenuItem("UseRCMaxRange", "最大范围").SetValue(new Slider(500, 500, 2000)));
+                xRMenu.AddItem(
+                    new MenuItem("DrawRMin", "显示最小范围").SetValue(
+                        new Circle(true, System.Drawing.Color.DarkRed)));
+                xRMenu.AddItem(
+                    new MenuItem("DrawRMax", "显示最大范围").SetValue(
+                        new Circle(true, System.Drawing.Color.DarkMagenta)));
+
+                config.AddSubMenu(xRMenu);
+            }
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "使用Q").SetValue(true));
-            config.AddItem(new MenuItem("UseWH" + Id, "使用W").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, "Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWH" + Id, "W").SetValue(true));
+
+            config.AddSubMenu(new Menu("不要 Q 切换", "DontQToggleHarass"));
+            config.AddSubMenu(new Menu("不要 W 切换", "DontWToggleHarass"));
+            {
+                foreach (var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
+                {
+                    config.SubMenu("DontQToggleHarass")
+                        .AddItem(
+                            new MenuItem("DontQToggleHarass" + enemy.ChampionName, enemy.ChampionName).SetValue(false));
+
+                    config.SubMenu("DontWToggleHarass")
+                        .AddItem(
+                            new MenuItem("DontWToggleHarass" + enemy.ChampionName, enemy.ChampionName).SetValue(false));
+                }
+            }
+
             config.AddItem(
-                new MenuItem("UseQTH" + Id, "使用Q (锁定)").SetValue(new KeyBind("H".ToCharArray()[0],
-                    KeyBindType.Toggle)));
+                new MenuItem("UseQTH", "使用Q (锁定)").SetValue(new KeyBind("H".ToCharArray()[0], KeyBindType.Toggle)));
             config.AddItem(
-                new MenuItem("UseWTH" + Id, "使用 W (切换)").SetValue(new KeyBind("J".ToCharArray()[0],
-                    KeyBindType.Toggle)));
+                new MenuItem("UseWTH", "使用W (锁定").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Toggle)));
+            config.AddItem(new MenuItem("DrawHarassToggleStatus", "Draw Toggle Status").SetValue(true));
             return true;
         }
 
         public override bool MiscMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("CastR" + Id, "半自动R(2000)").SetValue(new KeyBind("T".ToCharArray()[0],
-                    KeyBindType.Press)));
+                new MenuItem("CastR" + Id, "半自动 R (2000 范围)").SetValue(
+                    new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             return true;
+        }
+
+        private static void DrawHarassToggleStatus()
+        {
+            var xHarassStatus = "";
+            if (Program.Config.Item("UseQTH").GetValue<KeyBind>().Active)
+                xHarassStatus += "Q - ";
+
+            if (Program.Config.Item("UseWTH").GetValue<KeyBind>().Active)
+                xHarassStatus += "W - ";
+
+            if (xHarassStatus.Length < 1)
+            {
+                xHarassStatus = "";
+            }
+            else
+            {
+                xHarassStatus = "Toggle: " + xHarassStatus;
+            }
+
+            xHarassStatus = xHarassStatus.Substring(0, xHarassStatus.Length - 3);
+
+            Utils.DrawText(
+                vText, xHarassStatus, (int) ObjectManager.Player.HPBarPosition.X + 145,
+                (int) ObjectManager.Player.HPBarPosition.Y + 5, SharpDX.Color.White);
+        }
+
+        private static void ShowKillableStatus()
+        {
+            var t = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Physical);
+            if (t.IsValidTarget(2000) && t.Health < GetComboDamage(t))
+            {
+                const string xComboText = ">> Kill <<";
+                Utils.DrawText(
+                    vText, xComboText, (int) t.HPBarPosition.X + 145, (int) t.HPBarPosition.Y + 5, SharpDX.Color.White);
+            }
         }
 
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(
-                new MenuItem("DrawQ" + Id, "Q范围").SetValue(new Circle(true, Color.FromArgb(100, 255, 0, 255))));
+                new MenuItem("DrawQ" + Id, "Q range").SetValue(
+                    new Circle(true, System.Drawing.Color.FromArgb(100, 255, 0, 255))));
             config.AddItem(
-                new MenuItem("DrawW" + Id, "W范围").SetValue(new Circle(false, Color.FromArgb(100, 255, 255, 255))));
+                new MenuItem("DrawW" + Id, "W range").SetValue(
+                    new Circle(false, System.Drawing.Color.FromArgb(100, 255, 255, 255))));
+            config.AddItem(new MenuItem("ShowKillableStatus", "Show Killable Status").SetValue(true));
+
+            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "Damage After Combo").SetValue(true);
+
+            Config.AddItem(dmgAfterComboItem);
             return true;
         }
 
@@ -178,6 +349,7 @@ namespace Marksman
 
             return true;
         }
+
         public override bool LaneClearMenu(Menu config)
         {
             config.AddItem(new MenuItem("UseQL" + Id, "Use Q").SetValue(true));

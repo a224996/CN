@@ -40,11 +40,12 @@ namespace xSaliceReligionAIO.Champions
 
             var combo = new Menu("连招", "Combo");
             {
-                combo.AddItem(new MenuItem("selected", "锁定目标",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseQCombo", "使用Q",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseWCombo", "使用W",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseECombo", "使用E",true).SetValue(true));
-                combo.AddItem(new MenuItem("UseRCombo", "使用R",true).SetValue(true));
+                combo.AddItem(new MenuItem("UseQCombo", "使用 Q", true).SetValue(true));
+                combo.AddItem(new MenuItem("UseWCombo", "使用 W", true).SetValue(true));
+                combo.AddItem(new MenuItem("UseECombo", "使用 E", true).SetValue(true));
+                combo.AddItem(new MenuItem("UseRCombo", "使用 R", true).SetValue(true));
+                combo.AddItem(new MenuItem("R_Killable", "敌人可击杀使用R", true).SetValue(true));
+                combo.AddItem(new MenuItem("useR_Hit", "敌人人数使用R", true).SetValue(new Slider(3, 1, 5)));
                 //add to menu
                 menu.AddSubMenu(combo);
             }
@@ -68,9 +69,9 @@ namespace xSaliceReligionAIO.Champions
             var miscMenu = new Menu("杂项", "Misc");
             {
                 miscMenu.AddItem(new MenuItem("W_Gap_Closer", "使用W防突",true).SetValue(true));
-                miscMenu.AddItem(new MenuItem("useR_Hit", "R击中(0关闭)",true).SetValue(new Slider(3, 0, 5)));
-                miscMenu.AddItem(new MenuItem("smartKS", "智能抢人头",true).SetValue(true));
-                miscMenu.AddItem(new MenuItem("R_KS", "使用R抢人头",true).SetValue(true));
+                miscMenu.AddItem(new MenuItem("smartKS", "智能抢人头", true).SetValue(true));
+                miscMenu.AddItem(new MenuItem("R_KS", "使用R抢人头", true).SetValue(true));
+                miscMenu.AddItem(new MenuItem("Q_Before_E", "丢Q之前先E", true).SetValue(true));
                 //add to menu
                 menu.AddSubMenu(miscMenu);
             }
@@ -148,17 +149,13 @@ namespace xSaliceReligionAIO.Champions
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
             
-            var range = Q.Range;
-            if (GetTargetFocus(range) != null)
-                target = GetTargetFocus(range);
-
             if (target == null)
                 return;
 
             var dmg = GetComboDamage(target);
 
-            if (useR && R.IsReady() && target.IsValidTarget(R.Range) && R.GetPrediction(target, true).Hitchance >= HitChance.High)
-                R.Cast(target);
+            if (useR && R.IsReady() && target.IsValidTarget(R.Range))
+                CastR(target, dmg);
 
             //items
             if (source == "Combo")
@@ -176,12 +173,36 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
-            if (useE && E.IsReady() && target.IsValidTarget(E.Range))
-                E.Cast(packets());
+            if (menu.Item("Q_Before_E", true).GetValue<bool>())
+            {
+                if (useQ && Q.IsReady() && target.IsValidTarget(Q.Range))
+                    Q.CastOnUnit(target, packets());
 
-            if(useQ && Q.IsReady() && target.IsValidTarget(Q.Range))
-                Q.CastOnUnit(target, packets());
+                if (useE && E.IsReady() && target.IsValidTarget(E.Range))
+                    E.Cast(packets());
+            }
+            else
+            {
+                if (useE && E.IsReady() && target.IsValidTarget(E.Range))
+                    E.Cast(packets());
 
+                if (useQ && Q.IsReady() && target.IsValidTarget(Q.Range))
+                    Q.CastOnUnit(target, packets());
+            }
+        }
+
+        private void CastR(Obj_AI_Hero target, float dmg)
+        {
+            R.UpdateSourcePosition();
+
+            RMec();
+
+            if (menu.Item("R_Killable", true).GetValue<bool>() && Q.IsReady() && E.IsReady())
+            {
+                var pred = R.GetPrediction(target);
+                if (dmg > target.Health && pred.Hitchance >= HitChance.High)
+                    R.Cast(target);
+            }
         }
 
         private void RMec()
@@ -219,7 +240,7 @@ namespace xSaliceReligionAIO.Champions
 
         private void Farm()
         {
-            var rangedMinionsE = MinionManager.GetMinions(Player.ServerPosition, E.Range + E.Width, MinionTypes.All, MinionTeam.NotAlly);
+            var rangedMinionsE = MinionManager.GetMinions(Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.NotAlly);
 
             var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
             var useE = menu.Item("UseEFarm", true).GetValue<bool>();
@@ -229,9 +250,9 @@ namespace xSaliceReligionAIO.Champions
 
             if (useE && E.IsReady())
             {
-                var ePos = E.GetCircularFarmLocation(rangedMinionsE);
-                if (ePos.MinionsHit >= 2)
-                    E.Cast(ePos.Position, packets());
+                if (rangedMinionsE.Count > 1)
+                    E.Cast(packets());
+
             }
         }
 
@@ -274,7 +295,6 @@ namespace xSaliceReligionAIO.Champions
 
             if (menu.Item("ComboActive", true).GetValue<KeyBind>().Active)
             {
-                RMec();
                 Combo();
             }
             else

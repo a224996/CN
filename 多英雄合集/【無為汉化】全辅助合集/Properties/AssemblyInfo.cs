@@ -18,7 +18,7 @@
 // 
 // Filename: Support/Support/AssemblyInfo.cs
 // Created:  01/10/2014
-// Date:     20/01/2015/11:20
+// Date:     24/01/2015/13:14
 // Author:   h3h3
 
 #endregion
@@ -64,5 +64,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("2.0.11.0")]
-[assembly: AssemblyFileVersion("2.0.11.0")]
+[assembly: AssemblyVersion("2.0.11.1")]
+[assembly: AssemblyFileVersion("2.0.11.1")]

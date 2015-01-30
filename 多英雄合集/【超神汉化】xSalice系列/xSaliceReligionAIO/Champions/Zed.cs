@@ -927,6 +927,9 @@ namespace xSaliceReligionAIO.Champions
                 if (menu.Item("HarassActive", true).GetValue<KeyBind>().Active)
                     Harass();
             }
+
+            if(E.IsReady() && menu.Item("AutoE", true).GetValue<bool>())
+                Cast_E();
         }
 
         private float _qCooldown;

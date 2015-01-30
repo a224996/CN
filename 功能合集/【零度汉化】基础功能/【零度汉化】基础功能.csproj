@@ -72,7 +72,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharpLoader\bin\Release\System\clipper_library.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\LeagueSharp\\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
       <HintPath>C:\Program Files (x86)\LeagueSharp\\System\LeagueSharp.dll</HintPath>
@@ -97,17 +97,18 @@
     <Compile Include="Alerter.cs" />
     <Compile Include="AntiGapcloser.cs" />
     <Compile Include="AutoLevel.cs" />
-    <Compile Include="BetterWebClient.cs"/>
+    <Compile Include="BetterWebClient.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Damage.cs" />
     <Compile Include="Dash.cs" />
     <Compile Include="Data\ItemData.cs" />
     <Compile Include="Data\MasteryData.cs" />
     <Compile Include="GamePacket.cs" />
-    <Compile Include="ItemData.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="HealthPrediction.cs" />
+    <Compile Include="HeroManager.cs" />
     <Compile Include="Interrupter.cs" />
+    <Compile Include="Interrupter2.cs" />
     <Compile Include="LastCastedSpell.cs" />
     <Compile Include="MapPositions.cs" />
     <Compile Include="Menu.cs" />

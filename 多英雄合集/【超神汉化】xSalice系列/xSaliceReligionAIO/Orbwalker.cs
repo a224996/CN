@@ -82,7 +82,7 @@ namespace xSaliceReligionAIO
             menuMisc.AddItem(new MenuItem("orb_Misc_ExtraWindUp", "额外终止时间").SetValue(new Slider(80, 200, 0)));
             menuMisc.AddItem(new MenuItem("orb_Misc_AutoWindUp", "自动设置").SetValue(new KeyBind("O".ToCharArray()[0], KeyBindType.Press)));
             menuMisc.AddItem(new MenuItem("orb_Misc_Priority_Unit", "优先目标").SetValue(new StringList(new[] { "小兵", "英雄" })));
-            menuMisc.AddItem(new MenuItem("orb_Misc_Humanizer", "延迟").SetValue(new Slider(80, 50, 500)));
+            menuMisc.AddItem(new MenuItem("orb_Misc_Humanizer", "延迟").SetValue(new Slider(50, 0, 500)));
             menuMisc.AddItem(new MenuItem("orb_Misc_AllMovementDisabled", "禁用移动").SetValue(false));
             menuMisc.AddItem(new MenuItem("orb_Misc_AllAttackDisabled", "禁用攻击").SetValue(false));
 
@@ -130,7 +130,6 @@ namespace xSaliceReligionAIO
                 menuModes.AddSubMenu(modeFlee);
             }
             menu.AddSubMenu(menuModes);
-            menu.AddItem(new MenuItem("xSLx_info", "版权 by xSLx"));
             menu.AddItem(new MenuItem("xSLx_info2", "制作: xSLx & Esk0r"));
 			menu.AddItem(new MenuItem("xSLx_info3", "汉化: 零度"));
 
@@ -148,10 +147,10 @@ namespace xSaliceReligionAIO
             //if(MyHero.Distance(sender.Position) < 500)
                 //Game.PrintChat("obj: " + sender.Name);
 
-            if (sender.Name == "Azir_Base_P_Soldier_Ring.troy")
+            if (sender.Name == "Azir_Base_P_Soldier_Ring.troy" && Soilders.Count > 0)
             {
                 //Game.PrintChat("Solider Deleted" + sender.NetworkId);
-                foreach (var minion in Soilders)
+                foreach (var minion in Soilders.ToList())
                 {
                     if (minion.NetworkId == sender.NetworkId)
                     {
@@ -200,6 +199,8 @@ namespace xSaliceReligionAIO
         {
             CheckAutoWindUp();
             if (CurrentMode == Mode.None || MenuGUI.IsChatOpen || CustomOrbwalkMode || MyHero.IsChannelingImportantSpell() || MyHero.HasBuff("katarinarsound", true))
+                return;
+            if (Environment.TickCount - _lastMovement < Menu.Item("orb_Misc_Humanizer").GetValue<Slider>().Value)
                 return;
             var target = GetPossibleTarget();
             Orbwalk(Game.CursorPos, target);
@@ -452,6 +453,16 @@ namespace xSaliceReligionAIO
             //last hit
             if (CurrentMode == Mode.Harass || CurrentMode == Mode.Lasthit || CurrentMode == Mode.LaneClear || CurrentMode == Mode.LaneFreeze)
             {
+                foreach (var minion in from minion in ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget() && minion.Name != "Beacon" && InAutoAttackRange(minion)
+                && minion.Health < 2 * (MyHero.BaseAttackDamage + MyHero.FlatPhysicalDamageMod))
+                                       let t = (int)(MyHero.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
+                                               1000 * (int)MyHero.Distance(minion) / (int)MyProjectileSpeed()
+                                       let predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay())
+                                       where minion.Team != GameObjectTeam.Neutral && predHealth > 0 &&
+                                             predHealth <= MyHero.GetAutoAttackDamage(minion, true)
+                                       select minion)
+                    return minion;
+
                 if (MyHero.ChampionName == "Azir" && Soilders.Count > 0)
                 {
                     var minions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 800, MinionTypes.All, MinionTeam.NotAlly);
@@ -463,18 +474,6 @@ namespace xSaliceReligionAIO
                         select minion)
                         return minion;
                 }
-
-                foreach (
-                    var minion in
-                        from minion in
-                            ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget() && minion.Name != "Beacon" && InAutoAttackRange(minion))
-                        let t = (int)(MyHero.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int)MyHero.Distance(minion) / (int)MyProjectileSpeed()
-                        let predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay())
-                        where minion.Team != GameObjectTeam.Neutral && predHealth > 0 &&
-                              predHealth <= MyHero.GetAutoAttackDamage(minion, true)
-                        select minion)
-                    return minion;
             }
 
             if (CurrentMode != Mode.Lasthit)

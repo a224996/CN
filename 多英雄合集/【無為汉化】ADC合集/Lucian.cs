@@ -252,7 +252,7 @@ namespace Marksman
             config.AddItem(new MenuItem("Passive" + Id, "检查被动").SetValue(true));
             return true;
         }
-       
+
         public override bool DrawingMenu(Menu config)
         {
             config.AddItem(new MenuItem("DrawQ" + Id, "Q 范围").SetValue(new Circle(true, Color.Gray)));
