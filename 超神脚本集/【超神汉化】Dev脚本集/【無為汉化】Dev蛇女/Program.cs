@@ -878,7 +878,8 @@ namespace DevCassio
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "使用 Q").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseWLaneClear", "使用 W").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "使用 E").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELastHitLaneClear", "只有清兵使用 E ").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELastHitLaneClear", "只有补刀使用E ").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELastHitLaneClearNonPoisoned", "使用E补刀(没中毒)").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("LaneClearMinMana", "保留法力").SetValue(new Slider(25, 0, 100)));
 
             Config.AddSubMenu(new Menu("清野", "JungleClear"));
