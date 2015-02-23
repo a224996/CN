@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
-using LX_Orbwalker;
 
 namespace ViktorTheMindBlower
 {
@@ -49,6 +45,8 @@ namespace ViktorTheMindBlower
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
 
+        public static Orbwalking.Orbwalker Orbwalker;
+
         private static void Game_OnGameLoad(EventArgs args)
         {
             Player = ObjectManager.Player;
@@ -82,7 +80,7 @@ namespace ViktorTheMindBlower
 
             //Orbwalker submenu
             var orbwalkerMenu = new Menu("走砍", "my_Orbwalker");
-            LXOrbwalker.AddToMenu(orbwalkerMenu);
+            Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
             menu.AddSubMenu(orbwalkerMenu);
 
             //Target selector
@@ -91,12 +89,12 @@ namespace ViktorTheMindBlower
             menu.AddSubMenu(targetSelectorMenu);
 
             //Keys
-            menu.AddSubMenu(new Menu("热键", "Keys"));
-            menu.SubMenu("Keys").AddItem(new MenuItem("ComboActive", "连招").SetValue(new KeyBind(menu.Item("Combo_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            menu.SubMenu("Keys").AddItem(new MenuItem("HarassActive", "骚扰").SetValue(new KeyBind(menu.Item("Harass_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            menu.SubMenu("Keys").AddItem(new MenuItem("HarassActiveT", "骚扰 (锁定)").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Toggle)));
-            menu.SubMenu("Keys").AddItem(new MenuItem("LaneClearActive", "补兵!").SetValue(new KeyBind(menu.Item("LaneClear_Key").GetValue<KeyBind>().Key, KeyBindType.Press)));
-            menu.SubMenu("Keys").AddItem(new MenuItem("LastHitQQ", "Q补兵").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
+            menu.AddSubMenu(new Menu("Keys", "Keys"));
+            menu.SubMenu("Keys").AddItem(new MenuItem("ComboActive", "连招!").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+            menu.SubMenu("Keys").AddItem(new MenuItem("HarassActive", "骚扰!").SetValue(new KeyBind("S".ToCharArray()[0], KeyBindType.Press)));
+            menu.SubMenu("Keys").AddItem(new MenuItem("HarassActiveT", "骚扰 (锁定)!").SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Toggle)));
+            menu.SubMenu("Keys").AddItem(new MenuItem("LaneClearActive", "清兵!").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
+            menu.SubMenu("Keys").AddItem(new MenuItem("LastHitQQ", "Q 补兵").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
 
             //Spell Menu
             menu.AddSubMenu(new Menu("法术", "Spell"));
@@ -110,10 +108,10 @@ namespace ViktorTheMindBlower
             menu.SubMenu("Spell").SubMenu("WSpell").AddItem(new MenuItem("wSlow", "W走得慢的").SetValue(true));
             menu.SubMenu("Spell").SubMenu("WSpell").AddItem(new MenuItem("wImmobile", "W不动").SetValue(true));
             menu.SubMenu("Spell").SubMenu("WSpell").AddItem(new MenuItem("wDashing", "W突进").SetValue(true));
-            menu.SubMenu("Spell").SubMenu("WSpell").AddItem(new MenuItem("useW_Hit", "W min击中").SetValue(new Slider(2, 1, 5)));
+            menu.SubMenu("Spell").SubMenu("WSpell").AddItem(new MenuItem("useW_Hit", "W 最少击中").SetValue(new Slider(2, 1, 5)));
             //R
             menu.SubMenu("Spell").AddSubMenu(new Menu("R", "RSpell"));
-            menu.SubMenu("Spell").SubMenu("RSpell").AddItem(new MenuItem("useR_Hit", "R min击中").SetValue(new Slider(2, 1, 5)));
+            menu.SubMenu("Spell").SubMenu("RSpell").AddItem(new MenuItem("useR_Hit", "R 最少击中").SetValue(new Slider(2, 1, 5)));
             menu.SubMenu("Spell").SubMenu("RSpell").AddItem(new MenuItem("rAlways", "连招使用R").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle)));
 
             //Combo menu:
@@ -122,7 +120,7 @@ namespace ViktorTheMindBlower
             menu.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "使用Q").SetValue(true));
             menu.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "使用W").SetValue(true));
             menu.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "使用E").SetValue(true));
-            menu.SubMenu("Combo").AddItem(new MenuItem("eHit", "E min击中").SetValue(new Slider(3, 1, 4)));
+            menu.SubMenu("Combo").AddItem(new MenuItem("eHit", "E 最少击中").SetValue(new Slider(3, 1, 4)));
             menu.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "使用R").SetValue(true));
             menu.SubMenu("Combo").AddItem(new MenuItem("ignite", "使用点燃").SetValue(true));
             menu.SubMenu("Combo")
@@ -179,11 +177,11 @@ namespace ViktorTheMindBlower
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPosibleToInterrupt;
             GameObject.OnCreate += OnCreate;
             GameObject.OnDelete += OnDelete;
-            LXOrbwalker.AfterAttack += AfterAttack;
+            Orbwalking.AfterAttack += AfterAttack;
             Game.PrintChat(ChampionName + " Loaded! --- by xSalice");
         }
 
-        public static void AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
+        public static void AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
             if (unit.IsMe && chargeQ)
             {
@@ -421,12 +419,12 @@ namespace ViktorTheMindBlower
 
         private static void castE(Vector3 source, Vector3 destination)
         {
-            castE(source.To2D(), destination.To2D());
+            E.Cast(source, destination);
         }
 
         private static void castE(Vector2 source, Vector2 destination)
         {
-            Packet.C2S.Cast.Encoded(new Packet.C2S.Cast.Struct(0, SpellSlot.E, Player.NetworkId, source.X, source.Y, destination.X, destination.Y)).Send();
+            E.Cast(source, destination);
         }
 
         public static void eCalc(Obj_AI_Hero eTarget, String Source)
