@@ -63,7 +63,7 @@ namespace Xerath
             {
                 return ObjectManager.Player.HasBuff("XerathLocusOfPower2", true) ||
                        (ObjectManager.Player.LastCastedSpellName() == "XerathLocusOfPower2" &&
-                        Environment.TickCount - ObjectManager.Player.LastCastedSpellT() < 500);
+                        Utils.TickCount - ObjectManager.Player.LastCastedSpellT() < 500);
             }
         }
 
@@ -287,7 +287,7 @@ namespace Xerath
                 }
                 else if (args.SData.Name == "xerathlocuspulse")
                 {
-                    RCharge.CastT = Environment.TickCount;
+                    RCharge.CastT = Utils.TickCount;
                     RCharge.Index++;
                     RCharge.Position = args.End;
                     RCharge.TapKeyPressed = false;
@@ -322,13 +322,13 @@ namespace Xerath
                     E.Cast(eTarget);
             }
 
-            if (useQ && Q.IsReady())
+            if (useQ && Q.IsReady() && qTarget != null)
             {
                 if (Q.IsCharging)
                 {
                     Q.Cast(qTarget, false, false);
                 }
-                else if (qTarget != null && (!useW || !W.IsReady() || Player.Distance(qTarget) > W.Range))
+                else if (!useW || !W.IsReady() || Player.Distance(qTarget) > W.Range)
                 {
                     Q.StartCharging();
                 }
@@ -380,10 +380,10 @@ namespace Xerath
             {
                 //Wait at least 0.6f if the target is going to die or if the target is to far away
                 if(rTarget.Health - R.GetDamage(rTarget) < 0)
-                    if (Environment.TickCount - RCharge.CastT <= 700) return;
+                    if (Utils.TickCount - RCharge.CastT <= 700) return;
 
                 if ((RCharge.Index != 0 && rTarget.Distance(RCharge.Position) > 1000))
-                    if (Environment.TickCount - RCharge.CastT <= Math.Min(2500, rTarget.Distance(RCharge.Position) - 1000)) return;
+                    if (Utils.TickCount - RCharge.CastT <= Math.Min(2500, rTarget.Distance(RCharge.Position) - 1000)) return;
 
                 switch (rMode)
                 {
@@ -393,7 +393,7 @@ namespace Xerath
 
                     case 1://Selected delays.
                         var delay = Config.Item("Delay" + (RCharge.Index + 1)).GetValue<Slider>().Value;
-                        if (Environment.TickCount - RCharge.CastT > delay)
+                        if (Utils.TickCount - RCharge.CastT > delay)
                             R.Cast(rTarget, true);
                         break;
 
@@ -476,8 +476,8 @@ namespace Xerath
 
         private static void Ping(Vector2 position)
         {
-            if (Environment.TickCount - LastPingT < 30 * 1000) return;
-            LastPingT = Environment.TickCount;
+            if (Utils.TickCount - LastPingT < 30 * 1000) return;
+            LastPingT = Utils.TickCount;
             PingLocation = position;
             SimplePing();
             Utility.DelayAction.Add(150, SimplePing);

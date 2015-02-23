@@ -115,6 +115,7 @@ namespace xSaliceReligionAIO.Champions
             {
                 misc.AddItem(new MenuItem("smartKS", "智能抢人头",true).SetValue(true));
                 misc.AddItem(new MenuItem("Use_W_KS", "使用W",true).SetValue(true));
+                misc.AddItem(new MenuItem("AutoE", "在范围内自动E", true).SetValue(true));
                 //add to menu
                 menu.AddSubMenu(misc);
             }

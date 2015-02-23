@@ -236,16 +236,16 @@ namespace Support.Plugins
             }
         }
 
-        public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        public override void OnPossibleToInterrupt(Obj_AI_Hero target, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if ((spell.DangerLevel < InterruptableDangerLevel.High && unit.IsAlly))
+            if ((args.DangerLevel < Interrupter2.DangerLevel.High && target.IsAlly))
             {
                 return;
             }
 
-            if (Q.CastCheck(unit, "Interrupt.Q"))
+            if (Q.CastCheck(target, "Interrupt.Q"))
             {
-                var pred = Q.GetPrediction(unit);
+                var pred = Q.GetPrediction(target);
                 if (pred.Hitchance >= HitChance.Medium)
                 {
                     Q.Cast(pred.CastPosition);
@@ -255,7 +255,7 @@ namespace Support.Plugins
                 }
             }
 
-            if (!Q.IsReady() && Environment.TickCount - LastQInterrupt > 500 && R.CastCheck(unit, "Interrupt.R"))
+            if (!Q.IsReady() && Environment.TickCount - LastQInterrupt > 500 && R.CastCheck(target, "Interrupt.R"))
             {
                 R.Cast();
             }
@@ -280,7 +280,7 @@ namespace Support.Plugins
 
             // build aa menu
             var aa = config.AddSubMenu(new Menu("使用 E 攻击", "Misc.E.AA.Menu"));
-            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsMe))
+            foreach (var hero in HeroManager.Allies.Where(h => !h.IsMe))
             {
                 aa.AddBool("Misc.E.AA." + hero.ChampionName, hero.ChampionName, true);
             }
@@ -288,8 +288,8 @@ namespace Support.Plugins
             // build spell menu
             var dmg = config.AddSubMenu(new Menu("使用 E 的法术", "Misc.E.Spell.Menu"));
             foreach (var spell in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(h => h.IsAlly && !h.IsMe)
+                HeroManager.Allies
+                    .Where(h => !h.IsMe)
                     .SelectMany(hero => DamageBoostDatabase.Spells.Where(s => s.Champion == hero.ChampionName)))
             {
                 dmg.AddSlider("Misc.E.Spell." + spell.Spell, spell.Champion + " " + spell.Slot, spell.Priority, 0, 3);

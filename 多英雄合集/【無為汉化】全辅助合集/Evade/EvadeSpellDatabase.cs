@@ -132,7 +132,7 @@ namespace Support.Evade
                 spell = new MoveBuffData(
                     "Katarina W", SpellSlot.W, 100, 3,
                     () =>
-                        ObjectManager.Get<Obj_AI_Hero>().Any(h => h.IsValidTarget(375))
+                        HeroManager.Enemies.Any(h => h.IsValidTarget(375))
                             ? ObjectManager.Player.MoveSpeed *
                               (1 + 0.10f + 0.05f * ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level)
                             : 0);

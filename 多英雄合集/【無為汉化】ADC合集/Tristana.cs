@@ -1,24 +1,29 @@
 #region
+using LeagueSharp;
+using LeagueSharp.Common;
 using System;
 using System.Drawing;
 using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
+using SharpDX.Direct3D9;
+using Font = SharpDX.Direct3D9.Font;
 #endregion
 
 namespace Marksman
 {
     internal class Tristana : Champion
     {
-        public static Spell Q, E, R;
-
-        public static Items.Item Dfg = new Items.Item(3128, 750);
+        public static Obj_AI_Hero Player = ObjectManager.Player;
+        public static Spell Q, W, E, R;
+        public static Font vText;
+        public static int LastTickTime;
 
         public Tristana()
         {
-            Utils.PrintMessage("Tristana loaded.");
-            
             Q = new Spell(SpellSlot.Q, 703);
+
+            W = new Spell(SpellSlot.W, 900);
+            W.SetSkillshot(.50f, 250f, 1400f, false, SkillshotType.SkillshotCircle);
+
             E = new Spell(SpellSlot.E, 703);
             R = new Spell(SpellSlot.R, 703);
 
@@ -27,6 +32,118 @@ namespace Marksman
 
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
+
+            vText = new Font(
+                Drawing.Direct3DDevice,
+                new FontDescription
+                {
+                    FaceName = "Courier new",
+                    Height = 15,
+                    OutputPrecision = FontPrecision.Default,
+                    Quality = FontQuality.Default,
+                });
+
+            Utils.PrintMessage("Tristana loaded.");
+        }
+
+        public class TristanaData
+        {
+            public static Obj_AI_Hero GetTarget(float vRange)
+            {
+                return TargetSelector.GetTarget(vRange, TargetSelector.DamageType.Physical);
+            }
+
+            public static double GetWDamage
+            {
+                get
+                {
+                    if (W.IsReady())
+                    {
+                        var wDamage = new double[] { 80, 105, 130, 155, 180 }[W.Level - 1] +
+                                      0.5 * Player.FlatMagicDamageMod;
+                        if (GetEMarkedCount > 0 && GetEMarkedCount < 4)
+                        {
+                            return wDamage + (wDamage * GetEMarkedCount * .20);
+                        }
+                        switch (GetEMarkedCount)
+                        {
+                            case 0:
+                                return wDamage;
+                            case 4:
+                                return wDamage * 2;
+                        }
+                    }
+                    return 0;
+                }
+            }
+
+            public static float GetComboDamage
+            {
+                get
+                {
+                    var fComboDamage = 0d;
+                    var t = GetTarget(W.Range * 2);
+                    if (!t.IsValidTarget())
+                        return 0;
+                    /*
+                    if (Q.IsReady())
+                    {
+                        var baseAttackSpeed = 0.656 + (0.656 / 100 * (Player.Level - 1) * 1.5);
+                        var qExtraAttackSpeed = new double[] { 30, 50, 70, 90, 110 }[Q.Level - 1];
+                        var attackDelay = (float) (baseAttackSpeed + (baseAttackSpeed / 100 * qExtraAttackSpeed));
+                        attackDelay = (float) Math.Round(attackDelay, 2);
+
+                        attackDelay *= 5;
+                        attackDelay *= (float) Math.Floor(Player.TotalAttackDamage());
+                        fComboDamage += attackDelay;
+                    }
+                    */
+                    if (W.IsReady())
+                    {
+                        fComboDamage += GetWDamage;
+                    }
+
+                    if (E.IsReady())
+                    {
+                        fComboDamage += new double[] { 60, 70, 80, 90, 100 }[E.Level - 1] * 2 *
+                                        Player.FlatMagicDamageMod;
+                    }
+
+                    if (R.IsReady())
+                    {
+                        fComboDamage += new double[] { 300, 400, 500 }[R.Level - 1] + Player.FlatMagicDamageMod;
+                    }
+                    return (float) fComboDamage;
+                }
+            }
+
+            public static Obj_AI_Hero GetEMarkedEnemy
+            {
+                get
+                {
+                    return
+                        ObjectManager.Get<Obj_AI_Hero>()
+                            .Where(
+                                enemy =>
+                                    !enemy.IsDead &&
+                                    enemy.IsValidTarget(W.Range + Orbwalking.GetRealAutoAttackRange(Player)))
+                            .FirstOrDefault(
+                                enemy => enemy.Buffs.Any(buff => buff.DisplayName == "TristanaEChargeSound"));
+                }
+            }
+
+            public static int GetEMarkedCount
+            {
+                get
+                {
+                    if (GetEMarkedEnemy == null)
+                        return 0;
+                    return
+                        GetEMarkedEnemy.Buffs.Where(buff => buff.DisplayName == "TristanaECharge")
+                            .Select(xBuff => xBuff.Count)
+                            .FirstOrDefault();
+                }
+            }
         }
 
         public void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
@@ -46,123 +163,210 @@ namespace Marksman
             var t = target as Obj_AI_Hero;
             if (t != null && (ComboActive || HarassActive) && unit.IsMe)
             {
-                var useQ = GetValue<bool>("UseQ" + (ComboActive ? "C" : "H"));
-                var useE = GetValue<bool>("UseE" + (ComboActive ? "C" : "H"));
+                var useQ = Q.IsReady() && GetValue<bool>("UseQ" + (ComboActive ? "C" : "H"));
+                var useE = E.IsReady() && GetValue<bool>("UseE" + (ComboActive ? "C" : "H"));
 
-                if (useQ && Q.IsReady())
-                    Q.CastOnUnit(ObjectManager.Player);
+                if (useQ)
+                    Q.CastOnUnit(Player);
 
-                if (useE && E.IsReady())
+                if (useE && canUseE(t))
                     E.CastOnUnit(t);
             }
         }
 
-        public override void Drawing_OnDraw(EventArgs args)
+        private static bool canUseE(Obj_AI_Hero t)
         {
-            Spell[] spellList = { E};
-            foreach (var spell in spellList)
-            {
-                var menuItem = GetValue<Circle>("Draw" + spell.Slot);
-                if (menuItem.Active)
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
-            }
+            if (Player.CountEnemiesInRange(W.Range + (E.Range / 2)) == 1)
+                return true;
+
+            return (Program.Config.Item("DontUseE" + t.ChampionName) != null &&
+                    Program.Config.Item("DontUseE" + t.ChampionName).GetValue<bool>() == false);
         }
 
         public override void Game_OnGameUpdate(EventArgs args)
         {
-            if (!Orbwalking.CanMove(100)) return;
-            
-            //Update Q range depending on level; 600 + 5 √É‚Äî ( Tristana's level - 1)/* dont waste your Q for only 1 or 2 hits. */
-            //Update E and R range depending on level; 630 + 9 √É‚Äî ( Tristana's level - 1)
-            Q.Range = 600 + 5 * (ObjectManager.Player.Level - 1);
-            E.Range = 630 + 9 * (ObjectManager.Player.Level - 1);
-            R.Range = 630 + 9 * (ObjectManager.Player.Level - 1);
+            if (!Orbwalking.CanMove(100))
+                return;
+
+            var getEMarkedEnemy = TristanaData.GetEMarkedEnemy;
+            if (getEMarkedEnemy != null)
+            {
+                TargetSelector.SetTarget(getEMarkedEnemy);
+            }
+            else
+            {
+                var attackRange = Orbwalking.GetRealAutoAttackRange(Player);
+                TargetSelector.SetTarget(TargetSelector.GetTarget(attackRange, TargetSelector.DamageType.Physical));
+            }
+
+            Q.Range = 600 + 5 * (Player.Level - 1);
+            E.Range = 630 + 7 * (Player.Level - 1);
+            R.Range = 630 + 7 * (Player.Level - 1);
 
             if (GetValue<KeyBind>("UseETH").Active)
             {
-                 if(ObjectManager.Player.HasBuff("Recall"))
+                if (Player.HasBuff("Recall"))
                     return;
-                var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-                if (E.IsReady() && eTarget.IsValidTarget())
-                    E.CastOnUnit(eTarget);
+                var t = TristanaData.GetTarget(E.Range);
+                if (t.IsValidTarget() && E.IsReady() && canUseE(t))
+                    E.CastOnUnit(t);
             }
+
+            var useW = W.IsReady() && GetValue<bool>("UseWC");
+            var useWc = W.IsReady() && GetValue<bool>("UseWCS");
+            var useE = E.IsReady() && GetValue<bool>("UseE" + (ComboActive ? "C" : "H"));
+            var useR = R.IsReady() && GetValue<bool>("UseRM") && R.IsReady();
 
             if (ComboActive || HarassActive)
             {
-                var useE = GetValue<bool>("UseE" + (ComboActive ? "C" : "H"));
-
-                if (useE)
+                Obj_AI_Hero t;
+                if (TristanaData.GetEMarkedEnemy != null)
                 {
-                    var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-                    if (E.IsReady() && eTarget.IsValidTarget())
-                        E.CastOnUnit(eTarget);
+                    t = TristanaData.GetEMarkedEnemy;
+                    TargetSelector.SetTarget(TristanaData.GetEMarkedEnemy);
+                }
+                else
+                {
+                    t = TristanaData.GetTarget(W.Range);
                 }
 
-                if (Dfg.IsReady())
+                if (useE && canUseE(t))
                 {
-                    var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
-                    Dfg.Cast(eTarget);
+                    if (E.IsReady() && t.IsValidTarget(E.Range))
+                        E.CastOnUnit(t);
+                }
+
+                if (useW)
+                {
+                    t = TristanaData.GetTarget(W.Range);
+                    if (t.IsValidTarget() && t.Health < TristanaData.GetWDamage)
+                        W.Cast(t);
+                }
+
+
+                if (useWc)
+                {
+                    t = TristanaData.GetTarget(W.Range);
+                    if (t.IsValidTarget() && TristanaData.GetEMarkedCount == 4)
+                        W.Cast(t);
                 }
             }
 
-            //Killsteal
-            if (!ComboActive || !GetValue<bool>("UseRM") || !R.IsReady()) return;
-            foreach (
-                var hero in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(
-                            hero =>
-                                hero.IsValidTarget(R.Range) &&
-                                ObjectManager.Player.GetSpellDamage(hero, SpellSlot.R) - 50 > hero.Health))
-                R.CastOnUnit(hero);
+            if (ComboActive)
+            {
+                if (useR)
+                {
+                    var t = TristanaData.GetTarget(W.Range + R.Range - 30);
+
+                    if (!t.IsValidTarget())
+                        return;
+
+                    if (Player.GetSpellDamage(t, SpellSlot.R) - 30 < t.Health ||
+                        t.Health < Player.GetAutoAttackDamage(t, true))
+                        return;
+
+                    if (t.IsValidTarget() && !t.IsValidTarget(R.Range) && W.IsReady())
+                        W.Cast(t);
+                    R.CastOnUnit(t);
+                }
+            }
         }
 
         private static float GetComboDamage(Obj_AI_Hero t)
         {
-            var fComboDamage = 0f;
+            return TristanaData.GetComboDamage;
+        }
 
-            if (E.IsReady())
-                fComboDamage += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.E);
+        public override void Drawing_OnDraw(EventArgs args)
+        {
+            // Draw marked enemy status
+            var drawEMarksStatus = Program.Config.SubMenu("Drawings").Item("DrawEMarkStatus").GetValue<bool>();
+            var drawEMarkEnemy = Program.Config.SubMenu("Drawings").Item("DrawEMarkEnemy").GetValue<Circle>();
+            if (drawEMarksStatus || drawEMarkEnemy.Active)
+            {
+                var vText1 = vText;
+                var getEMarkedEnemy = TristanaData.GetEMarkedEnemy;
+                if (getEMarkedEnemy != null)
+                {
+                    if (drawEMarksStatus)
+                    {
+                        if (LastTickTime < Environment.TickCount)
+                            LastTickTime = Environment.TickCount + 5000;
+                        var xTime = LastTickTime - Environment.TickCount;
 
-            if (R.IsReady())
-                fComboDamage += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.R);
+                        var timer = string.Format("0:{0:D2}", xTime / 1000);
+                        Utils.DrawText(
+                            vText1, timer + " : 4 / " + TristanaData.GetEMarkedCount,
+                            (int) getEMarkedEnemy.HPBarPosition.X + 145, (int) getEMarkedEnemy.HPBarPosition.Y + 5,
+                            SharpDX.Color.White);
+                    }
 
-            if (ObjectManager.Player.GetSpellSlot("summonerdot") != SpellSlot.Unknown &&
-                ObjectManager.Player.Spellbook.CanUseSpell(ObjectManager.Player.GetSpellSlot("summonerdot")) ==
-                SpellState.Ready && ObjectManager.Player.Distance(t) < 550) 
-                fComboDamage += (float) ObjectManager.Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite);
+                    if (drawEMarkEnemy.Active)
+                    {
+                        Render.Circle.DrawCircle(TristanaData.GetEMarkedEnemy.Position, 140f, drawEMarkEnemy.Color, 1);
+                    }
+                }
+            }
 
-            if (Items.CanUseItem(3144) && ObjectManager.Player.Distance(t) < 550)
-                fComboDamage += (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.Bilgewater);
+            Spell[] spellList = { W };
+            foreach (var spell in spellList)
+            {
+                var menuItem = GetValue<Circle>("Draw" + spell.Slot);
+                if (menuItem.Active)
+                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color, 1);
+            }
 
-            if (Items.CanUseItem(3153) && ObjectManager.Player.Distance(t) < 550)
-                fComboDamage += (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.Botrk);
-
-            return (float)fComboDamage;
+            var drawE = Program.Config.SubMenu("Drawings").Item("DrawE").GetValue<Circle>();
+            if (drawE.Active)
+            {
+                Render.Circle.DrawCircle(Player.Position, E.Range, drawE.Color, 1);
+            }
         }
 
         public override bool ComboMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQC" + Id, "‰ΩøÁî®Q").SetValue(true));
-            config.AddItem(new MenuItem("UseEC" + Id, "‰ΩøÁî®E").SetValue(true));
+            config.AddItem(new MenuItem("UseQC" + Id, " π”√ Q").SetValue(true));
+            config.AddItem(new MenuItem("UseWC" + Id, " π”√ W").SetValue(true));
+            config.AddItem(new MenuItem("UseWCS" + Id, "ÕÍ≥… E µ˛ W").SetValue(true));
+            config.AddItem(new MenuItem("UseEC" + Id, " π”√ E").SetValue(true));
+
+            config.AddSubMenu(new Menu("≤ª π”√ E", "DontUseE"));
+            {
+                foreach (var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != Player.Team))
+                {
+                    config.SubMenu("DontUseE")
+                        .AddItem(new MenuItem("DontUseE" + enemy.ChampionName, enemy.ChampionName).SetValue(false));
+                }
+            }
             return true;
         }
 
         public override bool HarassMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseQH" + Id, "‰ΩøÁî®Q").SetValue(false));
-            config.AddItem(new MenuItem("UseEH" + Id, "‰ΩøÁî®E").SetValue(true));
+            config.AddItem(new MenuItem("UseQH" + Id, " π”√Q").SetValue(false));
+            config.AddItem(new MenuItem("UseWH" + Id, " π”√W").SetValue(true));
+            config.AddItem(new MenuItem("UseEH" + Id, " π”√E").SetValue(true));
             config.AddItem(
-                new MenuItem("UseETH" + Id, "‰ΩøÁî®E (ÈîÅÂÆö)").SetValue(new KeyBind("H".ToCharArray()[0],
-                    KeyBindType.Toggle)));
+                new MenuItem("UseETH" + Id, " π”√ E («–ªª)").SetValue(
+                    new KeyBind("H".ToCharArray()[0], KeyBindType.Toggle)));
             return true;
         }
 
         public override bool DrawingMenu(Menu config)
         {
-            config.AddItem(
-                new MenuItem("DrawE" + Id, "E ËåÉÂõ¥").SetValue(new Circle(true, Color.CornflowerBlue)));
-            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "ËøûÊãõÊçü‰º§").SetValue(true);
+            config.AddItem(new MenuItem("DrawW" + Id, "W ∑∂Œß").SetValue(new Circle(true, Color.Beige)));
+
+            var drawE = new Menu("Draw E", "DrawE");
+            {
+                drawE.AddItem(new MenuItem("DrawE", "E ∑∂Œß").SetValue(new Circle(true, Color.Beige)));
+                drawE.AddItem(
+                    new MenuItem("DrawEMarkEnemy", "E ±Íº«µƒµ–»À").SetValue(new Circle(true, Color.GreenYellow)));
+                drawE.AddItem(new MenuItem("DrawEMarkStatus", "E ±Íº«µƒ◊¥øˆ").SetValue(true));
+                config.AddSubMenu(drawE);
+            }
+
+            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "¡¨’–À…À").SetValue(true);
             Config.AddItem(dmgAfterComboItem);
 
             return true;
@@ -170,9 +374,10 @@ namespace Marksman
 
         public override bool MiscMenu(Menu config)
         {
-            config.AddItem(new MenuItem("UseRM" + Id, "ÂèØÊùÄ‰ΩøÁî®R").SetValue(true));
-            config.AddItem(new MenuItem("UseRMG" + Id, "‰ΩøÁî®RÈò≤Á™Å").SetValue(true));
-            config.AddItem(new MenuItem("UseRMI" + Id, "‰ΩøÁî®RÊâìÊñ≠").SetValue(true));
+            config.AddItem(new MenuItem("UseWM" + Id, " π”√ W ª˜…±").SetValue(true));
+            config.AddItem(new MenuItem("UseRM" + Id, "ø……± π”√R").SetValue(true));
+            config.AddItem(new MenuItem("UseRMG" + Id, " π”√R∑¿Õª").SetValue(true));
+            config.AddItem(new MenuItem("UseRMI" + Id, " π”√R¥Ú∂œ").SetValue(true));
             return true;
         }
 

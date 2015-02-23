@@ -60,7 +60,7 @@ namespace xSaliceReligionAIO.Champions
                 key.AddItem(new MenuItem("ComboActive", "连招",true).SetValue(new KeyBind(32, KeyBindType.Press)));
                 key.AddItem(new MenuItem("HarassActive", "骚扰",true).SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("HarassActiveT", "骚扰 (锁定)",true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
-                key.AddItem(new MenuItem("LaneClearActive", "补兵",true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
+                key.AddItem(new MenuItem("LaneClearActive", "清兵",true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("snipe", "W/Q 狙击",true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("escape", "逃跑!",true).SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
                 //add to menu
@@ -116,7 +116,7 @@ namespace xSaliceReligionAIO.Champions
             }
 
             //Farming menu:
-            var farm = new Menu("补兵", "Farm");
+            var farm = new Menu("清兵", "Farm");
             {
                 farm.AddItem(new MenuItem("UseQFarm", "使用 Q",true).SetValue(false));
                 farm.AddItem(new MenuItem("UseEFarm", "使用 E",true).SetValue(false));
@@ -630,7 +630,7 @@ namespace xSaliceReligionAIO.Champions
             }
         }
 
-        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 

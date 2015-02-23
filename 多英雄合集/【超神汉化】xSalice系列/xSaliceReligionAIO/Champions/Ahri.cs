@@ -34,7 +34,7 @@ namespace xSaliceReligionAIO.Champions
         {
             //intalize spell
             Q = new Spell(SpellSlot.Q, 900);
-            W = new Spell(SpellSlot.W, 800);
+            W = new Spell(SpellSlot.W, 650);
             E = new Spell(SpellSlot.E, 875);
             R = new Spell(SpellSlot.R, 850);
 
@@ -569,7 +569,7 @@ namespace xSaliceReligionAIO.Champions
                 E.Cast(gapcloser.Sender);
         }
 
-        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 

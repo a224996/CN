@@ -153,7 +153,10 @@ namespace xSaliceReligionAIO.Champions
                 damage += Player.GetSpellDamage(enemy, SpellSlot.E);
 
             if (R.IsReady())
+            {
+                damage += damage*1.2;
                 damage += Player.GetSpellDamage(enemy, SpellSlot.R);
+            }
 
             damage += Player.GetAutoAttackDamage(enemy)*3;
 

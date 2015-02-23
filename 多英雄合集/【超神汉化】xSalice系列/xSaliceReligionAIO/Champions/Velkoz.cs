@@ -558,7 +558,7 @@ namespace xSaliceReligionAIO.Champions
                 E.Cast(gapcloser.Sender, packets());
         }
 
-        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 

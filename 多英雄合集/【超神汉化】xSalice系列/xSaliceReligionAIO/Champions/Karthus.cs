@@ -66,7 +66,7 @@ namespace xSaliceReligionAIO.Champions
                 { 
                     //qMenu.AddItem(new MenuItem("qAA", "Auto Q AAing target", true).SetValue(new KeyBind("I".ToCharArray()[0], KeyBindType.Toggle)));
                     qMenu.AddItem(new MenuItem("qImmo", "自动 Q 不动的", true).SetValue(true));
-                    qMenu.AddItem(new MenuItem("qDash", "Auto Q 突进的", true).SetValue(true));
+                    qMenu.AddItem(new MenuItem("qDash", "自动 Q 突进的", true).SetValue(true));
                     spells.AddSubMenu(qMenu);
                 }
 

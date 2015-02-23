@@ -262,33 +262,36 @@ namespace xSaliceReligionAIO.Champions
 
         private void Cast_R()
         {
+            if (!R.IsReady())
+                return;
+
             var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
 
-            if (R.IsReady() && target != null)
+            var minRange = menu.Item("R_Min_Range", true).GetValue<Slider>().Value;
+            var minHit = menu.Item("R_Mec", true).GetValue<Slider>().Value;
+
+            if (target != null)
             {
                 if (menu.Item("Dont_R" + target.BaseSkinName, true) != null)
                 {
                     if (!menu.Item("Dont_R" + target.BaseSkinName, true).GetValue<bool>())
                     {
-                        var minRange = menu.Item("R_Min_Range", true).GetValue<Slider>().Value;
-                        var minHit = menu.Item("R_Mec", true).GetValue<Slider>().Value;
-
                         if (Get_R_Dmg(target) > target.Health && Player.Distance(target) > minRange)
                         {
                             R.Cast(target, packets());
                             return;
                         }
-
-                        foreach (var unit in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range)).OrderByDescending(GetComboDamage))
-                        {
-                            var pred = R.GetPrediction(unit, true);
-                            if (Player.Distance(unit) > minRange && pred.AoeTargetsHitCount >= minHit && pred.Hitchance >= HitChance.Medium)
-                            {
-                                R.Cast(unit, packets());
-                                return;
-                            }
-                        }
                     }
+                }
+            }
+
+            foreach (var unit in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range)).OrderByDescending(GetComboDamage))
+            {
+                var pred = R.GetPrediction(unit, true);
+                if (Player.Distance(unit) > minRange && pred.AoeTargetsHitCount >= minHit && pred.Hitchance >= HitChance.Medium)
+                {
+                    R.Cast(unit, packets());
+                    return;
                 }
             }
         }

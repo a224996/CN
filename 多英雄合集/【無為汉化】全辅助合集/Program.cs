@@ -44,6 +44,26 @@ namespace Support
         {
             Version = Assembly.GetExecutingAssembly().GetName().Version;
 
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, eventArgs) =>
+            {
+                var name = eventArgs.Name.Split(',')[0];
+
+                switch (name)
+                {
+                    case "SAwareness.Resources.DLL.Evade":
+                        break;
+
+                    case "SAwareness.Resources.DLL.Newtonsoft.Json":
+                        break;
+
+                    default:
+                        Console.WriteLine("Load Assembly: " + name);
+                        break;
+                }
+
+                return null;
+            };
+
             CustomEvents.Game.OnGameLoad += a =>
             {
                 try

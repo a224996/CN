@@ -99,16 +99,16 @@ namespace Support.Plugins
             }
         }
 
-        public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        public override void OnPossibleToInterrupt(Obj_AI_Hero target, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (spell.DangerLevel < InterruptableDangerLevel.High || unit.IsAlly)
+            if (args.DangerLevel < Interrupter2.DangerLevel.High || target.IsAlly)
             {
                 return;
             }
 
-            if (E.CastCheck(unit, "InterruptE"))
+            if (E.CastCheck(target, "InterruptE"))
             {
-                E.Cast(unit);
+                E.Cast(target);
             }
         }
 

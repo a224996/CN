@@ -719,9 +719,9 @@ namespace xSaliceReligionAIO.Champions
             return !target.HasBuff("YasuoDashWrapper");
         }
 
-        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
-            if (spell.DangerLevel < InterruptableDangerLevel.Medium || unit.IsAlly || !Q.IsReady() || !ThirdQ() || !menu.Item("Interrupt", true).GetValue<bool>())
+            if (spell.DangerLevel < Interrupter2.DangerLevel.Medium || unit.IsAlly || !Q.IsReady() || !ThirdQ() || !menu.Item("Interrupt", true).GetValue<bool>())
                 return;
 
             if (unit.IsValidTarget(E.Range))

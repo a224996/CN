@@ -67,7 +67,7 @@ namespace Support.Plugins
                     if (W.CastCheck(Target, "ComboW"))
                     {
                         if (
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            HeroManager.Enemies
                                 .Where(hero => (hero.IsValidTarget(W.Range) && hero.IsMovementImpaired()))
                                 .Any(enemy => W.Cast(enemy.Position)))
                         {
@@ -75,7 +75,7 @@ namespace Support.Plugins
                         }
 
                         if (
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            HeroManager.Enemies
                                 .Where(hero => hero.IsValidTarget(W.Range))
                                 .Any(enemy => W.CastIfWillHit(enemy, 1)))
                         {
@@ -101,7 +101,7 @@ namespace Support.Plugins
                     if (W.CastCheck(Target, "HarassW"))
                     {
                         if (
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            HeroManager.Enemies
                                 .Where(hero => (hero.IsValidTarget(W.Range) && hero.IsMovementImpaired()))
                                 .Any(enemy => W.Cast(enemy.Position)))
                         {
@@ -109,7 +109,7 @@ namespace Support.Plugins
                         }
 
                         if (
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            HeroManager.Enemies
                                 .Where(hero => hero.IsValidTarget(W.Range))
                                 .Any(enemy => W.CastIfWillHit(enemy, 1))) {}
                     }

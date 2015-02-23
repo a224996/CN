@@ -122,7 +122,7 @@ namespace Support.Util
         public static List<Obj_AI_Hero> AllyInRange(float range)
         {
             return
-                ObjectManager.Get<Obj_AI_Hero>()
+                HeroManager.Allies
                     .Where(
                         h =>
                             ObjectManager.Player.Distance(h.Position) < range && h.IsAlly && !h.IsMe && h.IsValid &&
@@ -133,7 +133,7 @@ namespace Support.Util
 
         public static Obj_AI_Hero AllyBelowHp(int percentHp, float range)
         {
-            foreach (var ally in ObjectManager.Get<Obj_AI_Hero>())
+            foreach (var ally in HeroManager.Allies)
             {
                 if (ally.IsMe)
                 {

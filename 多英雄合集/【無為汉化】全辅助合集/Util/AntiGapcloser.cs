@@ -534,10 +534,10 @@ namespace Support.Util
                 {
                     if (gapcloser.SkillType == GapcloserType.Targeted ||
                         (gapcloser.SkillType == GapcloserType.Skillshot &&
-                         ObjectManager.Get<Obj_AI_Hero>()
+                         HeroManager.Allies
                              .Any(
                                  h =>
-                                     h.IsAlly && !h.IsDead &&
+                                     !h.IsDead &&
                                      (h.Distance(gapcloser.Start) < 800 || h.Distance(gapcloser.End) < 800))))
                     {
                         if (gapcloser.Sender.IsValidTarget())

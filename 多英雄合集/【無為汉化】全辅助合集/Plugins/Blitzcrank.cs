@@ -203,28 +203,28 @@ namespace Support.Plugins
             }
         }
 
-        public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        public override void OnPossibleToInterrupt(Obj_AI_Hero target, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (spell.DangerLevel < InterruptableDangerLevel.High || unit.IsAlly)
+            if (args.DangerLevel < Interrupter2.DangerLevel.High || target.IsAlly)
             {
                 return;
             }
 
-            if (E.CastCheck(unit, "InterruptE"))
+            if (E.CastCheck(target, "InterruptE"))
             {
                 if (E.Cast())
                 {
                     Orbwalking.ResetAutoAttackTimer();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, unit);
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                 }
             }
 
             if (Q.CastCheck(Target, "InterruptQ"))
             {
-                Q.Cast(unit);
+                Q.Cast(target);
             }
 
-            if (R.CastCheck(unit, "InterruptR"))
+            if (R.CastCheck(target, "InterruptR"))
             {
                 R.Cast();
             }

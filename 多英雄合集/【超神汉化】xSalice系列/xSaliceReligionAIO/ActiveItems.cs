@@ -47,28 +47,10 @@ namespace xSaliceReligionAIO
 
             ItemList.Add(new ActiveItems
             {
-                ActiveId = 3188,
-                ActiveName = "Blackfire Torch",
-                Type = "Offensive",
-                Range = 750,
-                Mode = 0,
-            });
-
-            ItemList.Add(new ActiveItems
-            {
                 ActiveId = 3153,
                 ActiveName = "Blade of the Ruined King",
                 Type = "Offensive",
                 Range = 450,
-                Mode = 0,
-            });
-
-            ItemList.Add(new ActiveItems
-            {
-                ActiveId = 3128,
-                ActiveName = "Deathfire Grasp",
-                Type = "Offensive",
-                Range = 750,
                 Mode = 0,
             });
 
@@ -171,6 +153,11 @@ namespace xSaliceReligionAIO
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
+            if (ObjectManager.Player.HasBuff("Muramana") && Items.CanUseItem(3042) && Environment.TickCount - lastMura > 5000)
+            {
+                Items.UseItem(3042);
+            }
+
             if (Target == null || ObjectManager.Player.IsDead)
                 return;
 
@@ -208,11 +195,6 @@ namespace xSaliceReligionAIO
                         Items.UseItem(item.ActiveId, Target);
                     }
                 }
-            }
-
-            if (ObjectManager.Player.HasBuff("Muramana") && Items.CanUseItem(3042) && Environment.TickCount - lastMura > 5000)
-            {
-                Items.UseItem(3042);
             }
 
             //reset mode
@@ -258,7 +240,7 @@ namespace xSaliceReligionAIO
                     //Game.PrintChat("RAWR");
                     if (AlwaysUse(item.ActiveName))
                     {
-                        Items.UseItem(item.ActiveId, Target);
+                        Items.UseItem(item.ActiveId);
                         lastMura = Environment.TickCount;
                     }
 
@@ -270,15 +252,19 @@ namespace xSaliceReligionAIO
 
                     if (ObjectManager.Player.HealthPercentage() <= UseAtMyHp(item.ActiveName) && !OnlyIfKillable(item.ActiveName))
                     {
-                        Items.UseItem(item.ActiveId, Target);
+                        Items.UseItem(item.ActiveId);
                         lastMura = Environment.TickCount;
                     }
 
                     if (Target.HealthPercentage() <= UseAtEnemyHp(item.ActiveName) && !OnlyIfKillable(item.ActiveName))
                     {
-                        Items.UseItem(item.ActiveId, Target);
+                        Items.UseItem(item.ActiveId);
                         lastMura = Environment.TickCount;
                     }
+                }
+                else if (ObjectManager.Player.HasBuff("Muramana"))
+                {
+                    lastMura = Environment.TickCount;
                 }
             }
         }
@@ -292,17 +278,9 @@ namespace xSaliceReligionAIO
                 if (item.ActiveId == 3144)
                     dmg += ObjectManager.Player.GetItemDamage(target, Damage.DamageItems.Bilgewater);
 
-                //blackfire
-                if (item.ActiveId == 3188)
-                    dmg += ObjectManager.Player.GetItemDamage(target, Damage.DamageItems.BlackFireTorch);
-
                 //Botrk
                 if (item.ActiveId == 3153)
                     dmg += ObjectManager.Player.GetItemDamage(target, Damage.DamageItems.Botrk);
-
-                //dfg
-                if (item.ActiveId == 3128)
-                    dmg += ObjectManager.Player.GetItemDamage(target, Damage.DamageItems.Dfg);
 
                 //hextech
                 if (item.ActiveId == 3146)
@@ -325,9 +303,6 @@ namespace xSaliceReligionAIO
                     dmg += ObjectManager.Player.CalcDamage(target, Damage.DamageType.Magical, LichDamage());
             }
 
-            //dmg calc for dfg/blackfire
-            if (Items.CanUseItem(3188) || Items.CanUseItem(3128))
-                dmg += dmg*1.2;
 
             if (Ignite_Ready())
                 dmg += ObjectManager.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);

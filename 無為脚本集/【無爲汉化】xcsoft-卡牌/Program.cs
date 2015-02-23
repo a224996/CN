@@ -19,8 +19,6 @@ namespace xc_TwistedFate
 
         private static Spell Q, W;
 
-        private static Items.Item Dfg, Bft;
-
         private static Menu Menu;
 
         private static SpellSlot SFlash;
@@ -41,9 +39,6 @@ namespace xc_TwistedFate
 
             SFlash = Player.GetSpellSlot("SummonerFlash");
             SIgnite = Player.GetSpellSlot("SummonerDot");
-
-            Dfg = new Items.Item((int)ItemId.Deathfire_Grasp, Orbwalking.GetRealAutoAttackRange(Player) + 10);
-            Bft = new Items.Item((int)ItemId.Blackfire_Torch, Orbwalking.GetRealAutoAttackRange(Player) + 10);
 
             Q = new Spell(SpellSlot.Q, 1450);
             Q.SetSkillshot(0.25f, 40f, 1000f, false, SkillshotType.SkillshotLine);
@@ -74,8 +69,6 @@ namespace xc_TwistedFate
             comboMenu.AddItem(new MenuItem("useW", "使用 W").SetValue(true));
             comboMenu.AddItem(new MenuItem("ignoreshield", "忽略有盾的目标").SetValue(false));
             comboMenu.AddItem(new MenuItem("useblue", "使用蓝牌不用黄牌 蓝量(<20%)").SetValue(false));
-            comboMenu.AddItem(new MenuItem("usedfg", "使用冥火").SetValue(true));
-            comboMenu.AddItem(new MenuItem("usebft", "使用黑焰火炬").SetValue(true));
             Menu.AddSubMenu(comboMenu);
 
             var harassMenu = new Menu("骚扰设置", "harassop");
@@ -148,20 +141,11 @@ namespace xc_TwistedFate
                 DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
             };
 
-            Drawings.AddItem(new MenuItem("jgpos", "丛林的位置").SetValue(true));
-            Drawings.AddItem(new MenuItem("manaper", "法力值百分比").SetValue(true));
+            Drawings.AddItem(new MenuItem("jgpos", "野区位置").SetValue(true));
+            Drawings.AddItem(new MenuItem("manaper", "法力值").SetValue(true));
             Drawings.AddItem(new MenuItem("kill", "击杀").SetValue(true));
 
             Menu.AddSubMenu(Drawings);
-
-            var predMenu = new Menu("预测", "pred");
-            predMenu.AddItem(new MenuItem("kappa", "也许最好的"));
-            Menu.AddSubMenu(predMenu);
-
-            var havefun = new MenuItem("Have fun!", "玩得开心!");
-            Menu.AddItem(havefun);
-			Menu.AddSubMenu(new Menu("無爲汉化", "by welai"));
-			Menu.SubMenu("by welai").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 
             var movement = new MenuItem("movement", "Disable orbwalk movement").SetValue(false);
             movement.ValueChanged +=
@@ -435,18 +419,6 @@ namespace xc_TwistedFate
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, Menu.Item("ignoreshield").GetValue<bool>());
 
-            if (Dfg.IsReady() && Menu.Item("usedfg").GetValue<bool>())
-            {
-                if (target.IsValidTarget(Dfg.Range))
-                    Dfg.Cast(target);
-            }
-
-            if (Bft.IsReady() && Menu.Item("usebft").GetValue<bool>())
-            {
-                if (target.IsValidTarget(Bft.Range))
-                    Bft.Cast(target);
-            }
-
             if (W.IsReady() && Menu.Item("useW").GetValue<bool>())
             {
                 if (target.IsValidTarget(W.Range))
@@ -626,17 +598,6 @@ namespace xc_TwistedFate
 
             if (!card && passive)
                 ADdmg += Player.GetAutoAttackDamage(enemy, false);
-
-            if (Dfg.IsReady() && Menu.Item("usedfg").GetValue<bool>())
-            {
-                APdmg += Player.GetItemDamage(enemy, Damage.DamageItems.Dfg);
-                APdmg = APdmg * 1.2;
-            }
-            else if (Bft.IsReady() && Menu.Item("usebft").GetValue<bool>())
-            {
-                APdmg += Player.GetItemDamage(enemy, Damage.DamageItems.BlackFireTorch);
-                APdmg = APdmg * 1.2;
-            }
 
             return (float)ADdmg + (float)APdmg + (float)Truedmg;
         }

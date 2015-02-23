@@ -74,22 +74,22 @@ namespace Support.Plugins
             }
         }
 
-        public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        public override void OnPossibleToInterrupt(Obj_AI_Hero target, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (spell.DangerLevel < InterruptableDangerLevel.High || unit.IsAlly)
+            if (args.DangerLevel < Interrupter2.DangerLevel.High || target.IsAlly)
             {
                 return;
             }
             if (GetPassiveStacks() >= 4)
             {
-                if (Q.CastCheck(unit, "Interrupt.Q"))
+                if (Q.CastCheck(target, "Interrupt.Q"))
                 {
-                    Q.Cast(unit);
+                    Q.Cast(target);
                     return;
                 }
-                if (W.CastCheck(unit, "Interrupt.W"))
+                if (W.CastCheck(target, "Interrupt.W"))
                 {
-                    W.CastOnUnit(unit);
+                    W.CastOnUnit(target);
                     return;
                 }
             }
@@ -98,21 +98,21 @@ namespace Support.Plugins
                 if (E.IsReady())
                 {
                     E.Cast();
-                    if (Q.CastCheck(unit, "Interrupt.Q"))
+                    if (Q.CastCheck(target, "Interrupt.Q"))
                     {
-                        Q.Cast(unit);
+                        Q.Cast(target);
                         return;
                     }
-                    if (W.CastCheck(unit, "Interrupt.W"))
+                    if (W.CastCheck(target, "Interrupt.W"))
                     {
-                        W.CastOnUnit(unit);
+                        W.CastOnUnit(target);
                         return;
                     }
                 }
-                if (Q.CastCheck(unit, "Interrupt.Q") && W.CastCheck(unit, "Interrupt.W"))
+                if (Q.CastCheck(target, "Interrupt.Q") && W.CastCheck(target, "Interrupt.W"))
                 {
-                    Q.Cast(unit);
-                    W.CastOnUnit(unit);
+                    Q.Cast(target);
+                    W.CastOnUnit(target);
                 }
             }
         }

@@ -32,7 +32,7 @@ namespace xSaliceReligionAIO.Champions
             R = new Spell(SpellSlot.R, 750);
 
             _qe = new Spell(SpellSlot.Q, 1250);
-            _qe.SetSkillshot(.900f, 50f, 2100f, false, SkillshotType.SkillshotLine);
+            _qe.SetSkillshot(.900f, 70f, 2100f, false, SkillshotType.SkillshotLine);
 
         }
 
@@ -44,7 +44,8 @@ namespace xSaliceReligionAIO.Champions
                 key.AddItem(new MenuItem("HarassActive", "骚扰",true).SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("HarassActiveT", "骚扰 (锁定)",true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
                 key.AddItem(new MenuItem("LaneClearActive", "清线",true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("Misc_QE_Mouse", "向鼠标QE",true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                key.AddItem(new MenuItem("Misc_QE_Mouse", "QE 鼠标最近的目标", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                key.AddItem(new MenuItem("Misc_QE_Mouse2", "向鼠标QE",true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("forceR", "释放R给最佳目标", true).SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
                 //key.AddItem(new MenuItem("qAA", "Auto Q AAing target", true).SetValue(new KeyBind("I".ToCharArray()[0], KeyBindType.Toggle)));
                 //add to menu
@@ -489,6 +490,13 @@ namespace xSaliceReligionAIO.Champions
             {
                 CastQeMouse();
             }
+            if (menu.Item("Misc_QE_Mouse2", true).GetValue<KeyBind>().Active)
+            {
+                var startPos = Player.ServerPosition + Vector3.Normalize(Game.CursorPos - Player.ServerPosition) * (E.Range - 100);
+                Q.Cast(startPos, packets());
+                W.LastCastAttemptT = Environment.TickCount + 500;
+                _qe.LastCastAttemptT = Environment.TickCount;
+            }
 
             SmartKs();
 
@@ -688,9 +696,9 @@ namespace xSaliceReligionAIO.Champions
             W.LastCastAttemptT = Environment.TickCount + 500;
         }
 
-        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
-            if (spell.DangerLevel < InterruptableDangerLevel.Medium || unit.IsAlly)
+            if (spell.DangerLevel < Interrupter2.DangerLevel.Medium || unit.IsAlly)
                 return;
 
             if (menu.Item("QE_Interrupt", true).GetValue<bool>() && unit.IsValidTarget(_qe.Range))

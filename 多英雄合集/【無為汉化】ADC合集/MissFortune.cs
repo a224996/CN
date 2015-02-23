@@ -65,27 +65,6 @@ namespace Marksman
                 Q.CastOnUnit(t);
                 return;
             }
-
-            if (Program.CClass.Config.Item("UseQMC").GetValue<bool>())
-            {
-                var vMinions = MinionManager.GetMinions(t.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-                Obj_AI_Base[] nearstMinion = {null};
-                foreach (
-                    var vMinion in
-                        vMinions.Where(
-                            minion =>
-                                minion.Distance(ObjectManager.Player) <= t.Distance(ObjectManager.Player) &&
-                                t.Distance(minion) < 400)
-                            .Where(
-                                minion =>
-                                    nearstMinion[0] == null ||
-                                    minion.Distance(ObjectManager.Player) <
-                                    nearstMinion[0].Distance(ObjectManager.Player)))
-
-                    nearstMinion[0] = vMinion;
-                if (nearstMinion[0] != null && nearstMinion[0].IsValidTarget(Q.Range))
-                    Q.CastOnUnit(nearstMinion[0]);
-            }
         }
 
         public override void Game_OnGameUpdate(EventArgs args)
@@ -149,7 +128,6 @@ namespace Marksman
         public override bool ComboMenu(Menu config)
         {
             config.AddItem(new MenuItem("UseQC" + Id, "使用 Q").SetValue(true));
-            config.AddItem(new MenuItem("UseQMC", "使用 Q (小兵与英雄)").SetValue(true));
             config.AddItem(new MenuItem("UseWC" + Id, "使用 W").SetValue(true));
             config.AddItem(new MenuItem("UseEC" + Id, "使用 E").SetValue(true));
 

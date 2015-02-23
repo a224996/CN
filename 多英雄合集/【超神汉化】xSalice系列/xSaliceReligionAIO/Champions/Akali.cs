@@ -51,7 +51,7 @@ namespace xSaliceReligionAIO.Champions
                 var eMenu = new Menu("E", "EMenu");
                 {
                     eMenu.AddItem(new MenuItem("E_On_Killable", "E抢人头",true).SetValue(true));
-                    eMenu.AddItem(new MenuItem("E_Wait_Q", "等待Q",true).SetValue(true));
+                    eMenu.AddItem(new MenuItem("E_Energy", "E 最低能量", true).SetValue(new Slider(100, 0, 200)));
                     spellMenu.AddSubMenu(eMenu);
                 }
 
@@ -60,6 +60,7 @@ namespace xSaliceReligionAIO.Champions
                     rMenu.AddItem(new MenuItem("R_Wait_For_Q", "等待Q标记",true).SetValue(false));
                     rMenu.AddItem(new MenuItem("R_If_Killable", "可杀使用R",true).SetValue(true));
                     rMenu.AddItem(new MenuItem("Dont_R_If", "敌人>X不R",true).SetValue(new Slider(3, 1, 5)));
+                    rMenu.AddItem(new MenuItem("R_Min", "最小范围使用 R", true).SetValue(new Slider(400, 50, 700)));
                     spellMenu.AddSubMenu(rMenu);
                 }
                 //add to menu
@@ -68,7 +69,7 @@ namespace xSaliceReligionAIO.Champions
 
             var combo = new Menu("连招", "Combo");
             {
-                combo.AddItem(new MenuItem("Combo_mode", "连招模式",true).SetValue(new StringList(new[] { "正常", "Q-R-AA-Q-E", "Q-Q-R-E-AA" })));
+                combo.AddItem(new MenuItem("Combo_mode", "连招模式",true).SetValue(new StringList(new[] { "正常", "Q-延迟-R-AA-Q-AA" })));
                 combo.AddItem(new MenuItem("Combo_Switch", "切换热键",true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
                 combo.AddItem(new MenuItem("UseQCombo", "使用Q",true).SetValue(true));
                 combo.AddItem(new MenuItem("UseWCombo", "使用W",true).SetValue(true));

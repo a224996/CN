@@ -58,7 +58,7 @@ namespace Support.Util
 
         public AutoBushRevealer(Menu menu)
         {
-            _enemyInfo = ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy).Select(x => new EnemyInfo(x)).ToList();
+            _enemyInfo = HeroManager.Enemies.Select(x => new EnemyInfo(x)).ToList();
 
             _menu = menu.AddSubMenu(new Menu("Auto Bush Revealer", "AutoBushRevealerMenu"));
             _menu.AddItem(new MenuItem("Auto Bush Revealer", "AutoBushRevealer").SetValue(true));

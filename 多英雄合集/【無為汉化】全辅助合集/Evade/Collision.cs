@@ -156,7 +156,7 @@ namespace Support.Evade
 
                     case CollisionObjectTypes.Champions:
                         foreach (var hero in
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            HeroManager.Enemies
                                 .Where(
                                     h =>
                                         (h.IsValidTarget(1200, false) && h.Team == ObjectManager.Player.Team && !h.IsMe ||
@@ -188,7 +188,7 @@ namespace Support.Evade
 
                     case CollisionObjectTypes.YasuoWall:
                         if (
-                            !ObjectManager.Get<Obj_AI_Hero>()
+                            !HeroManager.Enemies
                                 .Any(
                                     hero =>
                                         hero.IsValidTarget(float.MaxValue, false) &&

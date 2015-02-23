@@ -136,7 +136,7 @@ namespace Support
         /// </summary>
         public Obj_AI_Hero Target
         {
-            get { return TargetSelector.GetTarget(2500, TargetSelector.DamageType.Magical); }
+            get { return TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical); }
         }
 
         /// <summary>
@@ -252,9 +252,9 @@ namespace Support
         /// <remarks>
         ///     override to Implement SpellsInterrupt logic
         /// </remarks>
-        /// <param name="unit">Obj_AI_Base</param>
-        /// <param name="spell">InterruptableSpell</param>
-        public virtual void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell) {}
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public virtual void OnPossibleToInterrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args) {}
 
         /// <summary>
         ///     OnEnemyGapcloser
@@ -377,7 +377,7 @@ namespace Support
             Orbwalking.BeforeAttack += OnBeforeAttack;
             Orbwalking.AfterAttack += OnAfterAttack;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
-            Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;
+            Interrupter2.OnInterruptableTarget += OnPossibleToInterrupt;
             //Game.OnGameSendPacket += OnSendPacket;
             //Game.OnGameProcessPacket += OnProcessPacket;
             OnLoad(new EventArgs());
