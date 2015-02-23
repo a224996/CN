@@ -17,6 +17,10 @@ namespace MasterActivator.enumerator
         Ability = 10,
         OffensiveAOE = 11,
         TeamAbility = 12,
-        TeamAbilityAOE = 13
+        TeamAbilityAOE = 13,
+        Ward = 14,
+        VisionWard = 15,
+        KSAbility = 16,
+        KSAbilityAOE = 17
     }
 }

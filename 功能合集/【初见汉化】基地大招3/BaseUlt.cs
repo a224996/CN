@@ -10,12 +10,22 @@ using Collision = LeagueSharp.Common.Collision;
 using Color = System.Drawing.Color;
 using Font = SharpDX.Direct3D9.Font;
 
+using ObjectManager = LeagueSharp.Common.ObjectHandler; 
+
 namespace BaseUlt3
 {
     /*
      * fixed? use for allies when fixed: champ.Spellbook.GetSpell(SpellSlot.R) = Ready
      * Fadeout even normal recall finishes
-     * */
+     * 
+     * @beaving why doesn't team baseult work? did it require packets? we tried yesterday(before l# was fully updated) and my friend ulted, my character was about to ult and then after it saw ez ult it canceled I was playing jinx. WE lost a free kill lol because of it. Does it work? 
+     * 
+     * Hello beaving , iam a great fan of your scripts especially the baseult one , i can see u have did a great work in ur scripts , but while i was playing with baseult3 an idea came up to my mind , A script that can detect position of enemies in a circular shape
+Example:http://imgur.com/2BGvB2C (sry for bad drawing )
+The idea where the lines come from is that u can calculate how far they are from base (enemySpawnPos) , so is it possible to make a script that can just show the position of the enemy while recalling i guess it would help , especially if u can show these lines even when they're not recalling (not sure if it's possible tho ) that would help so much in ganks and other stuff , thanks for your time , and i hope you give me your opinion about this script , have a nice day 
+     ---> draw growing circle as soon as enemies go into fow. if they start recalling, dont increase the circle range. if they finished -> reset. some time limit too?
+     
+     */
 
     internal class BaseUlt
     {
@@ -39,6 +49,8 @@ namespace BaseUlt3
         Vector3 EnemySpawnPos;
 
         Font Text;
+
+        System.Drawing.Color NotificationColor = System.Drawing.Color.FromArgb(136, 207, 240);
 
         static float BarX = Drawing.Width * 0.425f;
         float BarY = Drawing.Height * 0.80f;
@@ -75,8 +87,13 @@ namespace BaseUlt3
                     TeamUlt.AddItem(new MenuItem(champ.ChampionName, "队友使用基地大招: " + champ.ChampionName).SetValue(false).DontSave());
 
                 foreach (Obj_AI_Hero champ in Enemies)
-                    DisabledChampions.AddItem(new MenuItem(champ.ChampionName, "别开枪: " + champ.ChampionName).SetValue(false).DontSave());
+                    DisabledChampions.AddItem(new MenuItem(champ.ChampionName, "不使用基地大招: " + champ.ChampionName).SetValue(false).DontSave());
             }
+
+            var NotificationsMenu = Menu.AddSubMenu(new Menu("通知", "Notifications"));
+
+            NotificationsMenu.AddItem(new MenuItem("notifRecFinished", "回城完成").SetValue(true));
+            NotificationsMenu.AddItem(new MenuItem("notifRecAborted", "回城终止").SetValue(true));
 
             EnemySpawnPos = ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy).Position; //ObjectManager.Get<GameObject>().FirstOrDefault(x => x.Type == GameObjectType.obj_SpawnPoint && x.IsEnemy).Position;
 
@@ -96,7 +113,20 @@ namespace BaseUlt3
             if (compatibleChamp)
                 Game.OnGameUpdate += Game_OnGameUpdate;
 
-            Game.PrintChat("<font color=\"#1eff00\">BaseUlt3 by Beaving</font> - <font color=\"#00BFFF\">Loaded</font>");
+            ShowNotification("BaseUlt3 by Beaving - Loaded", NotificationColor, 3000);
+        }
+
+        public Notification ShowNotification(string message, System.Drawing.Color color, int duration = -1, bool dispose = true)
+        {
+            var notif = new Notification(message).SetTextColor(color);
+            Notifications.AddNotification(notif);
+
+            if(dispose)
+            {
+                Utility.DelayAction.Add(duration, () => notif.Dispose());
+            }
+
+            return notif;
         }
 
         public bool IsCompatibleChamp(String championName)
@@ -171,7 +201,7 @@ namespace BaseUlt3
                 var timeneeded = GetUltTravelTime(champ, UltSpellData[champ.ChampionName].Speed, UltSpellData[champ.ChampionName].Delay, EnemySpawnPos) - 65;
 
                 if (enemyInfo.RecallInfo.GetRecallCountdown() >= timeneeded)
-                    enemyInfo.RecallInfo.IncomingDamage[champ.NetworkId] = (float)Damage.GetSpellDamage(champ, enemyInfo.Player, SpellSlot.R, UltSpellData[champ.ChampionName].SpellStage) * UltSpellData[champ.ChampionName].DamageMultiplicator;
+                    enemyInfo.RecallInfo.IncomingDamage[champ.NetworkId] = (float)champ.GetSpellDamage(enemyInfo.Player, SpellSlot.R, UltSpellData[champ.ChampionName].SpellStage) * UltSpellData[champ.ChampionName].DamageMultiplicator;
                 else if (enemyInfo.RecallInfo.GetRecallCountdown() < timeneeded - (champ.IsMe ? 0 : 125)) //some buffer for allies so their damage isnt getting reset
                 {
                     enemyInfo.RecallInfo.IncomingDamage[champ.NetworkId] = 0;
@@ -288,7 +318,28 @@ namespace BaseUlt3
             }
 
             var recall = Packet.S2C.Teleport.Decoded(unit, args);
-            EnemyInfo.Find(x => x.Player.NetworkId == recall.UnitNetworkId).RecallInfo.UpdateRecall(recall);
+            var enemyInfo = EnemyInfo.Find(x => x.Player.NetworkId == recall.UnitNetworkId).RecallInfo.UpdateRecall(recall);
+
+            if(recall.Type == Packet.S2C.Teleport.Type.Recall)
+            {
+                switch(recall.Status)
+                {
+                    case Packet.S2C.Teleport.Status.Abort:
+                        if(Menu.Item("notifRecAborted").GetValue<bool>())
+                        {
+                            ShowNotification(enemyInfo.Player.ChampionName + ": Recall ABORTED", System.Drawing.Color.Orange, 4000);
+                        }
+                        
+                        break;
+                    case Packet.S2C.Teleport.Status.Finish:
+                        if (Menu.Item("notifRecFinished").GetValue<bool>())
+                        {
+                            ShowNotification(enemyInfo.Player.ChampionName + ": Recall FINISHED", NotificationColor, 4000);
+                        }
+
+                        break;
+                }
+            }
         }
 
         void Drawing_OnPostReset(EventArgs args)
