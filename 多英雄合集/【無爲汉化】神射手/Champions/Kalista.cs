@@ -24,7 +24,7 @@ namespace Sharpshooter.Champions
             E = new Spell(SpellSlot.E, 1000f);
             R = new Spell(SpellSlot.R, 1400f);
 
-            Q.SetSkillshot(0.25f, 40f, 1700f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 30f, 1700f, true, SkillshotType.SkillshotLine);
 
             var drawDamageMenu = new MenuItem("Draw_RDamage", "显示 (E) 伤害", true).SetValue(true);
             var drawFill = new MenuItem("Draw_Fill", "显示 (E) 补充伤害", true).SetValue(new Circle(true, Color.FromArgb(90, 255, 169, 4)));
@@ -273,7 +273,7 @@ namespace Sharpshooter.Champions
 
                     if (killcount >= SharpShooter.Menu.Item("laneclearQnum", true).GetValue<Slider>().Value)
                     {
-                        if (Q.GetPrediction(minion).Hitchance >= HitChance.High && !Player.IsWindingUp && !Player.IsDashing())
+                        if (!Player.IsWindingUp && !Player.IsDashing())
                         { 
                             Q.Cast(minion.ServerPosition);
                             break;

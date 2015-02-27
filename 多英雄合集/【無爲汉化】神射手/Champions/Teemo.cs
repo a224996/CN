@@ -60,7 +60,7 @@ namespace Sharpshooter.Champions
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                //Laneclear();
+                Laneclear();
                 Jungleclear();
             }
         }
@@ -134,13 +134,13 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (Q.CanCast(Qtarget) && !Qtarget.IsValidTarget(620))
+                if (Q.CanCast(Qtarget) && !Qtarget.IsValidTarget(670))
                     Q.Cast(Qtarget);
             }
 
             if (SharpShooter.Menu.Item("comboUseW", true).GetValue<Boolean>() & W.IsReady())
             {
-                var Wtarget = HeroManager.Enemies.Where(x => x.IsValidTarget(700) && !x.IsFacing(Player)).FirstOrDefault();
+                var Wtarget = HeroManager.Enemies.Where(x => x.IsValidTarget(1000) && !x.IsFacing(Player)).FirstOrDefault();
 
                 if (Wtarget != null)
                     W.Cast();
@@ -148,7 +148,7 @@ namespace Sharpshooter.Champions
 
             if (SharpShooter.Menu.Item("comboUseR", true).GetValue<Boolean>() & R.IsReady())
             {
-                var Rtarget = HeroManager.Enemies.Where(x => R.CanCast(x) && !x.HasBuff("bantamtraptarget", true)).OrderBy(x => x.ServerPosition.Distance(Player.ServerPosition)).FirstOrDefault();
+                var Rtarget = HeroManager.Enemies.Where(x => R.CanCast(x) && !x.HasBuff("bantamtraptarget", true)).OrderBy(x => x.Distance(Player.Position, false)).FirstOrDefault();
 
                 if (R.CanCast(Rtarget))
                     R.Cast(Rtarget);
@@ -164,9 +164,17 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (Q.CanCast(Qtarget) && !Qtarget.IsValidTarget(620))
+                if (Q.CanCast(Qtarget) && !Qtarget.IsValidTarget(670))
                     Q.Cast(Qtarget);
             }
+        }
+
+        static void Laneclear()
+        {
+            var bigminion = MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Enemy).Where(x => Q.CanCast(x) && x.Health <= Q.GetDamage(x) && (x.SkinName.ToLower().Contains("siege") || x.SkinName.ToLower().Contains("super"))).FirstOrDefault();
+
+            if (Q.CanCast(bigminion))
+                Q.Cast(bigminion);
         }
 
         static void Jungleclear()

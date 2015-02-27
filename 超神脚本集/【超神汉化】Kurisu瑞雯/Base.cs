@@ -238,6 +238,7 @@ namespace KurisuRiven
                         LastQ = Environment.TickCount;
                         Utility.DelayAction.Add(100,
                             () => Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos));
+
                         if (GetList("engage") == 1 && HasHD)
                             Helpers.CheckR(Combo.Target);
                         CanQ = false;
@@ -422,11 +423,13 @@ namespace KurisuRiven
             Settings.AddSubMenu(sMenu);
 
             var oMenu = new Menu("杂项", "otherstuff");
-            oMenu.AddItem(new MenuItem("autow", "自动W")).SetValue(true);
-            oMenu.AddItem(new MenuItem("wmin", "目标数量")).SetValue(new Slider(2, 1, 5));
+            oMenu.AddItem(new MenuItem("semiq", "使用 半-Q 骚扰/清兵")).SetValue(true);
+            oMenu.AddItem(new MenuItem("forceaa", "清兵强制 AA")).SetValue(false);
             oMenu.AddItem(new MenuItem("useitems", "使用幽梦/破败")).SetValue(true);
             oMenu.AddItem(new MenuItem("keepq", "保存Q")).SetValue(true);
             oMenu.AddItem(new MenuItem("delay", "AA -> Q 延迟")).SetValue(new Slider(0, 0, 200));
+            oMenu.AddItem(new MenuItem("autow", "自动 W")).SetValue(true);
+            oMenu.AddItem(new MenuItem("wmin", "最少人数")).SetValue(new Slider(2, 1, 5));
             oMenu.AddItem(new MenuItem("debugtrue", "调试真实伤害")).SetValue(false);
             oMenu.AddItem(new MenuItem("debugdmg", "调试连招伤害")).SetValue(false);
             Settings.AddSubMenu(oMenu);

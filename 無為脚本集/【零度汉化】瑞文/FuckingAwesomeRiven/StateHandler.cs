@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using LeagueSharp.Common.Data;
+using SharpDX;
 using SH = FuckingAwesomeRiven.SpellHandler;
 using CH = FuckingAwesomeRiven.CheckHandler;
 
@@ -12,16 +12,23 @@ namespace FuckingAwesomeRiven
 {
     class StateHandler
     {
-        public static Obj_AI_Hero Target { get
+        public static Obj_AI_Hero Target;
+
+        public static Obj_AI_Hero Player;
+
+        public static void tick()
         {
-            return TargetSelector.GetTarget(500, TargetSelector.DamageType.Physical);
-        } }
-        public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+            Target = TargetSelector.GetTarget(800, TargetSelector.DamageType.Physical);
+            Player = ObjectManager.Player;
+        }
+
         public static void lastHit()
         {
             var minion = MinionManager.GetMinions(Player.Position, SH.QRange).FirstOrDefault();
 
-            SH.animCancel(minion);
+            if (Queuer.Queue.Count > 0) return;
+
+            if (minion == null) return;
 
             if (SH._spells[SpellSlot.W].IsReady() && MenuHandler.getMenuBool("WLH") && CH.CanW && Environment.TickCount - CH.LastE >= 250 && minion.IsValidTarget(SH._spells[SpellSlot.W].Range) && SH._spells[SpellSlot.W].GetDamage(minion) > minion.Health)
             {
@@ -41,12 +48,26 @@ namespace FuckingAwesomeRiven
         {
             var minion = MinionManager.GetMinions(Player.Position, SH.QRange).FirstOrDefault();
 
-            SH.animCancel(minion);
+            if (!minion.IsValidTarget()) return;
+
+            if (Queuer.Queue.Count > 0) return;
+
+            if (CH.LastTiamatCancel < Environment.TickCount)
+            {
+                CH.LastTiamatCancel = int.MaxValue;
+                SH.castItems(Target);
+            }
+
+            if (HealthPrediction.GetHealthPrediction(minion, (int) (ObjectManager.Player.AttackCastDelay * 1000)) > 0 &&
+                Player.GetAutoAttackDamage(minion) >
+                HealthPrediction.GetHealthPrediction(minion, (int) (ObjectManager.Player.AttackCastDelay * 1000)))
+            {
+                SH.Orbwalk(minion);
+            }
 
             if (SH._spells[SpellSlot.W].IsReady() && MenuHandler.getMenuBool("WWC") && CH.CanW && Environment.TickCount - CH.LastE >= 250 && minion.IsValidTarget(SH._spells[SpellSlot.W].Range) && SH._spells[SpellSlot.W].GetDamage(minion) > minion.Health)
             {
                 SH.CastW();
-                SH.castItems(minion);
             }
 
             if (SH._spells[SpellSlot.Q].IsReady() && MenuHandler.getMenuBool("QWC") && Environment.TickCount - CH.LastE >= 250 && (SH._spells[SpellSlot.Q].GetDamage(minion) + Player.GetAutoAttackDamage(minion) > minion.Health && MenuHandler.getMenuBool("QWC-AA")) || (SH._spells[SpellSlot.Q].GetDamage(minion) > minion.Health && MenuHandler.getMenuBool("QWC-LH")))
@@ -61,14 +82,20 @@ namespace FuckingAwesomeRiven
         public static void JungleFarm()
         {
             var minion =
-                MinionManager.GetMinions(Player.Position, SH.QRange, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+                MinionManager.GetMinions(Player.Position, 600, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
 
             if (!minion.IsValidTarget())
                 return;
 
-            SH.Orbwalk(minion);
+            if (Queuer.Queue.Count > 0) return;
 
-            SH.animCancel(minion);
+            if (CH.LastTiamatCancel < Environment.TickCount)
+            {
+                CH.LastTiamatCancel = int.MaxValue;
+                SH.castItems(Target);
+            }
+
+            SH.Orbwalk(minion);
 
             if (SH._spells[SpellSlot.E].IsReady() && CH.CanE && MenuHandler.getMenuBool("EJ"))
             {
@@ -81,7 +108,6 @@ namespace FuckingAwesomeRiven
             if (SH._spells[SpellSlot.W].IsReady() && CH.CanW && Environment.TickCount - CH.LastE >= 250 && minion.IsValidTarget(SH._spells[SpellSlot.W].Range) && MenuHandler.getMenuBool("WJ"))
             {
                 SH.CastW();
-                SH.castItems(minion);
             }
             SH.castItems(minion);
             if (SH._spells[SpellSlot.Q].IsReady() && Environment.TickCount - CH.LastE >= 250 && MenuHandler.getMenuBool("QJ"))
@@ -96,208 +122,196 @@ namespace FuckingAwesomeRiven
 
         public static void mainCombo()
         {
-            SH.Orbwalk(Target);
-            var useR = true;
 
-            if (SH._spells[SpellSlot.R].IsReady() && CH.RState && MenuHandler.getMenuBool("CR2"))
+            SH.Orbwalk(Target);
+
+            if (Queuer.Queue.Count > 0) return;
+
+            if(!Target.IsValidTarget()) return;
+
+
+            var comboRDmg = DamageHandler.getComboDmg(true, Target);
+            var comboNoR = DamageHandler.getComboDmg(false, Target);
+
+            if (CH.LastECancelSpell < Environment.TickCount && MenuHandler.getMenuBool("autoCancelE"))
             {
-                if (SH._spells[SpellSlot.R].GetDamage(Target) > Target.Health)
+                CH.LastECancelSpell = int.MaxValue;
+                SH.CastE(Target.Position);
+            }
+            if (CH.LastTiamatCancel < Environment.TickCount && MenuHandler.getMenuBool("autoCancelT"))
+            {
+                CH.LastTiamatCancel = int.MaxValue;
+                SH.castItems(Target);
+            }
+
+            if (MenuHandler.getMenuBool("CR") && Queuer.Queue.Contains("R"))
+            {
+                if (SH._spells[SpellSlot.E].IsReady() && SH._spells[SpellSlot.R].IsReady() &&
+                    SH._spells[SpellSlot.Q].IsReady() && (comboNoR < Target.Health && comboRDmg > Target.Health || Player.Position.CountEnemiesInRange(600) >= MenuHandler.Config.Item("CRNO").GetValue<Slider>().Value || MenuHandler.Config.Item("forcedR").GetValue<KeyBind>().Active))
                 {
-                    SH.CastR2(Target);
+                    Queuer.add("E", Target.Position);
+                    Queuer.add("Hydra");
+                    Queuer.add("R");
+                    Queuer.add("Q");
+                }
+                if ((Player.Position.CountEnemiesInRange(600) >= MenuHandler.Config.Item("CRNO").GetValue<Slider>().Value || comboNoR < Target.Health && comboRDmg > Target.Health || MenuHandler.Config.Item("forcedR").GetValue<KeyBind>().Active) && SH._spells[SpellSlot.R].IsReady() && SH._spells[SpellSlot.E].IsReady())
+                {
+                    Queuer.add("R");
+                    Queuer.add("E", Target.Position);
+                }
+                if (Player.Position.CountEnemiesInRange(600) >= MenuHandler.Config.Item("CRNO").GetValue<Slider>().Value || comboNoR < Target.Health && comboRDmg > Target.Health || MenuHandler.Config.Item("forcedR").GetValue<KeyBind>().Active)
+                {
+                    Queuer.add("R");
                 }
             }
 
-            if (useR && CH.RState)
+            if (CH.RState && !Queuer.Queue.Contains("R2"))
             {
 
                 if (MenuHandler.getMenuBool("QWR2KS") && Target.IsValidTarget(SH.QRange) && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.Q].IsReady() &&
-                    SH._spells[SpellSlot.Q].GetDamage(Target) + (CH.RState && SH._spells[SpellSlot.R].IsReady() ? SH._spells[SpellSlot.R].GetDamage(Target) : 0) >
-                    Target.Health)
+                    SH._spells[SpellSlot.Q].GetDamage(Target) + SH._spells[SpellSlot.R].GetDamage(Target) > Target.Health)
                 {
-                    SH.CastQ(Target);
-                    Utility.DelayAction.Add(250, () => SH.CastW());
-                    Utility.DelayAction.Add(515, () => SH.CastR2(Target));
+                    Queuer.add("Q");
+                    Queuer.add("W");
+                    Queuer.add("R2", Target);
+                    return;
                 }
-                else if (MenuHandler.getMenuBool("QR2KS") && Target.IsValidTarget(SH.QRange) && SH._spells[SpellSlot.Q].IsReady() &&
-                         SH._spells[SpellSlot.Q].GetDamage(Target) + (CH.RState && SH._spells[SpellSlot.R].IsReady() ? SH._spells[SpellSlot.R].GetDamage(Target) : 0) > Target.Health)
+                if (MenuHandler.getMenuBool("QR2KS") && Target.IsValidTarget(SH.QRange) && SH._spells[SpellSlot.Q].IsReady() &&
+                         SH._spells[SpellSlot.Q].GetDamage(Target) + SH._spells[SpellSlot.R].GetDamage(Target)> Target.Health)
                 {
-                    SH.CastQ(Target);
-                    Utility.DelayAction.Add(515, () => SH.CastR2(Target));
+                    Queuer.add("Q");
+                    Queuer.add("R2", Target);
+                    return;
                 }
-                else if (MenuHandler.getMenuBool("WR2KS") && Target.IsValidTarget(SH.WRange) && CH.CanW && SH._spells[SpellSlot.W].IsReady() &&
-                         SH._spells[SpellSlot.W].GetDamage(Target) + (CH.RState && SH._spells[SpellSlot.R].IsReady() ? SH._spells[SpellSlot.R].GetDamage(Target) : 0) > Target.Health)
+                if (MenuHandler.getMenuBool("WR2KS") && Target.IsValidTarget(SH.WRange) && CH.CanW && SH._spells[SpellSlot.W].IsReady() &&
+                         SH._spells[SpellSlot.W].GetDamage(Target) + SH._spells[SpellSlot.R].GetDamage(Target) > Target.Health)
                 {
-                    SH.CastW();
-                    Utility.DelayAction.Add(515, () => SH.CastR2(Target));
+                    Queuer.add("W");
+                    Queuer.add("R2", Target);
+                    return;
+                }
+                if (MenuHandler.getMenuBool("CR2") && SpellHandler._spells[SpellSlot.R].GetDamage(Target) > Target.Health)
+                {
+                    Queuer.add("R2", Target);
+                    return;
                 }
             }
             else
             {
                 if (MenuHandler.getMenuBool("QWKS") && Target.IsValidTarget(SH.QRange) && SH._spells[SpellSlot.Q].IsReady() && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.Q].GetDamage(Target) + SH._spells[SpellSlot.W].GetDamage(Target) > Target.Health)
                 {
-                    SH.CastQ(Target);
-                    Utility.DelayAction.Add(250, () => SH.CastW());
+                    Queuer.add("Q");
+                    Queuer.add("W");
                 }
-                else if (MenuHandler.getMenuBool("QKS") && Target.IsValidTarget(SH.QRange) && SH._spells[SpellSlot.Q].IsReady() && SH._spells[SpellSlot.Q].GetDamage(Target) > Target.Health)
+                if (MenuHandler.getMenuBool("QKS") && Target.IsValidTarget(SH.QRange) && SH._spells[SpellSlot.Q].IsReady() && SH._spells[SpellSlot.Q].GetDamage(Target) > Target.Health)
                 {
-                    SH.CastQ(Target);
+                    Queuer.add("Q");
                 }
-                else if (MenuHandler.getMenuBool("WKS") && Target.IsValidTarget(SH.WRange) && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.W].GetDamage(Target) > Target.Health)
+                if (MenuHandler.getMenuBool("WKS") && Target.IsValidTarget(SH.WRange) && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.W].GetDamage(Target) > Target.Health)
                 {
-                    SH.CastW();
+                    Queuer.add("W");
                 }
             }
 
             var BonusRange = Orbwalking.GetRealAutoAttackRange(Player) + (Target.BoundingRadius / 2) - 50;
 
-            SH.animCancel(Target);
+            if (Target == null) return;
 
-            if (MenuHandler.getMenuBool("CE") && SH._spells[SpellSlot.E].IsReady() && CH.CanE)
+            if (MenuHandler.getMenuBool("CE") && SH._spells[SpellSlot.E].IsReady())
             {
-                if (MenuHandler.getMenuBool("UseE-GC") && !MenuHandler.getMenuBool("UseE-AA"))
+                if (MenuHandler.getMenuBool("UseE-GC"))
                 {
                     if (!Target.IsValidTarget(SH._spells[SpellSlot.E].Range - BonusRange + 50) &&
                         Target.IsValidTarget(SH._spells[SpellSlot.E].Range + BonusRange))
                     {
-                        SH.CastE(Target.Position);
+                        Queuer.add("E", Target.Position);
                     }
-                    else if (SH._spells[SpellSlot.Q].IsReady() &&
+                    if (SH._spells[SpellSlot.Q].IsReady() &&
                              !Target.IsValidTarget(SH._spells[SpellSlot.E].Range + BonusRange) &&
                              Target.IsValidTarget(SH._spells[SpellSlot.E].Range + SH._spells[SpellSlot.Q].Range - 50))
                     {
-                        SH.CastE(Target.Position);
+                        Queuer.add("E", Target.Position);
                     }
                 }
-                else if(Target.Distance(Player) > Orbwalking.GetRealAutoAttackRange(Player))
+                else if (Vector3.Distance(Player.Position, Target.Position) > Orbwalking.GetRealAutoAttackRange(Player))
                 {
-                    SH.CastE(Target.Position);
+                    Queuer.add("E", Target.Position);
                 }
             }
 
-            SH.castItems(Target);
-
-            if (MenuHandler.getMenuBool("CW") && SH._spells[SpellSlot.W].IsReady() && CH.CanW && Environment.TickCount - CH.LastE >= 250 && Target.IsValidTarget(SH._spells[SpellSlot.W].Range))
+            if (MenuHandler.getMenuBool("CW") && SH._spells[SpellSlot.W].IsReady() && Environment.TickCount - CH.LastE >= 100 && Target.IsValidTarget(SH._spells[SpellSlot.W].Range))
             {
-                SH.CastW();
+                Queuer.add("W");
             }
 
-            if (SH._spells[SpellSlot.Q].IsReady() && Environment.TickCount - CH.LastE >= 250 && MenuHandler.getMenuBool("CQ"))
+            if (SH._spells[SpellSlot.Q].IsReady() && Environment.TickCount - CH.LastE >= 100 && MenuHandler.getMenuBool("CQ") && !Queuer.Queue.Contains("Q"))
             {
-                if (Target.IsValidTarget(SH.QRange) && CH.CanQ)
+                if (Target.IsValidTarget(SH.QRange) && CH.CanQ && MenuHandler.Config.Item("QAA").GetValue<StringList>().SelectedIndex == 0)
                 {
-                    SH.CastQ(Target);
-                    return;
+                    Queuer.add("Q");
                 }
-                if (!Target.IsValidTarget(BonusRange + 50) && Target.IsValidTarget(SH.QRange) && CH.CanQ && MenuHandler.getMenuBool("UseQ-GC"))
+                if (!Target.IsValidTarget(SH.QRange + Orbwalking.GetRealAutoAttackRange(Player)) && !Orbwalking.InAutoAttackRange(Target) && MenuHandler.getMenuBool("UseQ-GC2"))
                 {
-                    SH.CastQ(Target);
+                    Queuer.add("Q");
                 }
             }
         }
 
-        public static bool burstFinished;
+        public static bool castedFlash = false;
+        public static bool castedTia;
 
         public static void burstCombo()
         {
             SH.Orbwalk(Target);
 
-            if (!Target.IsValidTarget())
-                return;
-            var BonusRange = Orbwalking.GetRealAutoAttackRange(Player) + (Target.BoundingRadius / 2) - 50;
+            if (!Target.IsValidTarget()) return;
 
-            burstFinished = !(SH._spells[SpellSlot.Q].IsReady() && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.E].IsReady() && SH._spells[SpellSlot.R].IsReady());
-
-            if (!burstFinished || CH.FullComboState != 0)
+            //kyzer 3rd q combo
+            if (MenuHandler.getMenuBool("shyCombo") && Target.IsValidTarget(600) && SH._spells[SpellSlot.Q].IsReady() && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.E].IsReady() && SH._spells[SpellSlot.R].IsReady() && CH.QCount == 2 && Queuer.Queue.Count == 0)
             {
-                if (SH.SummonerDictionary[SH.summonerSpell.Flash].IsReady() && SH._spells[SpellSlot.E].IsReady() && SH._spells[SpellSlot.R].IsReady() && !CH.RState && !Target.IsValidTarget(SH._spells[SpellSlot.E].Range + BonusRange) &&
-                    Target.IsValidTarget(SH._spells[SpellSlot.E].Range + 400 + BonusRange) && MenuHandler.getMenuBool("BFL"))
-                {
-                    SH.CastE(Target.Position);
-                    Utility.DelayAction.Add(200, SH.CastR);
-                    Utility.DelayAction.Add(250, () => SH.castFlash(Target.Position));
-                }
-                if (Target.IsValidTarget(SH._spells[SpellSlot.E].Range + BonusRange) && SH._spells[SpellSlot.E].IsReady() && SH._spells[SpellSlot.R].IsReady() && !CH.RState)
-                {
-                    SH.CastE(Target.Position);
-                    Utility.DelayAction.Add(250, SH.CastR);
-                }
-                switch (CH.FullComboState)
-                {
-                    case 1:
-                        {
-                            if (!Target.IsValidTarget(SH._spells[SpellSlot.W].Range))
-                                return;
-                            SH.CastW();
-                            SH.castItems(Target);
-                        }
-                        break;
-                    case 2:
-                        {
-                            CH.FullComboState = 3;
-                        }
-                        break;
-                    case 3:
-                        {
-                            SH.CastQ(Target);
-                        }
-                        break;
-                }
-                return;
+                Queuer.add("E", Target.Position);
+                Queuer.add("R");
+                Queuer.add("Flash", Target.Position, true);
+                Queuer.add("Q");
+                Queuer.add("AA");
+                Queuer.add("Hydra");
+                Queuer.add("W");
+                Queuer.add("AA");
+                Queuer.add("R2", Target);
+                Queuer.add("Q");
             }
 
-            if (SH._spells[SpellSlot.R].GetDamage(Target) > Target.Health && CH.RState && SH._spells[SpellSlot.R].IsReady())
+            // Shy combo
+            if (MenuHandler.getMenuBool("kyzerCombo") && Target.IsValidTarget(600) && SH._spells[SpellSlot.Q].IsReady() && SH._spells[SpellSlot.W].IsReady() && SH._spells[SpellSlot.E].IsReady() && SH._spells[SpellSlot.R].IsReady() && Queuer.Queue.Count == 0)
             {
-                SH.CastR2(Target);
-            }
-
-            SH.animCancel(Target);
-
-            if (SH._spells[SpellSlot.E].IsReady() && CH.CanE)
-            {
-                if (!Target.IsValidTarget(SH._spells[SpellSlot.E].Range - BonusRange + 50) && Target.IsValidTarget(SH._spells[SpellSlot.E].Range + BonusRange))
-                {
-                    SH.CastE(Target.Position);
-                }
-                else if (SH._spells[SpellSlot.Q].IsReady() && !Target.IsValidTarget(SH._spells[SpellSlot.E].Range + BonusRange) &&
-                         Target.IsValidTarget(SH._spells[SpellSlot.E].Range + SH._spells[SpellSlot.Q].Range - 50))
-                {
-                    SH.CastE(Target.Position);
-                }
+                Queuer.add("E", Target.Position);
+                Queuer.add("R");
+                Queuer.add("Flash", Target.Position, true);
+                Queuer.add("AA");
+                Queuer.add("Hydra");
+                Queuer.add("W");
+                Queuer.add("R2", Target);
+                Queuer.add("Q");
             }
 
 
-            if (SH._spells[SpellSlot.W].IsReady() && CH.CanW && Environment.TickCount - CH.LastE >= 250 && Target.IsValidTarget(SH._spells[SpellSlot.W].Range))
-            {
-                SH.CastW();
-            }
+            if (Queuer.Queue.Count > 0) return;
+            mainCombo();
 
-            SH.castItems(Target);
-
-            if (SH._spells[SpellSlot.Q].IsReady() && Environment.TickCount - CH.LastE >= 250)
-            {
-                if (Target.IsValidTarget(SH.QRange) && CH.CanQ)
-                {
-                    SH.CastQ(Target);
-                    return;
-                }
-                if (!Target.IsValidTarget(BonusRange + 50) && Target.IsValidTarget(SH.QRange))
-                {
-                    SH.CastQ(Target);
-                }
-            }
         }
 
         public static void flee()
         {
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
-            if (SH._spells[SpellSlot.E].IsReady() && Environment.TickCount - CH.LastQ >= 250 && MenuHandler.getMenuBool("EFlee"))
+            if (SH._spells[SpellSlot.E].IsReady() && CH.LastQ + 250 < Environment.TickCount && MenuHandler.getMenuBool("EFlee"))
             {
                 SH.CastE(Game.CursorPos);
             }
 
-            if (SH._spells[SpellSlot.Q].IsReady() && Environment.TickCount - CH.LastE >= 250 && MenuHandler.getMenuBool("QFlee"))
+            if ((SH._spells[SpellSlot.Q].IsReady() && CH.LastE + 250  < Environment.TickCount && MenuHandler.getMenuBool("QFlee")))
             {
+                if ((MenuHandler.Config.Item("Ward Mechanic").GetValue<bool>() && CheckHandler.QCount == 2)) return;
                 SH.CastQ();
             }
         }
