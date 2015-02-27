@@ -72,16 +72,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>D:\LeagueSharp\\System\clipper_library.dll</HintPath>
+      <HintPath>..\LeagueSharp\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>D:\LeagueSharp\\System\LeagueSharp.dll</HintPath>
+      <HintPath>..\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="SharpDX">
-      <HintPath>D:\LeagueSharp\\System\SharpDX.dll</HintPath>
+      <HintPath>..\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>D:\LeagueSharp\\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>..\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -92,6 +93,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alerter.cs" />
