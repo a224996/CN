@@ -17,18 +17,28 @@ namespace Leblanc
         {
             Program.Config.AddSubMenu(new Menu("刺客模式", "MenuAssassin"));
             Program.Config.SubMenu("MenuAssassin").AddItem(new MenuItem("AssassinActive", "启用").SetValue(true));
-            Program.Config.SubMenu("MenuAssassin").AddItem(new MenuItem("Ax", ""));
+
+            foreach (
+                var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
+            {
+                Program.Config.SubMenu("MenuAssassin")
+
+                    .AddItem(
+                        new MenuItem("Assassin" + enemy.ChampionName, enemy.ChampionName).SetValue(
+                            TargetSelector.GetPriority(enemy) > 3));
+            }
+
+
             Program.Config.SubMenu("MenuAssassin")
                 .AddItem(
                     new MenuItem("AssassinSelectOption", "集: ").SetValue(
                         new StringList(new[] { "单选项", "多选项" })));
-            Program.Config.SubMenu("MenuAssassin").AddItem(new MenuItem("Ax", ""));
             Program.Config.SubMenu("MenuAssassin")
                 .AddItem(new MenuItem("AssassinSetClick", "添加/删除点击").SetValue(true));
             Program.Config.SubMenu("MenuAssassin")
                 .AddItem(
-                    new MenuItem("AssassinReset", "重置列表").SetValue(
-                        new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                    new MenuItem("AssassinReset", "重置列表").SetValue(new KeyBind("T".ToCharArray()[0],
+                        KeyBindType.Press)));
 
             Program.Config.SubMenu("MenuAssassin").AddSubMenu(new Menu("绘制:", "Draw"));
 
@@ -46,26 +56,16 @@ namespace Leblanc
                 .AddItem(new MenuItem("DrawStatus", "显示状态").SetValue(true));
 
 
-            Program.Config.SubMenu("MenuAssassin").AddSubMenu(new Menu("刺杀名单:", "AssassinMode"));
-            foreach (
-                var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
-            {
-                Program.Config.SubMenu("MenuAssassin")
-                    .SubMenu("AssassinMode")
-                    .AddItem(
-                        new MenuItem("Assassin" + enemy.ChampionName, enemy.ChampionName).SetValue(
-                            TargetSelector.GetPriority(enemy) > 3));
-            }
+
             Program.Config.SubMenu("MenuAssassin")
-                .AddItem(new MenuItem("AssassinSearchRange", "搜索范围"))
-                .SetValue(new Slider(1000, 2000));
+                .AddItem(new MenuItem("AssassinSearchRange", "索索范围")).SetValue(new Slider(1000, 2000));
 
             Game.OnGameUpdate += OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnWndProc += Game_OnWndProc;
         }
 
-        private static void ClearAssassinList()
+        static void ClearAssassinList()
         {
             foreach (
                 var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
@@ -73,8 +73,9 @@ namespace Leblanc
                 Program.Config.Item("Assassin" + enemy.ChampionName).SetValue(false);
             }
         }
-
-        private static void OnGameUpdate(EventArgs args) {}
+        private static void OnGameUpdate(EventArgs args)
+        {
+        }
 
         private static void Game_OnWndProc(WndEventArgs args)
         {
@@ -86,7 +87,7 @@ namespace Leblanc
                     "<font color='#FFFFFF'>閲嶇疆鍒哄鐨勬竻鍗曟槸瀹屾暣鐨勶紒鐐瑰嚮鏁屼汉娣诲姞/鍒犻櫎.</font>");
             }
 
-            if (args.Msg != (uint) WindowsMessages.WM_LBUTTONDOWN)
+            if (args.Msg != (uint)WindowsMessages.WM_LBUTTONDOWN)
             {
                 return;
             }
@@ -94,18 +95,19 @@ namespace Leblanc
             if (Program.Config.Item("AssassinSetClick").GetValue<bool>())
             {
                 foreach (var objAiHero in from hero in ObjectManager.Get<Obj_AI_Hero>()
-                    where hero.IsValidTarget()
-                    select hero
-                    into h
-                    orderby h.Distance(Game.CursorPos) descending
-                    select h
-                    into enemy
-                    where enemy.Distance(Game.CursorPos) < 150f
-                    select enemy)
+                                          where hero.IsValidTarget()
+                                          select hero
+                                              into h
+                                              orderby h.Distance(Game.CursorPos) descending
+                                              select h
+                                                  into enemy
+                                                  where enemy.Distance(Game.CursorPos) < 150f
+                                                  select enemy)
                 {
                     if (objAiHero != null && objAiHero.IsVisible && !objAiHero.IsDead)
                     {
-                        var xSelect = Program.Config.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex;
+                        var xSelect =
+                            Program.Config.Item("AssassinSelectOption").GetValue<StringList>().SelectedIndex;
 
                         switch (xSelect)
                         {
@@ -119,11 +121,12 @@ namespace Leblanc
                                 break;
                             case 1:
                                 var menuStatus =
-                                    Program.Config.Item("Assassin" + objAiHero.ChampionName).GetValue<bool>();
-                                Program.Config.Item("Assassin" + objAiHero.ChampionName).SetValue(!menuStatus);
+                                    Program.Config.Item("Assassin" + objAiHero.ChampionName)
+                                        .GetValue<bool>();
+                                Program.Config.Item("Assassin" + objAiHero.ChampionName)
+                                    .SetValue(!menuStatus);
                                 Game.PrintChat(
-                                    string.Format(
-                                        "<font color='{0}'>{1}</font> <font color='#09F000'>{2} ({3})</font>",
+                                    string.Format("<font color='{0}'>{1}</font> <font color='#09F000'>{2} ({3})</font>",
                                         !menuStatus ? "#FFFFFF" : "#FF8877",
                                         !menuStatus ? "鍔犲叆鏆楁潃鍚嶅崟:" : "浠庢殫鏉€鍚嶅崟涓垹闄わ副:",
                                         objAiHero.Name, objAiHero.ChampionName));
@@ -133,7 +136,6 @@ namespace Leblanc
                 }
             }
         }
-
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (!Program.Config.Item("AssassinActive").GetValue<bool>())
@@ -155,7 +157,8 @@ namespace Leblanc
                         xWidth = Drawing.Width * 0.8910f;
 
                     }
-                    Drawing.DrawText(xWidth, Drawing.Height * 0.58f + (float) (i + 1) * 15, Color.Gainsboro, xCaption);
+                    Drawing.DrawText(xWidth, Drawing.Height * 0.58f + (float)(i + 1) * 15, Color.Gainsboro,
+                        xCaption);
                 }
             }
 
@@ -169,14 +172,17 @@ namespace Leblanc
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, drawSearchRange, drawSearch.Color);
             }
 
-            foreach (var enemy in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(enemy => enemy.Team != ObjectManager.Player.Team)
-                    .Where(
-                        enemy =>
-                            enemy.IsVisible && Program.Config.Item("Assassin" + enemy.ChampionName) != null &&
-                            !enemy.IsDead)
-                    .Where(enemy => Program.Config.Item("Assassin" + enemy.ChampionName).GetValue<bool>()))
+            foreach (
+                var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(enemy => enemy.Team != ObjectManager.Player.Team)
+                        .Where(
+                            enemy =>
+                                enemy.IsVisible &&
+                                Program.Config.Item("Assassin" + enemy.ChampionName) != null &&
+                                !enemy.IsDead)
+                        .Where(
+                            enemy => Program.Config.Item("Assassin" + enemy.ChampionName).GetValue<bool>()))
             {
                 if (ObjectManager.Player.Distance(enemy) < drawSearchRange)
                 {

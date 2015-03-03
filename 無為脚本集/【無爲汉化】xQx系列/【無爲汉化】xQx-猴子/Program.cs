@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
-
 #endregion
 
 namespace Wukong
@@ -14,26 +12,25 @@ namespace Wukong
     {
         public const string ChampionName = "MonkeyKing";
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
+
         //Orbwalker instance
         public static Orbwalking.Orbwalker Orbwalker;
 
         //Spells
         public static List<Spell> SpellList = new List<Spell>();
-        public static Spell Q, W, E, R;
+
+        public static Spell Q;
+        public static Spell E;
+        public static Spell R;
 
         private static readonly Items.Item Tiamat = new Items.Item(3077, 450);
-        private static readonly SpellSlot SmiteSlot = Player.GetSpellSlot("SummonerSmite");
         private static readonly SpellSlot IgniteSlot = Player.GetSpellSlot("SummonerDot");
-
-        private const float SmiteRange = 700f;
 
         //Menu
         public static Menu Config;
         public static Menu MenuExtras;
         public static Menu MenuTargetedItems;
         public static Menu MenuNonTargetedItems;
-        private static int DelayTick { get; set; }
-
 
         private static void Main(string[] args)
         {
@@ -42,14 +39,14 @@ namespace Wukong
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            if (Player.BaseSkinName != "MonkeyKing") return;
-            if (Player.IsDead) return;
-            
-            DelayTick = 0;
+            if (Player.BaseSkinName != "MonkeyKing")
+                return;
+            if (Player.IsDead)
+                return;
 
-            Q = new Spell(SpellSlot.Q, 420f);
+            Q = new Spell(SpellSlot.Q, 375f);
             E = new Spell(SpellSlot.E, 640f);
-            R = new Spell(SpellSlot.R, 355f);
+            R = new Spell(SpellSlot.R, 375f);
 
             E.SetTargetted(0.5f, 2000f);
 
@@ -58,150 +55,146 @@ namespace Wukong
             SpellList.Add(R);
 
             //Create the menu
-            Config = new Menu("„ÄêÁÑ°Áà≤Ê±âÂåñ„ÄëxQx-Áå¥Â≠ê", "MonkeyKing", true);
+            Config = new Menu("°æüo†ë∫∫ªØ°øxQx-∫Ô◊”", "MonkeyKing", true);
 
-            var targetSelectorMenu = new Menu("ÁõÆÊ†á ÈÄâÊã©", "Target Selector");
+            var targetSelectorMenu = new Menu("ƒø±Í—°‘Ò", "Target Selector");
             TargetSelector.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
 
-            Config.AddSubMenu(new Menu("Ëµ∞Á†ç", "Orbwalking"));
+            Config.AddSubMenu(new Menu("◊ﬂø≥", "Orbwalking"));
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
             Orbwalker.SetAttack(true);
 
-
-
-            var menuCombo = new Menu("ËøûÊãõ", "Combo");
+            var menuCombo = new Menu("¡¨’–", "Combo");
             // Combo
             Config.AddSubMenu(menuCombo);
-            menuCombo.AddItem(new MenuItem("UseQCombo", "‰ΩøÁî® Q").SetValue(true));
+            menuCombo.AddItem(new MenuItem("UseQCombo", " π”√ Q").SetValue(true));
       
-            menuCombo.AddItem(new MenuItem("UseECombo", "‰ΩøÁî® E").SetValue(true));
-            menuCombo.AddItem(new MenuItem("UseEComboTurret", "Á¶ÅÊ≠¢Â°î‰∏ã E").SetValue(true));
-            menuCombo.AddItem(new MenuItem("UseRCombo", "‰ΩøÁî® R").SetValue(true));
-            menuCombo.AddItem(new MenuItem("UseRComboEnemyCount", "Êïå‰∫∫Êï∞Èáè:").SetValue(new Slider(1, 5, 0)));
+            menuCombo.AddItem(new MenuItem("UseECombo", " π”√ E").SetValue(true));
+            menuCombo.AddItem(new MenuItem("UseEComboTurret", "Ω˚÷πÀ˛œ¬ E").SetValue(true));
+            menuCombo.AddItem(new MenuItem("UseRCombo", " π”√ R").SetValue(true));
+            menuCombo.AddItem(new MenuItem("UseRComboEnemyCount", "µ–»À ˝¡ø:").SetValue(new Slider(1, 5, 0)));
             menuCombo.AddItem(
-                new MenuItem("ComboActive", "ËøûÊãõ!").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+                new MenuItem("ComboActive", "¡¨’–!").SetValue(
+                    new KeyBind(Config.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
 
             // Harass
-            Config.AddSubMenu(new Menu("È™öÊâ∞", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "‰ΩøÁî® Q").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", "‰ΩøÁî® E").SetValue(true));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarassTurret", "Á¶ÅÊ≠¢Â°î‰∏ã E").SetValue(true));
+            Config.AddSubMenu(new Menu("…ß»≈", "Harass"));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", " π”√ Q").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarass", " π”√ E").SetValue(true));
+            Config.SubMenu("Harass").AddItem(new MenuItem("UseEHarassTurret", "Ω˚÷πÀ˛œ¬ E").SetValue(true));
             Config.SubMenu("Harass")
-                .AddItem(new MenuItem("HarassMana", "ÊúÄ‰ΩéËìùÈáè: ").SetValue(new Slider(50, 100, 0)));
+                .AddItem(new MenuItem("HarassMana", "◊ÓµÕ¿∂¡ø: ").SetValue(new Slider(50, 100, 0)));
             Config.SubMenu("Harass")
                 .AddItem(
-                    new MenuItem("HarassActive", "È™öÊâ∞").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
-
+                    new MenuItem("HarassActive", "…ß»≈").SetValue(
+                        new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
 
             // Lane Clear
-            Config.AddSubMenu(new Menu("Ê∏ÖÁ∫ø", "LaneClear"));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "‰ΩøÁî® Q").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", "‰ΩøÁî® E").SetValue(false));
+            Config.AddSubMenu(new Menu("«Âœﬂ", "LaneClear"));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", " π”√ Q").SetValue(false));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("UseELaneClear", " π”√ E").SetValue(false));
             Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("LaneClearMana", "Ê∏ÖÁ∫øÊúÄ‰ΩéËìùÈáè: ").SetValue(new Slider(50, 100, 0)));
+                .AddItem(new MenuItem("LaneClearMana", "«Âœﬂ◊ÓµÕ¿∂¡ø: ").SetValue(new Slider(50, 100, 0)));
 
-            var menuLaneClearItems = new Menu("‰ΩøÁî®Áâ©ÂìÅ", "menuLaneClearItems");
+            var menuLaneClearItems = new Menu(" π”√ŒÔ∆∑", "menuLaneClearItems");
             Config.SubMenu("LaneClear").AddSubMenu(menuLaneClearItems);
-            menuLaneClearItems.AddItem(new MenuItem("LaneClearUseTiamat", "Êèê‰∫öÈ©¨Áâπ").SetValue(true));
+            menuLaneClearItems.AddItem(new MenuItem("LaneClearUseTiamat", "Ã·—«¬ÌÃÿ").SetValue(true));
 
             Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("LaneClearActive", "Ê∏ÖÁ∫ø").SetValue(new KeyBind("V".ToCharArray()[0],
-                        KeyBindType.Press)));
+                .AddItem(
+                    new MenuItem("LaneClearActive", "«Â±¯").SetValue(
+                        new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
 
             // Jungling Farm
-            Config.AddSubMenu(new Menu("Ê∏ÖÈáé", "JungleFarm"));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseQJungleFarm", "‰ΩøÁî® Q").SetValue(true));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseEJungleFarm", "‰ΩøÁî® E").SetValue(false));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("AutoSmite", "Ëá™Âä®ÊÉ©Êàí")
-                .SetValue<KeyBind>(new KeyBind('N', KeyBindType.Toggle)));
-            Config.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmMana", "ÊúÄ‰ΩéËìùÈáè: ")
-                .SetValue(new Slider(50, 100, 0)));
+            Config.AddSubMenu(new Menu("«Â“∞", "JungleFarm"));
+            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseQJungleFarm", " π”√ Q").SetValue(true));
+            Config.SubMenu("JungleFarm").AddItem(new MenuItem("UseEJungleFarm", " π”√ E").SetValue(false));
+            Config.SubMenu("JungleFarm")
+                .AddItem(new MenuItem("JungleFarmMana", "◊ÓµÕ¿∂¡ø: ").SetValue(new Slider(50, 100, 0)));
 
-            var menuJungleFarmItems = new Menu("‰ΩøÁî®Áâ©ÂìÅ", "menuJungleFarmItems");
+            var menuJungleFarmItems = new Menu(" π”√ŒÔ∆∑", "menuJungleFarmItems");
             Config.SubMenu("JungleFarm").AddSubMenu(menuJungleFarmItems);
-            menuLaneClearItems.AddItem(new MenuItem("JungleFarmUseTiamat", "Êèê‰∫öÈ©¨Áâπ").SetValue(true));
+            menuLaneClearItems.AddItem(new MenuItem("JungleFarmUseTiamat", "Ã·—«¬ÌÃÿ").SetValue(true));
 
             Config.SubMenu("JungleFarm")
-                .AddItem(new MenuItem("JungleFarmActive", "Ê∏ÖÈáé").SetValue(new KeyBind("V".ToCharArray()[0],
-                        KeyBindType.Press)));
+                .AddItem(
+                    new MenuItem("JungleFarmActive", "«Â“∞").SetValue(
+                        new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
 
             // Extras -> Use Items 
-            MenuExtras = new Menu("È¢ùÂ§ñ", "Extras");
+            MenuExtras = new Menu("∂ÓÕ‚", "Extras");
             Config.AddSubMenu(MenuExtras);
-            MenuExtras.AddItem(new MenuItem("InterruptSpells", "‰∏≠Êñ≠Ê≥ïÊúØ").SetValue(true));
-            MenuExtras.AddItem(new MenuItem("AutoLevelUp", "Ëá™Âä®Âä†ÁÇπ").SetValue(true));
+            MenuExtras.AddItem(new MenuItem("InterruptSpells", "÷–∂œ∑® ı").SetValue(true));
+            MenuExtras.AddItem(new MenuItem("AutoLevelUp", "◊‘∂Øº”µ„").SetValue(true));
 
-            Menu menuUseItems = new Menu("‰ΩøÁî®Áâ©ÂìÅ", "menuUseItems");
+            var menuUseItems = new Menu(" π”√ŒÔ∆∑", "menuUseItems");
             Config.SubMenu("Extras").AddSubMenu(menuUseItems);
             // Extras -> Use Items -> Targeted Items
-            MenuTargetedItems = new Menu("ÊîªÂáªÁâ©ÂìÅ", "menuTargetItems");
+            MenuTargetedItems = new Menu("π•ª˜ŒÔ∆∑", "menuTargetItems");
             menuUseItems.AddSubMenu(MenuTargetedItems);
 
-            MenuTargetedItems.AddItem(new MenuItem("item3153", "Á†¥Ë¥•").SetValue(true));
-            MenuTargetedItems.AddItem(new MenuItem("item3143", "ÂÖ∞Áõæ").SetValue(true));
-            MenuTargetedItems.AddItem(new MenuItem("item3144", "ÊØîÂ∞îÂêâÊ≤ÉÁâπÂºØÂàÄ").SetValue(true));
+            MenuTargetedItems.AddItem(new MenuItem("item3153", "∆∆∞‹").SetValue(true));
+            MenuTargetedItems.AddItem(new MenuItem("item3143", "¿º∂‹").SetValue(true));
+            MenuTargetedItems.AddItem(new MenuItem("item3144", "±»∂˚º™Œ÷ÃÿÕ‰µ∂").SetValue(true));
 
-            MenuTargetedItems.AddItem(new MenuItem("item3146", "ÁßëÊäÄÊû™").SetValue(true));
-            MenuTargetedItems.AddItem(new MenuItem("item3184", "ÂÜ∞Èî§ ").SetValue(true));
+            MenuTargetedItems.AddItem(new MenuItem("item3146", "ø∆ºº«π").SetValue(true));
+            MenuTargetedItems.AddItem(new MenuItem("item3184", "±˘¥∏ ").SetValue(true));
 
             // Extras -> Use Items -> AOE Items
-            MenuNonTargetedItems = new Menu("AOEÁâ©ÂìÅ", "menuNonTargetedItems");
+            MenuNonTargetedItems = new Menu("AOEŒÔ∆∑", "menuNonTargetedItems");
             menuUseItems.AddSubMenu(MenuNonTargetedItems);
-            MenuNonTargetedItems.AddItem(new MenuItem("item3180", "Â••‰∏ÅÈù¢Á∫±").SetValue(true));
-            MenuNonTargetedItems.AddItem(new MenuItem("item3131", "Á•ûÂú£‰πãÂâë").SetValue(true));
-            MenuNonTargetedItems.AddItem(new MenuItem("item3074", "Ë¥™Ê¨≤‰πùÂ§¥Ëõá").SetValue(true));
-            MenuNonTargetedItems.AddItem(new MenuItem("item3077", "Êèê‰∫öÈ©¨Áâπ").SetValue(true));
-            MenuNonTargetedItems.AddItem(new MenuItem("item3142", "ÂπΩÊ¢¶‰πãÁÅµ").SetValue(true));
+            MenuNonTargetedItems.AddItem(new MenuItem("item3180", "∞¬∂°√Ê…¥").SetValue(true));
+            MenuNonTargetedItems.AddItem(new MenuItem("item3131", "…Ò •÷ÆΩ£").SetValue(true));
+            MenuNonTargetedItems.AddItem(new MenuItem("item3074", "Ã∞”˚æ≈Õ∑…ﬂ").SetValue(true));
+            MenuNonTargetedItems.AddItem(new MenuItem("item3077", "Ã·—«¬ÌÃÿ").SetValue(true));
+            MenuNonTargetedItems.AddItem(new MenuItem("item3142", "”ƒ√Œ÷Æ¡È").SetValue(true));
 
             // Drawing
-            Config.AddSubMenu(new Menu("ËåÉÂõ¥", "Drawings"));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q ËåÉÂõ¥").SetValue(new Circle(false,
-                System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("ERange", "E ËåÉÂõ¥").SetValue(new Circle(false,
-                System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R ËåÉÂõ¥").SetValue(new Circle(false,
-                System.Drawing.Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("SmiteRange", "ÊÉ©Êàí ËåÉÂõ¥").SetValue(new Circle(false,
-                System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.AddSubMenu(new Menu("∑∂Œß", "Drawings"));
+            Config.SubMenu("Drawings")
+                .AddItem(
+                    new MenuItem("QRange", "Q ∑∂Œß").SetValue(
+                        new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings")
+                .AddItem(
+                    new MenuItem("ERange", "E ∑∂Œß").SetValue(
+                        new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings")
+                .AddItem(
+                    new MenuItem("RRange", "R ∑∂Œß").SetValue(
+                        new Circle(false, System.Drawing.Color.FromArgb(255, 255, 255, 255))));
 
-           // new PotionManager();
+            // new PotionManager();
             Config.AddToMainMenu();
+
+            Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
+            Utility.HpBarDamageIndicator.Enabled = true;
 
             Game.OnGameUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPosibleToInterrupt;
 
-            Game.PrintChat(String.Format("<font color='#70DBDB'>xQx | </font> <font color='#FFFFFF'>" +
-                                         "{0}</font> <font color='#70DBDB'> Loaded!</font>", ChampionName));
+            Game.PrintChat(
+                String.Format(
+                    "<font color='#70DBDB'>xQx | </font> <font color='#FFFFFF'>" +
+                    "{0}</font> <font color='#70DBDB'> Loaded!</font>", ChampionName));
         }
-
 
         private static void Drawing_OnDraw(EventArgs args)
         {
             foreach (var spell in SpellList)
             {
                 var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();
-                if (menuItem.Active && spell.Level > 0)
-                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
-            }
-
-            var drawSmite = Config.Item("SmiteRange").GetValue<Circle>();
-            if (Config.Item("AutoSmite").GetValue<KeyBind>().Active && drawSmite.Active)
-            {
-                Render.Circle.DrawCircle(Player.Position, SmiteRange, drawSmite.Color);
+                if (menuItem.Active)
+                    Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color, 1);
             }
         }
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            if (!Orbwalking.CanMove(100)) return;
-
-            if (DelayTick - Environment.TickCount <= 250)
-            {
-                UseSummoners();
-                DelayTick = Environment.TickCount;
-            }
+            if (!Orbwalking.CanMove(100))
+                return;
 
             if (Config.Item("ComboActive").GetValue<KeyBind>().Active)
             {
@@ -210,98 +203,108 @@ namespace Wukong
 
             if (Config.Item("HarassActive").GetValue<KeyBind>().Active)
             {
-                var existsMana = Player.MaxMana / 100 * Config.Item("HarassMana").GetValue<Slider>().Value;
-                if (Player.Mana >= existsMana)
+                var vMana = Config.Item("HarassMana").GetValue<Slider>().Value;
+                if (Player.ManaPercentage() >= vMana)
                     Harass();
             }
 
             if (Config.Item("LaneClearActive").GetValue<KeyBind>().Active)
             {
-                var existsMana = Player.MaxMana / 100 * Config.Item("LaneClearMana").GetValue<Slider>().Value;
-                if (Player.Mana >= existsMana)
+                var vMana = Config.Item("LaneClearMana").GetValue<Slider>().Value;
+                if (Player.ManaPercentage() >= vMana)
                     LaneClear();
             }
 
             if (Config.Item("JungleFarmActive").GetValue<KeyBind>().Active)
             {
-                var existsMana = Player.MaxMana / 100 * Config.Item("JungleFarmMana").GetValue<Slider>().Value;
-                if (Player.Mana >= existsMana)
+                var vMana = Config.Item("JungleFarmMana").GetValue<Slider>().Value;
+                if (Player.ManaPercentage() >= vMana)
                     JungleFarm();
             }
         }
 
         private static void Combo()
         {
-            // var q1Target = selectedTarget ?? TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            // var e1Target = selectedTarget ?? TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
+            Obj_AI_Hero t;
 
+            var useQ = Config.Item("UseQCombo").GetValue<bool>() && Q.IsReady();
+            var useE = Config.Item("UseECombo").GetValue<bool>() && E.IsReady();
+            var useR = Config.Item("UseRCombo").GetValue<bool>() && R.IsReady();
 
-
-            var qTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-            var rTarget = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
-
-            var useQ = Config.Item("UseQCombo").GetValue<bool>();
-            var useE = Config.Item("UseECombo").GetValue<bool>();
-            var useR = Config.Item("UseRCombo").GetValue<bool>();
-
-            if (qTarget != null & Q.IsReady() && useQ)
+            if (useQ)
             {
-                Q.CastOnUnit(Player);
+                t = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+                if (t.IsValidTarget())
+                    Q.Cast();
             }
 
-            if (eTarget != null && E.IsReady() && useE)
+            if (useE)
             {
-                if (Config.Item("UseEComboTurret").GetValue<bool>())
+                t = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
+                if (t.IsValidTarget())
                 {
-                    if (!Utility.UnderTurret(eTarget, true))
-                        E.CastOnUnit(eTarget);
+                    if (Config.Item("UseEComboTurret").GetValue<bool>())
+                    {
+                        if (!t.UnderTurret())
+                            E.CastOnUnit(t);
+                    }
+                    else
+                        E.CastOnUnit(t);
                 }
-                else
-                    E.CastOnUnit(eTarget);
             }
 
-            if (eTarget != null)
-                UseItems(eTarget);
-
-            if (qTarget != null && IgniteSlot != SpellSlot.Unknown &&
-                Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
-                Player.GetSummonerSpellDamage(rTarget, Damage.SummonerSpell.Ignite) > rTarget.Health)
+            if (IgniteSlot != SpellSlot.Unknown && Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
             {
-                Player.Spellbook.CastSpell(IgniteSlot, rTarget);
+                t = TargetSelector.GetTarget(500, TargetSelector.DamageType.Magical);
+                if (t.IsValidTarget() && Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite) > t.Health)
+                {
+                    Player.Spellbook.CastSpell(IgniteSlot, t);
+                }
             }
 
-            if (R.IsReady() && useR)
+            if (useR)
             {
-                if (ObjectManager.Player.CountEnemysInRange((int) Orbwalking.GetRealAutoAttackRange(ObjectManager.Player)) >=
-                    Config.Item("UserRComboEnemyCount").GetValue<Slider>().Value) 
+                if (Player.CountEnemiesInRange(R.Range) >= Config.Item("UseRComboEnemyCount").GetValue<Slider>().Value)
+                {
                     R.Cast();
+                }
+            }
+
+            t = TargetSelector.GetTarget(500, TargetSelector.DamageType.Magical);
+            if (t.IsValidTarget())
+            {
+                UseItems(t);
             }
         }
 
         private static void Harass()
         {
-            var qTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
 
-            var useQ = Config.Item("UseQHarass").GetValue<bool>();
-            var useE = Config.Item("UseEHarass").GetValue<bool>();
+            var useQ = Config.Item("UseQHarass").GetValue<bool>() && Q.IsReady();
+            var useE = Config.Item("UseEHarass").GetValue<bool>() && E.IsReady();
 
-
-            if (qTarget != null && Q.IsReady() && useQ)
+            if (useQ)
             {
-                Q.CastOnUnit(Player);
+                var t = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+                if (t.IsValidTarget())
+                    Q.Cast();
+
             }
 
-            if (eTarget != null && E.IsReady() && useE)
+            if (useE)
             {
-                if (Config.Item("UseEHarassTurret").GetValue<bool>())
+                var t = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
+                if (t.IsValidTarget())
                 {
-                    if (!Utility.UnderTurret(eTarget, true))
+                    if (Config.Item("UseEHarassTurret").GetValue<bool>())
+                    {
+                        if (!t.UnderTurret())
+                            E.CastOnUnit(eTarget);
+                    }
+                    else
                         E.CastOnUnit(eTarget);
                 }
-                else
-                    E.CastOnUnit(eTarget);
             }
         }
 
@@ -310,10 +313,11 @@ namespace Wukong
             var useQ = Config.Item("UseQJungleFarm").GetValue<bool>();
             var useE = Config.Item("UseEJungleFarm").GetValue<bool>();
 
-            var mobs = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, E.Range, MinionTypes.All,
-                MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
+            var mobs = MinionManager.GetMinions(
+                Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
-            if (mobs.Count <= 0) return;
+            if (mobs.Count <= 0)
+                return;
 
             var mob = mobs[0];
             if (useQ && Q.IsReady() && mobs.Count >= 1)
@@ -331,39 +335,38 @@ namespace Wukong
 
         private static void LaneClear()
         {
-            var useQ = Config.Item("UseQLaneClear").GetValue<bool>();
-            var useE = Config.Item("UseELaneClear").GetValue<bool>();
+            var useQ = Config.Item("UseQLaneClear").GetValue<bool>() && Q.IsReady();
+            var useE = Config.Item("UseELaneClear").GetValue<bool>() && E.IsReady();
 
-            if (useQ && Q.IsReady())
+            if (useQ)
             {
                 var minionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range);
 
                 foreach (var vMinion in from vMinion in minionsQ
                     let vMinionEDamage = Player.GetSpellDamage(vMinion, SpellSlot.Q)
                     where vMinion.Health <= vMinionEDamage && vMinion.Health > Player.GetAutoAttackDamage(vMinion)
-                    select vMinion) 
+                    select vMinion)
                 {
-                    Q.CastOnUnit(Player);
+                    Q.Cast();
                 }
             }
 
-            if (Tiamat.IsReady() && Config.Item("LaneClearUseTiamat").GetValue<bool>())
-            {
-                var allMinions = MinionManager.GetMinions(Player.ServerPosition,
-                    Orbwalking.GetRealAutoAttackRange(ObjectManager.Player));
-                var locTiamat = E.GetCircularFarmLocation(allMinions);
-                if (locTiamat.MinionsHit >= 3)
-                    Tiamat.Cast(Player);
-                //Items.UseItem(itemTiamat, locTiamat.Position);
-            }
-
-            if (useE && E.IsReady())
+            if (useE)
             {
                 var allMinionsE = MinionManager.GetMinions(Player.ServerPosition, E.Range);
                 var locE = E.GetCircularFarmLocation(allMinionsE);
                 if (allMinionsE.Count == allMinionsE.Count(m => Player.Distance(m) < E.Range) && locE.MinionsHit >= 2 &&
-                    locE.Position.IsValid()) 
+                    locE.Position.IsValid())
                     E.Cast(locE.Position);
+            }
+
+            if (Tiamat.IsReady() && Config.Item("LaneClearUseTiamat").GetValue<bool>())
+            {
+                var allMinions = MinionManager.GetMinions(
+                    Player.ServerPosition, Orbwalking.GetRealAutoAttackRange(Player));
+                var locTiamat = E.GetCircularFarmLocation(allMinions);
+                if (locTiamat.MinionsHit >= 3)
+                    Tiamat.Cast(Player);
             }
         }
 
@@ -386,15 +389,16 @@ namespace Wukong
             if (IgniteSlot != SpellSlot.Unknown && Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
                 fComboDamage += Player.GetSummonerSpellDamage(vTarget, Damage.SummonerSpell.Ignite);
 
-            return (float)fComboDamage;
+            return (float) fComboDamage;
         }
 
         private static void Interrupter_OnPosibleToInterrupt(Obj_AI_Base vTarget, InterruptableSpell args)
         {
             var interruptSpells = Config.Item("InterruptSpells").GetValue<KeyBind>().Active;
-            if (!interruptSpells) return;
+            if (!interruptSpells)
+                return;
 
-            if (Player.Distance(vTarget) < Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+            if (Player.Distance(vTarget) < Orbwalking.GetRealAutoAttackRange(Player))
             {
                 R.Cast();
             }
@@ -402,65 +406,38 @@ namespace Wukong
 
         private static InventorySlot GetInventorySlot(int id)
         {
-            return ObjectManager.Player.InventoryItems.FirstOrDefault(
-                item => (item.Id == (ItemId)id && item.Stacks >= 1) || (item.Id == (ItemId)id && item.Charges >= 1));
+            return
+                Player.InventoryItems.FirstOrDefault(
+                    item =>
+                        (item.Id == (ItemId) id && item.Stacks >= 1) || (item.Id == (ItemId) id && item.Charges >= 1));
         }
 
         public static void UseItems(Obj_AI_Hero vTarget)
         {
-            if (vTarget == null) return;
-
-            foreach (var itemID in from menuItem in MenuTargetedItems.Items
-                                   let useItem = MenuTargetedItems.Item(menuItem.Name).GetValue<bool>()
-                                   where useItem
-                                   select Convert.ToInt16(menuItem.Name.Substring(4, 4))
-                                       into itemId
-                                       where Items.HasItem(itemId) && Items.CanUseItem(itemId) && GetInventorySlot(itemId) != null
-                                       select itemId)
-            {
-                Items.UseItem(itemID, vTarget);
-            }
-
-            foreach (var itemID in from menuItem in MenuNonTargetedItems.Items
-                                   let useItem = MenuNonTargetedItems.Item(menuItem.Name).GetValue<bool>()
-                                   where useItem
-                                   select Convert.ToInt16(menuItem.Name.Substring(4, 4))
-                                       into itemId
-                                       where Items.HasItem(itemId) && Items.CanUseItem(itemId) && GetInventorySlot(itemId) != null
-                                       select itemId)
-            {
-                Items.UseItem(itemID);
-            }
-        }
-        private static void UseSummoners()
-        {
-            if (SmiteSlot == SpellSlot.Unknown)
+            if (vTarget == null)
                 return;
 
-            if (!Config.Item("AutoSmite").GetValue<KeyBind>().Active) return;
-
-            string[] monsterNames = { "LizardElder", "AncientGolem", "Worm", "Dragon" };
-            var firstOrDefault = Player.Spellbook.Spells.FirstOrDefault(
-                spell => spell.Name.Contains("mite"));
-            if (firstOrDefault == null) return;
-
-            var vMonsters = MinionManager.GetMinions(Player.ServerPosition, firstOrDefault.SData.CastRange[0],
-                MinionTypes.All, MinionTeam.NotAlly);
-            foreach (
-                var vMonster in
-                    vMonsters.Where(
-                        vMonster =>
-                            vMonster != null && !vMonster.IsDead && !Player.IsDead && !Player.IsStunned &&
-                            SmiteSlot != SpellSlot.Unknown &&
-                            Player.Spellbook.CanUseSpell(SmiteSlot) == SpellState.Ready)
-                        .Where(
-                            vMonster =>
-                                (vMonster.Health < Player.GetSummonerSpellDamage(vMonster, Damage.SummonerSpell.Smite)) &&
-                                (monsterNames.Any(name => vMonster.BaseSkinName.StartsWith(name))))) 
+            foreach (var itemId in from menuItem in MenuTargetedItems.Items
+                let useItem = MenuTargetedItems.Item(menuItem.Name).GetValue<bool>()
+                where useItem
+                select Convert.ToInt16(menuItem.Name.Substring(4, 4))
+                into itemId
+                where Items.HasItem(itemId) && Items.CanUseItem(itemId) && GetInventorySlot(itemId) != null
+                select itemId)
             {
-                Player.Spellbook.CastSpell(SmiteSlot, vMonster);
+                Items.UseItem(itemId, vTarget);
+            }
+
+            foreach (var itemId in from menuItem in MenuNonTargetedItems.Items
+                let useItem = MenuNonTargetedItems.Item(menuItem.Name).GetValue<bool>()
+                where useItem
+                select Convert.ToInt16(menuItem.Name.Substring(4, 4))
+                into itemId
+                where Items.HasItem(itemId) && Items.CanUseItem(itemId) && GetInventorySlot(itemId) != null
+                select itemId)
+            {
+                Items.UseItem(itemId);
             }
         }
-
     }
 }

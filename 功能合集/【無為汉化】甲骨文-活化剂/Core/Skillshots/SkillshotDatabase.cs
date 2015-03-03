@@ -422,7 +422,7 @@ namespace Oracle.Core.Skillshots
                     SpellName = "BraumRWrapper",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 500,
+                    Delay = 400,
                     Range = 1200,
                     Radius = 115,
                     MissileSpeed = 1400,
@@ -430,7 +430,7 @@ namespace Oracle.Core.Skillshots
                     AddHitbox = true,
                     DangerValue = 4,
                     IsDangerous = true,
-                    MissileSpellName = "braumrmissile",
+                    MissileSpellName = "BraumRWrapper",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall}
                 });
 
@@ -1189,7 +1189,7 @@ namespace Oracle.Core.Skillshots
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 2,
-                    IsDangerous = false,
+                    IsDangerous = true,
                     MissileSpellName = "heimerdingerespell",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
@@ -1359,10 +1359,10 @@ namespace Oracle.Core.Skillshots
                 new SkillshotData
                 {
                     ChampionName = "Jinx",
-                    SpellName = "JinxRWrapper",
+                    SpellName = "JinxR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 600,
+                    Delay = 450,
                     Range = 20000,
                     Radius = 140,
                     MissileSpeed = 1700,
@@ -1370,7 +1370,7 @@ namespace Oracle.Core.Skillshots
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "JinxR",
+                    MissileSpellName = "JinxRWrapper",
                     CanBeRemoved = true,
                     CollisionObjects = new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
                 });
@@ -2986,6 +2986,25 @@ namespace Oracle.Core.Skillshots
                 new SkillshotData
                 {
                     ChampionName = "Veigar",
+                    SpellName = "VeigarBalefulStrike",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 850,
+                    Radius = 70,
+                    MissileSpeed = 1750,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "VeigarBalefulStrikeMis",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+                });
+
+            Spells.Add(
+                new SkillshotData
+                {
+                    ChampionName = "Veigar",
                     SpellName = "VeigarEventHorizon",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotRing,
@@ -3447,6 +3466,29 @@ namespace Oracle.Core.Skillshots
 
             #endregion Ziggs
 
+            #region Zilean
+
+            Spells.Add(
+                new SkillshotData
+                {
+                    ChampionName = "Zilean",
+                    SpellName = "ZileanQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 300,
+                    Range = 900,
+                    Radius = 210,
+                    MissileSpeed = 2000,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "ZileanQMissile",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
+                });
+
+            #endregion Zilean
+
             #region Zyra
 
             Spells.Add(
@@ -3506,8 +3548,6 @@ namespace Oracle.Core.Skillshots
                 });
 
             #endregion Zyra
-
-            //Game.PrintChat("Added " + Spells.Count + " spells.");
         }
 
         public static SkillshotData GetByName(string spellName)

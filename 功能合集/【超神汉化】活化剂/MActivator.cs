@@ -17,7 +17,7 @@ namespace MasterActivator
         private Menu Config;
         private Obj_AI_Hero _player;
         private Obj_AI_Hero target;
-        private StreamWriter log;
+        //private StreamWriter log;
         private int checkCCTick;
 
         #region Items
@@ -26,8 +26,8 @@ namespace MasterActivator
         MItem bilgewater = new MItem("BilgewaterCutlass", "小弯刀", "bilge", 3144, ItemTypeId.Offensive, 450);
         MItem king = new MItem("ItemSwordOfFeastAndFamine", "破败", "king", 3153, ItemTypeId.Offensive, 450);
         MItem youmus = new MItem("YoumusBlade", "幽梦", "youmus", 3142, ItemTypeId.Offensive);
-        MItem tiamat = new MItem("ItemTiamatCleave", "提亚马特", "tiamat", 3077, ItemTypeId.Offensive, 400);
-        MItem hydra = new MItem("Ravenous Hydra", "九头", "hydra", 3074, ItemTypeId.Offensive, 400);
+        MItem tiamat = new MItem("ItemTiamatCleave", "提亚马特", "tiamat", 3077, ItemTypeId.Offensive, 400, SpellSlot.Unknown, SpellType.Self);
+        MItem hydra = new MItem("Ravenous Hydra", "九头", "hydra", 3074, ItemTypeId.Offensive, 400, SpellSlot.Unknown, SpellType.Self);
         MItem dfg = new MItem("Deathfire Grasp", "冥火", "dfg", 3128, ItemTypeId.Offensive, 750);
         MItem divine = new MItem("ItemSoTD", "神圣之剑", "divine", 3131, ItemTypeId.Offensive); //Sword of the Divine
         MItem hextech = new MItem("Hextech Gunblade", "海克斯枪", "hextech", 3146, ItemTypeId.Offensive, 700);
@@ -35,11 +35,11 @@ namespace MasterActivator
         MItem seraph = new MItem("ItemSeraphsEmbrace", "炽天之拥", "seraph", 3040, ItemTypeId.Deffensive);
         MItem zhonya = new MItem("ZhonyasHourglass", "中亚", "zhonya", 3157, ItemTypeId.Deffensive);
         MItem wooglet = new MItem("Wooglet's Witchcap", "沃格莱特的女巫帽", "wooglet", 3090, ItemTypeId.Deffensive);
-        MItem randuin = new MItem("RanduinsOmen", "兰顿之兆", "randuin", 3143, ItemTypeId.OffensiveAOE, 500);
+        MItem randuin = new MItem("RanduinsOmen", "兰顿之兆", "randuin", 3143, ItemTypeId.OffensiveAOE, 500, SpellSlot.Unknown, SpellType.Self);
         //Item banner = new Item("Banner of Command", "BoCommand", "banner", 3060); // falta range
         MItem mountain = new MItem("Face of the Mountain", "山岳之容", "mountain", 3401, ItemTypeId.Deffensive, 700); // falta range
         MItem frost = new MItem("Frost Queen's Claim", "窃法之刃", "frost", 3092, ItemTypeId.OffensiveAOE, 850);
-        MItem solari = new MItem("Locket of the Iron Solari", "鸟盾", "solari", 3190, ItemTypeId.Deffensive, 600);
+        MItem solari = new MItem("Locket of the Iron Solari", "鸟盾", "solari", 3190, ItemTypeId.Deffensive, 600, SpellSlot.Unknown, SpellType.Self);
         MItem mikael = new MItem("Mikael's Crucible", "坩埚", "mikael", 3222, ItemTypeId.Purifier, 750);
         MItem mikaelHP = new MItem("Mikael's Crucible", "坩埚", "mikaelHP", 3222, ItemTypeId.Deffensive, 750);
         //Item talisman = new Item("Talisman of Ascension", "Talisman", "talisman", 3069, 600);
@@ -72,7 +72,7 @@ namespace MasterActivator
         MItem cleanse = new MItem("Cleanse", "净化", "SummonerBoost", 0, ItemTypeId.PurifierSpell);
         MItem clarity = new MItem("Clarity", "清晰", "SummonerMana", 0, ItemTypeId.ManaRegeneratorSpell, 600);
         MItem ignite = new MItem("Ignite", "点燃", "SummonerDot", 0, ItemTypeId.OffensiveSpell, 600);
-        MItem smite = new MItem("Smite", "打开", "SummonerSmite", 0, ItemTypeId.OffensiveSpell, 750);
+        MItem smite = new MItem("Smite", "打开", "SummonerSmite", 0, ItemTypeId.OffensiveSpell, 500);
         MItem smiteAOE = new MItem("SmiteAOE", "紫色打野刀-清野", "itemsmiteaoe", 0, ItemTypeId.OffensiveSpell, 750);
         MItem smiteDuel = new MItem("SmiteDuel", "红色打野刀-gank", "s5_summonersmiteduel", 0, ItemTypeId.OffensiveSpell, 750);
         MItem smiteQuick = new MItem("SmiteQuick", "灰色打野刀-偷野", "s5_summonersmitequick", 0, ItemTypeId.OffensiveSpell, 750);
@@ -93,11 +93,13 @@ namespace MasterActivator
         MItem prismaticbarrier = new MItem("LuxPrismaticWave", "光辉", "pBarrier", 0, ItemTypeId.TeamAbility, 1075, SpellSlot.W);
         MItem titanswraith = new MItem("NautilusPiercingGaze", "泰坦", "tWraith", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
         MItem commandprotect = new MItem("OrianaRedactCommand", "发条", "cProt", 0, ItemTypeId.TeamAbility, 1100, SpellSlot.E);
-        MItem feint = new MItem("feint", "暮光之眼", "feint", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
+        MItem feint = new MItem("ShenFeint", "暮光之眼", "feint", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
         MItem spellshield = new MItem("SivirE", "战争女神", "sShield", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
         MItem nocturneShield = new MItem("NocturneShroudOfDarkness", "Noct. Shield", "nShield", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem yasuoShield = new MItem("YasuoWMovingWall", "Yasuo Shield", "yShield", 0, ItemTypeId.TeamAbilityAOE, 400, SpellSlot.W);
+        MItem yasuoShield = new MItem("YasuoWMovingWall", "Yasuo Shield", "yShield", 0, ItemTypeId.TeamAbility, 400, SpellSlot.W);
         MItem fioraRiposte = new MItem("FioraRiposte", "Fiora Riposte", "fRiposte", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);// S2 fiora
+        MItem fioraDance = new MItem("FioraDance", "Fiora Dance", "fDance", 0, ItemTypeId.Ability, 400, SpellSlot.R, SpellType.TargetEnemy); // FioraDanceStrike
+        MItem masterQ = new MItem("AlphaStrike", "Master Q", "masterQ", 0, ItemTypeId.Ability, 600, SpellSlot.Q, SpellType.TargetEnemy);
         MItem tryndaUlt = new MItem("UndyIngrage", "Trynda Ult.", "tIngrage", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.R);// Trynda mia ult
         MItem nasusUlt = new MItem("NasusR", "Nasus Ult.", "nasusR", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.R);
         MItem renekUlt = new MItem("RenektonReignOfTheTyrant", "Renek Ult.", "renekR", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.R); //Renek nek
@@ -111,10 +113,10 @@ namespace MasterActivator
         MItem nidaE = new MItem("PrimalSurge", "Primal Surge", "nidaE", 0, ItemTypeId.TeamAbility, 600, SpellSlot.E);
         MItem fizzE = new MItem("FizzJump", "Fizz Jump", "fizzE", 0, ItemTypeId.Ability, 400, SpellSlot.E);
         MItem sionW = new MItem("DeathScaress", "Soul Furnace", "sionW", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem sonaW = new MItem("SonaAriaOfPerseverance", "Aria of Perseverance	", "sonaW", 0, ItemTypeId.TeamAbility, 1000, SpellSlot.W);
+        MItem sonaW = new MItem("SonaAriaOfPerseverance", "Aria of Perseverance	", "sonaW", 0, ItemTypeId.TeamAbility, 1000, SpellSlot.W, SpellType.Self);
+        MItem lissR = new MItem("LissandraR", "Liss R(Self)", "lissR", 0, ItemTypeId.Ability, 550, SpellSlot.R);
         //  sona W range 1000
         // lee W, blindmonkwone(targ), blindmonkwtwo(self-l-steal/mv) 700 range?
-        //lissandrar Liss R 20%?
         //obduracy malp W
         //defensiveballcurl rammus W
         //rumbleshield rumble W crap 
@@ -136,8 +138,8 @@ namespace MasterActivator
         MItem nunuQ = new MItem("Consume", "Consume", "Consume", 0, ItemTypeId.KSAbility, 125, SpellSlot.Q);
         MItem amumuE = new MItem("Tantrum", "Tantrum", "Tantrum", 0, ItemTypeId.KSAbility, 350, SpellSlot.E);
         //nasusq
-        MItem gragasR = new MItem("gragasr", "Explosive Cask", "gragasr", 0, ItemTypeId.KSAbilityAOE, 1150, SpellSlot.R);
-        MItem luxR = new MItem("luxmalicecannon", "Final Spark", "luxmalicecannon", 0, ItemTypeId.KSAbilityAOE, 3340, SpellSlot.R); 
+        MItem gragasR = new MItem("gragasr", "Explosive Cask", "gragasr", 0, ItemTypeId.KSAbility, 1150, SpellSlot.R, SpellType.SkillShotCircle);
+        MItem luxR = new MItem("luxmalicecannon", "Final Spark", "luxmalicecannon", 0, ItemTypeId.KSAbility, 3340, SpellSlot.R, SpellType.SkillShotLine); 
         #endregion
         #endregion
 
@@ -178,7 +180,7 @@ namespace MasterActivator
                 Obj_AI_Base.OnProcessSpellCast += onProcessSpellCast;
                 Game.OnGameEnd += Game_OnGameEnd;
 
-                String dTime = DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss");
+                /*String dTime = DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss");
                 if (!File.Exists("C:/Windows/temp/MActivatorLOG" + dTime + ".log"))
                 {
                     log = new StreamWriter("C:/Windows/temp/MActivatorLOG" + dTime + ".log");
@@ -186,7 +188,7 @@ namespace MasterActivator
                 else
                 {
                     log = File.AppendText("C:/Windows/temp/MActivatorLOG" + dTime + ".log");
-                }
+                }*/
             }
             catch
             {
@@ -196,7 +198,7 @@ namespace MasterActivator
 
         private void Game_OnGameEnd(GameEndEventArgs args)
         {
-            log.Close();
+            //log.Close();
         }
 
         private void onProcessSpellCast(Obj_AI_Base attacker, GameObjectProcessSpellCastEventArgs args)
@@ -264,7 +266,7 @@ namespace MasterActivator
                             {
                                 #region SelfTarget
                                 //&& attacker.IsEnemy
-                                if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.NetworkId == spellTarget.NetworkId)
+                                /*if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.NetworkId == spellTarget.NetworkId)
                                 {
                                     Obj_AI_Hero attackerHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == attacker.NetworkId);
                                     Obj_AI_Hero attackedHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == spellTarget.NetworkId);
@@ -272,8 +274,8 @@ namespace MasterActivator
                                     SpellDataInst spellA = attacker.Spellbook.Spells.FirstOrDefault(hero => args.SData.Name.Contains(hero.SData.Name));
                                     spellSlot = spellA == null ? SpellSlot.Unknown : spellA.Slot;
 
-                                    float range1 = args.SData.CastRangeDisplayOverride.FirstOrDefault();
-                                    float range2 = args.SData.CastRange.FirstOrDefault();
+                                    float range1 = args.SData.CastRangeDisplayOverride;
+                                    float range2 = args.SData.CastRange;
                                     float range = range1 > 1 ? range1 : range2;
 
                                     log.WriteLine("Self-Attacker->" + attackerHero.BaseSkinName + "    Spell->" + args.SData.Name + "    Range->" + range + "   Slot->" + spellSlot);
@@ -289,7 +291,7 @@ namespace MasterActivator
                                         }
                                     }
                                     //Console.WriteLine("Target Name2-> " + spellTarget.Name + "  Spell->" + args.SData.Name + "   SpellTT->" + args.SData.SpellTotalTime);
-                                }
+                                }*/
                                 #endregion
 
                                 #region EnemyTarget
@@ -311,7 +313,7 @@ namespace MasterActivator
 
                                     SpellSlot igniteSlot = Utility.GetSpellSlot(attackerHero, ignite.menuVariable);
 
-                                    log.WriteLine("Attacker->" + attackerHero.BaseSkinName + "   Target->" + attackedHero.BaseSkinName + "    Spell->" + args.SData.Name + "    Slot->" + spellSlot);
+                                    //log.WriteLine("Attacker->" + attackerHero.BaseSkinName + "   Target->" + attackedHero.BaseSkinName + "    Spell->" + args.SData.Name + "    Slot->" + spellSlot);
                                     if (igniteSlot != SpellSlot.Unknown && spellSlot == igniteSlot)
                                     {
                                         incDmg = Damage.GetSummonerSpellDamage(attackerHero, attackedHero, Damage.SummonerSpell.Ignite);
@@ -336,11 +338,6 @@ namespace MasterActivator
                                         else if (args.SData.Name == hydra.name)
                                         {
                                             incDmg = Damage.GetItemDamage(attackerHero, attackedHero, Damage.DamageItems.Hydra);
-                                        }
-                                        // should not appear, because randuins is self target cast
-                                        if (args.SData.Name == randuin.name)
-                                        {
-                                            log.WriteLine("T-Randuin-> " + attackedHero.BaseSkinName + " X " + attackerHero.BaseSkinName);
                                         }
                                     }
                                     else if (spellSlot == SpellSlot.Unknown)
@@ -371,12 +368,12 @@ namespace MasterActivator
                         {
                             if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.IsEnemy)
                             {
-                                float range1 = args.SData.CastRangeDisplayOverride.FirstOrDefault();
-                                float range2 = args.SData.CastRange.FirstOrDefault();
+                                float range1 = args.SData.CastRangeDisplayOverride;
+                                float range2 = args.SData.CastRange;
                                 float range = range1 > 1 ? range1 : range2;
 
                                 // CHECK AOE ???
-                                log.WriteLine("Shot-Attacker->" + attacker.BaseSkinName + "    Spell->" + args.SData.Name + "    Range->" + range);
+                                //log.WriteLine("Shot-Attacker->" + attacker.BaseSkinName + "    Spell->" + args.SData.Name + "    Range->" + range);
 
                                 //drawPos2 = args.Start.Extend(args.End, range);
                                 List<Obj_AI_Hero> alliesInRange = Utility.GetAlliesInRange(args.Start, range);
@@ -397,7 +394,7 @@ namespace MasterActivator
                                                 spellSlot = spellA == null ? SpellSlot.Unknown : spellA.Slot;
 
                                                 // TEMP log
-                                                log.WriteLine("Shot-Target->" + hero.BaseSkinName + "    Slot->" + spellSlot);
+                                                //log.WriteLine("Shot-Target->" + hero.BaseSkinName + "    Slot->" + spellSlot);
 
                                                 //Calc dmg and check deffs
                                                 incDmg = Damage.GetSpellDamage(attackerHero, hero, spellSlot);
@@ -428,8 +425,8 @@ namespace MasterActivator
             }
             catch (Exception e)
             {
-                log.WriteLine("Problem with MasterActivator(Receiving dmg sys.).");
-                log.WriteLine(e);
+                Console.WriteLine("Problem with MasterActivator(Receiving dmg sys.).");
+                //log.WriteLine(e);
                 Console.WriteLine(e);
             }
         }
@@ -481,6 +478,12 @@ namespace MasterActivator
                                         var damagePercent = smiteDmg / minion.MaxHealth;
                                         float hpXPos = hpBarPos.X + (jMinion.width * damagePercent);
                                         Drawing.DrawLine(hpXPos, hpBarPos.Y, hpXPos, hpBarPos.Y + 5, 2, smiteDmg >= minion.Health ? System.Drawing.Color.Lime : System.Drawing.Color.WhiteSmoke);
+                                        
+                                        // Draw camp
+                                        if (Config.Item("dCamp").IsActive())
+                                        {
+                                            Drawing.DrawCircle(minion.Position, minion.BoundingRadius + smite.range + _player.BoundingRadius, _player.Distance(minion, false) <= (smite.range + minion.BoundingRadius + _player.BoundingRadius) ? System.Drawing.Color.Lime : System.Drawing.Color.WhiteSmoke);
+                                        }
 
                                         // Draw for abilitys
                                         ksDrawDmg(choR, minion, jMinion, hpBarPos, hpXPos);
@@ -531,7 +534,7 @@ namespace MasterActivator
                         checkAndUse(wooglet);
                         checkAndUse(barrier);
                         checkAndUse(seraph);
-                        teamCheckAndUse(solari, "", true);
+                        teamCheckAndUse(solari);
                         teamCheckAndUse(mountain);
                         teamCheckAndUse(mikaelHP);
                         checkAndUseShield();
@@ -567,14 +570,14 @@ namespace MasterActivator
             checkAndUse(youmus);
             checkAndUse(bilgewater);
             checkAndUse(king);
-            checkAndUse(tiamat, "", 0, true);
-            checkAndUse(hydra, "", 0, true);
+            checkAndUse(tiamat);
+            checkAndUse(hydra);
             checkAndUse(dfg);
             checkAndUse(divine);
             checkAndUse(hextech);
             checkAndUse(muramana);
             checkAndUse(frost);
-            checkAndUse(randuin, "", 0, true);
+            checkAndUse(randuin);
         }
 
         private void ksDrawRange(MItem item)
@@ -606,10 +609,10 @@ namespace MasterActivator
 
         private void callDeff(Obj_AI_Base attacker, Obj_AI_Hero target, double incDmg, SpellSlot spellSlot, AttackId attackId)
         {
-            teamCheckAndUse(heal, Config.Item("useWithHealDebuff").GetValue<bool>() ? "" : "summonerhealcheck", false, incDmg);
-            teamCheckAndUse(solari, "", true, incDmg);
-            teamCheckAndUse(mountain, "", false, incDmg);
-            teamCheckAndUse(mikaelHP, "", false, incDmg);
+            teamCheckAndUse(heal, Config.Item("useWithHealDebuff").GetValue<bool>() ? "" : "summonerhealcheck", incDmg);
+            teamCheckAndUse(solari, "", incDmg);
+            teamCheckAndUse(mountain, "", incDmg);
+            teamCheckAndUse(mikaelHP, "", incDmg);
             checkAndUseShield(incDmg, attacker, target, spellSlot, attackId);
 
             if (target.IsMe)
@@ -622,7 +625,7 @@ namespace MasterActivator
         }
 
         // And about ignore HP% check?
-        private void justUseAgainstCheck(MItem item, double incDmg, Obj_AI_Base attacker = null, Obj_AI_Base attacked = null, SpellSlot attackerSpellSlot = SpellSlot.Unknown, AttackId attackId = AttackId.Unknown, bool self = false)
+        private void justUseAgainstCheck(MItem item, double incDmg, Obj_AI_Base attacker = null, Obj_AI_Base attacked = null, SpellSlot attackerSpellSlot = SpellSlot.Unknown, AttackId attackId = AttackId.Unknown)
         {
             // Se tem o spell
             if (Utility.GetSpellSlot(_player, item.name) != SpellSlot.Unknown)
@@ -662,11 +665,11 @@ namespace MasterActivator
 
                         if (item.type == ItemTypeId.Ability && attacked.IsMe)
                         {
-                            checkAndUse(item, "", incDmg, self, ignoreHP);
+                            checkAndUse(item, "", incDmg, ignoreHP);
                         }
-                        else if (item.type == ItemTypeId.TeamAbility || item.type == ItemTypeId.TeamAbilityAOE)
+                        else if (item.type == ItemTypeId.TeamAbility)
                         {
-                            teamCheckAndUse(item, "", self, incDmg, attacked, attacker, ignoreHP);
+                            teamCheckAndUse(item, "", incDmg, attacked, attacker, ignoreHP);
                         }
                     }
                 }
@@ -674,7 +677,7 @@ namespace MasterActivator
                 else 
                 {
                     checkAndUse(item, "", incDmg);
-                    teamCheckAndUse(item, "", false, incDmg, attacked);
+                    teamCheckAndUse(item, "", incDmg, attacked);
                 }
             }
         }
@@ -697,6 +700,9 @@ namespace MasterActivator
             justUseAgainstCheck(yasuoShield, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(fioraRiposte, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(tryndaUlt, incDmg, attacker, attacked, attackerSpellSlot, attackId);
+            justUseAgainstCheck(fioraDance, incDmg, attacker, attacked, attackerSpellSlot, attackId);
+            justUseAgainstCheck(masterQ, incDmg, attacker, attacked, attackerSpellSlot, attackId);
+            justUseAgainstCheck(lissR, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(nasusUlt, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(renekUlt, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(leonaW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
@@ -707,7 +713,7 @@ namespace MasterActivator
             justUseAgainstCheck(nidaE, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(fizzE, incDmg, attacker, attacked, attackerSpellSlot, attackId);
             justUseAgainstCheck(sionW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(sonaW, incDmg, attacker, attacked, attackerSpellSlot, attackId, true);
+            justUseAgainstCheck(sonaW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
         }
 
         private bool checkBuff(String name)
@@ -721,7 +727,7 @@ namespace MasterActivator
 
         private void createMenuItem(MItem item, String parent, int defaultValue = 0, bool mana = false, int minManaPct = 0)
         {
-            if (item.type == ItemTypeId.Ability || item.type == ItemTypeId.TeamAbility || item.type == ItemTypeId.TeamAbilityAOE)
+            if (item.type == ItemTypeId.Ability || item.type == ItemTypeId.TeamAbility)
             {
                 var abilitySlot = Utility.GetSpellSlot(_player, item.name);
                 if (abilitySlot != SpellSlot.Unknown && abilitySlot == item.abilitySlot)
@@ -776,7 +782,7 @@ namespace MasterActivator
                     Config.SubMenu(parent).AddSubMenu(menu);
                 }
             }
-            else if (item.type == ItemTypeId.KSAbility || item.type == ItemTypeId.KSAbilityAOE)
+            else if (item.type == ItemTypeId.KSAbility)
             {
                 var abilitySlot = Utility.GetSpellSlot(_player, item.name);
                 if (abilitySlot != SpellSlot.Unknown && abilitySlot == item.abilitySlot)
@@ -809,7 +815,7 @@ namespace MasterActivator
             }
         }
 
-        private void teamCheckAndUse(MItem item, String buff = "", bool self = false, double incDmg = 0, Obj_AI_Base attacked = null, Obj_AI_Base attacker = null, bool ignoreHP = false)
+        private void teamCheckAndUse(MItem item, String buff = "", double incDmg = 0, Obj_AI_Base attacked = null, Obj_AI_Base attacker = null, bool ignoreHP = false)
         {
             if (Config.Item(item.menuVariable) != null)
             {
@@ -851,7 +857,7 @@ namespace MasterActivator
                     }
                     #endregion
                     #region TeamAbility TeamAbilityAOE
-                    else if (item.type == ItemTypeId.TeamAbility || item.type == ItemTypeId.TeamAbilityAOE)
+                    else if (item.type == ItemTypeId.TeamAbility)
                     {
                         try
                         {
@@ -874,7 +880,7 @@ namespace MasterActivator
                                         int playerManaPercent = (int)((_player.Mana / _player.MaxMana) * 100);
                                         if (playerManaPercent >= manaPercent && actualHeroHpPercent <= usePercent)
                                         {
-                                            if (item.type == ItemTypeId.TeamAbility)
+                                            if (item.type == ItemTypeId.TeamAbility && item.spellType != SpellType.SkillShotCircle && item.spellType != SpellType.SkillShotCone && item.spellType != SpellType.SkillShotLine)
                                             {
                                                 _player.Spellbook.CastSpell(item.abilitySlot, attacked);
                                             }
@@ -898,7 +904,7 @@ namespace MasterActivator
                         }
                         catch (Exception e)
                         {
-                            log.WriteLine("Problem with MasterActivator(AutoShieldTeam).");
+                            Console.WriteLine("Problem with MasterActivator(AutoShieldTeam).");
                             Console.WriteLine(e);
                         }
                     }
@@ -938,7 +944,7 @@ namespace MasterActivator
                                                 int actualHeroHpPercent = (int)((hero.Health / hero.MaxHealth) * 100);
                                                 if (actualHeroHpPercent <= usePercent)
                                                 {
-                                                    if (self)
+                                                    if (item.spellType == SpellType.Self)
                                                     {
                                                         useItem(item.id);
                                                     }
@@ -972,7 +978,7 @@ namespace MasterActivator
             return activeAllyHeros;
         }
 
-        private void checkAndUse(MItem item, String buff = "", double incDamage = 0, bool self = false, bool ignoreHP = false)
+        private void checkAndUse(MItem item, String buff = "", double incDamage = 0, bool ignoreHP = false)
         {
             try
             {
@@ -984,7 +990,8 @@ namespace MasterActivator
                         int actualHeroHpPercent = (int)(((_player.Health - incDamage) / _player.MaxHealth) * 100); //after dmg not Actual ^^
                         int actualHeroManaPercent = (int)(_player.MaxMana > 0 ? ((_player.Mana / _player.MaxMana) * 100) : 0);
 
-                        if (item.type == ItemTypeId.DeffensiveSpell || item.type == ItemTypeId.ManaRegeneratorSpell || item.type == ItemTypeId.PurifierSpell || item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility || item.type == ItemTypeId.KSAbilityAOE)
+                        #region DeffensiveSpell ManaRegeneratorSpell PurifierSpell OffensiveSpell KSAbility
+                        if (item.type == ItemTypeId.DeffensiveSpell || item.type == ItemTypeId.ManaRegeneratorSpell || item.type == ItemTypeId.PurifierSpell || item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility)
                         {
                             var spellSlot = Utility.GetSpellSlot(_player, item.menuVariable);
                             if (spellSlot != SpellSlot.Unknown)
@@ -1019,8 +1026,9 @@ namespace MasterActivator
                                             }
                                         }
                                     }
-                                    else if (item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility || item.type == ItemTypeId.KSAbilityAOE)
+                                    else if (item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility)
                                     {
+                                        #region Ignite
                                         if (item == ignite)
                                         {
                                             // TargetSelector.TargetingMode.LowHP FIX/Check
@@ -1064,6 +1072,7 @@ namespace MasterActivator
 
                                             }
                                         }
+                                        #endregion
                                         else
                                         {
                                             try
@@ -1077,26 +1086,30 @@ namespace MasterActivator
                                                 {
                                                     jungleMinions = new string[] { blue.name, red.name, razor.name, baron.name, krug.name, wolf.name, dragon.name, gromp.name, crab.name };
                                                 }
+                                                
+                                                float searchRange = item == choR ? getChoUltRange() : (item.range + 300); // Get minions in 800 range
 
-                                                float range = item == choR ? getChoUltRange() : item.range;
-
-                                                var minions = MinionManager.GetMinions(_player.Position, range, MinionTypes.All, MinionTeam.Neutral);
+                                                var minions = MinionManager.GetMinions(_player.Position, searchRange, MinionTypes.All, MinionTeam.Neutral);
                                                 if (minions.Count() > 0)
                                                 {
                                                     int smiteDmg = getSmiteDmg();
 
                                                     foreach (Obj_AI_Base minion in minions)
                                                     {
-                                                        int dmg = item.type == ItemTypeId.OffensiveSpell ? smiteDmg : (int)Damage.GetSpellDamage(_player, minion, spellSlot);
-                                                        if (minion.Health <= dmg && jungleMinions.Any(name => minion.Name.StartsWith(name) && ((minion.Name.Length - name.Length) <= 6) && Config.Item(name).GetValue<bool>()))
+                                                        float range = item == choR ? getChoUltRange() : item.range + minion.BoundingRadius + _player.BoundingRadius;
+                                                        if (_player.Distance(minion, false) <= range)
                                                         {
-                                                            if (item.type == ItemTypeId.KSAbilityAOE)
+                                                            int dmg = item.type == ItemTypeId.OffensiveSpell ? smiteDmg : (int)Damage.GetSpellDamage(_player, minion, spellSlot);
+                                                            if (minion.Health <= dmg && jungleMinions.Any(name => minion.Name.StartsWith(name) && ((minion.Name.Length - name.Length) <= 6) && Config.Item(name).GetValue<bool>()))
                                                             {
-                                                                _player.Spellbook.CastSpell(spellSlot, minion.Position);
-                                                            }
-                                                            else
-                                                            {
-                                                                _player.Spellbook.CastSpell(spellSlot, self ? null : minion);
+                                                                if (item.spellType == SpellType.SkillShotLine || item.spellType == SpellType.SkillShotCone || item.spellType == SpellType.SkillShotCircle)
+                                                                {
+                                                                    _player.Spellbook.CastSpell(spellSlot, minion.Position);
+                                                                }
+                                                                else
+                                                                {
+                                                                    _player.Spellbook.CastSpell(spellSlot, item.spellType == SpellType.Self ? null : minion);
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -1111,6 +1124,7 @@ namespace MasterActivator
                                 }
                             }
                         }
+                        #endregion
                         else if (item.type == ItemTypeId.Ability || item.type == ItemTypeId.TeamAbility)
                         {
                             try
@@ -1126,14 +1140,24 @@ namespace MasterActivator
 
                                         if (actualHeroManaPercent >= manaPercent && actualHeroHpPercent <= usePercent)
                                         {
-                                            _player.Spellbook.CastSpell(item.abilitySlot, _player);
+                                            if (item.spellType == SpellType.TargetEnemy)
+                                            {
+                                                if (checkTarget(item.range))
+                                                {
+                                                    _player.Spellbook.CastSpell(item.abilitySlot, target);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _player.Spellbook.CastSpell(item.abilitySlot, _player);
+                                            }
                                         }
                                     }
                                 }
                             }
                             catch (Exception e)
                             {
-                                log.WriteLine("Problem with MasterActivator(AutoShield).");
+                                Console.WriteLine("Problem with MasterActivator(AutoShield).");
                                 Console.WriteLine(e);
                             }
                         }
@@ -1151,7 +1175,7 @@ namespace MasterActivator
                                             int actualTargetHpPercent = (int)((target.Health / target.MaxHealth) * 100);
                                             if (checkUsePercent(item, actualTargetHpPercent))
                                             {
-                                                useItem(item.id, (item.range == 0 || self) ? null : target);
+                                                useItem(item.id, (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
                                             }
                                         }
                                     }
@@ -1162,7 +1186,7 @@ namespace MasterActivator
                                             // FIX-ME: In frost case, we must check the affected area, not just ppl in range(item).
                                             if (Utility.CountEnemiesInRange(_player, (int)item.range) >= Config.Item(item.menuVariable + "UseXUnits").GetValue<Slider>().Value)
                                             {
-                                                useItem(item.id, (item.range == 0 || self) ? null : target);
+                                                useItem(item.id, (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
                                             }
                                         }
                                     }
@@ -1383,11 +1407,12 @@ namespace MasterActivator
             var menuSmiteDraw = new Menu("显示", "smiteDraw");
             menuSmiteDraw.AddItem(new MenuItem("dSmite", "开启")).SetValue(true);
             menuSmiteDraw.AddItem(new MenuItem("justAS", "只是选择的野怪")).SetValue(false);
+            menuSmiteDraw.AddItem(new MenuItem("justAS", "Just Selected Mobs")).SetValue(false);
             Config.SubMenu("smiteCfg").AddSubMenu(menuSmiteDraw);
 
             Config.AddSubMenu(new Menu("进攻", "offensive"));
             createMenuItem(ignite, "offensive");
-            Config.SubMenu("offensive").SubMenu("menu" + ignite.menuVariable).AddItem(new MenuItem("overIgnite", "在点燃后使用")).SetValue(false);
+            Config.SubMenu("offensive").SubMenu("menu" + ignite.menuVariable).AddItem(new MenuItem("overIgnite", "Over Ignite")).SetValue(false);
             createMenuItem(youmus, "offensive", 100);
             createMenuItem(bilgewater, "offensive", 100);
             createMenuItem(king, "offensive", 100);
@@ -1430,6 +1455,9 @@ namespace MasterActivator
             createMenuItem(yasuoShield, "autoshield", 90);
             createMenuItem(fioraRiposte, "autoshield", 90, false, 0);
             createMenuItem(tryndaUlt, "autoshield", 30);
+            createMenuItem(fioraDance, "autoshield", 30);
+            createMenuItem(masterQ, "autoshield", 45);
+            createMenuItem(lissR, "autoshield", 20);
             createMenuItem(nasusUlt, "autoshield", 30, false, 0);
             createMenuItem(renekUlt, "autoshield", 30);
             createMenuItem(leonaW, "autoshield", 60, false, 0);
@@ -1450,8 +1478,8 @@ namespace MasterActivator
 
             Config.AddSubMenu(new Menu("Regenerators", "regenerators"));
             createMenuItem(heal, "regenerators", 35);
-            Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("useWithHealDebuff", "有效果使用")).SetValue(true);
-            Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("justPredHeal", "只是预测")).SetValue(false);
+            Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("useWithHealDebuff", "Use with debuff")).SetValue(true);
+            Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("justPredHeal", "Just predicted")).SetValue(false);
             createMenuItem(clarity, "regenerators", 25, true);
             createMenuItem(hpPot, "regenerators", 55);
             createMenuItem(manaPot, "regenerators", 55, true);

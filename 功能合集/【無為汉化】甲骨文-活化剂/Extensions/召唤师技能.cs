@@ -121,7 +121,7 @@ namespace Oracle.Extensions
                 _bb = true;
                 var Barrier = new Menu("屏障", "mbarrier");
                 Barrier.AddItem(new MenuItem("useBarrier", "启用屏障")).SetValue(true);
-                Barrier.AddItem(new MenuItem("useBarrierPct", "血量 % ")).SetValue(new Slider(25, 1));
+                Barrier.AddItem(new MenuItem("useBarrierPct", "血量 % ")).SetValue(new Slider(20, 1));
                 Barrier.AddItem(new MenuItem("useBarrierDmg", "伤害 %")).SetValue(new Slider(40, 1));
                 Barrier.AddItem(new MenuItem("barrierDot", "使用屏障再点燃")).SetValue(true);
                 _mainMenu.AddSubMenu(Barrier);
@@ -247,7 +247,6 @@ namespace Oracle.Extensions
 
             if (_mainMenu.Item("dotMode").GetValue<StringList>().SelectedIndex == 1)
             {
-
                 if (OC.CurrentTarget.IsValidTarget(600) && 
                     OC.CurrentTarget.Health <= OC.GetComboDamage(Me, OC.CurrentTarget))
                 {

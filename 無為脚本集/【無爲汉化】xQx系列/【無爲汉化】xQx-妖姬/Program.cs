@@ -29,7 +29,6 @@ namespace Leblanc
 
         public static SpellSlot IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
         public static Items.Item Fqc = new Items.Item(3092, 750);
-        public static Items.Item Dfg = new Items.Item(3128, 750);
 
         //Menu
         public static Menu Config;
@@ -96,69 +95,75 @@ namespace Leblanc
 
             Config.AddSubMenu(new Menu("连招", "Combo"));
             {
-                Config.SubMenu("Combo").AddItem(new MenuItem("ComboSetOption", "连招").SetValue(new StringList(new[] {"自动", "Q-R 连招", "W-R 连招", "E-R 连招",}, 1)));
-                Config.SubMenu("Combo").AddItem(new MenuItem("ComboSetEHitCh", "E 命中率").SetValue(new StringList(new[] {"低", "中等", "高", "非常高", "不动的"}, 2)));
-                Config.SubMenu("Combo").AddSubMenu(new Menu("不要使用组合", "DontCombo"));
+                Config.SubMenu("Combo")
+                    .AddItem(
+                        new MenuItem("ComboSetOption", "连招").SetValue(
+                            new StringList(new[] { "自动", "Q-R 连招", "W-R 连招", "E-R 连招", }, 1)));
+                Config.SubMenu("Combo")
+                    .AddItem(
+                        new MenuItem("ComboSetEHitCh", "E 命中率").SetValue(
+                            new StringList(new[] { "低", "正常", "高", "很高", "必中" }, 2)));
+                Config.SubMenu("Combo").AddSubMenu(new Menu("不使用连招", "DontCombo"));
                 {
-                    foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
+                    foreach (
+                        var enemy in
+                            ObjectManager.Get<Obj_AI_Hero>().Where(enemy => enemy.Team != ObjectManager.Player.Team))
                     {
-                        Config.SubMenu("Combo").SubMenu("DontCombo").AddItem(new MenuItem("DontCombo" + enemy.BaseSkinName, enemy.BaseSkinName).SetValue(false));
+                        Config.SubMenu("Combo")
+                            .SubMenu("DontCombo")
+                            .AddItem(new MenuItem("DontCombo" + enemy.BaseSkinName, enemy.BaseSkinName).SetValue(false));
                     }
                 }
-                Config.SubMenu("Combo").AddItem(new MenuItem("ComboDblStun", "双锁链!").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
-                Config.SubMenu("Combo").AddItem(new MenuItem("ComboShowInfo", "显示连招组合状态").SetValue(true));
-                Config.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "连招!").SetValue(new KeyBind(Config.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
+                Config.SubMenu("Combo")
+                    .AddItem(
+                        new MenuItem("ComboDblStun", "Double Stun!").SetValue(
+                            new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+                Config.SubMenu("Combo").AddItem(new MenuItem("ComboShowInfo", "Show Combo Status").SetValue(true));
+                Config.SubMenu("Combo")
+                    .AddItem(
+                        new MenuItem("ComboActive", "Combo!").SetValue(
+                            new KeyBind(Config.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
             }
 
             Config.AddSubMenu(new Menu("骚扰", "Harass"));
             {
-                /*
-                {
-                    Config.SubMenu("Harass").AddItem(new MenuItem("HarassUseQ", "Q").SetValue(true));
-                    Config.SubMenu("Harass")
-                        .AddItem(new MenuItem("HarassManaQ", "Q Min. Mana Percent: ").SetValue(new Slider(50, 100, 0)));
-                    Config.SubMenu("Harass")
-                        .AddItem(
-                            new MenuItem("HarassUseTQ", "Q (toggle)!").SetValue(new KeyBind("J".ToCharArray()[0],
-                                KeyBindType.Toggle)));
-                }
-                Config.SubMenu("Harass").AddItem(new MenuItem("xHx", ""));
-                {
-                    Config.SubMenu("Harass").AddItem(new MenuItem("HarassUseW", "W").SetValue(true));
-                    Config.SubMenu("Harass")
-                        .AddItem(new MenuItem("HarassManaW", "W Min. Mana Percent: ").SetValue(new Slider(50, 100, 0)));
-                    Config.SubMenu("Harass")
-                        .AddItem(
-                            new MenuItem("HarassUseTW", "W (toggle)!").SetValue(new KeyBind("K".ToCharArray()[0],
-                                KeyBindType.Toggle)));
-                }
-                Config.SubMenu("Harass").AddItem(new MenuItem("xHx", ""));
-                {
-                    Config.SubMenu("Harass").AddItem(new MenuItem("HarassUseE", "E").SetValue(true));
-                    Config.SubMenu("Harass")
-                        .AddItem(new MenuItem("HarassManaE", "E Min. Mana Percent: ").SetValue(new Slider(50, 100, 0)));
-                    Config.SubMenu("Harass")
-                        .AddItem(
-                            new MenuItem("HarassUseTE", "E (toggle)!").SetValue(
-                                new KeyBind("L".ToCharArray()[0], KeyBindType.Toggle)));
-                }
-                Config.SubMenu("Harass").AddItem(new MenuItem("xHx", ""));
-*/
                 Config.SubMenu("Harass").AddSubMenu(new Menu("Q", "HarassQ"));
                     Config.SubMenu("Harass").SubMenu("HarassQ").AddItem(new MenuItem("HarassUseQ", "使用 Q").SetValue(true));
-                    Config.SubMenu("Harass").SubMenu("HarassQ").AddItem(new MenuItem("HarassManaQ", "Q 最小蓝量% ").SetValue(new Slider(50, 100, 0)));
-                    Config.SubMenu("Harass").SubMenu("HarassQ").AddItem(new MenuItem("HarassUseTQ", "使用 Q (切换)!").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Toggle)));
+                Config.SubMenu("Harass")
+                    .SubMenu("HarassQ")
+                    .AddItem(new MenuItem("HarassManaQ", "Q 最少蓝量: ").SetValue(new Slider(50, 100, 0)));
+                Config.SubMenu("Harass")
+                    .SubMenu("HarassQ")
+                    .AddItem(
+                        new MenuItem("HarassUseTQ", "使用 Q (锁定)!").SetValue(
+                            new KeyBind("J".ToCharArray()[0], KeyBindType.Toggle)));
                 Config.SubMenu("Harass").AddSubMenu(new Menu("W", "HarassW"));
-                    Config.SubMenu("Harass").SubMenu("HarassW").AddItem(new MenuItem("HarassUseW", "使用 W").SetValue(true));
-                    Config.SubMenu("Harass").SubMenu("HarassW").AddItem(new MenuItem("HarassManaW", "W 最小蓝量% ").SetValue(new Slider(50, 100, 0)));
-                    Config.SubMenu("Harass").SubMenu("HarassW").AddItem(new MenuItem("HarassUseTW", "使用 W (切换)!").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle)));
+                Config.SubMenu("Harass").SubMenu("HarassW").AddItem(new MenuItem("HarassUseW", "使用 W").SetValue(true));
+                Config.SubMenu("Harass")
+                    .SubMenu("HarassW")
+                    .AddItem(new MenuItem("HarassManaW", "W 最少蓝量: ").SetValue(new Slider(50, 100, 0)));
+                Config.SubMenu("Harass")
+                    .SubMenu("HarassW")
+                    .AddItem(
+                        new MenuItem("HarassUseTW", "使用 W (锁定)!").SetValue(
+                            new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle)));
                 Config.SubMenu("Harass").AddSubMenu(new Menu("E", "HarassE"));
-                    Config.SubMenu("Harass").SubMenu("HarassE").AddItem(new MenuItem("HarassUseE", "使用 E").SetValue(true));
-                    Config.SubMenu("Harass").SubMenu("HarassE").AddItem(new MenuItem("HarassManaE", "E 最小蓝量% ").SetValue(new Slider(50, 100, 0)));
-                    Config.SubMenu("Harass").SubMenu("HarassE").AddItem(new MenuItem("HarassUseTE", "使用 E (切换)!").SetValue(new KeyBind("L".ToCharArray()[0], KeyBindType.Toggle)));
-                
-                Config.SubMenu("Harass").AddItem(new MenuItem("HarassShowInfo", "显示骚扰的切换状态").SetValue(true));
-                Config.SubMenu("Harass").AddItem(new MenuItem("HarassActive", "骚扰!").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+                Config.SubMenu("Harass").SubMenu("HarassE").AddItem(new MenuItem("HarassUseE", "使用 E").SetValue(true));
+                Config.SubMenu("Harass")
+                    .SubMenu("HarassE")
+                    .AddItem(new MenuItem("HarassManaE", "E 最少蓝量: ").SetValue(new Slider(50, 100, 0)));
+                Config.SubMenu("Harass")
+                    .SubMenu("HarassE")
+                    .AddItem(
+                        new MenuItem("HarassUseTE", "使用 E (锁定)!").SetValue(
+                            new KeyBind("L".ToCharArray()[0], KeyBindType.Toggle)));
+
+                Config.SubMenu("Harass")
+                    .AddItem(new MenuItem("HarassShowInfo", "Show Harass Toggle Status").SetValue(true));
+                Config.SubMenu("Harass")
+                    .AddItem(
+                        new MenuItem("HarassActive", "Harass!").SetValue(
+                            new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
             }
 
             Config.AddSubMenu(new Menu("发育", "LaneClear"));
@@ -350,9 +355,6 @@ namespace Leblanc
         private static void UserSummoners(Obj_AI_Base t)
         {
 
-            if (Dfg.IsReady())
-                Dfg.Cast(t);
-
             if (Fqc.IsReady())
                 Fqc.Cast(t.ServerPosition);
 
@@ -399,6 +401,7 @@ namespace Leblanc
                 Q.CastOnUnit(t, true);
                 R.CastOnUnit(t, true);
             }
+
             if (vComboType == ComboType.ComboWR && W.IsReady())
             {
                 t = GetTarget(W.Range, TargetSelector.DamageType.Magical);
@@ -407,8 +410,10 @@ namespace Leblanc
 
                 if (!LeBlancStillJumped)
                     W.Cast(t, true, true);
+
                 R.Cast(t, true, true);
             }
+
             if (vComboType == ComboType.ComboER && E.IsReady())
             {
                 t = GetTarget(E.Range, TargetSelector.DamageType.Magical);
@@ -434,7 +439,7 @@ namespace Leblanc
             var cdW = Game.Time < cdWEx ? cdWEx - Game.Time : 0;
             var cdE = Game.Time < cdEEx ? cdEEx - Game.Time : 0;
 
-            var t = GetTarget(Q.Range*2, TargetSelector.DamageType.Magical);
+            var t = GetTarget(Q.Range * 2, TargetSelector.DamageType.Magical);
             var useR = (Config.Item("DontCombo" + t.BaseSkinName) != null &&
                         Config.Item("DontCombo" + t.BaseSkinName).GetValue<bool>() == false);
 
@@ -533,8 +538,7 @@ namespace Leblanc
                 ObjectManager.Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
             {
                 if (ObjectManager.Player.Distance(t) < 650 &&
-                    ObjectManager.Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite) >=
-                    t.Health)
+                    ObjectManager.Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite) >= t.Health)
                 {
                     ObjectManager.Player.Spellbook.CastSpell(IgniteSlot, t);
                 }
@@ -570,13 +574,16 @@ namespace Leblanc
             get
             {
                 var xDmg = 0f;
-                var perDmg = new[] {100f, 200f, 300};
-                
-                xDmg += ((ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod)* .65f) +
-                           perDmg[R.Level -1];
+                var perDmg = new[] { 100f, 200f, 300 };
+
+                xDmg += ((ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod) * .65f) +
+                        perDmg[R.Level - 1];
                 var t = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
                 if (t.IsValidTarget(2000))
-                    xDmg += (float) ObjectManager.Player.GetSpellDamage(t, (vComboType == ComboType.ComboQR ? SpellSlot.Q : SpellSlot.E));
+                    xDmg +=
+                        (float)
+                            ObjectManager.Player.GetSpellDamage(
+                                t, (vComboType == ComboType.ComboQR ? SpellSlot.Q : SpellSlot.E));
                 return xDmg;
             }
         }
@@ -586,14 +593,14 @@ namespace Leblanc
             get
             {
                 var xDmg = 0f;
-                var perDmg = new[] {150f, 300f, 450f};
-                xDmg += ((ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod)* .98f) +
-                           perDmg[R.Level -1];
-                
+                var perDmg = new[] { 150f, 300f, 450f };
+                xDmg += ((ObjectManager.Player.BaseAbilityDamage + ObjectManager.Player.FlatMagicDamageMod) * .98f) +
+                        perDmg[R.Level - 1];
+
                 var t = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Magical);
                 if (t.IsValidTarget(2000))
                     xDmg += (float) ObjectManager.Player.GetSpellDamage(t, SpellSlot.W);
-                
+
                 return xDmg;
             }
         }
@@ -629,10 +636,6 @@ namespace Leblanc
                 ? (float) ObjectManager.Player.GetSummonerSpellDamage(t, Damage.SummonerSpell.Ignite)
                 : 0f;
 
-            fComboDamage += Items.CanUseItem(3128)
-                ? (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.Dfg)
-                : 0;
-
             fComboDamage += Items.CanUseItem(3092)
                 ? (float) ObjectManager.Player.GetItemDamage(t, Damage.DamageItems.FrostQueenClaim)
                 : 0;
@@ -665,7 +668,7 @@ namespace Leblanc
 
             if (Config.Item("ComboDblStun").GetValue<KeyBind>().Active)
             {
-                Drawing.DrawText(Drawing.Width*0.45f, Drawing.Height*0.78f, Color.Red, "Double Stun Active!");
+                Drawing.DrawText(Drawing.Width * 0.45f, Drawing.Height * 0.78f, Color.Red, "Double Stun Active!");
 
                 foreach (var enemy in
                     ObjectManager.Get<Obj_AI_Hero>()
@@ -728,9 +731,7 @@ namespace Leblanc
                                         ObjectManager.Player.Distance(enemy) < E.Range)
                             select enemy).Count();
 
-                    if (onPlayerPositionEnemyCount2 == 2)
-                    {
-                    }
+                    if (onPlayerPositionEnemyCount2 == 2) {}
                 }
                 if (onPlayerPositionEnemyCount > onSlidePositionEnemyCount)
                 {
@@ -793,7 +794,7 @@ namespace Leblanc
             if (!useW || !W.IsReady())
                 return;
 
-            var minionsW = W.GetCircularFarmLocation(rangedMinionsW, W.Width*0.75f);
+            var minionsW = W.GetCircularFarmLocation(rangedMinionsW, W.Width * 0.75f);
 
             if (minionsW.MinionsHit < 2 || !W.IsInRange(minionsW.Position.To3D()))
                 return;
@@ -879,10 +880,10 @@ namespace Leblanc
         {
             if (ObjectManager.Player.IsDead)
                 return;
-            
+
             RefreshComboType();
-            
-            var t = TargetSelector.GetTarget(W.Range*2, TargetSelector.DamageType.Physical);
+
+            var t = TargetSelector.GetTarget(W.Range * 2, TargetSelector.DamageType.Physical);
             {
                 var xComboText = "Combo Kill";
                 if (t.IsValidTarget(W.Range))
@@ -894,7 +895,7 @@ namespace Leblanc
                     }
                 }
 
-                else if (t.IsValidTarget(W.Range*2 - 30))
+                else if (t.IsValidTarget(W.Range * 2 - 30))
                 {
                     if (t.Health < GetComboDamage(t) - ObjectManager.Player.GetSpellDamage(t, SpellSlot.W))
                     {
@@ -904,21 +905,21 @@ namespace Leblanc
                     }
                 }
             }
-            
+
             _isComboCompleted = !R.IsReady();
-            
+
             if (Config.Item("ComboDblStun").GetValue<KeyBind>().Active)
                 DoubleStun();
-            
+
 
             if (Config.Item("RunActive").GetValue<KeyBind>().Active)
                 Run();
-            
+
             if (Config.Item("ComboActive").GetValue<KeyBind>().Active)
                 Combo();
 
             DoToggleHarass();
-            
+
             if (Config.Item("HarassActive").GetValue<KeyBind>().Active)
                 Harass();
 
@@ -962,7 +963,7 @@ namespace Leblanc
                         xComboStr += "E-R";
                         break;
                 }
-                Drawing.DrawText(Drawing.Width*0.45f, Drawing.Height*0.80f, Color.GreenYellow, xComboStr);
+                Drawing.DrawText(Drawing.Width * 0.45f, Drawing.Height * 0.80f, Color.GreenYellow, xComboStr);
             }
 
             if (Config.SubMenu("Harass").Item("HarassShowInfo").GetValue<bool>())
@@ -985,7 +986,7 @@ namespace Leblanc
                     xHarassInfo = "楠氭壈鍒囨崲: " + xHarassInfo;
                 }
                 xHarassInfo = xHarassInfo.Substring(0, xHarassInfo.Length - 3);
-                Drawing.DrawText(Drawing.Width*0.44f, Drawing.Height*0.82f, Color.Wheat, xHarassInfo);
+                Drawing.DrawText(Drawing.Width * 0.44f, Drawing.Height * 0.82f, Color.Wheat, xHarassInfo);
             }
 
             foreach (var spell in SpellList)

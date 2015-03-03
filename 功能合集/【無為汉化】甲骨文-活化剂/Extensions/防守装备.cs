@@ -23,10 +23,10 @@ namespace Oracle.Extensions
             _mainMenu.AddSubMenu(_menuConfig);
 
             CreateMenuItem("兰顿之兆", "Randuins", "selfcount", 40, 40);
-            CreateMenuItem("炽天使之拥", "Seraphs",  "selfhealth", 55, 40);
-            CreateMenuItem("中亚沙漏", "Zhonyas", "selfzhonya", 35, 40);
-            CreateMenuItem("山岳之容", "Mountain", "allyhealth", 20, 40);
-            CreateMenuItem("索拉里铁盒", "Locket", "allyhealth", 45, 40);
+            CreateMenuItem("炽天使之拥", "Seraphs",  "selfhealth", 40, 45);
+            CreateMenuItem("中亚沙漏", "Zhonyas", "selfzhonya", 20, 50);
+            CreateMenuItem("山岳之容", "Mountain", "allyhealth", 20, 45);
+            CreateMenuItem("索拉里铁盒", "Locket", "allyhealth", 40, 45);
 
             var tMenu = new Menu("升华护符", "tboost");
             tMenu.AddItem(new MenuItem("useTalisman", "使用加速")).SetValue(true);
@@ -39,7 +39,7 @@ namespace Oracle.Extensions
             bMenu.AddItem(new MenuItem("useBanner", "使用号令之旗")).SetValue(true);
             _mainMenu.AddSubMenu(bMenu);
 
-            CreateMenuItem("巫师帽", "Wooglets", "selfzhonya", 35, 40);
+            CreateMenuItem("巫师帽", "Wooglets", "selfzhonya", 20, 40);
             CreateMenuItem("女妖面纱", "Odyns", "selfcount", 40, 40);
 
             var oMenu = new Menu("扫描透镜", "olens");
@@ -186,7 +186,7 @@ namespace Oracle.Extensions
             }
 
             if (target.CountHerosInRange(false) + 1 >= target.CountHerosInRange(true)) // +1 to allow potential counterplay
-            {
+            {     
                 if (_mainMenu.Item("use" + name + "Ults").GetValue<bool>())
                 {
                     if (OC.DangerUlt || OC.IncomeDamage >= target.Health || target.Health/target.MaxHealth*100 <= 15)
@@ -224,6 +224,7 @@ namespace Oracle.Extensions
                         return;
                     }
                 }
+
                 if (aHealthPercent <= _mainMenu.Item("use" + name + "Pct").GetValue<Slider>().Value)
                 {
                     if ((iDamagePercent >= 1 || OC.IncomeDamage >= target.Health))

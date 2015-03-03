@@ -23,6 +23,15 @@ namespace Oracle
         {
             CleanseBuffs.Add(new GameBuff
             {
+                ChampionName = "Braum",
+                BuffName = "braummark",
+                SpellName = "braumq",
+                Slot = SpellSlot.Q,
+                Delay = 0
+            });
+
+            CleanseBuffs.Add(new GameBuff
+            {
                 ChampionName = "Zed",
                 BuffName = "zedulttargetmark",
                 SpellName = "zedult",
@@ -54,7 +63,7 @@ namespace Oracle
                 BuffName = "blindmonkqonechaos",
                 SpellName = "blindmonkqone",
                 Slot = SpellSlot.Q,
-                Delay = 100
+                Delay = 0
             });
 
             CleanseBuffs.Add(new GameBuff
@@ -68,11 +77,20 @@ namespace Oracle
 
             CleanseBuffs.Add(new GameBuff
             {
+                ChampionName = "Nasus",
+                BuffName = "NasusW",
+                SpellName = "NasusW",
+                Slot = SpellSlot.W,
+                Delay = 0
+            });
+
+            CleanseBuffs.Add(new GameBuff
+            {
                 ChampionName = "Mordekaiser",
                 BuffName = "mordekaiserchildrenofthegrave",
                 SpellName = "mordekaiserchildrenofthegrave",
                 Slot = SpellSlot.R,
-                Delay = 0,
+                Delay = 0
             });
 
             CleanseBuffs.Add(new GameBuff
@@ -81,7 +99,7 @@ namespace Oracle
                 BuffName = "poppydiplomaticimmunity",
                 SpellName = "poppydiplomaticimmunity",
                 Slot = SpellSlot.R,
-                Delay = 0,
+                Delay = 0
             });
 
             CleanseBuffs.Add(new GameBuff
@@ -117,7 +135,7 @@ namespace Oracle
                 BuffName = "soulshackles",
                 SpellName = "soulshackles",
                 Slot = SpellSlot.R,
-                Delay = 1000,
+                Delay = 1000
             });
 
             EvadeBuffs.Add(new GameBuff
