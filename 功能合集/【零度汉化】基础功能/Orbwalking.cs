@@ -24,6 +24,8 @@
 
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -31,6 +33,27 @@ using Color = System.Drawing.Color;
 
 namespace LeagueSharp.Common
 {
+    /// <summary>
+    ///     This class offers real mouse clicks.
+    /// </summary>
+    public static class VirtualMouse
+    {
+        //data
+        private const int MOUSEEVENTF_RIGHTDOWN = 0x0008;
+        private const int MOUSEEVENTF_RIGHTUP = 0x0010;
+        public static int clickdelay;
+        // import the necessary API function so .NET can marshall parameters appropriately
+        [DllImport("user32.dll")]
+        private static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+
+        // simulates a click-and-release action of the right mouse button at its current position
+        public static void RightClick()
+        {
+            mouse_event(MOUSEEVENTF_RIGHTDOWN, Control.MousePosition.X, Control.MousePosition.Y, 0, 0);
+            mouse_event(MOUSEEVENTF_RIGHTUP, Control.MousePosition.X, Control.MousePosition.Y, 0, 0);
+        }
+    }
+
     /// <summary>
     ///     This class offers everything related to auto-attacks and orbwalking.
     /// </summary>
@@ -313,7 +336,7 @@ namespace LeagueSharp.Common
             {
                 if (Player.Path.Count() > 1)
                 {
-                    Player.IssueOrder((GameObjectOrder)10, Player.ServerPosition);
+                    Player.IssueOrder((GameObjectOrder) 10, Player.ServerPosition);
                     Player.IssueOrder(GameObjectOrder.HoldPosition, Player.ServerPosition);
                     LastMoveCommandPosition = Player.ServerPosition;
                 }
@@ -379,6 +402,16 @@ namespace LeagueSharp.Common
 
                 if (CanMove(extraWindup))
                 {
+                    var r = new Random();
+                    var rng = r.Next(0, Orbwalker._config.Item("randomDelay").GetValue<Slider>().Value);
+                    if (Orbwalker._config.Item("clickEnable").GetValue<bool>() &&
+                        Environment.TickCount - VirtualMouse.clickdelay >
+                        Orbwalker._config.Item("ExtraWindup").GetValue<Slider>().Value +
+                        Orbwalker._config.Item("clickDelay").GetValue<Slider>().Value + rng)
+                    {
+                        VirtualMouse.clickdelay = Environment.TickCount;
+                        VirtualMouse.RightClick();
+                    }
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }
@@ -424,10 +457,10 @@ namespace LeagueSharp.Common
                     (Spell.Target is Obj_AI_Base || Spell.Target is Obj_BarracksDampener || Spell.Target is Obj_HQ))
                 {
                     LastAATick = Utils.TickCount - Game.Ping / 2;
-                    
-                    if(Spell.Target is Obj_AI_Base)
+
+                    if (Spell.Target is Obj_AI_Base)
                     {
-                        var target = (Obj_AI_Base)Spell.Target;
+                        var target = (Obj_AI_Base) Spell.Target;
                         if (target.IsValid)
                         {
                             FireOnTargetSwitch(target);
@@ -474,7 +507,7 @@ namespace LeagueSharp.Common
         public class Orbwalker
         {
             private const float LaneClearWaitTimeMod = 2f;
-            private static Menu _config;
+            public static Menu _config;
             private readonly Obj_AI_Hero Player;
             private Obj_AI_Base _forcedTarget;
             private OrbwalkingMode _mode = OrbwalkingMode.None;
@@ -504,6 +537,12 @@ namespace LeagueSharp.Common
                 misc.AddItem(new MenuItem("PriorizeFarm", "ÓÅÏÈ²¹±ø").SetShared().SetValue(true));
                 _config.AddSubMenu(misc);
 
+                /* Fake Clicks */
+                var fakeclicks = new Menu("Fake Clicks", "Ðé¼Ùµã»÷");
+                fakeclicks.AddItem(new MenuItem("clickEnable", "ÆôÓÃ").SetValue(false));
+                fakeclicks.AddItem(new MenuItem("clickDelay", "µã»÷ÑÓ³Ù").SetValue(new Slider(200, 0, 2000)));
+                fakeclicks.AddItem(new MenuItem("randomDelay", "Ëæ»úÑÓ³Ù").SetValue(new Slider(100, 0, 500)));
+                _config.AddSubMenu(fakeclicks);
 
                 /* Delay sliders */
                 _config.AddItem(
@@ -512,7 +551,6 @@ namespace LeagueSharp.Common
                 _config.AddItem(
                     new MenuItem("MovementDelay", "¶¯×÷ÑÓ³Ù").SetShared().SetValue(new Slider(80, 0, 250)))
                     .ValueChanged += (sender, args) => SetMovementDelay(args.GetNewValue<Slider>().Value);
-
 
                 /*Load the menu*/
                 _config.AddItem(
@@ -530,11 +568,6 @@ namespace LeagueSharp.Common
                 Player = ObjectManager.Player;
                 Game.OnGameUpdate += GameOnOnGameUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
-            }
-
-            public virtual bool InAutoAttackRange(AttackableUnit target)
-            {
-                return Orbwalking.InAutoAttackRange(target);
             }
 
             private int FarmDelay
@@ -574,6 +607,11 @@ namespace LeagueSharp.Common
                     return OrbwalkingMode.None;
                 }
                 set { _mode = value; }
+            }
+
+            public virtual bool InAutoAttackRange(AttackableUnit target)
+            {
+                return Orbwalking.InAutoAttackRange(target);
             }
 
             /// <summary>
@@ -649,9 +687,9 @@ namespace LeagueSharp.Common
                                     (ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod))
                         )
                     {
-                        var t = (int) (Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
+                        var t = Player.AttackCastDelay * 1000 - 100 + Game.Ping / 2 +
                                 1000 * (int) Player.Distance(minion) / (int) GetMyProjectileSpeed();
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
+                        var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)t, FarmDelay);
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
                         {
