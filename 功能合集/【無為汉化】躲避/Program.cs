@@ -150,7 +150,7 @@ namespace Evade
             Collision.Init();
 
             Game.PrintChat("<font color=\"#00BFFF\">銆愮劇鐐烘眽鍖栥€慹vade韬查伩 -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛</font>");
-			Game.PrintChat("<font color=\"#FFFFFF\">    鏇村姹夊寲鑴氭湰璇峰姞</font> <font color=\"#FFFF00\">   L#姹夊寲缇わ細386289593</font> ");
+			Game.PrintChat("<font color=\"#FFFFFF\">鏇村姹夊寲鑴氭湰璇峰姞</font> <font color=\"#FFFF00\">   L#姹夊寲缇わ細386289593</font> ");
 
 
             if (Config.PrintSpellData)
@@ -161,7 +161,7 @@ namespace Evade
                     {
                         Console.WriteLine(
                              "Slot  " + spell.Slot + " " + spell.SData.Name + " w:" + spell.SData.LineWidth + " s:" + spell.SData.MissileSpeed + " r: " +
-                            spell.SData.CastRange[0]);
+                            spell.SData.CastRangeArray[0]);
                     }
                 }
                 Console.WriteLine(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name);
