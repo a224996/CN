@@ -92,11 +92,11 @@ namespace KaiHelper.Timer
             //GameObject.OnCreate += GameObject_OnCreate;
         }
 
-        void GameObject_OnCreate(GameObject sender, EventArgs args)
-        {
-            if (sender.Position.Distance(ObjectManager.Player.Position) < 800)
-                Game.PrintChat(sender.Name);
-        }
+        //void GameObject_OnCreate(GameObject sender, EventArgs args)
+        //{
+        //    if (sender.Position.Distance(ObjectManager.Player.Position) < 800)
+        //        Game.PrintChat(sender.Name);
+        //}
 
         private void Drawing_OnEndScene(EventArgs args)
         {

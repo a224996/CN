@@ -9,10 +9,10 @@ namespace KaiHelper.Tracker
 {
     public class Time
     {
-        public bool CalledInvisible = false;
-        public bool CalledVisible = false;
+        public bool CalledInvisible;
+        public bool CalledVisible;
         public int InvisibleTime;
-        public bool Pinged = false;
+        public bool Pinged;
         public int StartInvisibleTime;
         public int StartVisibleTime;
         public int VisibleTime;

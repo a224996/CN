@@ -29,7 +29,7 @@ namespace KaiHelper.Tracker
                     Quality = FontQuality.Default,
                 });
             _menu = menu.AddSubMenu(new Menu("航点", "WaypointTracker"));
-            _menu.AddItem(new MenuItem("AWPMiniMap", "小地图").SetValue(false));
+            _menu.AddItem(new MenuItem("AWPMiniMap", "在小地图").SetValue(false));
             _menu.AddItem(new MenuItem("AWPMap", "启用").SetValue(false));
             Drawing.OnEndScene += Drawing_OnDraw;
         }
