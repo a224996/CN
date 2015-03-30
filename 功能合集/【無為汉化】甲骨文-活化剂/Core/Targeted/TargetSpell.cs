@@ -88,14 +88,14 @@ namespace Oracle.Core.Targeted
         public CcType CcType { get; set; }
         public string Name { get; set; }
         public float Range { get; set; }
-        public double Delay { get; set; }
-        public double Speed { get; set; }
+        public int Delay { get; set; }
+        public int Speed { get; set; }
         public bool Dangerous { get; set; }
         public bool Stealth { get; set; }
         public bool Wait { get; set; }
 
         public TargetSpellData(string champion, string name, SpellSlot slot, SpellType type, CcType cc, float range,
-            float delay, float speed, bool dangerous = false, bool stealth = false, bool wait = false)
+            int delay, int speed, bool dangerous = false, bool stealth = false, bool wait = false)
         {
             ChampionName = champion;
             Name = name;

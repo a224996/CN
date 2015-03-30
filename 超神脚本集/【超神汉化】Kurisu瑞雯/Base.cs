@@ -1,6 +1,7 @@
 ﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace KurisuRiven
 {
@@ -45,6 +46,7 @@ namespace KurisuRiven
         public static int PassiveCount;
         public static float TrueRange;
         public static float ComboDamage;
+        public static Vector3 MovePos;
 
         // shorten commonly used
         internal static bool GetBool(string item)
@@ -71,7 +73,7 @@ namespace KurisuRiven
             OnMenuUpdate();
             RivenEvents();
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += Drawings.OnDraw;
 
             // load spells
@@ -86,6 +88,7 @@ namespace KurisuRiven
 
             Game.PrintChat("<b><font color=\"#FF9900\">KurisuRiven:</font></b> Loaded!");
         }
+
 
         // riven spell queue
         internal static void OnGameUpdate(EventArgs args)
@@ -112,8 +115,24 @@ namespace KurisuRiven
                 CanBurst = false;
             }
 
+
+            try
+            {
+                if (GetList("cancelt") == 1 && LastTarget != null)
+                    MovePos = Me.ServerPosition + (Me.ServerPosition - LastTarget.ServerPosition).Normalized()*53;
+                else if (GetList("cancelt") == 2 && LastTarget != null)
+                    MovePos = Me.ServerPosition.Extend(LastTarget.ServerPosition, 550);
+                else
+                    MovePos = Game.CursorPos;
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine("CancelPos Exception Thrown");
+            }
+
             ComboDamage = Helpers.GetDmg("P", true)*3 + Helpers.GetDmg("Q", true)*3 + Helpers.GetDmg("W", true) +
                           Helpers.GetDmg("I") + Helpers.GetDmg("R", true) + Helpers.GetDmg("ITEMS");
+
 
             Combo.OnGameUpdate();
             Combo.LaneFarm();
@@ -179,7 +198,7 @@ namespace KurisuRiven
             }
 
             if (!CanMV && !(DidQ || DidW || DidE || DidWS) &&
-                Environment.TickCount - LastAA >= 1000)
+                Environment.TickCount - LastAA >= 1100)
             {
                 CanMV = true;
             }
@@ -236,12 +255,13 @@ namespace KurisuRiven
                         DidQ = true;
                         //CanMV = false;
                         LastQ = Environment.TickCount;
+                        CanQ = false;
+                        if (LastTarget.IsValidTarget(TrueRange + 100))
                         Utility.DelayAction.Add(100,
-                            () => Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos));
+                            () => Me.IssueOrder(GameObjectOrder.MoveTo, MovePos));
 
                         if (GetList("engage") == 1 && HasHD)
                             Helpers.CheckR(Combo.Target);
-                        CanQ = false;
                         break;
                     case "RivenMartyr":
                         DidW = true;
@@ -261,7 +281,7 @@ namespace KurisuRiven
                         {
                             var flashslot = Me.GetSpellSlot("summonerflash");
                             if (Me.Spellbook.CanUseSpell(flashslot) == SpellState.Ready &&
-                                Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                                Settings.Item("combokey").GetValue<KeyBind>().Active)
                             {
                                 if (Combo.Target.Distance(Me.ServerPosition) > E.Range + TrueRange + 50 &&
                                     Combo.Target.Distance(Me.ServerPosition) <= E.Range + TrueRange + 500)
@@ -280,9 +300,9 @@ namespace KurisuRiven
                     case "ItemTiamatCleave":
                         CanWS = true;
                         if (GetList("wsmode") == 1 && UltOn && CanWS &&
-                            Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                            Settings.Item("combokey").GetValue<KeyBind>().Active)
                         {
-                            if (CanBurst)
+                            if (CanBurst && R.GetPrediction(Combo.Target).Hitchance >= HitChance.Low)
                                 Utility.DelayAction.Add(150, () => R.Cast(Combo.Target.ServerPosition));
                         }
 
@@ -292,7 +312,7 @@ namespace KurisuRiven
                         break;
 
                     case "summonerflash":
-                        if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                        if (Settings.Item("combokey").GetValue<KeyBind>().Active)
                             if (W.IsReady() && GetBool("multir3"))
                                 W.Cast();
                         break;
@@ -300,7 +320,7 @@ namespace KurisuRiven
 
                 if (args.SData.Name.Contains("BasicAttack"))
                 {
-                    if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                    if (Settings.Item("combokey").GetValue<KeyBind>().Active)
                     {
                         if (CanBurst || !GetBool("usecombow") || !GetBool("usecomboe"))
                         {
@@ -315,9 +335,9 @@ namespace KurisuRiven
                         }
                     }
 
-                    else if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                    else if (Settings.Item("clearkey").GetValue<KeyBind>().Active)
                     {
-                        if (!GetBool("usejunglew") || !GetBool("usejunglee"))
+                        if (GetBool("usejungleq") && LastTarget.IsValid<Obj_AI_Minion>() && !LastTarget.Name.StartsWith("Minion"))
                         {
                             // delay till after aa
                             Utility.DelayAction.Add(50 + (int)(Me.AttackDelay * 100) + Game.Ping/2 + GetSlider("delay"), delegate
@@ -327,7 +347,6 @@ namespace KurisuRiven
                                 if (Items.CanUseItem(3074))
                                     Items.UseItem(3074);
                             });
-
                         }
                     }
                 }
@@ -371,13 +390,22 @@ namespace KurisuRiven
 
             var kMenu = new Menu("走砍", "rorb");
             Orbwalker = new Orbwalking.Orbwalker(kMenu);
-            kMenu.AddItem(new MenuItem("fleemode", "逃跑")).SetValue(new KeyBind(65, KeyBindType.Press));
             Settings.AddSubMenu(kMenu);
+
+            var keyMenu = new Menu("按键设置", "Keys");
+            keyMenu.AddItem(new MenuItem("combokey", "连招")).SetValue(new KeyBind(32, KeyBindType.Press));
+            keyMenu.AddItem(new MenuItem("clearkey", "清兵")).SetValue(new KeyBind(86, KeyBindType.Press));
+            keyMenu.AddItem(new MenuItem("fleekey", "逃跑")).SetValue(new KeyBind(65, KeyBindType.Press));
+            keyMenu.AddItem(new MenuItem("semiqlane", "使用半自动Q补兵"))                    
+                .SetValue(new KeyBind(88, KeyBindType.Press));
+            keyMenu.AddItem(new MenuItem("semiq", "使用半自动Q清兵")).SetValue(true);
+            Settings.AddSubMenu(keyMenu);
 
             var drMenu = new Menu("显示", "drawings");
             drMenu.AddItem(new MenuItem("drawengage", "显示连招范围")).SetValue(true);
             drMenu.AddItem(new MenuItem("drawkill", "显示击杀文本")).SetValue(true);
             drMenu.AddItem(new MenuItem("drawtarg", "显示目标范围")).SetValue(true);
+            drMenu.AddItem(new MenuItem("debugdmg", "显示连招伤害")).SetValue(true);
             Settings.AddSubMenu(drMenu);
 
             var mMenu = new Menu("连招", "combostuff");
@@ -385,9 +413,11 @@ namespace KurisuRiven
             mMenu.AddItem(new MenuItem("ultwhen", "可击杀使用R")).SetValue(new StringList(new[] { "Hard", "Extreme" }));
             mMenu.AddItem(new MenuItem("wsmode", "智能R模式"))
                 .SetValue(new StringList(new[] { "只有击杀", "击杀或打出最大伤害" }, 1));
-            mMenu.AddItem(new MenuItem("multir3", "如果可击杀 闪现+连招?")).SetValue(false);
+            mMenu.AddItem(new MenuItem("multir3", "如果可击杀 闪现+连招?")).SetValue(true);
             mMenu.AddItem(new MenuItem("engage", "连招模式"))
                 .SetValue(new StringList(new[] { "正常", "优先提亚马特/九头蛇" }));
+            mMenu.AddItem(new MenuItem("cancelt", "Cancel To"))
+                .SetValue(new StringList(new[] {"Cursor", "Behind Me", "Target Direction"}, 2));
             Settings.AddSubMenu(mMenu);
 
             var sMenu = new Menu("技能", "Spells");
@@ -406,6 +436,8 @@ namespace KurisuRiven
             menuW.AddItem(new MenuItem("uselanew", "清线使用")).SetValue(true);
             menuW.AddItem(new MenuItem("antigap", "中断法术")).SetValue(true);
             menuW.AddItem(new MenuItem("wint", "防止突进")).SetValue(true);
+            menuW.AddItem(new MenuItem("autow", "Use automatic")).SetValue(true);
+            menuW.AddItem(new MenuItem("wmin", "Use on Min Count")).SetValue(new Slider(2, 1, 5));
             sMenu.AddSubMenu(menuW);
 
             var menuE = new Menu("E 菜单", "valor");
@@ -423,17 +455,10 @@ namespace KurisuRiven
             Settings.AddSubMenu(sMenu);
 
             var oMenu = new Menu("杂项", "otherstuff");
-            oMenu.AddItem(new MenuItem("semiq", "使用 半-Q 骚扰/清兵")).SetValue(true);
-            oMenu.AddItem(new MenuItem("forceaa", "清兵强制 AA")).SetValue(false);
-            oMenu.AddItem(new MenuItem("useitems", "使用幽梦/破败")).SetValue(true);
-            oMenu.AddItem(new MenuItem("keepq", "保存Q")).SetValue(true);
-            oMenu.AddItem(new MenuItem("delay", "AA -> Q 延迟")).SetValue(new Slider(0, 0, 200));
-            oMenu.AddItem(new MenuItem("autow", "自动 W")).SetValue(true);
-            oMenu.AddItem(new MenuItem("wmin", "最少人数")).SetValue(new Slider(2, 1, 5));
-            oMenu.AddItem(new MenuItem("debugtrue", "调试真实伤害")).SetValue(false);
-            oMenu.AddItem(new MenuItem("debugdmg", "调试连招伤害")).SetValue(false);
+            oMenu.AddItem(new MenuItem("useitems", "使用破败/幽梦")).SetValue(true);
+            oMenu.AddItem(new MenuItem("keepq", "Keep Q Buff Up")).SetValue(true);
+            oMenu.AddItem(new MenuItem("delay", "AA -> Q Delay")).SetValue(new Slider(0, 0, 200));
             Settings.AddSubMenu(oMenu);
-
 
             Settings.AddToMainMenu();
         }

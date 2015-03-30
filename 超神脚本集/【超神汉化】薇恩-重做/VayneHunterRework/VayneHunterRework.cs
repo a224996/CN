@@ -167,9 +167,9 @@ namespace VayneHunterRework
             R = new Spell(SpellSlot.R);
             E.SetTargetted(0.25f,1600f);
             Orbwalking.AfterAttack += Orbwalker_AfterAttack;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
 
-           // Game.OnGameProcessPacket += GameOnOnGameProcessPacket;
+           // Game.OnProcessPacket += GameOnOnGameProcessPacket;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Drawing.OnDraw += Drawing_OnDraw;

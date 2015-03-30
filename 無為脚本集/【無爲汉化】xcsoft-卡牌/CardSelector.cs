@@ -36,7 +36,7 @@ namespace xc_TwistedFate
         static CardSelector()
         {
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
         public static SelectStatus Status { get; set; }
@@ -105,20 +105,18 @@ namespace xc_TwistedFate
 
         private static void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (!sender.IsMe)
+            if (sender.IsMe)
             {
-                return;
-            }
+                if (args.SData.Name == "PickACard")
+                {
+                    Status = SelectStatus.Selecting;
+                }
 
-            if (args.SData.Name == "PickACard")
-            {
-                Status = SelectStatus.Selecting;
-            }
-
-            if (args.SData.Name == "goldcardlock" || args.SData.Name == "bluecardlock" ||
-                args.SData.Name == "redcardlock")
-            {
-                Status = SelectStatus.Selected;
+                if (args.SData.Name == "goldcardlock" || args.SData.Name == "bluecardlock" ||
+                    args.SData.Name == "redcardlock")
+                {
+                    Status = SelectStatus.Selected;
+                }
             }
         }
     }

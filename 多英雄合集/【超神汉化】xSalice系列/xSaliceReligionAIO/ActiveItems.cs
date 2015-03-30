@@ -133,7 +133,7 @@ namespace xSaliceReligionAIO
             Orbwalking.AfterAttack += AfterAttack;
             xSLxOrbwalker.AfterAttack += AfterAttack;
             Orbwalking.OnAttack += OnAttack;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
         private static void AddOffensiveItem(Menu subMenu, ActiveItems item)

@@ -23,7 +23,7 @@ namespace UnderratedAIO.Champions
             InitMenu();
             Initpoppy();
             Game.PrintChat("<font color='#9933FF'>Soresu </font><font color='#FFFFFF'>- Poppy</font>");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Game_OnDraw;
             Orbwalking.AfterAttack += AfterAttack;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;

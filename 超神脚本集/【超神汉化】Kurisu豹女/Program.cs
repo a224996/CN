@@ -46,6 +46,11 @@ namespace KurisuNidalee
             return target.HasBuff("nidaleepassivehunted", true);
         }
 
+        private static bool NotLearned(Spell spell)
+        {
+            return Me.Spellbook.CanUseSpell(spell.Slot) == SpellState.NotLearned;
+        }
+
         private static readonly string[] Jungleminions =
         {
             "SRU_Razorbeak", "SRU_Krug", "Sru_Crab",
@@ -75,7 +80,7 @@ namespace KurisuNidalee
             Pounce.SetSkillshot(0.50f, 400f, 1500f, false, SkillshotType.SkillshotCone);
 
             // GameOnGameUpdate Event
-            Game.OnGameUpdate += NidaleeOnUpdate;
+            Game.OnUpdate += NidaleeOnUpdate;
 
             // DrawingOnDraw Event
             Drawing.OnDraw += NidaleeOnDraw;
@@ -124,7 +129,6 @@ namespace KurisuNidalee
 
             var nidaOrb = new Menu("走砍", "orbwalker");
             _orbwalker = new Orbwalking.Orbwalker(nidaOrb);
-
             _mainMenu.AddSubMenu(nidaOrb);
 
             var nidaTS = new Menu("目标选择", "target selecter");
@@ -154,16 +158,18 @@ namespace KurisuNidalee
             nidaHeals.AddItem(new MenuItem("usedemheals", "打开")).SetValue(true);
             nidaHeals.AddItem(new MenuItem("sezz", "治疗优先: ")).SetValue(new StringList(new[] { "低血量", "最高输出的 AD" }));
             nidaHeals.AddItem(new MenuItem("healmanapct", "蓝量 %")).SetValue(new Slider(40));
+
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsAlly))
             {
-                nidaHeals.AddItem(new MenuItem("heal" + hero.SkinName, hero.SkinName)).SetValue(true);
-                nidaHeals.AddItem(new MenuItem("healpct" + hero.SkinName, "Heal " + hero.SkinName + " 血量 %")).SetValue(new Slider(50));
+                nidaHeals.AddItem(new MenuItem("heal" + hero.ChampionName, hero.ChampionName)).SetValue(true);
+                nidaHeals.AddItem(new MenuItem("healpct" + hero.ChampionName, "Heal " + hero.ChampionName + " if under %")).SetValue(new Slider(50));
             }
 
             _mainMenu.AddSubMenu(nidaHeals);
 
             var nidaHarass = new Menu("骚扰", "harass");
             nidaHarass.AddItem(new MenuItem("usehumanq2", "使用人形Q")).SetValue(true);
+            nidaHarass.AddItem(new MenuItem("autoq", "自动-Q 锁定")).SetValue(new KeyBind('Y', KeyBindType.Toggle));
             nidaHarass.AddItem(new MenuItem("humanqpct", "蓝量控制")).SetValue(new Slider(70));
             _mainMenu.AddSubMenu(nidaHarass);
 
@@ -174,6 +180,7 @@ namespace KurisuNidalee
             nidaJungle.AddItem(new MenuItem("jgcougarw", "使用豹形W")).SetValue(true);
             nidaJungle.AddItem(new MenuItem("jgcougare", "使用豹形E")).SetValue(true);
             nidaJungle.AddItem(new MenuItem("jgcougarr", "自动切换形态")).SetValue(true);
+            nidaJungle.AddItem(new MenuItem("jgheal", "开关形态补血")).SetValue(true);
             nidaJungle.AddItem(new MenuItem("jgpct", "蓝量控制")).SetValue(new Slider(25));
             _mainMenu.AddSubMenu(nidaJungle);
 
@@ -225,14 +232,13 @@ namespace KurisuNidalee
 
         #endregion
 
-        #region Nidalee: OnTick
+        #region Nidalee: OnUpdate
         private static void NidaleeOnUpdate(EventArgs args)
         {
             _hasBlue = Me.HasBuff("crestoftheancientgolem", true);
             _cougarForm = Me.Spellbook.GetSpell(SpellSlot.Q).Name != "JavelinToss";
 
-            _target = TargetSelector.GetSelectedTarget() ??
-                     TargetSelector.GetTarget(1500, TargetSelector.DamageType.Magical);
+            _target = TargetSelector.GetTarget(1200, TargetSelector.DamageType.Magical);
 
             ProcessCooldowns();
             PrimalSurge();
@@ -240,8 +246,13 @@ namespace KurisuNidalee
 
             if (_mainMenu.Item("usecombo").GetValue<KeyBind>().Active)
                 UseCombo(_target);
-            if (_mainMenu.Item("useharass").GetValue<KeyBind>().Active)
-                UseHarass(_target);
+
+            if (_mainMenu.Item("useharass").GetValue<KeyBind>().Active ||
+                _mainMenu.Item("autoq").GetValue<KeyBind>().Active)
+            {
+                UseHarass();
+            }
+
             if (_mainMenu.Item("useclear").GetValue<KeyBind>().Active)
                 UseLaneFarm();
             if (_mainMenu.Item("usejungle").GetValue<KeyBind>().Active)
@@ -253,25 +264,22 @@ namespace KurisuNidalee
 
 
             if (Me.HasBuff("Takedown", true))
-            {
                 Orbwalking.LastAATick = 0;
-            }
 
             if (_mainMenu.Item("imm").GetValue<bool>())
             {
-                // Human W == 0 -- Bushwack is on CD
-                if (HW != 0 || !Bushwack.IsReady())
+                // Human W != 0 -- Bushwack is on CD
+                if (HW != 0 || !_cougarForm && !Bushwack.IsReady())
                 {
                     return;
                 }
 
-                foreach (
-                    var targ in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(
-                                hero =>
-                                    hero.IsValidTarget() && hero.Distance(Me.ServerPosition, true) <= Bushwack.RangeSqr)
-                    )
+                var targ =
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .FirstOrDefault(
+                            hero => hero.Distance(Me.ServerPosition, true) <= Bushwack.RangeSqr && hero.IsEnemy);
+
+                if (targ.IsValidTarget(Bushwack.Range))
                 {
                     var prediction = Bushwack.GetPrediction(targ);
                     if (prediction.Hitchance == HitChance.Immobile)
@@ -279,7 +287,7 @@ namespace KurisuNidalee
                         Bushwack.Cast(prediction.CastPosition);
                     }
                 }
-            }
+            }      
         }
 
         #endregion
@@ -510,9 +518,6 @@ namespace KurisuNidalee
         #region Nidalee: SBTW
         private static void UseCombo(Obj_AI_Base target)
         {
-            if (TargetSelector.GetSelectedTarget() != null && _target.Distance(Me.ServerPosition, true) > 1500 * 1500)
-                return;
-
             // Cougar combo
             if (_cougarForm && target.IsValidTarget(Javelin.Range))
             {
@@ -541,7 +546,7 @@ namespace KurisuNidalee
                 {
                     if (target.Distance(Me.ServerPosition, true) <= Swipe.RangeSqr)
                     {
-                        if (!Pounce.IsReady())
+                        if (!Pounce.IsReady() || NotLearned(Pounce))
                             Swipe.Cast(target.ServerPosition);
                     }
                 }
@@ -582,6 +587,20 @@ namespace KurisuNidalee
 
             }
 
+            // human Q 
+            if (!_cougarForm && target.IsValidTarget(Javelin.Range))
+            {
+                var qtarget = TargetSelector.GetTargetNoCollision(Javelin);
+                if ((HQ == 0 || Javelin.IsReady()) && _mainMenu.Item("usehumanq").GetValue<bool>())
+                {
+                    var prediction = Javelin.GetPrediction(qtarget);
+                    if (prediction.Hitchance >= (HitChance)_mainMenu.Item("seth").GetValue<Slider>().Value + 2)
+                    {
+                        Javelin.Cast(prediction.CastPosition);
+                    }
+                }
+            }
+
             // Human combo
             if (!_cougarForm && target.IsValidTarget(Javelin.Range))
             {
@@ -589,18 +608,13 @@ namespace KurisuNidalee
                 if (Aspectofcougar.IsReady() && _mainMenu.Item("usecougarr").GetValue<bool>()
                     && (TargetHunted(target) || target.Health <= CougarDamage(target) && (HQ != 0 || !Javelin.IsReady())))
                 {
-                    if (TargetHunted(target) && target.Distance(Me.ServerPosition, true) <= 750*750)
-                        Aspectofcougar.Cast();
-                    if (target.Health <= CougarDamage(target) && target.Distance(Me.ServerPosition, true) <= 350*350)
-                        Aspectofcougar.Cast();
-                }
-
-                else if ((HQ == 0 || Javelin.IsReady()) && _mainMenu.Item("usehumanq").GetValue<bool>())
-                {
-                    var prediction = Javelin.GetPrediction(target);
-                    if (prediction.Hitchance >= (HitChance)_mainMenu.Item("seth").GetValue<Slider>().Value + 2)
+                    // e/q dont reset CQ/CE timer is safe
+                    if ((CW == 0 || Pounce.IsReady() && (CQ == 0 || CE == 0)))
                     {
-                        Javelin.Cast(prediction.CastPosition);
+                        if (TargetHunted(target) && target.Distance(Me.ServerPosition, true) <= 750*750)
+                            Aspectofcougar.Cast();
+                        if (target.Health <= CougarDamage(target) && target.Distance(Me.ServerPosition, true) <= 350*350)
+                            Aspectofcougar.Cast();
                     }
                 }
 
@@ -619,17 +633,18 @@ namespace KurisuNidalee
         #endregion
 
         #region Nidalee: Harass
-        private static void UseHarass(Obj_AI_Base target)
+        private static void UseHarass()
         {
-            if (!target.IsValidTarget(Javelin.Range))
+            var qtarget = TargetSelector.GetTargetNoCollision(Javelin);
+            if (!qtarget.IsValidTarget(Javelin.Range))
                 return;
 
             var actualHeroManaPercent = (int)((Me.Mana / Me.MaxMana) * 100);
             var minPercent = _mainMenu.Item("humanqpct").GetValue<Slider>().Value;
             if (!_cougarForm && HQ == 0 && _mainMenu.Item("usehumanq2").GetValue<bool>())
             {
-                var prediction = Javelin.GetPrediction(target);
-                if (target.Distance(Me.ServerPosition, true) <= Javelin.RangeSqr && actualHeroManaPercent > minPercent)
+                var prediction = Javelin.GetPrediction(qtarget);
+                if (qtarget.Distance(Me.ServerPosition, true) <= Javelin.RangeSqr && actualHeroManaPercent > minPercent)
                 {
                     if (prediction.Hitchance >= (HitChance) _mainMenu.Item("seth").GetValue<Slider>().Value + 2)
                     {
@@ -642,7 +657,6 @@ namespace KurisuNidalee
         #endregion
 
         #region Nidalee: Heal
-
         private static void PrimalSurge()
         {
             if ((HE != 0 || !Primalsurge.IsReady()) || !_mainMenu.Item("usedemheals").GetValue<bool>() ||
@@ -670,9 +684,9 @@ namespace KurisuNidalee
                         .OrderByDescending(xe => xe.FlatPhysicalDamageMod).First();
             }
 
-            if (!_cougarForm && _mainMenu.Item("heal" + target.SkinName).GetValue<bool>())
+            if (!_cougarForm && _mainMenu.Item("heal" + target.ChampionName).GetValue<bool>())
             {
-                var needed = _mainMenu.Item("healpct" + target.SkinName).GetValue<Slider>().Value;
+                var needed = _mainMenu.Item("healpct" + target.ChampionName).GetValue<Slider>().Value;
                 var hp = (int)((target.Health / target.MaxHealth) * 100);
 
                 if (actualHeroManaPercent > selfManaPercent && hp <= needed || _hasBlue && hp <= needed)
@@ -684,7 +698,7 @@ namespace KurisuNidalee
 
         #endregion
 
-        #region Nidalee: Farm
+        #region Nidalee: Farming
         private static void UseLaneFarm()
         {
             var actualHeroManaPercent = (int)((Me.Mana / Me.MaxMana) * 100);
@@ -698,20 +712,24 @@ namespace KurisuNidalee
                                 m.IsValidTarget(1500) && Jungleminions.Any(name => !m.Name.StartsWith(name)) &&
                                 m.Name.StartsWith("Minion")))
             {
-                var distW = Me.ServerPosition.Extend(m.ServerPosition, Pounce.Range);
-
                 if (_cougarForm)
                 {
                     if (m.Distance(Me.ServerPosition, true) <= Swipe.RangeSqr && CE == 0)
                     {
-                        if (_mainMenu.Item("lccougare").GetValue<bool>() && !Pounce.IsReady())
-                                Swipe.Cast(m.ServerPosition);
+                        if (_mainMenu.Item("lccougare").GetValue<bool>() &&
+                           (!Pounce.IsReady() || NotLearned(Pounce)))
+                        {
+                            Swipe.Cast(m.ServerPosition);
+                        }
                     }
 
                     if (m.Distance(Me.ServerPosition, true) <= Pounce.RangeSqr && (CW == 0 || Pounce.IsReady()))
                     {
-                        if (_mainMenu.Item("lccougarw").GetValue<bool>() && !distW.UnderTurret(true))
+                        if (_mainMenu.Item("lccougarw").GetValue<bool>() &&
+                            !Me.ServerPosition.Extend(m.ServerPosition, Pounce.Range).UnderTurret(true))
+                        {
                             Pounce.Cast(m.ServerPosition);
+                        }
                     }
 
                     if (m.Distance(Me.ServerPosition) <= Takedown.RangeSqr && CQ == 0)
@@ -721,10 +739,13 @@ namespace KurisuNidalee
                     }
 
                     if ((HQ == 0 && _mainMenu.Item("lchumanq").GetValue<bool>() ||
-                        (CW != 0 || !Pounce.IsReady()) && CQ != 0 && CE != 0) && _mainMenu.Item("lccougarr").GetValue<bool>())
+                        (CW != 0 || !Pounce.IsReady()) && CQ != 0 && CE != 0))
                     {
-                        if (Aspectofcougar.IsReady())
+                        if (Aspectofcougar.IsReady() && 
+                            _mainMenu.Item("lccougarr").GetValue<bool>())
+                        {
                             Aspectofcougar.Cast();
+                        }
                     }
                 }
                 else
@@ -735,14 +756,15 @@ namespace KurisuNidalee
                             Javelin.Cast(m.ServerPosition);
                     }
 
-                    if (m.Distance(Me.ServerPosition, true) <= Bushwack.RangeSqr && actualHeroManaPercent > minPercent && HW == 0)
+                    if (m.Distance(Me.ServerPosition, true) <= Bushwack.RangeSqr && 
+                        actualHeroManaPercent > minPercent && HW == 0)
                     {
                         if (_mainMenu.Item("lchumanw").GetValue<bool>())
                             Bushwack.Cast(m.ServerPosition);
                     }
 
-                    if (_mainMenu.Item("lccougarr").GetValue<bool>() && m.Distance(Me.ServerPosition, true) <= Pounce.RangeSqr &&
-                        actualHeroManaPercent > minPercent && Aspectofcougar.IsReady())
+                    if (_mainMenu.Item("lccougarr").GetValue<bool>() &&
+                        m.Distance(Me.ServerPosition, true) <= Pounce.RangeSqr && Aspectofcougar.IsReady())
                     {
                         Aspectofcougar.Cast();
                     }
@@ -772,17 +794,20 @@ namespace KurisuNidalee
             {
                 if (m.Distance(Me.ServerPosition, true) <= Swipe.RangeSqr && CE == 0)
                 {
-                    if (_mainMenu.Item("jgcougare").GetValue<bool>() && !Pounce.IsReady())
+                    if (_mainMenu.Item("jgcougare").GetValue<bool>() &&
+                       (!Pounce.IsReady() || NotLearned(Pounce)))
+                    {
                         Swipe.Cast(m.ServerPosition);
+                    }
                 }
 
-                if (TargetHunted(m) & m.Distance(Me.ServerPosition, true) <= 750 * 750 && (CW == 0 || Pounce.IsReady()))
+                if (TargetHunted(m) & m.Distance(Me.ServerPosition, true) <= 750*750 && (CW == 0 || Pounce.IsReady()))
                 {
                     if (_mainMenu.Item("jgcougarw").GetValue<bool>())
                         Pounce.Cast(m.ServerPosition);
                 }
 
-                else if (m.Distance(Me.ServerPosition, true) <= 400 * 400 && (CW == 0 || Pounce.IsReady()))
+                else if (m.Distance(Me.ServerPosition, true) <= 400*400 && (CW == 0 || Pounce.IsReady()))
                 {
                     if (_mainMenu.Item("jgcougarw").GetValue<bool>())
                         Pounce.Cast(m.ServerPosition);
@@ -794,13 +819,18 @@ namespace KurisuNidalee
                         Takedown.CastOnUnit(Me);
                 }
 
-                if (CW != 0 && CQ != 0 && CE != 0)
+                if ((CW != 0 || !Pounce.IsReady() || NotLearned(Pounce)) &&       
+                    (CQ != 0 || NotLearned(Takedown)) && 
+                    (CE != 0 || NotLearned(Primalsurge)))
                 {
-                    if (HQ != 0)
-                        return;
-
-                    if (Aspectofcougar.IsReady() && _mainMenu.Item("jgcougarr").GetValue<bool>())
-                        Aspectofcougar.Cast();
+                    if ((HQ == 0 || HE == 0 && Me.Health/Me.MaxHealth*100 <= 
+                        _mainMenu.Item("healpct" + Me.ChampionName).GetValue<Slider>().Value &&
+                        _mainMenu.Item("jgheal").GetValue<bool>()) && Aspectofcougar.IsReady() && 
+                        _mainMenu.Item("jgcougarr").GetValue<bool>())
+                    {
+                        if (actualHeroManaPercent > minPercent)
+                            Aspectofcougar.Cast();
+                    }
                 }
             }
 
@@ -829,12 +859,16 @@ namespace KurisuNidalee
                 if (_mainMenu.Item("jgcougarr").GetValue<bool>() && Aspectofcougar.IsReady())
                 {
                     var poutput = Javelin.GetPrediction(m);
-                    if ((HQ != 0 || poutput.Hitchance == HitChance.Collision) || _hasBlue && HQ == 0)
+                    if ((HQ != 0 || poutput.Hitchance == HitChance.Collision) || _hasBlue && HQ == 0 ||
+                        actualHeroManaPercent >= minPercent)
                     {
-                        if (TargetHunted(m) & m.Distance(Me.ServerPosition, true) <= 750*750)
-                            Aspectofcougar.Cast();
-                        else if (m.Distance(Me.ServerPosition, true) <= 450*450)
-                            Aspectofcougar.Cast();
+                        if (CQ == 0 && CE == 0 && (CW == 0 || Pounce.IsReady()))
+                        {
+                            if (TargetHunted(m) & m.Distance(Me.ServerPosition, true) <= 750*750)
+                                Aspectofcougar.Cast();
+                            else if (m.Distance(Me.ServerPosition, true) <= 450*450)
+                                Aspectofcougar.Cast();
+                        }
                     }
                 }
             }
@@ -996,19 +1030,19 @@ namespace KurisuNidalee
 
             if (!_cougarForm) // lets show cooldown timers for the opposite form :)
             {
-                if (Me.Spellbook.CanUseSpell(SpellSlot.Q) == SpellState.NotLearned)
+                if (NotLearned(Javelin))
                     Drawing.DrawText(wts[0] - 80, wts[1], Color.White, "Q: Null");
                 else if (CQ == 0)
                     Drawing.DrawText(wts[0] - 80, wts[1], Color.White, "Q: Ready");
                 else
                     Drawing.DrawText(wts[0] - 80, wts[1], Color.Orange, "Q: " + CQ.ToString("0.0"));
-                if (Me.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.NotLearned)
+                if (NotLearned(Bushwack))
                     Drawing.DrawText(wts[0] - 30, wts[1] + 30, Color.White, "W: Null");
                 else if ((CW == 0 || Pounce.IsReady()))
                     Drawing.DrawText(wts[0] - 30, wts[1] + 30, Color.White, "W: Ready");
                 else
                     Drawing.DrawText(wts[0] - 30, wts[1] + 30, Color.Orange, "W: " + CW.ToString("0.0"));
-                if (Me.Spellbook.CanUseSpell(SpellSlot.E) == SpellState.NotLearned)
+                if (NotLearned(Primalsurge))
                     Drawing.DrawText(wts[0], wts[1], Color.White, "E: Null");
                 else if (CE == 0)
                     Drawing.DrawText(wts[0], wts[1], Color.White, "E: Ready");
@@ -1018,19 +1052,19 @@ namespace KurisuNidalee
             }
             else
             {
-                if (Me.Spellbook.CanUseSpell(SpellSlot.Q) == SpellState.NotLearned)
+                if (NotLearned(Takedown))
                     Drawing.DrawText(wts[0] - 80, wts[1], Color.White, "Q: Null");
                 else if (HQ == 0)
                     Drawing.DrawText(wts[0] - 80, wts[1], Color.White, "Q: Ready");
                 else
                     Drawing.DrawText(wts[0] - 80, wts[1], Color.Orange, "Q: " + HQ.ToString("0.0"));
-                if (Me.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.NotLearned)
+                if (NotLearned(Pounce))
                     Drawing.DrawText(wts[0] - 30, wts[1] + 30, Color.White, "W: Null");
                 else if (HW == 0)
                     Drawing.DrawText(wts[0] - 30, wts[1] + 30, Color.White, "W: Ready");
                 else
                     Drawing.DrawText(wts[0] - 30, wts[1] + 30, Color.Orange, "W: " + HW.ToString("0.0"));
-                if (Me.Spellbook.CanUseSpell(SpellSlot.E) == SpellState.NotLearned)
+                if (NotLearned(Swipe))
                     Drawing.DrawText(wts[0], wts[1], Color.White, "E: Null");
                 else if (HE == 0)
                     Drawing.DrawText(wts[0], wts[1], Color.White, "E: Ready");
@@ -1110,18 +1144,22 @@ namespace KurisuNidalee
 
         public static List<Obj_AI_Base> GetDashObjects(IEnumerable<Obj_AI_Base> predefinedObjectList = null)
         {
-            List<Obj_AI_Base> objects;
-            if (predefinedObjectList != null)
-                objects = predefinedObjectList.ToList();
-            else
-                objects = ObjectManager.Get<Obj_AI_Base>().FindAll(o => o.IsValidTarget(Orbwalking.GetRealAutoAttackRange(o)));
+            var objects = predefinedObjectList != null
+                ? predefinedObjectList.ToList()
+                : ObjectManager.Get<Obj_AI_Base>().Where(o => o.IsValidTarget(Orbwalking.GetRealAutoAttackRange(o)));
 
-            var apexPoint = Me.ServerPosition.To2D() + (Me.ServerPosition.To2D() - Game.CursorPos.To2D()).Normalized() * Orbwalking.GetRealAutoAttackRange(Me);
+            var apexPoint = Me.ServerPosition.To2D() +
+                            (Me.ServerPosition.To2D() - Game.CursorPos.To2D()).Normalized()*
+                            Orbwalking.GetRealAutoAttackRange(Me);
 
-            return objects.FindAll(o => IsLyingInCone(o.ServerPosition.To2D(), apexPoint, Me.ServerPosition.To2D(), Math.PI)).OrderBy(o => o.Distance(apexPoint, true)).ToList();
+            return
+                objects.Where(
+                    o => IsLyingInCone(o.ServerPosition.To2D(), apexPoint, Me.ServerPosition.To2D(), Math.PI))
+                    .OrderBy(o => o.Distance(apexPoint, true))
+                    .ToList();
         }
 
         #endregion
-    }
 
+    }
 }

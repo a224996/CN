@@ -8,8 +8,11 @@ namespace PerfectWard
 {
     class Program
     {
+      public static Helper Helper;
+
         static void Main(string[] args)
         {
+
             new PerfectWardTracker();
         }
     }

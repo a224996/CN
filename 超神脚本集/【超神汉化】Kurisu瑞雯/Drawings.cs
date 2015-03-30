@@ -26,12 +26,7 @@ namespace KurisuRiven
                 if (Combo.Target.IsValidTarget(900) && Base.GetBool("drawtarg"))
                 {
                     Render.Circle.DrawCircle(
-                        Combo.Target.Position, Combo.Target.BoundingRadius - 50, Color.DarkOrange, 6);
-                }
-
-                if (Base.GetBool("debugtrue"))
-                {
-                    Render.Circle.DrawCircle(Base.Me.Position, Base.TrueRange, Color.DarkOrange, 3);
+                        Combo.Target.Position, Combo.Target.BoundingRadius - 50, Color.DarkOrange, 3);
                 }
             }
 

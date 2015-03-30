@@ -146,7 +146,7 @@ namespace SFXUtility.Feature
 
 					_activators.Menu.AddSubMenu(Menu);
 
-					Game.OnGameUpdate += OnGameUpdate;
+					Game.OnUpdate += OnGameUpdate;
 
 					Initialized = true;
 				}
@@ -203,7 +203,7 @@ namespace SFXUtility.Feature
 			{
 				if (!Enabled || ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead ||
 				    ObjectManager.Player.HasBuff("Recall") || ObjectManager.Player.HasBuff("SummonerTeleport") ||
-				    ObjectManager.Player.HasBuff("RecallImproved") || Utility.CountEnemiesInRange(1500) > 0)
+				    ObjectManager.Player.HasBuff("RecallImproved") || Utility.CountEnemiesInRange(1500) == 0)
 						return;				
 				
 				if (Menu.Item(Name + "HealthPotion").GetValue<bool>())

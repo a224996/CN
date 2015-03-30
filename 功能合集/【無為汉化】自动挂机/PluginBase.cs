@@ -73,14 +73,14 @@ namespace Support
         /// </summary>
         private void InitPluginEvents()
         {
-            Game.OnGameUpdate += OnUpdate;
+            Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Orbwalking.BeforeAttack += OnBeforeAttack;
             Orbwalking.AfterAttack += OnAfterAttack;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;
-            //Game.OnGameSendPacket += OnSendPacket;
-            //Game.OnGameProcessPacket += OnProcessPacket;
+            //Game.OnSendPacket += OnSendPacket;
+            //Game.OnProcessPacket += OnProcessPacket;
             OnLoad(new EventArgs());
         }
 

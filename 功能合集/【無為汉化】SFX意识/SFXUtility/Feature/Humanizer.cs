@@ -93,7 +93,7 @@ namespace SFXUtility.Feature
 
                 BaseMenu.AddSubMenu(Menu);
 
-                Game.OnGameSendPacket += OnGameSendPacket;
+                Game.OnSendPacket += OnGameSendPacket;
                 
                 Initialized = true;
             }

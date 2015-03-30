@@ -132,7 +132,7 @@ namespace LX_Orbwalker
 			menu.AddItem(new MenuItem("lx_info3", "QQ群:386289593"));
 
             Drawing.OnDraw += OnDraw;
-            Game.OnGameUpdate += OnUpdate;
+            Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             GameObject.OnCreate += Obj_SpellMissile_OnCreate;
         }

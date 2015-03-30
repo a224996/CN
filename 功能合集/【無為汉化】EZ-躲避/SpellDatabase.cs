@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -77,7 +76,7 @@ namespace ezEvade
                 dangerlevel = 3,
                 missileName = "AhriSeduceMissile",
                 name = "Charm",
-                projectileSpeed = 1600,
+                projectileSpeed = 1550,
                 radius = 60,
                 range = 1000,
                 spellDelay = 250,
@@ -2276,7 +2275,24 @@ namespace ezEvade
             new SpellData
             {
                 charName = "Veigar",
-                dangerlevel = 1,
+                dangerlevel = 2,
+                name = "VeigarBalefulStrike",
+                radius = 70,
+                range = 850,
+                spellDelay = 250,
+                projectileSpeed = 1750,
+                spellKey = SpellSlot.Q,
+                spellName = "VeigarBalefulStrike",
+                missileName = "VeigarBalefulStrikeMis",
+                spellType = SpellType.Line,
+
+            });
+
+            Spells.Add(
+            new SpellData
+            {
+                charName = "Veigar",
+                dangerlevel = 2,
                 name = "VeigarDarkMatter",
                 radius = 225,
                 range = 900,
@@ -2585,6 +2601,25 @@ namespace ezEvade
                 noProcess = true,
             });
             #endregion Ziggs
+
+            #region Zilean
+
+            Spells.Add(
+            new SpellData
+            {
+                charName = "Zilean",
+                dangerlevel = 2,
+                name = "ZileanQ",
+                projectileSpeed = 2000,
+                radius = 170,
+                range = 900,
+                spellDelay = 300,
+                spellKey = SpellSlot.Q,
+                spellName = "ZileanQ",
+                spellType = SpellType.Circular,
+            });
+
+            #endregion Zilean
 
             #region Zyra
 

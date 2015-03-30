@@ -369,7 +369,7 @@ namespace Tracker
             #endregion
 
             //Used for removing the wards that expire:
-            Game.OnGameUpdate += GameOnOnGameUpdate;
+            Game.OnUpdate += GameOnOnGameUpdate;
 
             //Used to detect the wards when the unit that places the ward is visible:
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;

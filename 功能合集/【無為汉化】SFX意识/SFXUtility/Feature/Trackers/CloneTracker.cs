@@ -85,7 +85,7 @@ namespace SFXUtility.Feature
 				
 				foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
 				{
-					if (hero.IsEnemy && !hero.IsDead && hero.IsVisible)
+					if (hero.IsEnemy && !hero.IsDead && hero.IsVisible && hero.IsOnScreen())
 					{
 						if (hero.ChampionName.Contains("Shaco") ||
 						    hero.ChampionName.Contains("Leblanc") ||

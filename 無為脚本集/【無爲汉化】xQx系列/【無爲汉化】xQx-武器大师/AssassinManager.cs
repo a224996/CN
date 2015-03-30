@@ -87,7 +87,7 @@ namespace JaxQx
                 .SubMenu("Draw")
                 .AddItem(new MenuItem("DrawStatus", "фад╩иоотй╬╣дв╢л╛").SetValue(true));
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnWndProc += Game_OnWndProc;
         }

@@ -22,7 +22,7 @@ namespace UnderratedAIO.Champions
             InitMenu();
             InitSejuani();
             Game.PrintChat("<font color='#9933FF'>Soresu </font><font color='#FFFFFF'>- Sejuani</font>");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Game_OnDraw;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;

@@ -35,7 +35,7 @@ namespace AutoLantern
             _menu.AddItem(new MenuItem("Hotkey", "热键").SetValue(new KeyBind(32, KeyBindType.Press, false)));
             _menu.AddToMainMenu();
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             GameObject.OnCreate += OnMinionCreation;
             GameObject.OnDelete += OnMinionDeletion;
 

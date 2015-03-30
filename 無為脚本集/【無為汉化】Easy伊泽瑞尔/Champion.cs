@@ -54,7 +54,7 @@ abstract class Champion
         Menu.AddItem(new MenuItem("Recall_block", "回城停止脚本").SetValue(true));
         Menu.AddToMainMenu();
 
-        Game.OnGameUpdate += Game_OnGameUpdate;
+        Game.OnUpdate += Game_OnGameUpdate;
         Game.OnGameEnd += Game_OnGameEnd;
         Drawing.OnDraw += Drawing_OnDraw;
 

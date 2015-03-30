@@ -2,7 +2,7 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using OC = Oracle.Program;
+using Oracle.Core.Helpers;
 
 namespace Oracle.Extensions
 {
@@ -13,7 +13,7 @@ namespace Oracle.Extensions
 
         public static void Initialize(Menu root)
         {
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
 
             _mainMenu = new Menu("防守装备", "dmenu");
             _menuConfig = new Menu("防守对象", "dconfig");
@@ -60,27 +60,24 @@ namespace Oracle.Extensions
             UseItemCount("Odyns", 3180, 450f);
             UseItemCount("Randuins", 3143, 450f);
 
-            if (OC.IncomeDamage >= 1)
-            {
-                UseItem("allyshieldlocket", "Locket", 3190, 600f);
-                UseItem("selfshieldseraph", "Seraphs", 3040);
-                UseItem("selfshieldzhonya", "Zhonyas", 3157);
-                UseItem("allyshieldmountain", "Mountain", 3401, 700f);
-                UseItem("selfshieldzhonya", "Wooglets", 3090);
-            }
+            UseItem("allyshieldlocket", "Locket", 3190, 600f);
+            UseItem("selfshieldseraph", "Seraphs", 3040);
+            UseItem("selfshieldzhonya", "Zhonyas", 3157);
+            UseItem("allyshieldmountain", "Mountain", 3401, 700f);
+            UseItem("selfshieldzhonya", "Wooglets", 3090);
 
             // Oracle's Lens 
             if (Items.HasItem(3364) && Items.CanUseItem(3364) && _mainMenu.Item("useOracles").GetValue<bool>())
             {
-                if (OC.Origin.Item("usecombo").GetValue<KeyBind>().Active ||
+                if (Oracle.Origin.Item("usecombo").GetValue<KeyBind>().Active ||
                     _mainMenu.Item("oracleMode").GetValue<StringList>().SelectedIndex != 1)
                 {
-                    var target = OC.Friendly();
-                    if (target.Distance(Me.ServerPosition, true) <= 600*600 && OC.Stealth ||
+                    var target = Oracle.Friendly();
+                    if (target.Distance(Me.ServerPosition, true) <= 600*600 && Oracle.Stealth ||
                         target.HasBuff("RengarRBuff", true))
                     {
                         Items.UseItem(3364, target.ServerPosition);
-                        OC.Logger(OC.LogType.Action, "Using oracle's lens near " + target.SkinName + " (stealth)");
+                        Oracle.Logger(Oracle.LogType.Action, "Using oracle's lens near " + target.SkinName + " (stealth)");
                     }
                 }
             }
@@ -97,7 +94,7 @@ namespace Oracle.Extensions
                     if (minyone.Health > minyone.Health/minyone.MaxHealth*50)
                     {
                         Items.UseItem(3060, minyone);
-                        OC.Logger(OC.LogType.Action, "Using banner of command item on MechCannon!");
+                        Oracle.Logger(Oracle.LogType.Action, "Using banner of command item on MechCannon!");
                     }
                 }
             }
@@ -105,13 +102,13 @@ namespace Oracle.Extensions
             // Talisman of Ascension
             if (Items.HasItem(3069) && Items.CanUseItem(3069) && _mainMenu.Item("useTalisman").GetValue<bool>())
             {
-                if (!OC.Origin.Item("usecombo").GetValue<KeyBind>().Active &&
+                if (!Oracle.Origin.Item("usecombo").GetValue<KeyBind>().Active &&
                     _mainMenu.Item("talismanMode").GetValue<StringList>().SelectedIndex == 1)
                 {
                     return;
                 }
 
-                var target = OC.Friendly();
+                var target = Oracle.Friendly();
                 if (target.Distance(Me.ServerPosition, true) > 600*600)
                 {
                     return;
@@ -130,7 +127,7 @@ namespace Oracle.Extensions
                      eHealthPercent <= _mainMenu.Item("useEnemyPct").GetValue<Slider>().Value))
                 {
                     Items.UseItem(3069);
-                    OC.Logger(OC.LogType.Action, "Using speed item on enemy " + lowTarget.SkinName + " (" +
+                    Oracle.Logger(Oracle.LogType.Action, "Using speed item on enemy " + lowTarget.SkinName + " (" +
                                                  lowTarget.Health/lowTarget.MaxHealth*100 + "%) is low!");
                 }
 
@@ -138,7 +135,7 @@ namespace Oracle.Extensions
                     aHealthPercent <= _mainMenu.Item("useAllyPct").GetValue<Slider>().Value)
                 {
                     Items.UseItem(3069);
-                    OC.Logger(OC.LogType.Action,
+                    Oracle.Logger(Oracle.LogType.Action,
                         "Using speed item on ally " + target.SkinName + " (" + aHealthPercent + "%) is low!");
                 }
             }
@@ -157,7 +154,7 @@ namespace Oracle.Extensions
                     _mainMenu.Item("use" + name + "Count").GetValue<Slider>().Value)
                 {
                     Items.UseItem(itemId);
-                    OC.Logger(OC.LogType.Action, "Used " + name + " on me ! (Item count)");
+                    Oracle.Logger(Oracle.LogType.Action, "Used " + name + " on me ! (Item count)");
                 }
             }
         }
@@ -170,44 +167,73 @@ namespace Oracle.Extensions
             if (!_mainMenu.Item("use" + name).GetValue<bool>())
                 return;
 
-            var target = itemRange > 5000 ? Me : OC.Friendly();
-            if (target.Distance(Me.ServerPosition, true) > itemRange*itemRange ||
-               !target.IsValidState())
+            var target = itemRange > 5000 ? Me : Oracle.Friendly();
+            if (target.Distance(Me.ServerPosition, true) > itemRange*itemRange || !target.IsValidState())
             {
                 return;
             }
             
             var aHealthPercent = (int) ((target.Health/target.MaxHealth)*100);
-            var iDamagePercent = (int) (OC.IncomeDamage/target.MaxHealth*100);
+            var iDamagePercent = (int) (Oracle.IncomeDamage/target.MaxHealth*100);
 
             if (!_mainMenu.Item("DefenseOn" + target.SkinName).GetValue<bool>())
             {
                 return;
             }
-
-            if (target.CountHerosInRange(false) + 1 >= target.CountHerosInRange(true)) // +1 to allow potential counterplay
-            {     
-                if (_mainMenu.Item("use" + name + "Ults").GetValue<bool>())
+  
+            if (_mainMenu.Item("use" + name + "Ults").GetValue<bool>())
+            {
+                foreach (var buff in GameBuff.EvadeBuffs)
                 {
-                    if (OC.DangerUlt || OC.IncomeDamage >= target.Health || target.Health/target.MaxHealth*100 <= 15)
+                    foreach (var aura in target.Buffs)
                     {
-                        if (OC.AggroTarget.NetworkId == target.NetworkId)
+                        if (!aura.Name.ToLower().Contains(buff.SpellName) && aura.Name.ToLower() != buff.BuffName)
+                            continue;
+
+                        Utility.DelayAction.Add(
+                            buff.Delay, delegate
+                            {
+                                Oracle.Attacker = Oracle.GetEnemy(buff.ChampionName);
+                                Oracle.AggroTarget = target;
+                                Oracle.IncomeDamage =
+                                    (float) Oracle.GetEnemy(buff.ChampionName).GetSpellDamage(Oracle.AggroTarget, buff.Slot);
+
+                                // check if we still have buff and didn't walk out of it
+                                if (aura.Name.ToLower().Contains(buff.SpellName) || aura.Name.ToLower() == buff.BuffName)
+                                {
+                                    Oracle.DangerUlt = Oracle.Origin.Item(buff.SpellName + "ccc").GetValue<bool>();
+                                }
+
+                                Oracle.Logger(Oracle.LogType.Danger,
+                                    "(" + Oracle.Attacker.SkinName + ") Dangerous buff on " + Oracle.AggroTarget.SkinName + " should zhonyas!");
+                            });
+                    }
+                }
+
+                // +1 to allow potential counterplay
+                if (target.CountHerosInRange(false) + 1 >= target.CountHerosInRange(true))
+                {
+                    if (Oracle.DangerUlt || Oracle.IncomeDamage >= target.Health || target.Health/target.MaxHealth*100 <= 15)
+                    {
+                        if (Oracle.AggroTarget.NetworkId == target.NetworkId)
                         {
                             Items.UseItem(itemId, target);
-                            OC.Logger(OC.LogType.Action,
-                                "Used " + name + " on " + target.SkinName + " (" + aHealthPercent + "%)! (Dangerous Ult)");
+                            Oracle.Logger(Oracle.LogType.Action,
+                                "Used " + name + " on " + target.SkinName + " (" + aHealthPercent +
+                                "%)! (Dangerous Ult)");
                         }
                     }
                 }
 
+
                 if (_mainMenu.Item("use" + name + "Zhy").GetValue<bool>())
                 {
-                    if (OC.Danger || OC.IncomeDamage >= target.Health || target.Health/target.MaxHealth*100 <= 15)
+                    if (Oracle.Danger || Oracle.IncomeDamage >= target.Health || target.Health/target.MaxHealth*100 <= 15)
                     {
-                        if (OC.AggroTarget.NetworkId == target.NetworkId)
+                        if (Oracle.AggroTarget.NetworkId == target.NetworkId)
                         {
                             Items.UseItem(itemId, target);
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used " + name + " on " + target.SkinName + " (" + aHealthPercent + "%)! (Dangerous Spell)");
                         }
                     }
@@ -227,22 +253,22 @@ namespace Oracle.Extensions
 
                 if (aHealthPercent <= _mainMenu.Item("use" + name + "Pct").GetValue<Slider>().Value)
                 {
-                    if ((iDamagePercent >= 1 || OC.IncomeDamage >= target.Health))
+                    if ((iDamagePercent >= 1 || Oracle.IncomeDamage >= target.Health))
                     {
-                        if (OC.AggroTarget.NetworkId == target.NetworkId)
+                        if (Oracle.AggroTarget.NetworkId == target.NetworkId)
                         {
                             Items.UseItem(itemId, target);
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used " + name + " on " + target.SkinName + " (" + aHealthPercent + "%)! (Low HP)");
                         }
                     }
 
                     if (iDamagePercent >= _mainMenu.Item("use" + name + "Dmg").GetValue<Slider>().Value)
                     {
-                        if (OC.AggroTarget.NetworkId == target.NetworkId)
+                        if (Oracle.AggroTarget.NetworkId == target.NetworkId)
                         {
                             Items.UseItem(itemId, target);
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used " + name + " on " + target.SkinName + " (" + aHealthPercent + "%)! (Damage Chunk)");
                         }
                     }                    

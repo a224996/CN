@@ -7,6 +7,7 @@ namespace KaiHelper.Activator
     internal class AutoPot
     {
         private readonly Menu _menu;
+        private int _level;
 
         public AutoPot(Menu menu)
         {
@@ -15,21 +16,16 @@ namespace KaiHelper.Activator
             _menu.AddItem(new MenuItem("HealthPotion", "红药").SetValue(true));
             _menu.AddItem(new MenuItem("MPTrigger", "最低蓝量").SetValue(new Slider(30)));
             _menu.AddItem(new MenuItem("ManaPotion", "蓝药").SetValue(true));
-            MenuItem autoarrangeMenu =
-                _menu.AddItem(new MenuItem("AutoArrange", "自动排列").DontSave().SetValue(false));
+            MenuItem autoarrangeMenu = _menu.AddItem(new MenuItem("AutoArrange", "自动排列").SetValue(false));
             autoarrangeMenu.ValueChanged += AutoRangeValueChanged;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
-        private void AutoRangeValueChanged(object sender, OnValueChangeEventArgs e)
+        private void SetMana()
         {
-            if (!e.GetNewValue<bool>())
-            {
-                return;
-            }
             _menu.Item("HPTrigger")
                 .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxHealth, 150), 1, 99));
-            Console.WriteLine(ObjectManager.Player.MaxMana);
             if (ObjectManager.Player.MaxMana <= 0)
             {
                 _menu.Item("ManaPotion").SetValue(false);
@@ -41,6 +37,14 @@ namespace KaiHelper.Activator
             }
         }
 
+        private void AutoRangeValueChanged(object sender, OnValueChangeEventArgs e)
+        {
+            if (!e.GetNewValue<bool>())
+            {
+                SetMana();
+            }
+        }
+
         private int FomularPercent(int max, int cur)
         {
             return (int) (100 - ((cur * 1.0) / max) * 100);
@@ -48,6 +52,15 @@ namespace KaiHelper.Activator
 
         private void Game_OnGameUpdate(EventArgs args)
         {
+            if (_menu.Item("AutoArrange").GetValue<bool>())
+            {
+                int level = ObjectManager.Player.Level;
+                if (level > _level)
+                {
+                    _level = level;
+                    SetMana();
+                }
+            }
             if (!ObjectManager.Player.IsDead && !ObjectManager.Player.InFountain() &&
                 !ObjectManager.Player.HasBuff("Recall"))
             {

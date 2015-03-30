@@ -15,7 +15,7 @@ namespace KurisuRiven
                 return;
       
             // combo 
-            if (Base.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
+            if (!Base.Settings.Item("combokey").GetValue<KeyBind>().Active)
                 return;
 
             var ignote = Base.Me.GetSpellSlot("summonerdot");
@@ -42,7 +42,7 @@ namespace KurisuRiven
             // valor
             // engage if target is out of aa range
             if (Base.E.IsReady() && Base.CanE && Base.GetBool("usecomboe") &&
-               (Target.Distance(Base.Me.ServerPosition, true) > Math.Pow(Base.TrueRange + 100, 2) ||
+               (Target.Distance(Base.Me.ServerPosition, true) > Math.Pow(Base.TrueRange + 30, 2) ||
                 Base.Me.Health/Base.Me.MaxHealth*100 <= Base.GetSlider("vhealth")))
             {
                 // item handler
@@ -193,7 +193,7 @@ namespace KurisuRiven
 
         internal static void Flee()
         {
-            if (Base.Settings.Item("fleemode").GetValue<KeyBind>().Active)
+            if (Base.Settings.Item("fleekey").GetValue<KeyBind>().Active)
             {
                 if (Base.CanE && Base.E.IsReady())
                 {
@@ -220,6 +220,7 @@ namespace KurisuRiven
 
         internal static void SemiHarass()
         {
+
             var minionList = new[]
             {
                 "SRU_Razorbeak", "SRU_Krug", "Sru_Crab", "SRU_Baron", "SRU_Dragon",
@@ -228,16 +229,25 @@ namespace KurisuRiven
 
             if (Base.CanQ && Environment.TickCount - Base.LastAA >= 150 && Base.GetBool("semiq"))
             {
-                if (Base.Q.IsReady() && Environment.TickCount - Base.LastAA < 1200)
+                if (Base.Q.IsReady() && Environment.TickCount - Base.LastAA < 1200 && Base.LastTarget != null)
                 {
-
                     if (Base.LastTarget.IsValidTarget(Base.Q.Range + 100) && Base.LastTarget.IsValid<Obj_AI_Hero>())
                         Base.Q.Cast(Base.LastTarget.ServerPosition);
+
+                    if (Base.Settings.Item("clearkey").GetValue<KeyBind>().Active)
+                        return;
 
                     if (Base.LastTarget.IsValidTarget(Base.Q.Range + 100) && !Base.LastTarget.Name.Contains("Mini") &&
                         !Base.LastTarget.Name.StartsWith("Minion") && minionList.Any(name => Base.LastTarget.Name.StartsWith(name)))
                     {
                         Base.Q.Cast(Base.LastTarget.ServerPosition);
+                    }
+
+                    if (Base.LastTarget.IsValidTarget(Base.Q.Range + 100) &&
+                        (Base.LastTarget.IsValid<Obj_AI_Minion>() || Base.LastTarget.IsValid<Obj_AI_Turret>()))
+                    {
+                        if (Base.Settings.Item("semiqlane").GetValue<KeyBind>().Active)
+                            Base.Q.Cast(Base.LastTarget.ServerPosition);
                     }
                 }
             }
@@ -247,7 +257,7 @@ namespace KurisuRiven
         {
             try
             {
-                if (Base.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                if (Base.Settings.Item("clearkey").GetValue<KeyBind>().Active)
                 {
                     var minionList = new[]
                     {
@@ -272,7 +282,6 @@ namespace KurisuRiven
                         Base.OrbTo(minion);
                         if (minionList.Any(x => minion.Name.StartsWith(x) && !minion.Name.Contains("Mini")))
                         {
-
                             if (Base.GetBool("usejungleq") && Base.Q.IsReady() && Base.CanQ)
                             {
                                 if (minion.Distance(Base.Me.ServerPosition, true) <= Math.Pow(Base.Q.Range + 30, 2))
@@ -326,15 +335,15 @@ namespace KurisuRiven
                                         Base.W.Cast();
                             }
 
-                            if (Base.CanAA && Base.GetBool("forceaa"))
-                                Base.Me.IssueOrder(GameObjectOrder.AttackUnit, newminion);
-
                         }
 
                         if (Base.GetBool("uselanee"))
                         {
-                            if (Base.E.IsReady() && Base.CanE)
+                            if (Base.E.IsReady() && Base.CanE &&
+                                newminion.Distance(Base.Me.ServerPosition, true) > Math.Pow(Base.TrueRange + 30, 2))
+                            {
                                 Base.E.Cast(Game.CursorPos);
+                            }
                         }
                     }
                 }

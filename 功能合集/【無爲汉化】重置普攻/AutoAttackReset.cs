@@ -108,7 +108,7 @@ namespace AutoAttackResetter
 
             //Events
             Orbwalking.AfterAttack += Orbwalking_AfterAttack;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
         private void Game_OnGameUpdate(EventArgs args)

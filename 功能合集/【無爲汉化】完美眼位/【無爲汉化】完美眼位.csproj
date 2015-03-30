@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PerfectWard</RootNamespace>
-    <AssemblyName>Updated-by-drunkenninja%28PerfectWard%29</AssemblyName>
+    <AssemblyName>Updated-by-DrunkenNinja-and-DanZ%28PerfectWard%29</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
@@ -37,19 +37,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\Games\wpe\Dropbox\lsharp\LeagueSharp\LeagueSharp\\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\Games\wpe\Dropbox\lsharp\LeagueSharp\LeagueSharp\\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\Games\wpe\Dropbox\lsharp\LeagueSharp\LeagueSharp\\System\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit">
-      <HintPath>C:\Games\wpe\Dropbox\lsharp\LeagueSharp\LeagueSharp\\System\SharpDX.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics">
-      <HintPath>C:\Games\wpe\Dropbox\lsharp\LeagueSharp\LeagueSharp\\System\SharpDX.Toolkit.Graphics.dll</HintPath>
+      <HintPath>C:\Users\Administrator\Desktop\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
     <Compile Include="WardSpot.cs" />
     <Compile Include="PerfectWardTracker.cs" />
     <Compile Include="Program.cs" />

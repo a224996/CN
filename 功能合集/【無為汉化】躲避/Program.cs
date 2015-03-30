@@ -88,7 +88,7 @@ namespace Evade
                 Game_OnGameStart(new EventArgs());
             }
            
-            Game.OnGameStart += Game_OnGameStart;
+            Game.OnStart += Game_OnGameStart;
         }
 
         private static bool IsSpellShielded(Obj_AI_Hero unit)
@@ -128,7 +128,7 @@ namespace Evade
         private static void Game_OnGameStart(EventArgs args)
         {
             //Add the game events.
-            Game.OnGameUpdate += Game_OnOnGameUpdate;
+            Game.OnUpdate += Game_OnOnGameUpdate;
             Obj_AI_Hero.OnIssueOrder += ObjAiHeroOnOnIssueOrder;
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
             //Set up the OnDetectSkillshot Event.
@@ -149,8 +149,8 @@ namespace Evade
             //Initialze the collision
             Collision.Init();
 
-            Game.PrintChat("<font color=\"#00BFFF\">銆愮劇鐐烘眽鍖栥€慹vade韬查伩 -</font> <font color=\"#FFFFFF\">鍔犺浇鎴愬姛</font>");
-			Game.PrintChat("<font color=\"#FFFFFF\">鏇村姹夊寲鑴氭湰璇峰姞</font> <font color=\"#FFFF00\">   L#姹夊寲缇わ細386289593</font> ");
+            Game.PrintChat("<font color=\"#00BFFF\">【無為漢化】Evade躲避 -</font> <font color=\"#FFFFFF\">加载成功</font>");
+			Game.PrintChat("<font color=\"#FFFFFF\">更多漢化腳本請加</font> <font color=\"#FFFF00\">L#漢化群：386289593</font> ");
 
 
             if (Config.PrintSpellData)
@@ -159,9 +159,9 @@ namespace Evade
                 {
                     foreach (var spell in hero.Spellbook.Spells)
                     {
-                        Console.WriteLine(
+                 /*       Console.WriteLine(
                              "Slot  " + spell.Slot + " " + spell.SData.Name + " w:" + spell.SData.LineWidth + " s:" + spell.SData.MissileSpeed + " r: " +
-                            spell.SData.CastRangeArray[0]);
+                            spell.SData.CastRangeArray[0]);*/
                     }
                 }
                 Console.WriteLine(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name);
@@ -493,6 +493,12 @@ namespace Evade
 
             //Spell Shielded
             if (IsSpellShielded(ObjectManager.Player))
+            {
+                return;
+            }
+
+            //Don't evade while casting R as sion
+            if (ObjectManager.Player.ChampionName == "Sion" && ObjectManager.Player.HasBuff("SionR"))
             {
                 return;
             }

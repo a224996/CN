@@ -8,14 +8,16 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
+using Tracker.Properties;
 using Font = SharpDX.Direct3D9.Font;
+using Rectangle = SharpDX.Rectangle;
 
 #endregion
 
 namespace Tracker
 {
     /// <summary>
-    /// Health bar tracker tracks allies and enemies spells and summoners cooldowns.
+    ///     Health bar tracker tracks allies and enemies spells and summoners cooldowns.
     /// </summary>
     public static class HbTracker
     {
@@ -27,13 +29,10 @@ namespace Tracker
 
         public static Line ReadyLine;
         public static Font Text;
-
-        public static int X = 0;
-        public static int Y = 0;
-
+        public static int X;
+        public static int Y;
         public static SpellSlot[] SummonerSpellSlots = { ((SpellSlot) 4), ((SpellSlot) 5) };
         public static SpellSlot[] SpellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
-
         public static Menu Config;
 
         public static string[] SummonersNames =
@@ -41,12 +40,6 @@ namespace Tracker
             "SummonerBarrier", "SummonerBoost", "SummonerClairvoyance",
             "SummonerDot", "SummonerExhaust", "SummonerFlash", "SummonerHaste", "SummonerHeal", "SummonerMana",
             "SummonerOdinGarrison", "SummonerRevive", "SummonerSmite", "SummonerTeleport"
-        };
-
-        public static string[] SmiteNames =
-        {
-            "s5_summonersmiteplayerganker", "s5_summonersmitequick",
-            "s5_summonersmiteduel", "itemsmiteaoe"
         };
 
         static HbTracker()
@@ -60,9 +53,8 @@ namespace Tracker
 
                 Sprite = new Sprite(Drawing.Direct3DDevice);
                 CdFrameTexture = Texture.FromMemory(
-                    Drawing.Direct3DDevice,
-                    (byte[]) new ImageConverter().ConvertTo(Properties.Resources.hud, typeof(byte[])), 147, 27, 0,
-                    Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+                    Drawing.Direct3DDevice, (byte[]) new ImageConverter().ConvertTo(Resources.hud, typeof(byte[])), 147,
+                    27, 0, Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
 
                 ReadyLine = new Line(Drawing.Direct3DDevice) { Width = 2 };
 
@@ -73,7 +65,7 @@ namespace Tracker
                         FaceName = "Calibri",
                         Height = 13,
                         OutputPrecision = FontPrecision.Default,
-                        Quality = FontQuality.Default,
+                        Quality = FontQuality.Default
                     });
             }
             catch (Exception e)
@@ -102,43 +94,55 @@ namespace Tracker
             switch (name)
             {
                 case "SummonerOdinGarrison":
-                    bitmap = Properties.Resources.SummonerOdinGarrison;
+                    bitmap = Resources.SummonerOdinGarrison;
                     break;
                 case "SummonerRevive":
-                    bitmap = Properties.Resources.SummonerRevive;
+                    bitmap = Resources.SummonerRevive;
                     break;
                 case "SummonerClairvoyance":
-                    bitmap = Properties.Resources.SummonerClairvoyance;
+                    bitmap = Resources.SummonerClairvoyance;
                     break;
                 case "SummonerBoost":
-                    bitmap = Properties.Resources.SummonerBoost;
+                    bitmap = Resources.SummonerBoost;
                     break;
                 case "SummonerMana":
-                    bitmap = Properties.Resources.SummonerMana;
+                    bitmap = Resources.SummonerMana;
                     break;
                 case "SummonerTeleport":
-                    bitmap = Properties.Resources.SummonerTeleport;
+                    bitmap = Resources.SummonerTeleport;
                     break;
                 case "SummonerHeal":
-                    bitmap = Properties.Resources.SummonerHeal;
+                    bitmap = Resources.SummonerHeal;
                     break;
                 case "SummonerExhaust":
-                    bitmap = Properties.Resources.SummonerExhaust;
+                    bitmap = Resources.SummonerExhaust;
                     break;
                 case "SummonerSmite":
-                    bitmap = Properties.Resources.SummonerSmite;
+                    bitmap = Resources.SummonerSmite;
                     break;
                 case "SummonerDot":
-                    bitmap = Properties.Resources.SummonerDot;
+                    bitmap = Resources.SummonerDot;
                     break;
                 case "SummonerHaste":
-                    bitmap = Properties.Resources.SummonerHaste;
+                    bitmap = Resources.SummonerHaste;
                     break;
                 case "SummonerFlash":
-                    bitmap = Properties.Resources.SummonerFlash;
+                    bitmap = Resources.SummonerFlash;
+                    break;
+                case "s5_summonersmiteduel":
+                    bitmap = Resources.s5_summonersmiteduel;
+                    break;
+                case "s5_summonersmiteplayerganker":
+                    bitmap = Resources.s5_summonersmiteplayerganker;
+                    break;
+                case "s5_summonersmitequick":
+                    bitmap = Resources.s5_summonersmitequick;
+                    break;
+                case "itemsmiteaoe":
+                    bitmap = Resources.itemsmiteaoe;
                     break;
                 default:
-                    bitmap = Properties.Resources.SummonerBarrier;
+                    bitmap = Resources.SummonerBarrier;
                     break;
             }
 
@@ -146,7 +150,6 @@ namespace Tracker
                 Drawing.Direct3DDevice, (byte[]) new ImageConverter().ConvertTo(bitmap, typeof(byte[])), 12, 240, 0,
                 Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
         }
-
 
         private static void CurrentDomainOnDomainUnload(object sender, EventArgs eventArgs)
         {
@@ -228,20 +231,10 @@ namespace Tracker
                     foreach (var sSlot in SummonerSpellSlots)
                     {
                         var spell = hero.Spellbook.GetSpell(sSlot);
-                        Texture texture;
 
-                        if (SummonerTextures.ContainsKey(spell.Name))
-                        {
-                            texture = SummonerTextures[spell.Name];
-                        }
-                        else if (SmiteNames.Contains(spell.Name))
-                        {
-                            texture = SummonerTextures["SummonerSmite"];
-                        }
-                        else
-                        {
-                            texture = SummonerTextures["SummonerBarrier"];
-                        }
+                        var texture = SummonerTextures.ContainsKey(spell.Name)
+                            ? SummonerTextures[spell.Name]
+                            : SummonerTextures["SummonerBarrier"];
 
                         var t = spell.CooldownExpires - Game.Time;
 
@@ -256,7 +249,7 @@ namespace Tracker
                         }
 
                         Sprite.Draw(
-                            texture, new ColorBGRA(255, 255, 255, 255), new SharpDX.Rectangle(0, 12 * n, 12, 12),
+                            texture, new ColorBGRA(255, 255, 255, 255), new Rectangle(0, 12 * n, 12, 12),
                             new Vector3(-X - 3, -Y - 1 - 13 * k, 0));
                         k++;
                     }

@@ -28,7 +28,7 @@ namespace GagongSyndra
 
         static OrbManager()
         {
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+            Game.OnProcessPacket += Game_OnGameProcessPacket;
         }
 
         public static Obj_AI_Minion WObject(bool onlyOrb)

@@ -49,7 +49,7 @@ namespace PennyJinx
         public static void OnLoad(Menu menu)
         {
             AddMenu(PennyJinx.Menu);
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
 

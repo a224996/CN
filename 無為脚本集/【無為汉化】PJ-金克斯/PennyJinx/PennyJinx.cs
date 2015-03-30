@@ -43,7 +43,7 @@ namespace PennyJinx
             Game.PrintChat("<font color='#7A6EFF'>PennyJinx</font> v 1.0.2.2 <font color='#FFFFFF'>Loaded!</font>");
 
             Drawing.OnDraw += Drawing_OnDraw;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Orbwalking.BeforeAttack += OrbwalkingBeforeAttack;
             Interrupter2.OnInterruptableTarget += Interrupter_OnInterruptable;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;

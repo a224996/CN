@@ -193,8 +193,7 @@ namespace LeagueSharp.Common
         {
             get
             {
-                return Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LeagueSharp", "MenuConfig");
+                return Path.Combine(Config.AppDataDirectory, "MenuConfig");
             }
         }
 
@@ -363,7 +362,7 @@ namespace LeagueSharp.Common
             if (isRootMenu)
             {
                 CustomEvents.Game.OnGameEnd += delegate { SaveAll(); };
-                Game.OnGameEnd += delegate { SaveAll(); };
+                Game.OnEnd += delegate { SaveAll(); };
                 AppDomain.CurrentDomain.DomainUnload += delegate { SaveAll(); };
                 AppDomain.CurrentDomain.ProcessExit += delegate { SaveAll(); };
             }
@@ -800,6 +799,7 @@ namespace LeagueSharp.Common
         private object _value;
         private bool _valueSet;
         private bool _visible;
+        private string _configName;
         public string DisplayName;
         internal bool Interacting;
         public string Name;
@@ -815,11 +815,13 @@ namespace LeagueSharp.Common
 
             Name = name;
             DisplayName = displayName;
+            _configName = Assembly.GetCallingAssembly().GetName().Name +
+                          Assembly.GetCallingAssembly().GetType().GUID;
         }
 
         internal string SaveFileName
         {
-            get { return (_isShared ? "SharedConfig" : AppDomain.CurrentDomain.FriendlyName.Substring(8)); }
+            get { return (_isShared ? "SharedConfig" : _configName); }
         }
 
         internal string SaveKey

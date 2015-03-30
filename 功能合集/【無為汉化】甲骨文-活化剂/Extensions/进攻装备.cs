@@ -2,7 +2,6 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using OC = Oracle.Program;
 
 namespace Oracle.Extensions
 {
@@ -13,7 +12,7 @@ namespace Oracle.Extensions
 
         public static void Initialize(Menu root)
         {
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
 
             _mainMenu = new Menu("进攻装备", "omenu");
             _menuConfig = new Menu("进攻对象", "oconfig");
@@ -42,13 +41,13 @@ namespace Oracle.Extensions
             {
                 return;
             }
-            
+
             if (_mainMenu.Item("useMuramana").GetValue<bool>())
             {
-                if (OC.CanManamune)
+                if (Oracle.CanManamune)
                 {
                     if (_mainMenu.Item("muraMode").GetValue<StringList>().SelectedIndex != 1 ||
-                        OC.Origin.Item("usecombo").GetValue<KeyBind>().Active)
+                        Oracle.Origin.Item("usecombo").GetValue<KeyBind>().Active)
                     {
                         var manamune = Me.GetSpellSlot("Muramana");
                         if (manamune != SpellSlot.Unknown && !Me.HasBuff("Muramana"))
@@ -56,12 +55,12 @@ namespace Oracle.Extensions
                             if (Me.Mana/Me.MaxMana*100 > _mainMenu.Item("useMuramanaMana").GetValue<Slider>().Value)
                                 Me.Spellbook.CastSpell(manamune);
 
-                            Utility.DelayAction.Add(400, () => OC.CanManamune = false);
+                            Utility.DelayAction.Add(400, () => Oracle.CanManamune = false);
                         }
                     }
                 }
 
-                if (!OC.CanManamune && !OC.Origin.Item("usecombo").GetValue<KeyBind>().Active)
+                if (!Oracle.CanManamune && !Oracle.Origin.Item("usecombo").GetValue<KeyBind>().Active)
                 {
                     var manamune = Me.GetSpellSlot("Muramana");
                     if (manamune != SpellSlot.Unknown && Me.HasBuff("Muramana"))
@@ -71,23 +70,21 @@ namespace Oracle.Extensions
                 }
             }
 
-            if (OC.CurrentTarget.IsValidTarget())
+            if (Oracle.Origin.Item("usecombo").GetValue<KeyBind>().Active)
             {
-                if (OC.Origin.Item("usecombo").GetValue<KeyBind>().Active)
-                {
-                    UseItem("Entropy", 3184, 450f, true);
-                    UseItem("Guardians", 2051, 450f);
-                    UseItem("Entropy", 3184, 450f, true);
-                    UseItem("Frostclaim", 3092, 850f, true);
-                    UseItem("Youmuus", 3142, 650f);
-                    UseItem("Hydra", 3077, 250f);
-                    UseItem("Hydra", 3074, 250f);
-                    UseItem("Hextech", 3146, 700f, true);
-                    UseItem("Cutlass", 3144, 450f, true);
-                    UseItem("Botrk", 3153, 450f, true);
-                    UseItem("Divine", 3131, 650f);
-                }
+                UseItem("Entropy", 3184, 450f, true);
+                UseItem("Guardians", 2051, 450f);
+                UseItem("Entropy", 3184, 450f, true);
+                UseItem("Frostclaim", 3092, 850f, true);
+                UseItem("Youmuus", 3142, 650f);
+                UseItem("Hydra", 3077, 250f);
+                UseItem("Hydra", 3074, 250f);
+                UseItem("Hextech", 3146, 700f, true);
+                UseItem("Cutlass", 3144, 450f, true);
+                UseItem("Botrk", 3153, 450f, true);
+                UseItem("Divine", 3131, 650f);
             }
+            
         }
 
         private static void UseItem(string name, int itemId, float range, bool targeted = false)
@@ -98,13 +95,25 @@ namespace Oracle.Extensions
             if (!_mainMenu.Item("use" + name).GetValue<bool>())
                 return;
 
-            if (OC.CurrentTarget.Distance(Me.Position) <= range)
+            Obj_AI_Hero target = null;
+
+            // Get current target near mouse cursor.
+            foreach (
+                var targ in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(hero => hero.IsValidTarget(2000))
+                        .OrderByDescending(hero => hero.Distance(Game.CursorPos)))
             {
-                var eHealthPercent = (int)((OC.CurrentTarget.Health / OC.CurrentTarget.MaxHealth) * 100);
-                var aHealthPercent = (int)((Me.Health / OC.CurrentTarget.MaxHealth) * 100);
+                target = targ;
+            }
+
+            if (target.IsValidTarget(range))
+            {
+                var eHealthPercent = (int)((target.Health / target.MaxHealth) * 100);
+                var aHealthPercent = (int)((Me.Health / target.MaxHealth) * 100);
 
                 if (eHealthPercent <= _mainMenu.Item("use" + name + "Pct").GetValue<Slider>().Value &&
-                    _mainMenu.Item("ouseOn" + OC.CurrentTarget.SkinName).GetValue<bool>())
+                    _mainMenu.Item("ouseOn" + target.SkinName).GetValue<bool>())
                 {
                     if (targeted && itemId == 3092)
                     {
@@ -117,7 +126,7 @@ namespace Oracle.Extensions
                             Radius = 250f,
                             Range = 850f,
                             Speed = 1500f,
-                            Unit = OC.CurrentTarget,
+                            Unit = target,
                             Type = SkillshotType.SkillshotCircle
                         };
 
@@ -125,7 +134,7 @@ namespace Oracle.Extensions
                         if (po.Hitchance >= HitChance.Medium)
                         {
                             Items.UseItem(itemId, po.CastPosition);
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used " + name + " near " + po.CastPosition.CountEnemiesInRange(300) + " enemies!");
                         }
 
@@ -133,26 +142,26 @@ namespace Oracle.Extensions
 
                     else if (targeted)
                     {
-                        Items.UseItem(itemId, OC.CurrentTarget);
-                        OC.Logger(Program.LogType.Action, "Used " + name + " (Targeted Enemy HP) on " + OC.CurrentTarget.SkinName);
+                        Items.UseItem(itemId, target);
+                        Oracle.Logger(Oracle.LogType.Action, "Used " + name + " (Targeted Enemy HP) on " + target.SkinName);
                     }
 
                     else
                     {
                         Items.UseItem(itemId);
-                        OC.Logger(Program.LogType.Action, "Used " + name + " (Self Enemy HP) on " + OC.CurrentTarget.SkinName);
+                        Oracle.Logger(Oracle.LogType.Action, "Used " + name + " (Self Enemy HP) on " + target.SkinName);
                     }
                 }
 
                 else if (aHealthPercent <= _mainMenu.Item("use" + name + "Me").GetValue<Slider>().Value &&
-                         _mainMenu.Item("ouseOn" + OC.CurrentTarget.SkinName).GetValue<bool>())
+                         _mainMenu.Item("ouseOn" + target.SkinName).GetValue<bool>())
                 {
                     if (targeted)
-                        Items.UseItem(itemId, OC.CurrentTarget);
+                        Items.UseItem(itemId, target);
                     else
                         Items.UseItem(itemId);
 
-                    OC.Logger(Program.LogType.Action, "Used " + name + " (Low My HP) on " + OC.CurrentTarget.SkinName);
+                    Oracle.Logger(Oracle.LogType.Action, "Used " + name + " (Low My HP) on " + target.SkinName);
                 }
             }
         }

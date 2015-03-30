@@ -188,7 +188,7 @@ namespace Syndra
 				Config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
 				
             //Add the events we are going to use:
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter2.OnInterruptableTarget += Interrupter2_OnInterruptableTarget;
@@ -248,7 +248,7 @@ namespace Syndra
                         EQ.Width + enemy.BoundingRadius)
                     {
                         E.Cast(orb, true);
-                        W.LastCastAttemptT = Environment.TickCount;
+                        W.LastCastAttemptT = Utils.TickCount;
                         return;
                     }
                 }
@@ -263,8 +263,8 @@ namespace Syndra
             if (prediction.Hitchance >= HitChance.High)
             {
                 Q.Cast(Player.ServerPosition.To2D().Extend(prediction.CastPosition.To2D(), Q.Range - 100));
-                QEComboT = Environment.TickCount;
-                W.LastCastAttemptT = Environment.TickCount;
+                QEComboT = Utils.TickCount;
+                W.LastCastAttemptT = Utils.TickCount;
             }
         }
 
@@ -313,7 +313,7 @@ namespace Syndra
                 Q.Cast(qTarget, false, true);
 
             //E
-            if (Environment.TickCount - W.LastCastAttemptT > Game.Ping + 150 && E.IsReady() && useE)
+            if (Utils.TickCount - W.LastCastAttemptT > Game.Ping + 150 && E.IsReady() && useE)
                 foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>())
                 {
                     if (enemy.IsValidTarget(EQ.Range))
@@ -327,14 +327,14 @@ namespace Syndra
                     //WObject
                     var gObjectPos = GetGrabableObjectPos(wTarget == null);
 
-                    if (gObjectPos.To2D().IsValid() && Environment.TickCount - W.LastCastAttemptT > Game.Ping + 100 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 100)
+                    if (gObjectPos.To2D().IsValid() && Utils.TickCount - W.LastCastAttemptT > Game.Ping + 100 && Utils.TickCount - E.LastCastAttemptT > Game.Ping + 100)
                     {
                         W.Cast(gObjectPos);
-                        W.LastCastAttemptT = Environment.TickCount;
+                        W.LastCastAttemptT = Utils.TickCount;
                     }
                 }
                 else if (wTarget != null && Player.Spellbook.GetSpell(SpellSlot.W).ToggleState != 1 && W.IsReady() &&
-                         Environment.TickCount - W.LastCastAttemptT > Game.Ping + 100)
+                         Utils.TickCount - W.LastCastAttemptT > Game.Ping + 100)
                 {
                     if (OrbManager.WObject(false) != null)
                     {
@@ -387,24 +387,24 @@ namespace Syndra
                 if (prediction.Hitchance >= HitChance.High)
                 {
                     W.Cast(Player.ServerPosition.To2D().Extend(prediction.CastPosition.To2D(), Q.Range - 100));
-                    WEComboT = Environment.TickCount;
+                    WEComboT = Utils.TickCount;
                 }
             }
         }
 
         private static void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe && Environment.TickCount - QEComboT < 500 &&
+            if (sender.IsMe && Utils.TickCount - QEComboT < 500 &&
                 (args.SData.Name == "SyndraQ"))
             {
-                W.LastCastAttemptT = Environment.TickCount + 400;
+                W.LastCastAttemptT = Utils.TickCount + 400;
                 E.Cast(args.End, true);
             }
 
-            if (sender.IsMe && Environment.TickCount - WEComboT < 500 &&
+            if (sender.IsMe && Utils.TickCount - WEComboT < 500 &&
                 (args.SData.Name == "SyndraW" || args.SData.Name == "syndrawcast"))
             {
-                W.LastCastAttemptT = Environment.TickCount + 400;
+                W.LastCastAttemptT = Utils.TickCount + 400;
                 E.Cast(args.End, true);
             }
         }
@@ -460,7 +460,7 @@ namespace Syndra
                         //WObject
                         var gObjectPos = GetGrabableObjectPos(false);
 
-                        if (gObjectPos.To2D().IsValid() && Environment.TickCount - W.LastCastAttemptT > Game.Ping + 150)
+                        if (gObjectPos.To2D().IsValid() && Utils.TickCount - W.LastCastAttemptT > Game.Ping + 150)
                         {
                             W.Cast(gObjectPos);
                         }
@@ -502,7 +502,7 @@ namespace Syndra
                     Q.Cast(mob);
                 }
 
-                if (W.IsReady() && useW && Environment.TickCount - Q.LastCastAttemptT > 800)
+                if (W.IsReady() && useW && Utils.TickCount - Q.LastCastAttemptT > 800)
                 {
                     W.Cast(mob);
                 }

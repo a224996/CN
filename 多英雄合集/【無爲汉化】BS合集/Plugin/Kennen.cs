@@ -91,7 +91,7 @@ namespace BrianSharp.Plugin
                 }
                 MainMenu.AddSubMenu(ChampMenu);
             }
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
             Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;
         }

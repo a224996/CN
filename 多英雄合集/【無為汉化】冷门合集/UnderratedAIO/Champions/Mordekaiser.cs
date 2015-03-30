@@ -28,7 +28,7 @@ namespace UnderratedAIO.Champions
             InitMenu();
             InitMordekaiser();
             Game.PrintChat("<font color='#9933FF'>Soresu </font><font color='#FFFFFF'>- Mordekaiser</font>");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Orbwalking.AfterAttack += AfterAttack;
             Drawing.OnDraw += Game_OnDraw;
         }

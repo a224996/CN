@@ -245,7 +245,7 @@ namespace Oracle.Core.Skillshots
                     SpellName = "InfernalGuardian",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
+                    Delay = 100,
                     Range = 600,
                     Radius = 251,
                     MissileSpeed = int.MaxValue,
@@ -302,6 +302,48 @@ namespace Oracle.Core.Skillshots
                 });
 
             #endregion Ashe
+
+            #region Bard
+
+            Spells.Add(
+                new SkillshotData
+                {
+                    ChampionName = "Bard",
+                    SpellName = "BardQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 950,
+                    Radius = 60,
+                    MissileSpeed = 1600,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "BardQMissile",
+                    CanBeRemoved = true,
+                    CollisionObjects = new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall}
+                });
+
+            Spells.Add(
+                new SkillshotData
+                {
+                    ChampionName = "Bard",
+                    SpellName = "BardR",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 500,
+                    Range = 3400,
+                    Radius = 350,
+                    MissileSpeed = 2100,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "BardR",
+                });
+
+            #endregion
 
             #region Blitzcrank
 
@@ -832,7 +874,7 @@ namespace Oracle.Core.Skillshots
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 5,
-                    IsDangerous = true,
+                    IsDangerous = false,
                     MissileSpellName = "FizzMarinerDoomMissile",
                     CollisionObjects = new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
                     CanBeRemoved = true,
@@ -2278,6 +2320,31 @@ namespace Oracle.Core.Skillshots
 
             #endregion Rengar
 
+            #region Rek'Sai
+
+            Spells.Add(
+                new SkillshotData
+                {
+                    ChampionName = "RekSai",
+                    SpellName = "reksaiqburrowed",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 500,
+                    Range = 1625,
+                    Radius = 60,
+                    MissileSpeed = 1950,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    MissileSpellName = "RekSaiQBurrowedMis",
+                    CollisionObjects =
+                        new[]
+                        {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
+                });
+
+            #endregion
+
             #region Riven
 
             Spells.Add(
@@ -2562,7 +2629,7 @@ namespace Oracle.Core.Skillshots
                 new SkillshotData
                 {
                     ChampionName = "Sona",
-                    SpellName = "SonaCrescendo",
+                    SpellName = "SonaR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
@@ -2573,7 +2640,7 @@ namespace Oracle.Core.Skillshots
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "SonaCrescendo",
+                    MissileSpellName = "SonaR",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 

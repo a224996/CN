@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using KaiHelper.Activator;
+using KaiHelper.Misc;
+using KaiHelper.Timer;
 using KaiHelper.Tracker;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -14,18 +16,19 @@ namespace KaiHelper
         private static void Main(string[] args)
         {
             MainMenu = new Menu("【無為汉化】kaigan多功能", "KaiHelp", true);
-            Menu ActivatorMenu = MainMenu.AddSubMenu(new Menu("活化剂", "Activator"));
-            new AutoPot(ActivatorMenu);
-            Menu Tracker = MainMenu.AddSubMenu(new Menu("跟踪器", "Tracker"));
-            new SkillBar(Tracker);
-            new GankDetector(Tracker);
-            new WayPoint(Tracker);
-            new WardDetector(Tracker);
-            new HealthTurret(Tracker);
-            Menu Timer = MainMenu.AddSubMenu(new Menu("计时器", "Timer"));
-            new JungleTimer(Timer);
-            Menu Range = MainMenu.AddSubMenu(new Menu("范围", "Range"));
-            new Vision(Range);
+            //Menu Tracker = MainMenu.AddSubMenu(new Menu("Tracker", "Tracker"));
+            new SkillBar(MainMenu);
+            new JungleTimer(MainMenu);
+            new GankDetector(MainMenu);
+            new LastPosition(MainMenu);
+            new WayPoint(MainMenu);
+            new WardDetector(MainMenu);
+            new HealthTurret(MainMenu);
+            //Menu Timer = MainMenu.AddSubMenu(new Menu("Timer", "Timer"));
+            //Menu Range = MainMenu.AddSubMenu(new Menu("Range", "Range"));
+            new Vision(MainMenu);
+            //Menu ActivatorMenu = MainMenu.AddSubMenu(new Menu("Activator", "Activator"));
+            new AutoPot(MainMenu);
             MainMenu.AddToMainMenu();
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }

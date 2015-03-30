@@ -73,7 +73,7 @@ namespace MasterActivator
         MItem clarity = new MItem("Clarity", "清晰", "SummonerMana", 0, ItemTypeId.ManaRegeneratorSpell, 600);
         MItem ignite = new MItem("Ignite", "点燃", "SummonerDot", 0, ItemTypeId.OffensiveSpell, 600);
         MItem smite = new MItem("Smite", "打开", "SummonerSmite", 0, ItemTypeId.OffensiveSpell, 500);
-        MItem smiteAOE = new MItem("SmiteAOE", "紫色打野刀-清野", "itemsmiteaoe", 0, ItemTypeId.OffensiveSpell, 750);
+        MItem smiteAOE = new MItem("SmiteAOE", "紫色打野刀-清野", "itemsmiteaoe", 0, ItemTypeId.OffensiveSpell, 500);
         MItem smiteDuel = new MItem("SmiteDuel", "红色打野刀-gank", "s5_summonersmiteduel", 0, ItemTypeId.OffensiveSpell, 750);
         MItem smiteQuick = new MItem("SmiteQuick", "灰色打野刀-偷野", "s5_summonersmitequick", 0, ItemTypeId.OffensiveSpell, 750);
         MItem smiteGanker = new MItem("SmiteGanker", "蓝色打野刀-gank", "s5_summonersmiteplayerganker", 0, ItemTypeId.OffensiveSpell, 750);
@@ -176,9 +176,9 @@ namespace MasterActivator
                 createMenu();
 
                 LeagueSharp.Drawing.OnDraw += onDraw;
-                Game.OnGameUpdate += onGameUpdate;
+                Game.OnUpdate += onGameUpdate;
                 Obj_AI_Base.OnProcessSpellCast += onProcessSpellCast;
-                Game.OnGameEnd += Game_OnGameEnd;
+                Game.OnEnd += Game_OnGameEnd;
 
                 /*String dTime = DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss");
                 if (!File.Exists("C:/Windows/temp/MActivatorLOG" + dTime + ".log"))

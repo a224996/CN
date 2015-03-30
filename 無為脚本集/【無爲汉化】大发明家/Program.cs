@@ -145,7 +145,7 @@ namespace SSJ4_Heimerdinger
 
             Config.AddToMainMenu();
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
 
         }

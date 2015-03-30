@@ -22,6 +22,9 @@ namespace Sharpshooter.Champions
 
         static readonly int DefaultRange = 590;
 
+        //Q 1 = 665
+        //Q 2 = 715
+        //Q 3 = 765
         static float GetQActiveRange { get { return DefaultRange + ((25 * Q.Level) + 50); } }
 
         static float WLastCastedTime;
@@ -62,8 +65,9 @@ namespace Sharpshooter.Champions
             SharpShooter.Menu.SubMenu("Misc").AddItem(new MenuItem("FISHBONES", "切换Q 敌人数量 >=", true).SetValue(new Slider(2, 2, 5)));
 
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingAA", "真正的 AA 范围", true).SetValue(new Circle(true, Color.HotPink)));
+            SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingQ", "Q 范围", true).SetValue(new Circle(true, Color.HotPink)));
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingW", "W 范围", true).SetValue(new Circle(true, Color.HotPink)));
-            SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingE", "E 范围", true).SetValue(new Circle(true, Color.HotPink)));
+            SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingE", "E 范围", true).SetValue(new Circle(false, Color.HotPink)));
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingR", "R 范围", true).SetValue(new Circle(true, Color.HotPink)));
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingPTimer", "被动计时器", true).SetValue(true));
 
@@ -88,7 +92,7 @@ namespace Sharpshooter.Champions
                 DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
             };
 
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
@@ -120,12 +124,16 @@ namespace Sharpshooter.Champions
                 return;
 
             var drawingAA = SharpShooter.Menu.Item("drawingAA", true).GetValue<Circle>();
+            var drawingQ = SharpShooter.Menu.Item("drawingQ", true).GetValue<Circle>();
             var drawingW = SharpShooter.Menu.Item("drawingW", true).GetValue<Circle>();
             var drawingE = SharpShooter.Menu.Item("drawingE", true).GetValue<Circle>();
             var drawingR = SharpShooter.Menu.Item("drawingR", true).GetValue<Circle>();
 
             if (drawingAA.Active)
-                Render.Circle.DrawCircle(Player.Position, Orbwalking.GetRealAutoAttackRange(Player), drawingAA.Color);
+                Render.Circle.DrawCircle(Player.Position, Orbwalking.GetRealAutoAttackRange(Player)+30, drawingAA.Color);
+
+            if (drawingQ.Active && Q.IsReady())
+                Render.Circle.DrawCircle(Player.Position, GetQActiveRange + 30, drawingQ.Color);
 
             if (drawingW.Active && W.IsReady())
                 Render.Circle.DrawCircle(Player.Position, W.Range, drawingW.Color);
@@ -271,7 +279,7 @@ namespace Sharpshooter.Champions
 
         static Obj_AI_Base E_GetBestTarget()
         {
-            return HeroManager.Enemies.Where(x => E.CanCast(x) && !x.HasBuffOfType(BuffType.SpellImmunity) && E.GetPrediction(x).Hitchance >= HitChance.VeryHigh && !x.IsFacing(Player) && x.IsValidTarget(DefaultRange)).OrderBy(x => x.Distance(Player, false)).FirstOrDefault();
+            return HeroManager.Enemies.Where(x => E.CanCast(x) && !x.HasBuffOfType(BuffType.SpellImmunity) && E.GetPrediction(x).Hitchance >= HitChance.VeryHigh && !x.IsFacing(Player) && x.IsMoving && x.IsValidTarget(DefaultRange)).OrderBy(x => x.Distance(Player, false)).FirstOrDefault();
         }
 
         static void Combo()
@@ -301,9 +309,9 @@ namespace Sharpshooter.Champions
 
             if (SharpShooter.Menu.Item("comboUseR", true).GetValue<Boolean>() && R.IsReady() && WLastCastedTime + 1.0 < Game.ClockTime)
             {
-                foreach (Obj_AI_Hero Rtarget in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && !x.IsValidTarget(DefaultRange) && !Player.HasBuffOfType(BuffType.SpellShield) && !Player.HasBuffOfType(BuffType.Invulnerability) && R.GetPrediction(x).Hitchance >= HitChance.High))
+                foreach (Obj_AI_Hero Rtarget in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && !x.IsValidTarget(DefaultRange) && !Player.HasBuffOfType(BuffType.SpellShield) && !Player.HasBuffOfType(BuffType.Invulnerability) && R.GetPrediction(x).Hitchance >= HitChance.High && Utility.GetAlliesInRange(x, 800).Where(ally => !ally.IsMe).Count() <= 1))
                 {
-                    if (R.CanCast(Rtarget))
+                    if (R.CanCast(Rtarget) && !Player.IsWindingUp)
                     {
                         var dis = Player.Distance(Rtarget.ServerPosition);
                         double predhealth = HealthPrediction.GetHealthPrediction(Rtarget, (int)(R.Delay + dis / R.Speed) * 1000) + Rtarget.HPRegenRate;

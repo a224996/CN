@@ -24,8 +24,6 @@
 
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -33,27 +31,6 @@ using Color = System.Drawing.Color;
 
 namespace LeagueSharp.Common
 {
-    /// <summary>
-    ///     This class offers real mouse clicks.
-    /// </summary>
-    public static class VirtualMouse
-    {
-        //data
-        private const int MOUSEEVENTF_RIGHTDOWN = 0x0008;
-        private const int MOUSEEVENTF_RIGHTUP = 0x0010;
-        public static int clickdelay;
-        // import the necessary API function so .NET can marshall parameters appropriately
-        [DllImport("user32.dll")]
-        private static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
-
-        // simulates a click-and-release action of the right mouse button at its current position
-        public static void RightClick()
-        {
-            mouse_event(MOUSEEVENTF_RIGHTDOWN, Control.MousePosition.X, Control.MousePosition.Y, 0, 0);
-            mouse_event(MOUSEEVENTF_RIGHTUP, Control.MousePosition.X, Control.MousePosition.Y, 0, 0);
-        }
-    }
-
     /// <summary>
     ///     This class offers everything related to auto-attacks and orbwalking.
     /// </summary>
@@ -336,7 +313,7 @@ namespace LeagueSharp.Common
             {
                 if (Player.Path.Count() > 1)
                 {
-                    Player.IssueOrder((GameObjectOrder) 10, Player.ServerPosition);
+                    Player.IssueOrder((GameObjectOrder)10, Player.ServerPosition);
                     Player.IssueOrder(GameObjectOrder.HoldPosition, Player.ServerPosition);
                     LastMoveCommandPosition = Player.ServerPosition;
                 }
@@ -402,16 +379,6 @@ namespace LeagueSharp.Common
 
                 if (CanMove(extraWindup))
                 {
-                    var r = new Random();
-                    var rng = r.Next(0, Orbwalker._config.Item("randomDelay").GetValue<Slider>().Value);
-                    if (Orbwalker._config.Item("clickEnable").GetValue<bool>() &&
-                        Environment.TickCount - VirtualMouse.clickdelay >
-                        Orbwalker._config.Item("ExtraWindup").GetValue<Slider>().Value +
-                        Orbwalker._config.Item("clickDelay").GetValue<Slider>().Value + rng)
-                    {
-                        VirtualMouse.clickdelay = Environment.TickCount;
-                        VirtualMouse.RightClick();
-                    }
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }
@@ -457,10 +424,10 @@ namespace LeagueSharp.Common
                     (Spell.Target is Obj_AI_Base || Spell.Target is Obj_BarracksDampener || Spell.Target is Obj_HQ))
                 {
                     LastAATick = Utils.TickCount - Game.Ping / 2;
-
-                    if (Spell.Target is Obj_AI_Base)
+                    
+                    if(Spell.Target is Obj_AI_Base)
                     {
-                        var target = (Obj_AI_Base) Spell.Target;
+                        var target = (Obj_AI_Base)Spell.Target;
                         if (target.IsValid)
                         {
                             FireOnTargetSwitch(target);
@@ -507,7 +474,7 @@ namespace LeagueSharp.Common
         public class Orbwalker
         {
             private const float LaneClearWaitTimeMod = 2f;
-            public static Menu _config;
+            private static Menu _config;
             private readonly Obj_AI_Hero Player;
             private Obj_AI_Base _forcedTarget;
             private OrbwalkingMode _mode = OrbwalkingMode.None;
@@ -518,56 +485,56 @@ namespace LeagueSharp.Common
             {
                 _config = attachToMenu;
                 /* Drawings submenu */
-                var drawings = new Menu("∑∂Œß", "drawings");
+                var drawings = new Menu("ËåÉÂõ¥", "drawings");
                 drawings.AddItem(
-                    new MenuItem("AACircle", "”¢–€AA∑∂Œß").SetShared()
+                    new MenuItem("AACircle", "Ëã±ÈõÑAAËåÉÂõ¥").SetShared()
                         .SetValue(new Circle(true, Color.FromArgb(255, 255, 0, 255))));
                 drawings.AddItem(
-                    new MenuItem("AACircle2", "µ–»ÀAA∑∂Œß").SetShared()
+                    new MenuItem("AACircle2", "Êïå‰∫∫AAËåÉÂõ¥").SetShared()
                         .SetValue(new Circle(false, Color.FromArgb(255, 255, 0, 255))));
                 drawings.AddItem(
-                    new MenuItem("HoldZone", "øÿ÷∆∑∂Œß").SetShared()
+                    new MenuItem("HoldZone", "ÊéßÂà∂ËåÉÂõ¥").SetShared()
                         .SetValue(new Circle(false, Color.FromArgb(255, 255, 0, 255))));
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
-                var misc = new Menu("‘”œÓ", "Misc");
+                var misc = new Menu("ÊùÇÈ°π", "Misc");
                 misc.AddItem(
-                    new MenuItem("HoldPosRadius", "±£≥÷∞Îæ∂Œª÷√").SetShared().SetValue(new Slider(0, 0, 250)));
-                misc.AddItem(new MenuItem("PriorizeFarm", "”≈œ»≤π±¯").SetShared().SetValue(true));
+                    new MenuItem("HoldPosRadius", "‰øùÊåÅÂçäÂæÑ‰ΩçÁΩÆ").SetShared().SetValue(new Slider(0, 0, 250)));
+                misc.AddItem(new MenuItem("PriorizeFarm", "‰ºòÂÖàË°•ÂÖµ").SetShared().SetValue(true));
                 _config.AddSubMenu(misc);
 
-                /* Fake Clicks */
-                var fakeclicks = new Menu("Fake Clicks", "–ÈºŸµ„ª˜");
-                fakeclicks.AddItem(new MenuItem("clickEnable", "∆Ù”√").SetValue(false));
-                fakeclicks.AddItem(new MenuItem("clickDelay", "µ„ª˜—”≥Ÿ").SetValue(new Slider(200, 0, 2000)));
-                fakeclicks.AddItem(new MenuItem("randomDelay", "ÀÊª˙—”≥Ÿ").SetValue(new Slider(100, 0, 500)));
-                _config.AddSubMenu(fakeclicks);
 
                 /* Delay sliders */
                 _config.AddItem(
-                    new MenuItem("ExtraWindup", "÷’Ω· ±º‰").SetShared().SetValue(new Slider(80, 0, 200)));
-                _config.AddItem(new MenuItem("FarmDelay", "≤π±¯—”≥Ÿ").SetShared().SetValue(new Slider(0, 0, 200)));
+                    new MenuItem("ExtraWindup", "ÁªàÁªìÊó∂Èó¥").SetShared().SetValue(new Slider(80, 0, 200)));
+                _config.AddItem(new MenuItem("FarmDelay", "Ë°•ÂÖµÂª∂Ëøü").SetShared().SetValue(new Slider(0, 0, 200)));
                 _config.AddItem(
-                    new MenuItem("MovementDelay", "∂Ø◊˜—”≥Ÿ").SetShared().SetValue(new Slider(80, 0, 250)))
+                    new MenuItem("MovementDelay", "Âä®‰ΩúÂª∂Ëøü").SetShared().SetValue(new Slider(80, 0, 250)))
                     .ValueChanged += (sender, args) => SetMovementDelay(args.GetNewValue<Slider>().Value);
+
 
                 /*Load the menu*/
                 _config.AddItem(
-                    new MenuItem("LastHit", "≤π±¯").SetShared().SetValue(new KeyBind('X', KeyBindType.Press)));
+                    new MenuItem("LastHit", "Ë°•ÂÖµ").SetShared().SetValue(new KeyBind('X', KeyBindType.Press)));
 
-                _config.AddItem(new MenuItem("Farm", "ªÏ∫œ").SetShared().SetValue(new KeyBind('T', KeyBindType.Press)));
-
-                _config.AddItem(
-                    new MenuItem("LaneClear", "«Â±¯").SetShared().SetValue(new KeyBind('V', KeyBindType.Press)));
+                _config.AddItem(new MenuItem("Farm", "Ê∑∑Âêà").SetShared().SetValue(new KeyBind('T', KeyBindType.Press)));
 
                 _config.AddItem(
-                    new MenuItem("Orbwalk", "¡¨’–").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
+                    new MenuItem("LaneClear", "Ê∏ÖÂÖµ").SetShared().SetValue(new KeyBind('V', KeyBindType.Press)));
+
+                _config.AddItem(
+                    new MenuItem("Orbwalk", "ËøûÊãõ").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
 
                 _delay = _config.Item("MovementDelay").GetValue<Slider>().Value;
                 Player = ObjectManager.Player;
-                Game.OnGameUpdate += GameOnOnGameUpdate;
+                Game.OnUpdate += GameOnOnGameUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
+            }
+
+            public virtual bool InAutoAttackRange(AttackableUnit target)
+            {
+                return Orbwalking.InAutoAttackRange(target);
             }
 
             private int FarmDelay
@@ -607,11 +574,6 @@ namespace LeagueSharp.Common
                     return OrbwalkingMode.None;
                 }
                 set { _mode = value; }
-            }
-
-            public virtual bool InAutoAttackRange(AttackableUnit target)
-            {
-                return Orbwalking.InAutoAttackRange(target);
             }
 
             /// <summary>
@@ -687,9 +649,9 @@ namespace LeagueSharp.Common
                                     (ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod))
                         )
                     {
-                        var t = Player.AttackCastDelay * 1000 - 100 + Game.Ping / 2 +
+                        var t = (int) (Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
                                 1000 * (int) Player.Distance(minion) / (int) GetMyProjectileSpeed();
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)t, FarmDelay);
+                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
                         {

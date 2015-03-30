@@ -106,7 +106,7 @@ namespace Karma
 			_config.SubMenu("by wuwei").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Drawing.OnDraw += Drawing_OnDraw;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
         }
 

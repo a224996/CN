@@ -77,7 +77,7 @@ namespace Sharpshooter.Champions
                 DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
             };
 
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Obj_AI_Hero.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Orbwalking.OnNonKillableMinion += Orbwalking_OnNonKillableMinion;
@@ -275,7 +275,7 @@ namespace Sharpshooter.Champions
                     {
                         if (!Player.IsWindingUp && !Player.IsDashing())
                         { 
-                            Q.Cast(minion.ServerPosition);
+                            Q.Cast(minion);
                             break;
                         }
                     }

@@ -119,7 +119,7 @@ namespace SKO_Galio
 
             Config.AddToMainMenu();
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
 
             Game.PrintChat("SKO Galio Loaded!");

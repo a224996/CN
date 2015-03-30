@@ -82,12 +82,12 @@ namespace xSaliceReligionAIO.Champions
                harass.AddItem(new MenuItem("UseWHarass", "使用W",true).SetValue(false));
                harass.AddItem(new MenuItem("UseEHarass", "使用E",true).SetValue(true));
                harass.AddItem(new MenuItem("longQ", "长距离Q",true).SetValue(true));
-               harass.AddItem(new MenuItem("charmHarass", "魅惑中才Q",true).SetValue(true)); 
+               harass.AddItem(new MenuItem("charmHarass", "只有魅惑中才Q",true).SetValue(true)); 
                //add to menu
                 menu.AddSubMenu(harass);
             }
             //Farming menu:
-            var farm = new Menu("补兵", "Farm");
+            var farm = new Menu("清兵", "Farm");
             {
                 farm.AddItem(new MenuItem("UseQFarm", "使用Q",true).SetValue(false));
                 farm.AddItem(new MenuItem("UseWFarm", "使用W",true).SetValue(false));

@@ -7,7 +7,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
 
-namespace KaiHelper
+namespace KaiHelper.Timer
 {
     public class JungleTimer
     {
@@ -21,8 +21,8 @@ namespace KaiHelper
         {
             _menuJungle = config.AddSubMenu(new Menu("打野计时", "JungleTimer"));
             _menuJungle.AddItem(
-                new MenuItem("JungleTimerFormat", "显示格式").SetValue(new StringList(new[] { "m:ss", "ss" })));
-            _menuJungle.AddItem(new MenuItem("JungleActive", "打野计时").SetValue(true));
+                new MenuItem("JungleTimerFormat", "时间格式:").SetValue(new StringList(new[] { "分:秒", "秒" })));
+            _menuJungle.AddItem(new MenuItem("JungleActive", "开启!").SetValue(true));
             _jungleCamps.Add(
                 new JungleCamp(
                     "SRU_Blue", 300, new Vector3(3871.489f, 7901.054f, 51.90324f),
@@ -86,9 +86,16 @@ namespace KaiHelper
                 new JungleCamp("Sru_Crab", 180, new Vector3(4400f, 9600f, -66.53082f), new[] { "Sru_Crab16.1.1" }));
             _mapFont = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Times New Roman", 20));
             _miniMapFont = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Times New Roman", 8));
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
+            //GameObject.OnCreate += GameObject_OnCreate;
+        }
+
+        void GameObject_OnCreate(GameObject sender, EventArgs args)
+        {
+            if (sender.Position.Distance(ObjectManager.Player.Position) < 800)
+                Game.PrintChat(sender.Name);
         }
 
         private void Drawing_OnEndScene(EventArgs args)

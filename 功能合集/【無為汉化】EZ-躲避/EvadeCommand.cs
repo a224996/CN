@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -20,7 +19,6 @@ namespace ezEvade
     class EvadeCommand
     {
         private static Obj_AI_Hero myHero { get { return ObjectManager.Player; } }
-        private static float gameTime { get { return Game.ClockTime * 1000; } }
 
         public EvadeOrderCommand order;
         public Vector2 targetPosition;
@@ -30,7 +28,7 @@ namespace ezEvade
 
         public EvadeCommand()
         {
-            this.timestamp = gameTime;
+            this.timestamp = Evade.GetTickCount();
             this.isProcessed = false;
         }
 
@@ -40,10 +38,10 @@ namespace ezEvade
             {
                 order = EvadeOrderCommand.MoveTo,
                 targetPosition = movePos,
-                timestamp = gameTime,
+                timestamp = Evade.GetTickCount(),
                 isProcessed = false
-            };
-            myHero.IssueOrder(GameObjectOrder.MoveTo, movePos.To3D(), false);
+            };            
+            myHero.IssueOrder(GameObjectOrder.MoveTo, movePos.To3D(), false);            
         }
 
         public static void CastSpell(EvadeSpellData spellData, Vector2 movePos)
@@ -53,7 +51,7 @@ namespace ezEvade
                 order = EvadeOrderCommand.CastSpell,
                 targetPosition = movePos,
                 evadeSpellData = spellData,
-                timestamp = gameTime,
+                timestamp = Evade.GetTickCount(),
                 isProcessed = false
             };
 
@@ -66,7 +64,7 @@ namespace ezEvade
             {
                 order = EvadeOrderCommand.CastSpell,
                 evadeSpellData = spellData,
-                timestamp = gameTime,
+                timestamp = Evade.GetTickCount(),
                 isProcessed = false
             };
 

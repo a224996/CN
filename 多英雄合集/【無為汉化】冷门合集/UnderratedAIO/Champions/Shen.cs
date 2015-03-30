@@ -33,7 +33,7 @@ namespace UnderratedAIO.Champions
             InitMenu();
             InitShen();
             Game.PrintChat("<font color='#9933FF'>Soresu </font><font color='#FFFFFF'>- Shen</font>");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Game_OnDraw;
             Obj_AI_Base.OnCreate += OnCreate;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;

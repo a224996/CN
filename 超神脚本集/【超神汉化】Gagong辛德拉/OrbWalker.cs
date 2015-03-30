@@ -134,7 +134,7 @@ namespace GagongSyndra
 			menu.AddItem(new MenuItem("xSLx_info4", "QQ群:386289593"));
 
             Drawing.OnDraw += OnDraw;
-            Game.OnGameUpdate += OnUpdate;
+            Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             GameObject.OnCreate += Obj_SpellMissile_OnCreate;
             GameObject.OnDelete += OnDelete;

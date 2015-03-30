@@ -6,22 +6,18 @@ using Color = System.Drawing.Color;
 
 namespace KurisuBlitz
 {
-    //   _____       _    _____           _ 
-    //  |   __|___ _| |  |  |  |___ ___ _| |
-    //  |  |  | . | . |  |     | .'|   | . |
-    //  |_____|___|___|  |__|__|__,|_|_|___|
+    //  _____ _ _ _                       _   
+    // | __  | |_| |_ ___ ___ ___ ___ ___| |_ 
+    // | __ -| | |  _|- _|  _|  _| .'|   | '_|
+    // |_____|_|_|_| |___|___|_| |__,|_|_|_,_|
     //  Copyright © Kurisu Solutions 2015
-      
+   
     internal class Program
     {
-        private static Spell q;
-        private static Spell e;
-        private static Spell r;
-
         private static Menu _menu;
-        private static Obj_AI_Hero _target;
+        private static Spell _q, _e, _r;
         private static Orbwalking.Orbwalker _orbwalker;
-        private static  Obj_AI_Hero _player = ObjectManager.Player;
+        private static readonly Obj_AI_Hero Me = ObjectManager.Player;
 
         static void Main(string[] args)
         {
@@ -31,242 +27,257 @@ namespace KurisuBlitz
 
         private static void BlitzOnLoad(EventArgs args)
         {
-            if (_player.ChampionName != "Blitzcrank")
-            {
+            if (Me.ChampionName != "Blitzcrank")
                 return;
-            }
-
+           
             // Set spells      
-            q = new Spell(SpellSlot.Q, 1050f);
-            q.SetSkillshot(0.25f, 70f, 1800f, true, SkillshotType.SkillshotLine);
+            _q = new Spell(SpellSlot.Q, 1000f);
+            _q.SetSkillshot(0.25f, 70f, 1800f, true, SkillshotType.SkillshotLine);
 
-            e = new Spell(SpellSlot.E, 150f);
-            r = new Spell(SpellSlot.R, 550f);
+            _e = new Spell(SpellSlot.E, 150f);
+            _r = new Spell(SpellSlot.R, 550f);
 
             // Load Menu
-            BlitzMenu();
+            _menu = new Menu("【超神汉化】Kurisu机器人", "blitz", true);
 
-            // Load Drawings
+            var blitzTs = new Menu("目标选择", "tselect");
+            TargetSelector.AddToMenu(blitzTs);
+            _menu.AddSubMenu(blitzTs);
+
+            var blitzOrb = new Menu("走砍", "orbwalker");
+            _orbwalker = new Orbwalking.Orbwalker(blitzOrb);
+            _menu.AddSubMenu(blitzOrb);
+
+            var menuD = new Menu("Blitz: 显示", "drawings");
+            menuD.AddItem(new MenuItem("drawQ", "显示 Q")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            menuD.AddItem(new MenuItem("drawR", "显示 R")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
+            menuD.AddItem(new MenuItem("drawT", "显示目标")).SetValue(true);
+            _menu.AddSubMenu(menuD);
+
+            var spellmenu = new Menu("Blitz: 技能", "smenu");
+
+            var menuQ = new Menu("Q 菜单", "qmenu");
+            menuQ.AddItem(new MenuItem("usecomboq", "连招使用")).SetValue(true);
+            menuQ.AddItem(new MenuItem("qdashing", "Q 被控住敌人")).SetValue(true);
+            menuQ.AddItem(new MenuItem("qimmobile", "Q 不动的敌人")).SetValue(true);
+            menuQ.AddItem(new MenuItem("interruptq", "打断技能")).SetValue(true);
+            menuQ.AddItem(new MenuItem("secureq", "抢人头")).SetValue(false);
+            spellmenu.AddSubMenu(menuQ);
+
+            var menuE = new Menu("E 菜单", "emenu");
+            menuE.AddItem(new MenuItem("usecomboe", "连招使用")).SetValue(true);
+            menuE.AddItem(new MenuItem("interrupte", "打断技能")).SetValue(true);
+            menuE.AddItem(new MenuItem("securee", "抢人头")).SetValue(false);
+            spellmenu.AddSubMenu(menuE);
+
+            var menuR = new Menu("R 菜单", "rmenu");
+            menuR.AddItem(new MenuItem("usecombor", "连招使用")).SetValue(true);
+            menuR.AddItem(new MenuItem("interruptr", "打断技能")).SetValue(true);
+            menuR.AddItem(new MenuItem("securer", "抢人头")).SetValue(false);
+            spellmenu.AddSubMenu(menuR);
+
+
+            _menu.AddSubMenu(spellmenu);
+
+            var menuM = new Menu("Blitz: 杂项", "bmisc");
+            menuM.AddItem(new MenuItem("hitchanceq", "Q 命中率 1-低, 4-非常高")).SetValue(new Slider(3, 1, 4));
+            menuM.AddItem(new MenuItem("dnd", "Q 最小距离")).SetValue(new Slider(255, 0, (int)_q.Range));
+            menuM.AddItem(new MenuItem("dnd2", "Q 最大距离")).SetValue(new Slider((int)_q.Range, 0, (int)_q.Range));
+            menuM.AddItem(new MenuItem("hnd", "血量低于 % 不抓")).SetValue(new Slider(0));
+            foreach (var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.Team != Me.Team))
+            {
+                menuM.AddItem(new MenuItem("dograb" + obj.ChampionName, obj.ChampionName))
+                    .SetValue(new StringList(new[] { "Dont Grab ", "Normal Grab ", "Auto Grab" }, 1));
+            }
+
+            _menu.AddSubMenu(menuM);
+            _menu.AddItem(new MenuItem("combokey", "Combo (active)")).SetValue(new KeyBind(32, KeyBindType.Press));
+
+            _menu.AddToMainMenu();
+
+            // events
             Drawing.OnDraw += BlitzOnDraw;
+            Game.OnUpdate += BlitzOnUpdate;
+            Interrupter.OnPossibleToInterrupt += BlitzOnInterruptableSpell;
 
-            // OnUpdate
-            Game.OnGameUpdate += BlitzOnUpdate;
-
-            // Interrupter
-            Interrupter.OnPossibleToInterrupt += BlitzOnInterrupt;
+            Game.PrintChat("<font color=\"#FF9900\"><b>KurisuBlitz:</b></font> Loaded");
 
         }
 
-        private static void BlitzOnInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        private static void BlitzOnInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
-            if (_menu.Item("interrupt").GetValue<bool>())
+            if (_menu.Item("interruptq").GetValue<bool>())
             {
-                var prediction = q.GetPrediction(unit);
+                var prediction = _q.GetPrediction(unit);
                 if (prediction.Hitchance >= HitChance.Low)
                 {
-                    q.Cast(prediction.CastPosition);
+                    _q.Cast(prediction.CastPosition);
                 }
+            }
 
-                else if (unit.Distance(_player.Position) < r.Range)
+            if (_menu.Item("interruptr").GetValue<bool>())
+            {
+                if (unit.Distance(Me.ServerPosition, true) <= _r.RangeSqr)
                 {
-                    r.Cast();
+                    _r.Cast();
+                }
+            }
+
+            if (_menu.Item("interrupte").GetValue<bool>())
+            {
+                if (unit.Distance(Me.ServerPosition, true) <= _e.RangeSqr)
+                {
+                    _e.CastOnUnit(Me);
+                    Me.IssueOrder(GameObjectOrder.AttackUnit, unit);
                 }
             }
         }
 
         private static void BlitzOnDraw(EventArgs args)
         {
-            if (!_player.IsDead)
+            var target = TargetSelector.GetTarget(_q.Range * 2, TargetSelector.DamageType.Physical);
+
+            if (!Me.IsDead)
             {
-                var rcircle = _menu.SubMenu("drawings").Item("drawR").GetValue<Circle>();
-                var qcircle = _menu.SubMenu("drawings").Item("drawQ").GetValue<Circle>();
+                var rcircle = _menu.Item("drawR").GetValue<Circle>();
+                var qcircle = _menu.Item("drawQ").GetValue<Circle>();
 
                 if (qcircle.Active)
-                    Render.Circle.DrawCircle(_player.Position, q.Range, qcircle.Color);
+                    Render.Circle.DrawCircle(Me.Position, _q.Range, qcircle.Color);
 
                 if (rcircle.Active)
-                    Render.Circle.DrawCircle(_player.Position, r.Range, qcircle.Color);
+                    Render.Circle.DrawCircle(Me.Position, _r.Range, qcircle.Color);
+
+                if (target.IsValidTarget(_q.Range * 2) && _menu.Item("drawT").GetValue<bool>())
+                    Render.Circle.DrawCircle(target.Position, target.BoundingRadius - 30, Color.Yellow, 3);
             }
-
-            if (_target.IsValidTarget(q.Range * 2))
-                Render.Circle.DrawCircle(_target.Position, _target.BoundingRadius, Color.Red, 10);
         }
-
 
         private static void BlitzOnUpdate(EventArgs args)
         {
-            _target = TargetSelector.GetTarget(1000, TargetSelector.DamageType.Physical);
+            // kill secure
+            Secure(_menu.Item("secureq").GetValue<bool>(), _menu.Item("securee").GetValue<bool>(),
+                   _menu.Item("securer").GetValue<bool>());
 
-            // do KS
-            GodKS(q);
-            GodKS(r);
-            GodKS(e);
+            // auto grab
+            AutoCast(_menu.Item("qdashing").GetValue<bool>(),
+                     _menu.Item("qimmobile").GetValue<bool>());
 
-            var actualHealthSetting = _menu.Item("hneeded").GetValue<Slider>().Value;
-            var actualHealthPercent = (int)(_player.Health / _player.MaxHealth * 100);
-
-            if (actualHealthPercent < actualHealthSetting)
+            if ((int) (Me.Health/Me.MaxHealth*100) >= _menu.Item("hnd").GetValue<Slider>().Value)
             {
-                return;
-            }
-
-            // use the god hand
-            GodHand(_target);
-
-            var powerfistTarget = 
-                ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.IsValidTarget(_player.AttackRange));
-            if (powerfistTarget.Distance(_player.ServerPosition) <= _player.AttackRange)
-            {
-                if (_menu.Item("useE").GetValue<bool>() && !q.IsReady())
-                    e.CastOnUnit(_player);
+                if (_menu.Item("combokey").GetValue<KeyBind>().Active)
+                {
+                    Combo(_menu.Item("usecomboq").GetValue<bool>(),
+                          _menu.Item("usecomboe").GetValue<bool>());
+                }
             }
         }
 
-        private static void GodHand(Obj_AI_Base target)
+        private static void AutoCast(bool dashing, bool immobile)
         {
-            if (!target.IsValidTarget() || !q.IsReady())
+            if (_q.IsReady())
             {
-                return;
-            }
-
-            if (!_menu.Item("combokey").GetValue<KeyBind>().Active)
-            {
-                return;
-            }
-         
-            if ((target.Distance(_player.Position) > _menu.Item("dneeded").GetValue<Slider>().Value) &&
-                (target.Distance(_player.Position) < _menu.Item("dneeded2").GetValue<Slider>().Value))
-            {
-                var prediction = q.GetPrediction(target);
-                if (_menu.Item("dograb" + target.SkinName).GetValue<StringList>().SelectedIndex != 0)
-                {
-                    if (prediction.Hitchance >= HitChance.High &&
-                        _menu.Item("hitchance").GetValue<StringList>().SelectedIndex == 2)
-                    {
-                        q.Cast(prediction.CastPosition);
-                    }
-
-                    else if (prediction.Hitchance >= HitChance.Medium &&
-                             _menu.Item("hitchance").GetValue<StringList>().SelectedIndex == 1)
-                    {
-                        q.Cast(prediction.CastPosition);
-                    }
-
-                    else if (prediction.Hitchance >= HitChance.Low &&
-                             _menu.Item("hitchance").GetValue<StringList>().SelectedIndex == 0)
-                    {
-                        q.Cast(prediction.CastPosition);
-                    }
-                }
-            }
-
-
-
-            foreach (
-                var unit in
+                var itarget =
                     ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(
-                            hero =>
-                                hero.IsValidTarget(q.Range) &&
-                                _menu.Item("dograb" + hero.SkinName).GetValue<StringList>().SelectedIndex == 2))
-                
-            {
-                if (unit.Distance(_player.Position) > _menu.Item("dneeded").GetValue<Slider>().Value)
-                {
-                    var prediction = q.GetPrediction(unit);
-                    if (prediction.Hitchance == HitChance.Immobile &&
-                        _menu.Item("immobile").GetValue<bool>())
-                    {
-                        q.Cast(prediction.CastPosition);
-                    }
+                        .FirstOrDefault(h => h.IsEnemy && h.Distance(Me.ServerPosition, true) <= _q.RangeSqr);
 
-                    if (prediction.Hitchance == HitChance.Dashing &&
-                        _menu.Item("dashing").GetValue<bool>())
-                    {
-                        q.Cast(prediction.CastPosition);
-                    }
+                if (itarget.IsValidTarget(_q.Range))
+                {
+                    if (dashing && _menu.Item("dograb" + itarget.ChampionName).GetValue<StringList>().SelectedIndex == 2)
+                        if (itarget.Distance(Me.ServerPosition) > _menu.Item("dnd").GetValue<Slider>().Value)
+                            _q.CastIfHitchanceEquals(itarget, HitChance.Dashing);
+
+                    if (immobile && _menu.Item("dograb" + itarget.ChampionName).GetValue<StringList>().SelectedIndex == 2)
+                        if (itarget.Distance(Me.ServerPosition) > _menu.Item("dnd").GetValue<Slider>().Value)
+                         _q.CastIfHitchanceEquals(itarget, HitChance.Immobile);
                 }
+            }
+
+            if (_r.IsReady())
+            {
+                var rtarget =
+                    ObjectManager.Get<Obj_AI_Hero>()
+                    .FirstOrDefault(h => h.IsEnemy && h.Distance(Me.ServerPosition, true) <= _r.RangeSqr);
+
+                if (rtarget.IsValidTarget(_r.Range) && _menu.Item("usecombor").GetValue<bool>())
+                {
+                    if (!_e.IsReady() && rtarget.HasBuffOfType(BuffType.Knockup))
+                        _r.Cast();
+                }            
             }
         }
 
-        private static void GodKS(Spell spell)
+        private static void Combo(bool useq, bool usee)
         {
-            if (_menu.Item("killsteal" + spell.Slot).GetValue<bool>() && spell.IsReady())
+            if (useq && _q.IsReady())
             {
-                foreach (
-                    var enemy in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(e => e.IsValidTarget(spell.Range)))
+                var qtarget = TargetSelector.GetTargetNoCollision(_q);
+                if (qtarget.IsValidTarget(_q.Range))
                 {
-                    var ksDmg = _player.GetSpellDamage(enemy, spell.Slot);
-                    if (ksDmg > enemy.Health)
+                    var poutput = _q.GetPrediction(qtarget);
+                    if (poutput.Hitchance >= (HitChance) _menu.Item("hitchanceq").GetValue<Slider>().Value + 2)
                     {
-                        if (spell.Slot.ToString() == "Q")
+                        if (qtarget.Distance(Me.ServerPosition) > _menu.Item("dnd").GetValue<Slider>().Value)
                         {
-                            var po = spell.GetPrediction(enemy);
-                            if (po.Hitchance >= HitChance.Medium)
-                                spell.Cast(po.CastPosition);
-                        }
-
-                        else
-                        {
-                            spell.CastOnUnit(_player);
+                            if (_menu.Item("dograb" + qtarget.ChampionName).GetValue<StringList>().SelectedIndex != 0) 
+                                _q.Cast(poutput.CastPosition);
                         }
                     }
                 }
             }
+
+            if (usee && _e.IsReady())
+            {
+                var etarget = TargetSelector.GetTarget(250, TargetSelector.DamageType.Physical);
+                if (etarget.IsValidTarget(_e.Range + 100))
+                {
+                    if (_menu.Item("usecomboe").GetValue<bool>() && !_q.IsReady())
+                        _e.CastOnUnit(Me);                   
+                }
+            }
         }
 
-        private static void BlitzMenu()
+        private static void Secure(bool useq, bool usee, bool user)
         {
-            _menu = new Menu("【超神汉化】Kurisu机器人", "blitz", true);
-
-            var blitzOrb = new Menu("走砍", "orbwalker");
-            _orbwalker = new Orbwalking.Orbwalker(blitzOrb);
-            _menu.AddSubMenu(blitzOrb);
-
-            var blitzTS = new Menu("目标选择", "tselect");
-            TargetSelector.AddToMenu(blitzTS);
-            _menu.AddSubMenu(blitzTS);
-
-            var menuD = new Menu("显示", "drawings");
-            menuD.AddItem(new MenuItem("drawQ", "Q范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
-            menuD.AddItem(new MenuItem("drawR", "R范围")).SetValue(new Circle(true, Color.FromArgb(150, Color.White)));
-            _menu.AddSubMenu(menuD);
-
-            var menuG = new Menu("上帝之手", "autograb");
-            menuG.AddItem(new MenuItem("hitchance", "命中几率"))
-                .SetValue(new StringList(new[] { "低", "中", "高" }, 2));
-            menuG.AddItem(new MenuItem("dneeded", "Q最小距离")).SetValue(new Slider(255, 0, (int)q.Range));
-            menuG.AddItem(new MenuItem("dneeded2", "Q最大距离")).SetValue(new Slider((int)q.Range, 0, (int)q.Range));
-            menuG.AddItem(new MenuItem("dashing", "自动Q突进敌人")).SetValue(true);
-            menuG.AddItem(new MenuItem("immobile", "自动Q不动敌人")).SetValue(true);
-            menuG.AddItem(new MenuItem("hneeded", "血量控制（不Q）")).SetValue(new Slider(0));
-            menuG.AddItem(new MenuItem("sep", ""));
-
-            foreach (
-                var e in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(
-                            e =>
-                                e.Team != _player.Team))
+            if (user && _r.IsReady())
             {
-                menuG.AddItem(new MenuItem("Q" + e.SkinName, e.SkinName))
-                    .SetValue(new StringList(new[] { "不Q", "正常Q", "自动Q" }, 1));
+                var rtarget = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(h => h.IsEnemy);
+                if (rtarget.IsValidTarget(_r.Range))
+                {
+                    if (Me.GetSpellDamage(rtarget, SpellSlot.R) >= rtarget.Health)
+                        _r.Cast();
+                }
             }
 
-            _menu.AddSubMenu(menuG);
+            if (usee && _e.IsReady())
+            {
+                var etarget = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(h => h.IsEnemy);
+                if (etarget.IsValidTarget(_e.Range))
+                {
+                    if (Me.GetSpellDamage(etarget, SpellSlot.E) >= etarget.Health)
+                        _e.CastOnUnit(Me);
+                }
+            }
 
-            var menuK = new Menu("抢人头", "blitzks");
-            menuK.AddItem(new MenuItem("killstealQ", "使用Q")).SetValue(false);
-            menuK.AddItem(new MenuItem("killstealE", "使用E")).SetValue(false);
-            menuK.AddItem(new MenuItem("killstealR", "使用R")).SetValue(false);
-            _menu.AddSubMenu(menuK);
-
-            _menu.AddItem(new MenuItem("interrupt", "打断技能")).SetValue(true);
-            _menu.AddItem(new MenuItem("useE", "Q中自动E")).SetValue(true);
-            _menu.AddItem(new MenuItem("combokey", "连招热键")).SetValue(new KeyBind(32, KeyBindType.Press));
-            _menu.AddToMainMenu();
+            if (useq && _q.IsReady())
+            {
+                var qtarget = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(h => h.IsEnemy);
+                if (qtarget.IsValidTarget(_q.Range))
+                {
+                    if (Me.GetSpellDamage(qtarget, SpellSlot.Q) >= qtarget.Health)
+                    {
+                        var poutput = _q.GetPrediction(qtarget);
+                        if (poutput.Hitchance >= HitChance.Medium)
+                        {
+                            if (qtarget.Distance(Me.ServerPosition, true) >
+                                Math.Pow(_menu.Item("dnd2").GetValue<Slider>().Value, 2))
+                            {
+                                _q.Cast(poutput.CastPosition);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

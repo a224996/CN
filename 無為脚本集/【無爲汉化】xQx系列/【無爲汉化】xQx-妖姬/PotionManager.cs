@@ -86,7 +86,7 @@ namespace Leblanc
                 .SubMenu("Mana")
                 .AddItem(new MenuItem("ManaPercent", "最低蓝量").SetValue(new Slider(30)));
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
         }
 
         private void OnGameUpdate(EventArgs args)

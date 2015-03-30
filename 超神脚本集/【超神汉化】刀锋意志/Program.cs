@@ -60,7 +60,7 @@ namespace ChewyMoonsIrelia
             SetupMenu();
 
             // IreliaUpdater.CheckForUpdates();
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Interrupter.OnPossibleToInterrupt += InterrupterOnOnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloserOnOnEnemyGapcloser;
             Drawing.OnDraw += Drawing_OnDraw;

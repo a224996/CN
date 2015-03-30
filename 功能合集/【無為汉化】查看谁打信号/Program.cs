@@ -25,11 +25,11 @@ namespace UniversalPings
 
         ~Program()
         {
-            Game.OnGameUpdate -= GameOnOnGameUpdate;
+            Game.OnUpdate -= GameOnOnGameUpdate;
             Drawing.OnEndScene -= Drawing_OnEndScene;
             Drawing.OnPreReset -= Drawing_OnPreReset;
             Drawing.OnPostReset -= Drawing_OnPostReset;
-            Game.OnGameProcessPacket -= Game_OnGameProcessPacket;
+            Game.OnProcessPacket -= Game_OnGameProcessPacket;
         }
 
         private void Game_OnGameLoad(EventArgs args)
@@ -48,11 +48,11 @@ namespace UniversalPings
             }
             _menu.AddToMainMenu();
 
-            Game.OnGameUpdate += GameOnOnGameUpdate;
+            Game.OnUpdate += GameOnOnGameUpdate;
             Drawing.OnEndScene += Drawing_OnEndScene;
             Drawing.OnPreReset += Drawing_OnPreReset;
             Drawing.OnPostReset += Drawing_OnPostReset;
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+            Game.OnProcessPacket += Game_OnGameProcessPacket;
             Print("Loaded!");
         }
 
@@ -155,7 +155,7 @@ namespace UniversalPings
         private void Print(string msg)
         {
             Game.PrintChat(
-                "<font color='#ff3232'>Universal</font><font color='#BABABA'>Pings:</font> <font color='#FFFFFF'>" + msg +
+                "<font color='#ff3232'>Universal</font><font color='#d4d4d4'>Pings:</font> <font color='#FFFFFF'>" + msg +
                 "</font>");
         }
     }

@@ -95,7 +95,7 @@ namespace AlienHack_YiSharp
             // End Menu
 
             Game.PrintChat("AlienHack [YiSharp - WujuMaster] Loaded!");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             LXOrbwalker.AfterAttack += AfterAttack;
         }

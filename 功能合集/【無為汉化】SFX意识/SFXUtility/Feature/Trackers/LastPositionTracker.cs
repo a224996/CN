@@ -267,7 +267,7 @@ namespace SFXUtility.Feature
                                 Console.WriteLine(ex.ToString());
                                 return default(Vector2);
                             }
-                        }
+                        },
                     };
                 _recallSprite =
                     new Render.Sprite(Resources.LP_Recall, new Vector2(mPos.X, mPos.Y))
@@ -296,7 +296,7 @@ namespace SFXUtility.Feature
                                 Console.WriteLine(ex.ToString());
                                 return default(Vector2);
                             }
-                        }
+                        },
                     };
             }
 

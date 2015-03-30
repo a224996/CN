@@ -173,28 +173,28 @@ namespace SFXUtility.Feature
                         if ((hero.IsAlly && drawFriendlyQ || hero.IsEnemy && drawEnemyQ || hero.IsMe && drawSelfQ) &&
                             !(hero.IsMe && !drawSelfQ))
                         {
-                            var range = hero.Spellbook.GetSpell(SpellSlot.Q).SData.CastRange[0];
+                            var range = hero.Spellbook.GetSpell(SpellSlot.Q).SData.CastRange;
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
                                 Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                         if ((hero.IsAlly && drawFriendlyW || hero.IsEnemy && drawEnemyW || hero.IsMe && drawSelfW) &&
                             !(hero.IsMe && !drawSelfW))
                         {
-                            var range = hero.Spellbook.GetSpell(SpellSlot.W).SData.CastRange[0];
+                            var range = hero.Spellbook.GetSpell(SpellSlot.W).SData.CastRange;
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
                                 Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                         if ((hero.IsAlly && drawFriendlyE || hero.IsEnemy && drawEnemyE || hero.IsMe && drawSelfE) &&
                             !(hero.IsMe && !drawSelfE))
                         {
-                            var range = hero.Spellbook.GetSpell(SpellSlot.E).SData.CastRange[0];
+                            var range = hero.Spellbook.GetSpell(SpellSlot.E).SData.CastRange;
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
                                 Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }
                         if ((hero.IsAlly && drawFriendlyR || hero.IsEnemy && drawEnemyR || hero.IsMe && drawSelfR) &&
                             !(hero.IsMe && !drawSelfR))
                         {
-                            var range = hero.Spellbook.GetSpell(SpellSlot.R).SData.CastRange[0];
+                            var range = hero.Spellbook.GetSpell(SpellSlot.R).SData.CastRange;
                             if (range <= spellMaxRange && hero.IsOnScreen(range))
                                 Render.Circle.DrawCircle(hero.Position, range, color, circleThickness);
                         }

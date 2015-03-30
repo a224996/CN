@@ -16,113 +16,116 @@
  
  You should have received a copy of the GNU General Public License
  along with SFXUtility. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #endregion
 
 namespace SFXUtility.Feature
 {
-    #region
+	#region
 
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Class;
-    using IoCContainer;
-    using LeagueSharp;
-    using LeagueSharp.Common;
-    using SharpDX;
-    using Color = System.Drawing.Color;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Class;
+	using IoCContainer;
+	using LeagueSharp;
+	using LeagueSharp.Common;
+	using SharpDX;
+	using Color = System.Drawing.Color;
 
-    #endregion
+	#endregion
 
-    internal class LasthitMarker : Base
-    {
-        #region Fields
+	internal class LasthitMarker : Base
+	{
+		#region Fields
 
-        private List<Obj_AI_Minion> _minions = new List<Obj_AI_Minion>();
+		private List<Obj_AI_Minion> _minions = new List<Obj_AI_Minion>();
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public LasthitMarker(Container container)
-            : base(container)
-        {
-            CustomEvents.Game.OnGameLoad += OnGameLoad;
-        }
+		public LasthitMarker(Container container)
+			: base(container)
+		{
+			CustomEvents.Game.OnGameLoad += OnGameLoad;
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        public override bool Enabled
-        {
-            get
-            {
-                return Menu != null && Menu.Item(Name + "Enabled").GetValue<bool>() &&
-                       (Menu.Item(Name + "DrawingHpBarEnabled").GetValue<bool>() ||
-                        Menu.Item(Name + "DrawingCircleEnabled").GetValue<bool>());
-            }
-        }
+		public override bool Enabled
+		{
+			get
+			{
+				return Menu != null && Menu.Item(Name + "Enabled").GetValue<bool>() &&
+					(Menu.Item(Name + "DrawingHpBarEnabled").GetValue<bool>() ||
+					 Menu.Item(Name + "DrawingCircleEnabled").GetValue<bool>());
+			}
+		}
 
-        public override string Name
-        {
+		public override string Name
+		{
             get { return "無為汉化─击杀信息"; }
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        private void OnDraw(EventArgs args)
-        {
-            try
-            {
-                if (!Enabled)
-                    return;
+		private void OnDraw(EventArgs args)
+		{
+			try
+			{
+				if (!Enabled)
+					return;
 
-                var circleColor = Menu.Item(Name + "DrawingCircleColor").GetValue<Color>();
-                var hpKillableColor = Menu.Item(Name + "DrawingHpBarKillableColor").GetValue<Color>();
-                var hpUnkillableColor = Menu.Item(Name + "DrawingHpBarUnkillableColor").GetValue<Color>();
-                var hpLinesThickness = Menu.Item(Name + "DrawingHpBarLinesThickness").GetValue<Slider>().Value;
-                var radius = Menu.Item(Name + "DrawingCircleRadius").GetValue<Slider>().Value;
-                var circleThickness = BaseMenu.Item("MiscCircleThickness").GetValue<Slider>().Value;
+				var circleColor = Menu.Item(Name + "DrawingCircleColor").GetValue<Color>();
+				var hpKillableColor = Menu.Item(Name + "DrawingHpBarKillableColor").GetValue<Color>();
+				var hpUnkillableColor = Menu.Item(Name + "DrawingHpBarUnkillableColor").GetValue<Color>();
+				var hpLinesThickness = Menu.Item(Name + "DrawingHpBarLinesThickness").GetValue<Slider>().Value;
+				var radius = Menu.Item(Name + "DrawingCircleRadius").GetValue<Slider>().Value;
+				var circleThickness = BaseMenu.Item("MiscCircleThickness").GetValue<Slider>().Value;
 
-                foreach (Obj_AI_Minion minion in _minions.Where(minion => minion.Team != GameObjectTeam.Neutral))
-                {
-                    var aaDamage = ObjectManager.Player.GetAutoAttackDamage(minion, true);
-                    var killable = minion.Health <= aaDamage;
-                    if (Menu.Item(Name + "DrawingHpBarEnabled").GetValue<bool>() && minion.IsHPBarRendered)
-                    {
-                        var barPos = minion.HPBarPosition;
-                        var offset = 62/(minion.MaxHealth/aaDamage);
-                        offset = offset > 62 ? 62 : offset;
-                        var tmpThk = (int) (62 - offset);
-                        hpLinesThickness = tmpThk > hpLinesThickness ? hpLinesThickness : (tmpThk == 0 ? 1 : tmpThk);
-                        Drawing.DrawLine(new Vector2(barPos.X + 45 + (float) offset, barPos.Y + 18),
-                            new Vector2(barPos.X + 45 + (float) offset, barPos.Y + 23), hpLinesThickness,
-                            killable ? hpKillableColor : hpUnkillableColor);
-                    }
-                    if (Menu.Item(Name + "DrawingCircleEnabled").GetValue<bool>() && killable)
-                    {
-                        Render.Circle.DrawCircle(minion.Position, minion.BoundingRadius + radius, circleColor, circleThickness);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+				foreach (Obj_AI_Minion minion in _minions.Where(minion => minion.Team != GameObjectTeam.Neutral))
+				{
+					if (minion.Position.IsOnScreen())
+					{
+						var aaDamage = ObjectManager.Player.GetAutoAttackDamage(minion, true);
+						var killable = minion.Health <= aaDamage;
+						if (Menu.Item(Name + "DrawingHpBarEnabled").GetValue<bool>() && minion.IsHPBarRendered)
+						{
+							var barPos = minion.HPBarPosition;
+							var offset = 62/(minion.MaxHealth/aaDamage);
+							offset = offset > 62 ? 62 : offset;
+							var tmpThk = (int) (62 - offset);
+							hpLinesThickness = tmpThk > hpLinesThickness ? hpLinesThickness : (tmpThk == 0 ? 1 : tmpThk);
+							Drawing.DrawLine(new Vector2(barPos.X + 45 + (float) offset, barPos.Y + 18),
+							                 new Vector2(barPos.X + 45 + (float) offset, barPos.Y + 23), hpLinesThickness,
+							                 killable ? hpKillableColor : hpUnkillableColor);
+						}
+						if (Menu.Item(Name + "DrawingCircleEnabled").GetValue<bool>() && killable)
+						{
+							Render.Circle.DrawCircle(minion.Position, minion.BoundingRadius + radius, circleColor, circleThickness);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-        private void OnGameLoad(EventArgs args)
-        {
-            try
-            {
-                Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
+		private void OnGameLoad(EventArgs args)
+		{
+			try
+			{
+				Logger.Prefix = string.Format("{0} - {1}", BaseName, Name);
 
-                Menu = new Menu(Name, Name);
+				Menu = new Menu(Name, Name);
 
                 var drawingMenu = new Menu("绘制", Name + "Drawing");
 
@@ -142,54 +145,54 @@ namespace SFXUtility.Feature
                     new MenuItem(Name + "DrawingCircleRadius", "圈的厚度").SetValue(new Slider(30)));
                 drawingCirclesMenu.AddItem(new MenuItem(Name + "DrawingCircleEnabled", "启用").SetValue(true));
 
-                drawingMenu.AddSubMenu(drawingHpBarMenu);
-                drawingMenu.AddSubMenu(drawingCirclesMenu);
+				drawingMenu.AddSubMenu(drawingHpBarMenu);
+				drawingMenu.AddSubMenu(drawingCirclesMenu);
 
                 var distanceMenu = new Menu("距离", Name + "Distance");
                 distanceMenu.AddItem(new MenuItem(Name + "DistanceEnabled", "极限距离").SetValue(true));
-                distanceMenu.AddItem(
+				distanceMenu.AddItem(
                     new MenuItem(Name + "DistanceLimit", "距离限制").SetValue(new Slider(1000, 500, 3000)));
 
-                Menu.AddSubMenu(drawingMenu);
-                Menu.AddSubMenu(distanceMenu);
+				Menu.AddSubMenu(drawingMenu);
+				Menu.AddSubMenu(distanceMenu);
 
                 Menu.AddItem(new MenuItem(Name + "Enabled", "启用").SetValue(true));
 
-                BaseMenu.AddSubMenu(Menu);
+				BaseMenu.AddSubMenu(Menu);
 
-                Game.OnGameUpdate += OnGameUpdate;
-                Drawing.OnDraw += OnDraw;
+				Game.OnUpdate += OnGameUpdate;
+				Drawing.OnDraw += OnDraw;
 
-                Initialized = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+				Initialized = true;
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
 
-        private void OnGameUpdate(EventArgs args)
-        {
-            try
-            {
-                if (!Enabled)
-                    return;
+		private void OnGameUpdate(EventArgs args)
+		{
+			try
+			{
+				if (!Enabled)
+					return;
 
-                _minions = (from minion in ObjectManager.Get<Obj_AI_Minion>()
-                    where minion.IsValidTarget() && minion.Health > 0.1f
-                    where
-                        !Menu.Item(Name + "DistanceEnabled").GetValue<bool>() ||
-                        minion.Distance(ObjectManager.Player.Position) <=
-                        Menu.Item(Name + "DistanceLimit").GetValue<Slider>().Value
-                    select minion).ToList();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteBlock(ex.Message, ex.ToString());
-            }
-        }
+				_minions = (from minion in ObjectManager.Get<Obj_AI_Minion>()
+				            where minion.IsValidTarget() && minion.Health > 0.1f
+				            where
+				            !Menu.Item(Name + "DistanceEnabled").GetValue<bool>() ||
+				            minion.Distance(ObjectManager.Player.Position) <=
+				            Menu.Item(Name + "DistanceLimit").GetValue<Slider>().Value
+				            select minion).ToList();
+			}
+			catch (Exception ex)
+			{
+				Logger.WriteBlock(ex.Message, ex.ToString());
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

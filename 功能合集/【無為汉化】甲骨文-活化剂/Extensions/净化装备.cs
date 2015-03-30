@@ -2,7 +2,7 @@
 ﻿using System.Linq;
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
-using OC = Oracle.Program;
+﻿using Oracle.Core.Helpers;
 
 namespace Oracle.Extensions
 {
@@ -13,7 +13,7 @@ namespace Oracle.Extensions
 
         public static void Initialize(Menu root)
         {
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
 
             _mainMenu = new Menu("净化装备", "cmenu");
             _menuConfig = new Menu("净化对象", "cconfig");
@@ -38,21 +38,9 @@ namespace Oracle.Extensions
             root.AddSubMenu(_mainMenu);
         }
 
-        private static int GetBuffCount(Obj_AI_Base target)
-        {
-            int count = 0;
-
-            foreach (var x in target.Buffs)
-            {
-                if (x.IsActive && x.Caster.IsEnemy && x.IsPositive) count++;
-            }
-
-            return count;
-        }
-
         public static void Game_OnGameUpdate(EventArgs args)
         {
-            if (OC.Origin.Item("usecombo").GetValue<KeyBind>().Active ||
+            if (Oracle.Origin.Item("usecombo").GetValue<KeyBind>().Active ||
                 _mainMenu.Item("cmode").GetValue<StringList>().SelectedIndex != 1)
             {
                 UseItem("Mikaels", 3222, 600f);
@@ -70,11 +58,10 @@ namespace Oracle.Extensions
             if (!_mainMenu.Item("use" + name).GetValue<bool>())
                 return;
 
-            var target = range > 5000 ? Me : OC.Friendly();
+            var target = range > 5000 ? Me : Oracle.Friendly();
             if (_mainMenu.Item("cccon" + target.SkinName).GetValue<bool>())
             {
-                if (target.Distance(Me.ServerPosition, true) <= range * range && target.IsValidState() &&
-                    GetBuffCount(target) >= _mainMenu.Item(name + "Count").GetValue<Slider>().Value)
+                if (target.Distance(Me.ServerPosition, true) <= range * range && target.IsValidState())
                 {
                     var tHealthPercent = target.Health/target.MaxHealth*100;
                     var delay = _mainMenu.Item("cleansedelay").GetValue<Slider>().Value * 10;
@@ -85,7 +72,7 @@ namespace Oracle.Extensions
                         if (buffinst.Any(aura => aura.Name.ToLower() == buff.BuffName ||
                                                  aura.Name.ToLower().Contains(buff.SpellName)))
                         {
-                            if (!OC.Origin.Item("cure" + buff.BuffName).GetValue<bool>())
+                            if (!Oracle.Origin.Item("cure" + buff.BuffName).GetValue<bool>())
                             {
                                 return;
                             }
@@ -93,7 +80,7 @@ namespace Oracle.Extensions
                             Utility.DelayAction.Add(delay + buff.Delay, delegate
                             {
                                 Items.UseItem(itemId, target);
-                                OC.Logger(OC.LogType.Action,
+                                Oracle.Logger(Oracle.LogType.Action,
                                     "Used " + name + " on " + target.SkinName + " (" + tHealthPercent + "%) for: " + buff.BuffName);
                             });
                         }
@@ -101,92 +88,81 @@ namespace Oracle.Extensions
 
                     foreach (var b in target.Buffs)
                     {
-                        var duration = Math.Ceiling(b.EndTime - b.StartTime);
-                        if (OC.Origin.Item("slow").GetValue<bool>() && b.Type == BuffType.Slow &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("slow").GetValue<bool>() && b.Type == BuffType.Slow)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (slow)");
                         }
 
-                        if (OC.Origin.Item("stun").GetValue<bool>() && b.Type == BuffType.Stun &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("stun").GetValue<bool>() && b.Type == BuffType.Stun)
                         {
+                            
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (stun)");
                         }
 
-                        if (OC.Origin.Item("charm").GetValue<bool>() && b.Type == BuffType.Charm &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("charm").GetValue<bool>() && b.Type == BuffType.Charm)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (charm)");
                         }
 
-                        if (OC.Origin.Item("taunt").GetValue<bool>() && b.Type == BuffType.Taunt &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("taunt").GetValue<bool>() && b.Type == BuffType.Taunt)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (taunt)");
                         }
 
-                        if (OC.Origin.Item("fear").GetValue<bool>() && b.Type == BuffType.Fear &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("fear").GetValue<bool>() && b.Type == BuffType.Fear)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (fear)");
                         }
 
-                        if (OC.Origin.Item("snare").GetValue<bool>() && b.Type == BuffType.Snare &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("snare").GetValue<bool>() && b.Type == BuffType.Snare)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (snare)");
                         }
 
-                        if (OC.Origin.Item("silence").GetValue<bool>() && b.Type == BuffType.Silence &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("silence").GetValue<bool>() && b.Type == BuffType.Silence)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (silence)");
                         }
 
-                        if (OC.Origin.Item("suppression").GetValue<bool>() && b.Type == BuffType.Suppression &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("suppression").GetValue<bool>() && b.Type == BuffType.Suppression)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (suppression)");
                         }
 
-                        if (OC.Origin.Item("polymorph").GetValue<bool>() && b.Type == BuffType.Polymorph &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("polymorph").GetValue<bool>() && b.Type == BuffType.Polymorph)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (polymorph)");
                         }
 
-                        if (OC.Origin.Item("blind").GetValue<bool>() && b.Type == BuffType.Blind &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("blind").GetValue<bool>() && b.Type == BuffType.Blind)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (blind)");
                         }
 
-                        if (OC.Origin.Item("poison").GetValue<bool>() && b.Type == BuffType.Poison &&
-                            duration >= _mainMenu.Item(name + "Duration").GetValue<Slider>().Value)
+                        if (Oracle.Origin.Item("poison").GetValue<bool>() && b.Type == BuffType.Poison)
                         {
                             Utility.DelayAction.Add(delay, () => Items.UseItem(itemId, target));
-                            OC.Logger(OC.LogType.Action,
+                            Oracle.Logger(Oracle.LogType.Action,
                                 "Used  " + name + "  on " + target.SkinName + " (" + tHealthPercent + "%) (poison)");
                         }
                     }
@@ -198,8 +174,8 @@ namespace Oracle.Extensions
         {
             var menuName = new Menu(displayname, name);
             menuName.AddItem(new MenuItem("use" + name, "使用 " + displayname)).SetValue(true);
-            menuName.AddItem(new MenuItem(name + "Count", "最少几个技能使用")).SetValue(new Slider(ccvalue, 1, 5));
-            menuName.AddItem(new MenuItem(name + "Duration", "buff持续时间使用")).SetValue(new Slider(2, 1, 5));
+            menuName.AddItem(new MenuItem(name + "Count", "最少几个技能使用"));
+            menuName.AddItem(new MenuItem(name + "Duration", "buff持续时间使用"));
             _mainMenu.AddSubMenu(menuName);
         }
     }

@@ -276,7 +276,7 @@ namespace SFXUtility.Feature
 						}
 					}
 					_miniMapFont = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Times New Roman", 8));
-					Game.OnGameUpdate += OnGameUpdate;
+					Game.OnUpdate += OnGameUpdate;
 					Drawing.OnEndScene += Drawing_OnEndScene;
 					Initialized = true;
 				}

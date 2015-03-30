@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -23,6 +22,8 @@ namespace ezEvade
         public static Dictionary<int, Spell> spells = new Dictionary<int, Spell>();
         public static Dictionary<int, Spell> drawSpells = new Dictionary<int, Spell>();
 
+        public static Dictionary<string, string> channeledSpells = new Dictionary<string, string>();
+
         public static Dictionary<string, SpellData> onProcessSpells = new Dictionary<string, SpellData>();
         public static Dictionary<string, SpellData> onMissileSpells = new Dictionary<string, SpellData>();
 
@@ -31,7 +32,8 @@ namespace ezEvade
         private static int spellIDCount = 0;
 
         private static Obj_AI_Hero myHero { get { return ObjectManager.Player; } }
-        private static float gameTime { get { return Game.ClockTime * 1000; } }
+
+        public static float lastCheckTime = 0;
 
         public static Menu menu;
         public static Menu spellMenu;
@@ -42,15 +44,16 @@ namespace ezEvade
             Obj_SpellMissile.OnDelete += SpellMissile_OnDelete;
             Obj_AI_Hero.OnProcessSpellCast += Game_ProcessSpell;
 
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Drawing.OnDraw += Game_OnGameUpdate; //in case ongameupdate crashes
 
             menu = mainMenu;
 
             //Game.PrintChat("SpellDetector loaded");
-            spellMenu = new Menu("躲避技能", "Spells");
+            spellMenu = new Menu("Spells", "Spells");
             menu.AddSubMenu(spellMenu);
 
             LoadSpellDictionary();
+            InitChannelSpells();
         }
 
         private void SpellMissile_OnCreate(GameObject obj, EventArgs args)
@@ -130,6 +133,16 @@ namespace ezEvade
 
         private void Game_ProcessSpell(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args)
         {
+            if (hero.IsMe)
+            {                
+                string name;
+                if (channeledSpells.TryGetValue(args.SData.Name, out name))
+                {
+                    Evade.isChanneling = true;
+                    Evade.channelPosition = myHero.ServerPosition.To2D();
+                }
+            }
+            
             SpellData spellData;
 
             if (hero.Team != myHero.Team && onProcessSpells.TryGetValue(args.SData.Name, out spellData))
@@ -199,8 +212,8 @@ namespace ezEvade
 
                 Spell newSpell = new Spell();
 
-                newSpell.startTime = gameTime;
-                newSpell.endTime = gameTime + endTick;
+                newSpell.startTime = Evade.GetTickCount();
+                newSpell.endTime = Evade.GetTickCount() + endTick;
                 newSpell.startPos = startPosition;
                 newSpell.endPos = endPosition;
                 newSpell.direction = direction;
@@ -220,7 +233,20 @@ namespace ezEvade
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            CheckCasterDead();
+            if (Evade.GetTickCount() - lastCheckTime > 100)
+            {
+                CheckCasterDead();
+                CheckSpellEndTime();
+                lastCheckTime = Evade.GetTickCount();
+            }            
+        }
+
+        private void CheckSpellEndTime()
+        {
+            foreach (var spell in spells.Where(s => (s.Value.endTime < Evade.GetTickCount())))
+            {
+                DeleteSpell(spell.Key);
+            }
         }
 
         private void CheckCasterDead()
@@ -266,15 +292,41 @@ namespace ezEvade
             drawSpells.Remove(spellID);
         }
 
-        public static Vector2 GetCurrentSpellPosition(Spell spell)
+        public static void InitChannelSpells()
+        {           
+
+            channeledSpells["Drain"] = "FiddleSticks";
+            channeledSpells["Crowstorm"] = "FiddleSticks";
+            channeledSpells["KatarinaR"] = "Katarina";
+            channeledSpells["AbsoluteZero"] = "Nunu";
+            channeledSpells["GalioIdolOfDurand"] = "Galio";
+            channeledSpells["MissFortuneBulletTime"] = "MissFortune";
+            channeledSpells["Meditate"] = "MasterYi";
+            channeledSpells["NetherGrasp"] = "Malzahar";
+            channeledSpells["ReapTheWhirlwind"] = "Janna";
+            channeledSpells["KarthusFallenOne"] = "Karthus";
+            channeledSpells["KarthusFallenOne2"] = "Karthus";
+            channeledSpells["VelkozR"] = "Velkoz";
+            channeledSpells["XerathLocusOfPower2"] = "Xerath";
+            channeledSpells["ZacE"] = "Zac";
+            
+        }
+
+        public static Vector2 GetCurrentSpellPosition(Spell spell, bool allowNegative = false, float delay = 0)
         {
             Vector2 spellPos = spell.startPos;
 
             if (spell.info.spellType == SpellType.Line)
             {
-                if (gameTime > spell.startTime + spell.info.spellDelay)
+                float spellTime = Evade.GetTickCount() - spell.startTime - spell.info.spellDelay;
+
+                if (spellTime >= 0)
                 {
-                    spellPos = spell.startPos + spell.direction * spell.info.projectileSpeed * (gameTime - spell.startTime - spell.info.spellDelay) / 1000;
+                    spellPos = spell.startPos + spell.direction * spell.info.projectileSpeed * spellTime / 1000;
+                }
+                else if(allowNegative)
+                {                    
+                    spellPos = spell.startPos + spell.direction * spell.info.projectileSpeed * (spellTime / 1000);
                 }
             }
             else if (spell.info.spellType == SpellType.Circular)
@@ -287,6 +339,11 @@ namespace ezEvade
                 spellPos = spell.spellObject.Position.To2D();
             }
 
+            if (delay > 0)
+            {
+                spellPos = spellPos + spell.direction * spell.info.projectileSpeed * (delay / 1000);
+            }
+
             return spellPos;
         }
 
@@ -296,7 +353,7 @@ namespace ezEvade
             {
                 if (hero.IsMe)
                 {
-                    foreach (var spell in SpellDatabase.Spells.Where(
+                    foreach (var spell in SpellWindupDatabase.Spells.Where(
                         s => (s.charName == hero.ChampionName)))
                     {
                         if (!windupSpells.ContainsKey(spell.spellName))

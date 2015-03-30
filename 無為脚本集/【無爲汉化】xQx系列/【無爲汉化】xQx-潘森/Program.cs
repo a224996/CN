@@ -193,7 +193,7 @@ namespace Pantheon
             new PotionManager();
             Config.AddToMainMenu();
 
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Obj_AI_Base.OnProcessSpellCast += Game_OnProcessSpell;
             GameObject.OnDelete += Game_OnObjectDelete;

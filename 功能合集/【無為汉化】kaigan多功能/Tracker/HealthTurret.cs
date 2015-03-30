@@ -14,11 +14,11 @@ namespace KaiHelper.Tracker
 
         public HealthTurret(Menu config)
         {
-            MenuHealthTurret = config.AddSubMenu(new Menu("健康", "Health"));
+            MenuHealthTurret = config.AddSubMenu(new Menu("建筑物", "Health"));
             MenuHealthTurret.AddItem(
-                new MenuItem("TIHealth", "炮塔与水晶的血量").SetValue(
-                    new StringList(new[] { "百分比", "健康" })));
-            MenuHealthTurret.AddItem(new MenuItem("HealthActive", "启用").SetValue(true));
+                new MenuItem("TIHealth", "炮塔&水晶血量").SetValue(
+                    new StringList(new[] { "百分比", "生命值 " })));
+            MenuHealthTurret.AddItem(new MenuItem("HealthActive", "开启").SetValue(true));
             Text = new Font(
                 Drawing.Direct3DDevice,
                 new FontDescription

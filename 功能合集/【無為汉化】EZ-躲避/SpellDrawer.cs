@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using Color = System.Drawing.Color;
 
@@ -15,7 +14,7 @@ namespace ezEvade
     internal class SpellDrawer
     {
         public static Menu menu;
-        private static float gameTime { get { return Game.ClockTime * 1000; } }
+
         private static Obj_AI_Hero myHero { get { return ObjectManager.Player; } }
 
 
@@ -31,26 +30,28 @@ namespace ezEvade
         {
             //Game.PrintChat("SpellDrawer loaded");
 
-            Menu drawMenu = new Menu("显示设置", "Draw");
-            drawMenu.AddItem(new MenuItem("DrawSkillShots", "显示技能画线").SetValue(true));
-            drawMenu.AddItem(new MenuItem("ShowStatus", "显示躲避现状").SetValue(true));
+            Menu drawMenu = new Menu("Draw", "Draw");
+            drawMenu.AddItem(new MenuItem("DrawSkillShots", "Draw SkillShots").SetValue(true));
+            drawMenu.AddItem(new MenuItem("ShowStatus", "Show Evade Status").SetValue(true));
+            drawMenu.AddItem(new MenuItem("DrawSpellPos", "Draw Spell Position").SetValue(false));
+            drawMenu.AddItem(new MenuItem("DrawEvadePosition", "Draw Evade Position").SetValue(false));
 
-            Menu dangerMenu = new Menu("绘制危险等级", "DangerLevelDrawings");
-            Menu lowDangerMenu = new Menu("低", "LowDrawing");
-            lowDangerMenu.AddItem(new MenuItem("LowWidth", "线宽").SetValue(new Slider(3, 1, 15)));
-            lowDangerMenu.AddItem(new MenuItem("LowColor", "颜色").SetValue(new Circle(true, Color.FromArgb(60, 255, 255, 255))));
+            Menu dangerMenu = new Menu("DangerLevel Drawings", "DangerLevelDrawings");
+            Menu lowDangerMenu = new Menu("Low", "LowDrawing");
+            lowDangerMenu.AddItem(new MenuItem("LowWidth", "Line Width").SetValue(new Slider(3, 1, 15)));
+            lowDangerMenu.AddItem(new MenuItem("LowColor", "Color").SetValue(new Circle(true, Color.FromArgb(60, 255, 255, 255))));
 
-            Menu normalDangerMenu = new Menu("正常", "NormalDrawing");
-            normalDangerMenu.AddItem(new MenuItem("NormalWidth", "线宽").SetValue(new Slider(3, 1, 15)));
-            normalDangerMenu.AddItem(new MenuItem("NormalColor", "颜色").SetValue(new Circle(true, Color.FromArgb(140, 255, 255, 255))));
+            Menu normalDangerMenu = new Menu("Normal", "NormalDrawing");
+            normalDangerMenu.AddItem(new MenuItem("NormalWidth", "Line Width").SetValue(new Slider(3, 1, 15)));
+            normalDangerMenu.AddItem(new MenuItem("NormalColor", "Color").SetValue(new Circle(true, Color.FromArgb(140, 255, 255, 255))));
 
-            Menu highDangerMenu = new Menu("高", "HighDrawing");
-            highDangerMenu.AddItem(new MenuItem("HighWidth", "线宽").SetValue(new Slider(4, 1, 15)));
-            highDangerMenu.AddItem(new MenuItem("HighColor", "颜色").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+            Menu highDangerMenu = new Menu("High", "HighDrawing");
+            highDangerMenu.AddItem(new MenuItem("HighWidth", "Line Width").SetValue(new Slider(4, 1, 15)));
+            highDangerMenu.AddItem(new MenuItem("HighColor", "Color").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
 
-            Menu extremeDangerMenu = new Menu("极端", "ExtremeDrawing");
-            extremeDangerMenu.AddItem(new MenuItem("ExtremeWidth", "线宽").SetValue(new Slider(4, 1, 15)));
-            extremeDangerMenu.AddItem(new MenuItem("ExtremeColor", "颜色").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+            Menu extremeDangerMenu = new Menu("Extreme", "ExtremeDrawing");
+            extremeDangerMenu.AddItem(new MenuItem("ExtremeWidth", "Line Width").SetValue(new Slider(4, 1, 15)));
+            extremeDangerMenu.AddItem(new MenuItem("ExtremeColor", "Color").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
 
             /*
             Menu undodgeableDangerMenu = new Menu("Undodgeable", "Undodgeable");
@@ -63,8 +64,8 @@ namespace ezEvade
             dangerMenu.AddSubMenu(extremeDangerMenu);
 
             drawMenu.AddSubMenu(dangerMenu);
-            
-            menu.AddSubMenu(drawMenu);           
+
+            menu.AddSubMenu(drawMenu);
         }
 
         private void DrawLineRectangle(Vector2 start, Vector2 end, int radius, int width, Color color)
@@ -88,6 +89,25 @@ namespace ezEvade
             Drawing.DrawLine(lEndPos, rEndPos, width, color);
         }
 
+        private void DrawEvadeStatus()
+        {
+            if (menu.SubMenu("Draw").Item("ShowStatus").GetValue<bool>())
+            {
+                var heroPos = Drawing.WorldToScreen(ObjectManager.Player.Position);
+                var dimension = Drawing.GetTextExtent("Evade: ON");
+
+                if (menu.SubMenu("Main").Item("DodgeSkillShots").GetValue<KeyBind>().Active
+                    && Evade.isDodgeDangerousEnabled())
+                {
+                    Drawing.DrawText(heroPos.X - dimension.Width / 2, heroPos.Y, Color.Red, "Evade: ON");
+                }
+                else if (menu.SubMenu("Main").Item("DodgeSkillShots").GetValue<KeyBind>().Active)
+                {
+                    Drawing.DrawText(heroPos.X - dimension.Width / 2, heroPos.Y, Color.White, "Evade: ON");
+                }
+            }
+        }
+
         private void Drawing_OnDraw(EventArgs args)
         {
             if (menu.SubMenu("Draw").Item("DrawSkillShots").GetValue<bool>() == false)
@@ -95,20 +115,16 @@ namespace ezEvade
                 return;
             }
 
-            if (menu.SubMenu("Draw").Item("ShowStatus").GetValue<bool>())
+            if (menu.SubMenu("Draw").Item("DrawEvadePosition").GetValue<bool>())
             {
-                var heroPos = Drawing.WorldToScreen(ObjectManager.Player.Position);
-                
-                if (menu.SubMenu("Main").Item("DodgeSkillShots").GetValue<KeyBind>().Active
-                    && Evade.isDodgeDangerousEnabled())
+                if (Evade.lastPosInfo != null)
                 {
-                    Drawing.DrawText(heroPos.X, heroPos.Y, Color.Red, "韬查伩:寮€");
+                    var pos = Evade.lastPosInfo.position;
+                    Render.Circle.DrawCircle(new Vector3(pos.X, pos.Y, myHero.Position.Z), 65, Color.Red, 10);
                 }
-                else if (menu.SubMenu("Main").Item("DodgeSkillShots").GetValue<KeyBind>().Active)
-                {
-                    Drawing.DrawText(heroPos.X, heroPos.Y, Color.White, "韬查伩:寮€");
-                }            
             }
+
+            DrawEvadeStatus();
 
             foreach (KeyValuePair<int, Spell> entry in SpellDetector.drawSpells)
             {
@@ -118,7 +134,7 @@ namespace ezEvade
                 var spellDrawingConfig = Evade.menu.SubMenu("Draw").SubMenu("DangerLevelDrawings")
                     .SubMenu(dangerStr + "Drawing").Item(dangerStr + "Color").GetValue<Circle>();
                 var spellDrawingWidth = Evade.menu.SubMenu("Draw").SubMenu("DangerLevelDrawings")
-                    .SubMenu(dangerStr + "Drawing").Item(dangerStr + "Width").GetValue<Slider>().Value;                
+                    .SubMenu(dangerStr + "Drawing").Item(dangerStr + "Width").GetValue<Slider>().Value;
 
                 if (Evade.menu.SubMenu("Spells").SubMenu(spell.info.charName + spell.info.spellName + "Settings")
                     .Item(spell.info.spellName + "DrawSpell").GetValue<bool>()
@@ -128,6 +144,18 @@ namespace ezEvade
                     {
                         Vector2 spellPos = SpellDetector.GetCurrentSpellPosition(spell);
                         DrawLineRectangle(spellPos, spell.endPos, (int)EvadeHelper.GetSpellRadius(spell), spellDrawingWidth, spellDrawingConfig.Color);
+
+                        if (menu.SubMenu("Draw").Item("DrawSpellPos").GetValue<bool>())
+                        {
+                            /*if (true)
+                            {
+                                var spellPos2 = spell.startPos + spell.direction * spell.info.projectileSpeed * (Evade.GetTickCount() - spell.startTime - spell.info.spellDelay) / 1000 + spell.direction * spell.info.projectileSpeed * ((float)Game.Ping / 1000);
+                                Render.Circle.DrawCircle(new Vector3(spellPos2.X, spellPos2.Y, myHero.Position.Z), (int)EvadeHelper.GetSpellRadius(spell), Color.Red, 8);
+                            }*/
+
+                            Render.Circle.DrawCircle(new Vector3(spellPos.X, spellPos.Y, myHero.Position.Z), (int)EvadeHelper.GetSpellRadius(spell), spellDrawingConfig.Color, spellDrawingWidth);
+                        }
+
                     }
                     else if (spell.info.spellType == SpellType.Circular)
                     {

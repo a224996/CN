@@ -221,7 +221,7 @@ namespace GagongSyndra
             if (Menu.Item("Sound1").GetValue<bool>()) PlaySound(welcome);
             GameObject.OnCreate += OnCreate;
             GameObject.OnDelete += OnDelete;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;

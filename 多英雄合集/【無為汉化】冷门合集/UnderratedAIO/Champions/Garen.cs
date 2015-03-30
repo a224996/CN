@@ -27,7 +27,7 @@ namespace UnderratedAIO.Champions
             InitMenu();
             InitGaren();
             Game.PrintChat("<font color='#9933FF'>Soresu </font><font color='#FFFFFF'>- Garen</font>");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Orbwalking.AfterAttack += AfterAttack;
             Drawing.OnDraw += Game_OnDraw;
             Jungle.setSmiteSlot();

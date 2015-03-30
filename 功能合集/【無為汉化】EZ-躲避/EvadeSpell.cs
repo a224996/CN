@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -13,10 +12,9 @@ namespace ezEvade
     class EvadeSpell
     {
         private static Obj_AI_Hero myHero { get { return ObjectManager.Player; } }
-        private static float gameTime { get { return Game.ClockTime * 1000; } }
 
         public static List<EvadeSpellData> evadeSpells = new List<EvadeSpellData>();
-        public static EvadeCommand lastSpellEvadeCommand = new EvadeCommand { isProcessed = true, timestamp = gameTime };
+        public static EvadeCommand lastSpellEvadeCommand = new EvadeCommand { isProcessed = true, timestamp = Evade.GetTickCount() };
 
         public static Menu menu;
         public static Menu evadeSpellMenu;
@@ -25,7 +23,7 @@ namespace ezEvade
         {
             menu = mainMenu;
 
-            evadeSpellMenu = new Menu("技能躲避", "EvadeSpells");
+            evadeSpellMenu = new Menu("躲避技能", "EvadeSpells");
             menu.AddSubMenu(evadeSpellMenu);
 
             LoadEvadeSpellList();
@@ -40,10 +38,13 @@ namespace ezEvade
             
             //int posDangerlevel = EvadeHelper.CheckPosDangerLevel(myHero.ServerPosition.To2D(), 0);
 
-            if (gameTime - lastSpellEvadeCommand.timestamp < 1000)
+            if (Evade.GetTickCount() - lastSpellEvadeCommand.timestamp < 1000)
             {
                 return;
             }
+
+            if (Evade.lastPosInfo == null)
+                return;
 
             foreach (KeyValuePair<int, Spell> entry in SpellDetector.spells)
             {
@@ -162,12 +163,12 @@ namespace ezEvade
 
                 evadeSpells.Add(spell);
 
-                string menuName = spell.name + " (" + spell.spellKey.ToString() + ") Settings";
+                string menuName = spell.name + " (" + spell.spellKey.ToString() + ") 设置";
 
                 Menu newSpellMenu = new Menu(menuName, spell.charName + spell.name + "EvadeSpellSettings");
-                newSpellMenu.AddItem(new MenuItem(spell.name + "UseEvadeSpell", "使用法术").SetValue(true));
+                newSpellMenu.AddItem(new MenuItem(spell.name + "UseEvadeSpell", "使用技能").SetValue(true));
                 newSpellMenu.AddItem(new MenuItem(spell.name + "EvadeSpellDangerLevel", "危险等级")
-                    .SetValue(new StringList(new[] { "低", "正常", "高", "极端" }, spell.dangerlevel - 1)));
+                    .SetValue(new StringList(new[] { "低", "普通", "高", "很高" }, spell.dangerlevel - 1)));
 
                 evadeSpellMenu.AddSubMenu(newSpellMenu);
             }

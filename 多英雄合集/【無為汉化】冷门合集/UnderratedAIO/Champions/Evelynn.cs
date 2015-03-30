@@ -25,7 +25,7 @@ namespace UnderratedAIO.Champions
             InitMenu();
             InitEvelynn();
             Game.PrintChat("<font color='#9933FF'>Soresu </font><font color='#FFFFFF'>- Evelynn</font>");
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Game_OnDraw;
             Jungle.setSmiteSlot();
         }

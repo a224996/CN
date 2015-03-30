@@ -134,7 +134,7 @@ namespace xSaliceReligionAIO
 			menu.AddItem(new MenuItem("xSLx_info3", "汉化: 零度"));
 
             Drawing.OnDraw += OnDraw;
-            Game.OnGameUpdate += OnUpdate;
+            Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             GameObject.OnCreate += Obj_SpellMissile_OnCreate;
             GameObject.OnDelete += OnDelete;

@@ -97,7 +97,7 @@ namespace Swain
             Program.MenuExtras.SubMenu("PotionManager").SubMenu("Mana").AddItem(new MenuItem("ManaPotion", "使用蓝药").SetValue(true));
             Program.MenuExtras.SubMenu("PotionManager").SubMenu("Mana").AddItem(new MenuItem("ManaPercent", "最低蓝量").SetValue(new Slider(30)));
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
         }
 
         private void OnGameUpdate(EventArgs args)

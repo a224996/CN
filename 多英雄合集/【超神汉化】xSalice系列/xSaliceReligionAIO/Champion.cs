@@ -12,14 +12,14 @@ namespace xSaliceReligionAIO
         protected Champion()
         {
             //Events
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter2.OnInterruptableTarget += Interrupter_OnPosibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             GameObject.OnCreate += GameObject_OnCreate;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
-            Game.OnGameSendPacket += Game_OnSendPacket;
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+            Game.OnSendPacket += Game_OnSendPacket;
+            Game.OnProcessPacket += Game_OnGameProcessPacket;
             GameObject.OnDelete += GameObject_OnDelete;
             Obj_AI_Base.OnIssueOrder += ObjAiHeroOnOnIssueOrder;
             Spellbook.OnUpdateChargedSpell += Spellbook_OnUpdateChargedSpell;
@@ -108,10 +108,6 @@ namespace xSaliceReligionAIO
             menu.AddSubMenu(OrbwalkerMenu);
             ChooseOrbwalker(menu.Item("Orbwalker_Mode", true).GetValue<bool>());
 
-            //Packet Menu
-            menu.AddSubMenu(new Menu("封包设置", "Packets"));
-            menu.SubMenu("Packets").AddItem(new MenuItem("packet", "使用封包", true).SetValue(false));
-
             //Item Menu
             var itemMenu = new Menu("物品和技能", "Items");
             ActiveItems.AddToMenu(itemMenu);
@@ -154,7 +150,7 @@ namespace xSaliceReligionAIO
         }
         protected bool packets()
         {
-            return menu.Item("packet", true).GetValue<bool>();
+            return false;
         }
 
         protected void Use_DFG(Obj_AI_Hero target)

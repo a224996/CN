@@ -439,7 +439,7 @@ namespace JeonUtility
             #endregion
 
             #region Events Initialize
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Obj_AI_Hero.OnProcessSpellCast += OnSpell;
             GameObject.OnDelete += OnDelete;
             GameObject.OnCreate += OnCreate;

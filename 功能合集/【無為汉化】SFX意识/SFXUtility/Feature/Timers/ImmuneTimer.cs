@@ -233,7 +233,7 @@ namespace SFXUtility.Feature
 
                     _timers.Menu.AddSubMenu(Menu);
 
-                    Game.OnGameUpdate += OnGameUpdate;
+                    Game.OnUpdate += OnGameUpdate;
                     GameObject.OnCreate += OnObjectCreate;
                     Drawing.OnDraw += OnDraw;
 

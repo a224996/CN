@@ -87,7 +87,7 @@ namespace Marksman
                 .SubMenu("Mana")
                 .AddItem(new MenuItem("ManaPercent", "MP%").SetValue(new Slider(30)));
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
         }
 
         private void OnGameUpdate(EventArgs args)

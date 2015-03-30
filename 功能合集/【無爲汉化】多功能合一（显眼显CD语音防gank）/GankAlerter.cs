@@ -44,7 +44,7 @@ namespace Tracker
             //playSound(deactivated);
          
             //Used for detecting ganks:
-            Game.OnGameUpdate += GameOnOnGameUpdate;
+            Game.OnUpdate += GameOnOnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
         }    
         

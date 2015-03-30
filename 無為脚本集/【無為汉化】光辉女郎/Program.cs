@@ -113,7 +113,7 @@ namespace LightningLux
 			
 			Game.PrintChat("Lightning Lux v1.1 loaded!");
 
-			Game.OnGameUpdate += Game_OnGameUpdate;
+			Game.OnUpdate += Game_OnGameUpdate;
 			LXOrbwalker.BeforeAttack += LXOrbwalker_BeforeAttack;
 			Drawing.OnDraw += Drawing_OnDraw;
 			AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;	

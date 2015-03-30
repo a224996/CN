@@ -45,7 +45,7 @@ namespace meta_Smite
             }
             setupCampMenu();
             Drawing.OnDraw += Drawing_OnDraw;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Game.PrintChat("Meta Smite by metaphorce Loaded");
         }
 

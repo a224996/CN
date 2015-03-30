@@ -115,7 +115,7 @@ Config.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
 Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
 Config.SubMenu("by chujian").AddItem(new MenuItem("qunhao2", "娃娃群：158994507"));
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += DrawingOnOnEndScene;
             Obj_AI_Hero.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;

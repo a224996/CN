@@ -42,7 +42,7 @@ namespace XinZhao
             Program.TargetSelectorMenu.SubMenu("MenuAssassin")
                 .AddItem(new MenuItem("AssassinSearchRange", "搜索范围")).SetValue(new Slider(1000, 2000));
 
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnWndProc += Game_OnWndProc;
         }

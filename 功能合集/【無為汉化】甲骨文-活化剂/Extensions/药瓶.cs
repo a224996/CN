@@ -1,7 +1,6 @@
 ﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
-using OC = Oracle.Program;
 
 namespace Oracle.Extensions
 {
@@ -12,7 +11,7 @@ namespace Oracle.Extensions
 
         public static void Initialize(Menu root)
         {
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
 
             _mainMenu = new Menu("药瓶", "imenu");
 
@@ -48,8 +47,8 @@ namespace Oracle.Extensions
             var aManaPercent = (int)((Me.Mana / Me.MaxMana) * 100);
             var mHealthPercent = (int) ((Me.Health/Me.MaxHealth)*100);
 
-            var iDamagePercent = (int) ((OC.IncomeDamage/Me.MaxHealth)*100);
-            var mDamagePercent = (int) ((OC.MinionDamage/Me.MaxHealth)*100);
+            var iDamagePercent = (int) ((Oracle.IncomeDamage/Me.MaxHealth)*100);
+            var mDamagePercent = (int) ((Oracle.MinionDamage/Me.MaxHealth)*100);
 
             if (menuvar.Contains("Mana") && aManaPercent <= _mainMenu.Item("use" + menuvar + "Mana").GetValue<Slider>().Value)
             {
@@ -59,22 +58,22 @@ namespace Oracle.Extensions
 
             if (menuvar.Contains("Health") && mHealthPercent <= _mainMenu.Item("use" + menuvar + "Pct").GetValue<Slider>().Value)
             {
-                if (iDamagePercent >= 1 || OC.IncomeDamage >= Me.Health || Me.HasBuff("summonerdot", true) ||
-                    mDamagePercent >= 1 || OC.MinionDamage >= Me.Health || Me.HasBuffOfType(BuffType.Damage))
+                if (iDamagePercent >= 1 || Oracle.IncomeDamage >= Me.Health || Me.HasBuff("summonerdot", true) ||
+                    mDamagePercent >= 1 || Oracle.MinionDamage >= Me.Health || Me.HasBuffOfType(BuffType.Damage))
                 {
-                    if (OC.AggroTarget.NetworkId == Me.NetworkId)
+                    if (Oracle.AggroTarget.NetworkId == Me.NetworkId)
                     {
                         Items.UseItem(itemId);
-                        OC.Logger(OC.LogType.Action, "Used " + name + " (Low HP) on " + Me.SkinName + " (" + mHealthPercent + "%) !");
+                        Oracle.Logger(Oracle.LogType.Action, "Used " + name + " (Low HP) on " + Me.SkinName + " (" + mHealthPercent + "%) !");
                     }
                 }
 
                 else if (iDamagePercent >= _mainMenu.Item("use" + menuvar + "Dmg").GetValue<Slider>().Value)
                 {
-                    if (OC.AggroTarget.NetworkId == Me.NetworkId)
+                    if (Oracle.AggroTarget.NetworkId == Me.NetworkId)
                     {
                         Items.UseItem(itemId);
-                        OC.Logger(OC.LogType.Action, "Used " + name + " (Damage Chunk) on " + Me.SkinName + " (" + mHealthPercent + "%) !");
+                        Oracle.Logger(Oracle.LogType.Action, "Used " + name + " (Damage Chunk) on " + Me.SkinName + " (" + mHealthPercent + "%) !");
                     }
                 }
             }

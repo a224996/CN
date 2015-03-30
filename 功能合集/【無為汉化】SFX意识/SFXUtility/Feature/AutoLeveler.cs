@@ -133,7 +133,7 @@ namespace SFXUtility.Feature
 
 				BaseMenu.AddSubMenu(Menu);
 
-				Game.OnGameUpdate += OnGameUpdate;
+				Game.OnUpdate += OnGameUpdate;
 				Initialized = true;
 			}
 			catch (Exception ex)

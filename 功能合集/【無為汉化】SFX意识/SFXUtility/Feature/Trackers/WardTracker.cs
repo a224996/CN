@@ -162,7 +162,7 @@ namespace SFXUtility.Feature
 			if (!Enabled) return;
 			foreach (var lho in allObjects)
 			{
-				if (lho.Duration == -1 || (int)((lho.CreatedAt + lho.Duration + 1) - Game.Time) > 0)
+				if ((lho.Duration == -1 || (int)((lho.CreatedAt + lho.Duration + 1) - Game.Time) > 0) && lho.Position.IsOnScreen())
 				{
 					Render.Circle.DrawCircle(lho.Position, 50, lho.ObjColor);
 					if (lho.Duration > 0)

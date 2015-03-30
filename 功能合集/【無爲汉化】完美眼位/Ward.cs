@@ -66,7 +66,7 @@ namespace PerfectWard
             //Drawing.DrawCircle(Position, WARD_INDICATOR_RADIUS, System.Drawing.Color.Red);
 
             Vector2 TextPos = Drawing.WorldToScreen(Position);
-            Drawing.DrawCircle(Position, 80.0f, DrawColor);
+            Render.Circle.DrawCircle(Position, 80.0f, DrawColor);
 
             if (AliveTo != float.MaxValue)
             {
@@ -106,6 +106,17 @@ namespace PerfectWard
         {
             _WardSpots = new List<Vector3>();
 
+            _WardSpots.Add(new Vector3(9551.15f, 137.19f, 60.83f));     // Top Blue Inhib Turret
+            _WardSpots.Add(new Vector3(9200.85f, 3824.71f, 56.45f));     // Behind Dragon Pit
+            _WardSpots.Add(new Vector3(5571.69f, 11101.82f, 56.83f));     // Behind Baron Pit
+            _WardSpots.Add(new Vector3(11398.03f, 1440.97f, 50.64f));    // Blue Bot Outer Turret
+            _WardSpots.Add(new Vector3(4281.39f, 4467.51f, 71.63f));    // Blue Midlane inhib Turret
+            _WardSpots.Add(new Vector3(2757.31f, 5194.54f, 52.94f));    // Blue North GatE
+            _WardSpots.Add(new Vector3(5172.51f, 3116.71f, 51.05f));    // Blue South Gate
+            _WardSpots.Add(new Vector3(5488.53f, 5657.80f, 51.03f));    // Blue Midlane inner Turret 
+            _WardSpots.Add(new Vector3(9176.99f, 9367.65f, 52.51f));    // Purple Midlane inner Turret
+            _WardSpots.Add(new Vector3(12017.83f, 9787.35f, 52.30f));    // Purple South Gate
+            _WardSpots.Add(new Vector3(9704.83f, 11848.35f, 52.30f));    // Purple North Gate
             _WardSpots.Add(new Vector3(3261.93f, 7773.65f, 60.0f));    // Blue Golem
             _WardSpots.Add(new Vector3(7831.46f, 3501.13f, 60.0f));      // Blue Lizard
             _WardSpots.Add(new Vector3(10586.62f, 3067.93f, 60.0f));     // Blue Tri Bush
@@ -137,11 +148,11 @@ namespace PerfectWard
             _WardSpots.Add(new Vector3(9757.9f, 8768.25f, 50.73f));    // Purple Mid T1
 
             _WardSpots.Add(new Vector3(4749.79f, 5890.76f, 53.59f));   // Blue Mid T1
-            _WardSpots.Add(new Vector3(5983.58f, 1547.98f, 52.99f));    // Blue Bot T2
+            _WardSpots.Add(new Vector3(5217.58f, 1288.98f, 77.63f));    // Blue Botlane inhib Turret 
             _WardSpots.Add(new Vector3(1213.70f, 5324.73f, 58.77f));    // Blue Top T2
 
-            _WardSpots.Add(new Vector3(6523.58f, 6743.31f, 60.0f));   // Blue MidLane
-            _WardSpots.Add(new Vector3(8223.67f, 8110.15f, 60.0f));   // Purple Nidlane
+            _WardSpots.Add(new Vector3(6623.58f, 6973.31f, 51.85f));   // Blue MidLane/outer Turret
+            _WardSpots.Add(new Vector3(8120.67f, 8110.15f, 60.0f));   // Purple MidLane/outer Turret
             _WardSpots.Add(new Vector3(9736.8f, 6916.26f, 51.98f));   // Purple Mid Path
             _WardSpots.Add(new Vector3(2222.31f, 9964.1f, 53.2f));   // Blue Tri Top
             _WardSpots.Add(new Vector3(9255.25f, 2183.65f, 57.5f)); // Blue Gollems Bush
@@ -319,7 +330,7 @@ namespace PerfectWard
 
                 if (IsOnScreen(screenPos[0], screenPos[1]) && ObjectManager.Player.Distance(wardPos) < PerfectWard.PerfectWardTracker.Config.Item("drawDistance").GetValue<Slider>().Value)
                 {
-                    Drawing.DrawCircle(wardPos, WARD_INDICATOR_RADIUS, wardColor);
+                  Render.Circle.DrawCircle(wardPos, WARD_INDICATOR_RADIUS, wardColor);
                     //Console.WriteLine(wardPos.X);
                 }
             }
@@ -339,11 +350,11 @@ namespace PerfectWard
                 Vector2 screenPos = Drawing.WorldToScreen(safeWardSpot.MagneticPosition);
                 if (IsOnScreen(screenPos[0], screenPos[1]) && ObjectManager.Player.Distance(safeWardSpot.MagneticPosition) < PerfectWard.PerfectWardTracker.Config.Item("drawDistance").GetValue<Slider>().Value)
                 {
-                    Drawing.DrawCircle(safeWardSpot.WardPosition, 31.0f, wardColor);
-                    Drawing.DrawCircle(safeWardSpot.WardPosition, 32.0f, wardColor);
+                  Render.Circle.DrawCircle(safeWardSpot.WardPosition, 31.0f, wardColor);
+                  Render.Circle.DrawCircle(safeWardSpot.WardPosition, 32.0f, wardColor);
 
-                    Drawing.DrawCircle(safeWardSpot.MagneticPosition, 99.0f, wardColor);
-                    Drawing.DrawCircle(safeWardSpot.MagneticPosition, 100.0f, wardColor);
+                  Render.Circle.DrawCircle(safeWardSpot.MagneticPosition, 99.0f, wardColor);
+                  Render.Circle.DrawCircle(safeWardSpot.MagneticPosition, 100.0f, wardColor);
 
 
                     
@@ -360,7 +371,6 @@ namespace PerfectWard
                     Vector2 screenDirectionVector = Drawing.WorldToScreen(newVector);
 
                     Drawing.DrawLine(screenMagneticPos[0], screenMagneticPos[1], screenDirectionVector[0], screenDirectionVector[1], 2.5f, arrowColor);
-                  
                 }
             }
         }
