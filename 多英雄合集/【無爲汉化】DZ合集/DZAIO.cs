@@ -68,6 +68,7 @@ namespace DZAIO
                 aboutMenu.AddItem(new MenuItem("dzaio.about.line1", "作者： Asuna/DZ191"));
                 aboutMenu.AddItem(new MenuItem("dzaio.about.line2", "v." + Assembly.GetExecutingAssembly().GetName().Version));
                 aboutMenu.AddItem(new MenuItem("dzaio.about.line4", "如果你喜欢/欣赏"));
+                aboutMenu.AddItem(new MenuItem("dzaio.about.line4", "If you liked/appreciated the assembly"));
                 aboutMenu.AddItem(new MenuItem("dzaio.about.line5", "随时捐赠:"));
                 aboutMenu.AddItem(new MenuItem("dzaio.about.line6", "dz1917@yahoo.it"));
 				aboutMenu.AddItem(new MenuItem("dzaio.about.line7", "汉化：無為"));

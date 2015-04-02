@@ -269,7 +269,7 @@ Menu.AddSubMenu(new Menu("初见汉化", "by chujian"));
 
 Menu.SubMenu("by chujian").AddItem(new MenuItem("qunhao", "汉化群：386289593"));
             Drawing.OnDraw += Drawing_OnDraw; // Add onDraw
-            Game.OnGameUpdate += Game_OnGameUpdate; // adds OnGameUpdate (Same as onTick in bol)
+            Game.OnUpdate += Game_OnGameUpdate; // adds OnGameUpdate (Same as onTick in bol)
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             GameObject.OnCreate += GameObject_OnCreate;
             Orbwalking.AfterAttack += Orbwalking_AfterAttack;

@@ -50,6 +50,7 @@ namespace DZAIO.Champions
             comboMenu.AddManaManager(Mode.Combo, new[] { SpellSlot.Q,SpellSlot.W, SpellSlot.E, SpellSlot.R }, new[] { 30, 30, 30, 5 });
 
             var skillOptionMenu = new Menu("Skill Options", "dzaio.caitlyn.combo.skilloptions");
+            skillOptionMenu.AddItem(new MenuItem("dzaio.caitlyin.combo.skilloptions.impq", "Cast Q Only Immobile/Dashing/Impaired").SetValue(false));
             comboMenu.AddSubMenu(skillOptionMenu);
 
             menu.AddSubMenu(comboMenu);
@@ -165,9 +166,20 @@ namespace DZAIO.Champions
             var comboTarget = TargetSelector.GetTarget(_spells[SpellSlot.Q].Range, TargetSelector.DamageType.Physical);
             var eqTarget = TargetSelector.GetTarget(_spells[SpellSlot.Q].Range + 505f, TargetSelector.DamageType.Physical);
             var rTarget = TargetSelector.GetTarget(_spells[SpellSlot.R].Range, TargetSelector.DamageType.Physical);
+
             if (_spells[SpellSlot.Q].IsEnabledAndReady(Mode.Combo) && comboTarget.IsValidTarget(_spells[SpellSlot.Q].Range))
             {
-                _spells[SpellSlot.Q].CastIfHitchanceEquals(comboTarget, MenuHelper.GetHitchance());
+                if (MenuHelper.isMenuEnabled("dzaio.caitlyin.combo.skilloptions.impq"))
+                {
+                    if (HeroHelper.IsEmpaired(comboTarget))
+                    {
+                        _spells[SpellSlot.Q].CastIfHitchanceEquals(comboTarget, MenuHelper.GetHitchance());
+                    }
+                }
+                else
+                {
+                    _spells[SpellSlot.Q].CastIfHitchanceEquals(comboTarget, MenuHelper.GetHitchance());
+                }
             }
 
             if (_spells[SpellSlot.W].IsEnabledAndReady(Mode.Combo) && comboTarget.IsValidTarget(_spells[SpellSlot.W].Range) &&
@@ -250,7 +262,7 @@ namespace DZAIO.Champions
         bool CaitlynIsSafePosition(Vector3 position)
         {
             //If the enemies in range - the low health enemies in range are equal to zero and our Health % is >= 40% then we can go in
-            return (position.CountEnemiesInRange(450f) - HeroHelper.GetLhEnemiesNearPosition(position,450f).Count == 0) && (ObjectManager.Player.HealthPercentage() >= 40);
+            return (position.CountEnemiesInRange(450f) - HeroHelper.GetLhEnemiesNearPosition(position,450f).Count == 0) && (ObjectManager.Player.HealthPercentage() >= 40) && (!position.UnderTurret(true));
         }
 
         private Vector3 GetPositionAfterE(Vector3 eCastPosition)

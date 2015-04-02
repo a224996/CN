@@ -83,6 +83,9 @@
     <Compile Include="Utility\Helpers\PredictionHelper.cs" />
     <Compile Include="Utility\ItemManager.cs" />
     <Compile Include="Utility\PotionManager.cs" />
+    <Compile Include="Utility\Spells\Heal.cs" />
+    <Compile Include="Utility\Spells\Ignite.cs" />
+    <Compile Include="Utility\Spells\ISummonerSpell.cs" />
     <Compile Include="Utility\SummonerSpells.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using DZAIO.Utility.Helpers;
+using DZAIO.Utility.Spells;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -14,7 +14,7 @@ namespace DZAIO.Utility
         //TODO: List of Activator Features here:
 
         //TODO: Shield Module
-        //TODO: Summoners Spells Implementation
+        //TODO: Summoners Spells Implementation #Partially Done
 
         private static readonly List<DzItem> ItemList = new List<DzItem>
         {
@@ -44,6 +44,11 @@ namespace DZAIO.Utility
             }
         };
 
+        private static readonly List<ISummonerSpell> SummonerSpellsList = new List<ISummonerSpell>
+        {
+           new Ignite(),
+           new Heal()
+        };
 
         public static void OnLoad(Menu menu)
         {
@@ -67,6 +72,16 @@ namespace DZAIO.Utility
             }
             activatorMenu.AddSubMenu(offensiveMenu);
 
+            var summonerSpellsMenu = new Menu("Activator - Spells", "dzaio.activator.summonerspells");
+            foreach (var spell in SummonerSpellsList)
+            {
+                var tempMenu = new Menu(spell.GetDisplayName(), "dzaio.activator.summonerspells." + spell.GetName());
+                spell.AddToMenu(tempMenu);
+                tempMenu.AddItem(new MenuItem("dzaio.activator.summonerspells." + spell.GetName() + ".enabled", "Enabled").SetValue(true));
+                summonerSpellsMenu.AddSubMenu(tempMenu);
+            }
+            activatorMenu.AddSubMenu(summonerSpellsMenu);
+
             //Defensive Menu
             AddHitChanceSelector(activatorMenu);
 
@@ -74,6 +89,7 @@ namespace DZAIO.Utility
             activatorMenu.AddItem(new MenuItem("dzaio.activator.enabledalways", "总是启动?").SetValue(false));
             activatorMenu.AddItem(new MenuItem("dzaio.activator.enabledcombo", "热键启用?").SetValue(new KeyBind(32, KeyBindType.Press)));
             menu.AddSubMenu(activatorMenu);
+            
             Game.OnUpdate += Game_OnGameUpdate;
         }
 
@@ -90,6 +106,7 @@ namespace DZAIO.Utility
             }
             _lastCheckTick = Environment.TickCount;
             UseOffensive();
+            UseSummonerSpells();
         }
 
         static void UseOffensive()
@@ -125,6 +142,12 @@ namespace DZAIO.Utility
             }
         }
 
+        static void UseSummonerSpells()
+        {
+            foreach (var spell in SummonerSpellsList.Where(spell => spell.RunCondition())) {
+                spell.Execute();
+            }
+        }
 
         static void UseItem(Obj_AI_Base target, DzItem item)
         {

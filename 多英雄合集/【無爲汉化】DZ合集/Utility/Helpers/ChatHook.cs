@@ -11,7 +11,7 @@ namespace DZAIO.Utility.Helpers
     {
         public static void OnLoad()
         {
-            Game.OnGameInput += Game_OnGameInput;
+            Game.OnInput += Game_OnGameInput;
         }
 
         static void Game_OnGameInput(GameInputEventArgs args)
