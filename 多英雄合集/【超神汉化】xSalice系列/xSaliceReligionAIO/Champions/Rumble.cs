@@ -261,7 +261,7 @@ namespace xSaliceReligionAIO.Champions
             if (!Q.IsReady())
                 return false;
 
-            if (Player.Distance(target) > Q.Range)
+            if (Player.Distance(target.Position) > Q.Range)
                 return false;
 
             if (!menu.Item("Q_Over_Heat", true).GetValue<bool>() && GetCurrentHeat() > 80)
@@ -278,7 +278,7 @@ namespace xSaliceReligionAIO.Champions
             if (!E.IsReady())
                 return false;
 
-            if (Player.Distance(target) > E.Range)
+            if (Player.Distance(target.Position) > E.Range)
                 return false;
 
             if(E.GetPrediction(target).Hitchance < GetHitchance(source))
@@ -305,7 +305,7 @@ namespace xSaliceReligionAIO.Champions
 
             if (GetCurrentHeat() < 31 && Q.IsReady() && menu.Item("Q_Auto_Heat", true).GetValue<bool>())
             {
-                var enemy = ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy).OrderBy(x => Player.Distance(x)).FirstOrDefault();
+                var enemy = ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy).OrderBy(x => Player.Distance(x.Position)).FirstOrDefault();
 
                 if(enemy != null)
                     Q.Cast(enemy.ServerPosition, packets());
@@ -314,7 +314,7 @@ namespace xSaliceReligionAIO.Champions
 
             if (GetCurrentHeat() < 31 && E.IsReady() && menu.Item("E_Auto_Heat", true).GetValue<bool>())
             { 
-                var enemy = ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && !x.IsDead).OrderBy(x => Player.Distance(x)).FirstOrDefault();
+                var enemy = ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && !x.IsDead).OrderBy(x => Player.Distance(x.Position)).FirstOrDefault();
 
                 if (enemy != null)
                     E.Cast(enemy, packets());
@@ -340,7 +340,7 @@ namespace xSaliceReligionAIO.Champions
 
             var pred = R2.GetPrediction(target, true);
 
-            if (Player.Distance(target) < 400)
+            if (Player.Distance(target.Position) < 400)
             {
                 var midpoint = (Player.ServerPosition + pred.UnitPosition)/2;
 
@@ -375,8 +375,8 @@ namespace xSaliceReligionAIO.Champions
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range)).OrderByDescending(GetComboDamage))
             {
                 //loop 2
-                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId && x.Distance(target) < 900)
-                    .OrderByDescending(x => x.Distance(target)))
+                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId && x.Distance(target.Position) < 900)
+                    .OrderByDescending(x => x.Distance(target.Position)))
                 {
                     int hit = 2;
 
@@ -391,7 +391,7 @@ namespace xSaliceReligionAIO.Champions
                     if (!IsPassWall(midpoint, startpos) && !IsPassWall(midpoint, endPos) && countEnemiesNearPosition(Player.ServerPosition, R.Range + 1000) > 2)
                     {
                         //loop 3
-                        foreach (var enemy2 in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId && x.NetworkId != enemy.NetworkId && x.Distance(target) < 1000))
+                        foreach (var enemy2 in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId && x.NetworkId != enemy.NetworkId && x.Distance(target.Position) < 1000))
                         {
                             var enemy2Pred = Prediction.GetPrediction(enemy2, .25f);
                             Object[] obj = VectorPointProjectionOnLineSegment(startpos.To2D(), endPos.To2D(), enemy2Pred.CastPosition.To2D());
@@ -552,7 +552,7 @@ namespace xSaliceReligionAIO.Champions
                     var midpoint = (Player.ServerPosition + pred.UnitPosition) / 2;
                     var vector2 = midpoint - Vector3.Normalize(pred.UnitPosition - Player.ServerPosition) * 300;
 
-                    if (Player.Distance(target) < 400)
+                    if (Player.Distance(target.Position) < 400)
                     {
                         vector1 = midpoint + Vector3.Normalize(pred.UnitPosition - Player.ServerPosition)*800;
                         if (!IsPassWall(pred.UnitPosition, vector1) && !IsPassWall(pred.UnitPosition, vector2))
@@ -601,8 +601,8 @@ namespace xSaliceReligionAIO.Champions
                                 .Where(
                                     x =>
                                         x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId &&
-                                        x.Distance(target) < 900)
-                                .OrderByDescending(x => x.Distance(target)))
+                                        x.Distance(target.Position) < 900)
+                                .OrderByDescending(x => x.Distance(target.Position)))
                     {
                         int hit = 2;
 
@@ -617,7 +617,7 @@ namespace xSaliceReligionAIO.Champions
                         if (!IsPassWall(midpoint, startpos) && !IsPassWall(midpoint, endPos) && countEnemiesNearPosition(Player.ServerPosition, R.Range + 1000) > 2)
                         {
                             //loop 3
-                            foreach (var enemy2 in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId && x.NetworkId != enemy.NetworkId && x.Distance(target) < 1000))
+                            foreach (var enemy2 in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range + 1000) && x.NetworkId != target.NetworkId && x.NetworkId != enemy.NetworkId && x.Distance(target.Position) < 1000))
                             {
                                 var enemy2Pred = Prediction.GetPrediction(enemy2, .25f);
 

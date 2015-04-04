@@ -364,7 +364,7 @@ namespace xSaliceReligionAIO.Champions
 
             foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.IsValidTarget(Q.Range)).OrderByDescending(GetComboDamage))
             {
-                foreach (Obj_AI_Minion plants in ObjectManager.Get<Obj_AI_Minion>().Where(x => x.Name == "Zyra" && x.Distance(Player) < Q.Range))
+                foreach (Obj_AI_Minion plants in ObjectManager.Get<Obj_AI_Minion>().Where(x => x.Name == "Zyra" && x.Distance(Player.Position) < Q.Range))
                 {
                     var predQ = Q.GetPrediction(target, true);
 
@@ -396,7 +396,7 @@ namespace xSaliceReligionAIO.Champions
 
             if (menu.Item("Escape", true).GetValue<KeyBind>().Active && E.IsReady())
             {
-                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.IsValidTarget(E.Range)).OrderBy(x => x.Distance(Player)))
+                foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.IsValidTarget(E.Range)).OrderBy(x => x.Distance(Player.Position)))
                 {
                     E.Cast(target);
                     return;
@@ -424,7 +424,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("E_GapCloser", true).GetValue<bool>()) return;
 
-            if (E.IsReady() && gapcloser.Sender.Distance(Player) < 300)
+            if (E.IsReady() && gapcloser.Sender.Distance(Player.Position) < 300)
                 E.Cast(gapcloser.Sender);
         }
 

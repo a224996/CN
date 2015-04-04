@@ -257,7 +257,7 @@ namespace xSaliceReligionAIO.Champions
                     foreach (
                         Obj_AI_Hero enemy in
                             ObjectManager.Get<Obj_AI_Hero>()
-                                .Where(x => Player.Distance(x) < 1500 && x.IsValidTarget() && x.IsEnemy && !x.IsDead))
+                                .Where(x => Player.Distance(x.Position) < 1500 && x.IsValidTarget() && x.IsEnemy && !x.IsDead))
                     {
                         if (enemy != null && !enemy.IsDead && menu.Item("intR" + enemy.BaseSkinName, true).GetValue<bool>())
                         {
@@ -446,7 +446,7 @@ namespace xSaliceReligionAIO.Champions
 
             PredictionOutput prediction = GetP(_currentBallPosition, Q, target, true);
 
-            if (Q.IsReady() && prediction.Hitchance >= GetHitchance(source) && Player.Distance(target) <= Q.Range + Q.Width)
+            if (Q.IsReady() && prediction.Hitchance >= GetHitchance(source) && Player.Distance(target.Position) <= Q.Range + Q.Width)
             {
                 Q.Cast(prediction.CastPosition, packets());
             }
@@ -517,7 +517,7 @@ namespace xSaliceReligionAIO.Champions
                 foreach (Obj_AI_Base minion in allMinions)
                 {
                     if (minion.IsValidTarget() &&
-                        HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion) * 1000 / 1400)) <
+                        HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 1400)) <
                         Player.GetSpellDamage(minion, SpellSlot.Q) - 10)
                     {
                         PredictionOutput prediction = GetP(_currentBallPosition, Q, minion, true);
@@ -672,7 +672,7 @@ namespace xSaliceReligionAIO.Champions
                 foreach (
                     Obj_AI_Hero ally in
                         ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => Player.Distance(x) < E.Range && Player.Distance(unit) < 1500 && x.IsAlly && !x.IsDead).OrderBy(x => x.Distance(args.End)))
+                            .Where(x => Player.Distance(x.Position) < E.Range && Player.Distance(unit.Position) < 1500 && x.IsAlly && !x.IsDead).OrderBy(x => x.Distance(args.End)))
                 {
                     if (menu.Item("shield" + ally.BaseSkinName, true) != null)
                     {
@@ -696,7 +696,7 @@ namespace xSaliceReligionAIO.Champions
             //intiator
             if (unit.IsAlly)
             {
-                if (Initiator.InitatorList.Where(spell => args.SData.Name == spell.SDataName).Where(spell => menu.Item(spell.SpellName, true).GetValue<bool>()).Any(spell => E.IsReady() && Player.Distance(unit) < E.Range))
+                if (Initiator.InitatorList.Where(spell => args.SData.Name == spell.SDataName).Where(spell => menu.Item(spell.SpellName, true).GetValue<bool>()).Any(spell => E.IsReady() && Player.Distance(unit.Position) < E.Range))
                 {
                     E.CastOnUnit(unit, packets());
                     _isBallMoving = true;
@@ -726,7 +726,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < R.Range && unit != null)
+            if (Player.Distance(unit.Position) < R.Range && unit != null)
             {
                 CastR(unit);
             }

@@ -112,8 +112,8 @@ namespace Support
                     _safe = Blue;
                 }
             }
-            AutoLevel levelUpSpells = new AutoLevel(TreesAutoLevel.GetSequence());
-            AutoLevel.Enabled(true);
+            new AutoLevel(TreesAutoLevel.GetSequence().Select(l=>l-1));
+            AutoLevel.Enable();
             FileHandler.DoChecks();
             MetaHandler.LoadObjects();
             

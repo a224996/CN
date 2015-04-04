@@ -190,7 +190,7 @@ namespace xSaliceReligionAIO.Champions
             if (source == "Harass" && !HasMana("Harass"))
                 return;
 
-            if (useW && target != null && Player.Distance(target) <= W.Range && W.IsReady())
+            if (useW && target != null && Player.Distance(target.Position) <= W.Range && W.IsReady())
             {
                 if (menu.Item("wPoke", true).GetValue<KeyBind>().Active)
                 {
@@ -206,7 +206,7 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
-            if (useE && target != null && E.IsReady() && Player.Distance(target) < E.Range)
+            if (useE && target != null && E.IsReady() && Player.Distance(target.Position) < E.Range)
             {
                 if (!waitW || W.IsReady())
                 {
@@ -233,7 +233,7 @@ namespace xSaliceReligionAIO.Champions
             }
 
             //Q
-            if (useQ && Q.IsReady() && Player.Distance(target) <= Q.Range && target != null)
+            if (useQ && Q.IsReady() && Player.Distance(target.Position) <= Q.Range && target != null)
             {
                 Q.CastOnUnit(target, packets());
             }
@@ -312,7 +312,7 @@ namespace xSaliceReligionAIO.Champions
             if (menu.Item("overKill", true).GetValue<bool>() && Player.GetSpellDamage(target, SpellSlot.Q) > target.Health)
                 return;
 
-            if (Player.Distance(target) > R.Range)
+            if (Player.Distance(target.Position) > R.Range)
                 return;
 
             //DFG + R
@@ -343,7 +343,7 @@ namespace xSaliceReligionAIO.Champions
                 foreach (Obj_AI_Base minion in allMinions)
                 {
                     if (minion.IsValidTarget() &&
-                        HealthPrediction.GetHealthPrediction(minion, (int)((minion.Distance(Player) / 1500) * 1000 + .25f * 1000), 100) <
+                        HealthPrediction.GetHealthPrediction(minion, (int)((minion.Distance(Player.Position) / 1500) * 1000 + .25f * 1000), 100) <
                         Player.GetSpellDamage(minion, SpellSlot.Q) - 35)
                     {
                         if (Q.IsReady())
@@ -430,7 +430,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < E.Range && unit != null && E.IsReady())
+            if (Player.Distance(unit.Position) < E.Range && unit != null && E.IsReady())
             {
                 CastE((Obj_AI_Hero)unit);
             }

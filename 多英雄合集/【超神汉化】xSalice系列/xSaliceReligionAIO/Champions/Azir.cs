@@ -220,7 +220,7 @@ namespace xSaliceReligionAIO.Champions
                 return;
 
             //R
-            if (useR && R.IsReady() && ShouldR(qTarget) && Player.Distance(qTarget) < R.Range)
+            if (useR && R.IsReady() && ShouldR(qTarget) && Player.Distance(qTarget.Position) < R.Range)
                 R.Cast(qTarget);
 
             //WQ
@@ -287,7 +287,7 @@ namespace xSaliceReligionAIO.Champions
                 if (target != null)
                 {
                     //R
-                    if ((Player.GetSpellDamage(target, SpellSlot.R)) > target.Health + 20 && Player.Distance(target) < R.Range && menu.Item("rKS", true).GetValue<bool>())
+                    if ((Player.GetSpellDamage(target, SpellSlot.R)) > target.Health + 20 && Player.Distance(target.Position) < R.Range && menu.Item("rKS", true).GetValue<bool>())
                     {
                         R.Cast(target);
                     }
@@ -302,7 +302,7 @@ namespace xSaliceReligionAIO.Champions
                     }
 
                     //qe
-                    if ((Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) > target.Health + 20 && Player.Distance(target) < Q.Range && menu.Item("qeKS", true).GetValue<bool>())
+                    if ((Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) > target.Health + 20 && Player.Distance(target.Position) < Q.Range && menu.Item("qeKS", true).GetValue<bool>())
                     {
                         CastQe(target);
                     }
@@ -416,11 +416,11 @@ namespace xSaliceReligionAIO.Champions
 
                     foreach (var slave in slaves)
                     {
-                        if (target != null && Player.Distance(target) < 800)
+                        if (target != null && Player.Distance(target.Position) < 800)
                         {
                             var qPred = GetP(slave.Position, QExtend, target, true);
 
-                            if (Q.IsReady() && Player.Distance(target) < 800 && qPred.Hitchance >= getQHitchance())
+                            if (Q.IsReady() && Player.Distance(target.Position) < 800 && qPred.Hitchance >= getQHitchance())
                             {
                                 var vec = target.ServerPosition - Player.ServerPosition;
                                 var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
@@ -440,7 +440,7 @@ namespace xSaliceReligionAIO.Champions
 
                 var qPred = GetP(wVec, QExtend, target, true);
 
-                if ((Q.IsReady() || QSpell.State == SpellState.Surpressed) && (E.IsReady() || ESpell.State == SpellState.Surpressed) && Player.Distance(target) < 800 && qPred.Hitchance >= getQHitchance())
+                if ((Q.IsReady() || QSpell.State == SpellState.Surpressed) && (E.IsReady() || ESpell.State == SpellState.Surpressed) && Player.Distance(target.Position) < 800 && qPred.Hitchance >= getQHitchance())
                 {
                     var vec = target.ServerPosition - Player.ServerPosition;
                     var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
@@ -467,7 +467,7 @@ namespace xSaliceReligionAIO.Champions
 
                     foreach (var slave in slaves)
                     {
-                        if (Player.Distance(target) < 800)
+                        if (Player.Distance(target.Position) < 800)
                         {
                             var qPred = GetP(slave.Position, QExtend, target, true);
                             var vec = target.ServerPosition - Player.ServerPosition;
@@ -486,7 +486,7 @@ namespace xSaliceReligionAIO.Champions
                 }
                 if (R.IsReady())
                 {
-                    if (Player.Distance(target) < 200 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
+                    if (Player.Distance(target.Position) < 200 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
                     {
                         //Game.PrintChat("rawr");
                         R.Cast(_rVec);
@@ -500,7 +500,7 @@ namespace xSaliceReligionAIO.Champions
                 var qPred = GetP(wVec, QExtend, target, true);
 
                 if ((Q.IsReady() || QSpell.State == SpellState.Surpressed) && (E.IsReady() || ESpell.State == SpellState.Surpressed)
-                    && R.IsReady() && Player.Distance(target) < 800 && qPred.Hitchance >= getQHitchance())
+                    && R.IsReady() && Player.Distance(target.Position) < 800 && qPred.Hitchance >= getQHitchance())
                 {
                     var vec = target.ServerPosition - Player.ServerPosition;
                     var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
@@ -512,7 +512,7 @@ namespace xSaliceReligionAIO.Champions
                 }
                 if (R.IsReady())
                 {
-                    if (Player.Distance(target) < 200 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
+                    if (Player.Distance(target.Position) < 200 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
                     {
                         //Game.PrintChat("rawr2");
                         R.Cast(_rVec);
@@ -526,7 +526,7 @@ namespace xSaliceReligionAIO.Champions
             if (soilderCount() < 1 && menu.Item("qMulti", true).GetValue<KeyBind>().Active)
                 return;
 
-            if (Player.Distance(target) < 1150 && Player.Distance(target) > W.Range)
+            if (Player.Distance(target.Position) < 1150 && Player.Distance(target.Position) > W.Range)
             {
                 if (W.IsReady() && (Q.IsReady() || QSpell.State == SpellState.Surpressed))
                 {
@@ -545,9 +545,9 @@ namespace xSaliceReligionAIO.Champions
 
         private void CastW(Obj_AI_Hero target)
         {
-            if (Player.Distance(target) < 1200)
+            if (Player.Distance(target.Position) < 1200)
             {
-                if (Player.Distance(target) < 600)
+                if (Player.Distance(target.Position) < 600)
                 {
                     Vector3 wVec = Player.ServerPosition + Vector3.Normalize(target.ServerPosition - Player.ServerPosition) * W.Range;
 
@@ -559,7 +559,7 @@ namespace xSaliceReligionAIO.Champions
                             Utility.DelayAction.Add(200, () => Player.IssueOrder(GameObjectOrder.AttackUnit, target));
                     }
                 }
-                else if (Player.Distance(target) < 950)
+                else if (Player.Distance(target.Position) < 950)
                 {
                     Vector3 wVec = Player.ServerPosition + Vector3.Normalize(target.ServerPosition - Player.ServerPosition) * W.Range;
                     if (Player.Level > 10)
@@ -595,17 +595,17 @@ namespace xSaliceReligionAIO.Champions
 
             foreach (var slave in slaves)
             {
-                if (target != null && Player.Distance(target) < QExtend.Range && ShouldQ(target, slave))
+                if (target != null && Player.Distance(target.Position) < QExtend.Range && ShouldQ(target, slave))
                 {
 
                     var qPred = GetP(slave.Position, QExtend, target, true);
 
-                    if (Q.IsReady() && Player.Distance(target) < 800 && qPred.Hitchance >= getQHitchance())
+                    if (Q.IsReady() && Player.Distance(target.Position) < 800 && qPred.Hitchance >= getQHitchance())
                     {
                         Q.Cast(qPred.CastPosition, packets());
                         return;
                     }
-                    if (Q.IsReady() && Player.Distance(target) > 800 && qPred.Hitchance >= getQHitchance() && menu.Item("qExtend", true).GetValue<bool>())
+                    if (Q.IsReady() && Player.Distance(target.Position) > 800 && qPred.Hitchance >= getQHitchance() && menu.Item("qExtend", true).GetValue<bool>())
                     {
                         var qVector = Player.ServerPosition + Vector3.Normalize(qPred.CastPosition - Player.ServerPosition) * 800;
 
@@ -804,7 +804,7 @@ namespace xSaliceReligionAIO.Champions
                             hit = 0;
                             var prediction = GetP(slave.Position, Q, enemy, true);
 
-                            if (Q.IsReady() && Player.Distance(enemy) <= Q.Range)
+                            if (Q.IsReady() && Player.Distance(enemy.Position) <= Q.Range)
                             {
                                 hit += allMinionsQ.Count(enemy2 => enemy2.Distance(prediction.CastPosition) < 200 && Q.IsReady());
                                 if (hit >= min)
@@ -830,7 +830,7 @@ namespace xSaliceReligionAIO.Champions
                         hit = 0;
                         var prediction = GetP(Player.ServerPosition, Q, enemy, true);
 
-                        if (Q.IsReady() && Player.Distance(enemy) <= Q.Range)
+                        if (Q.IsReady() && Player.Distance(enemy.Position) <= Q.Range)
                         {
                             hit += allMinionsQ.Count(enemy2 => enemy2.Distance(prediction.CastPosition) < 200 && Q.IsReady());
                             if (hit >= min)

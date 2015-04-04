@@ -258,13 +258,13 @@ namespace xSaliceReligionAIO.Champions
             foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(Q.Range) && !x.IsDead && !x.HasBuffOfType(BuffType.Invulnerability)))
             {
                 //Q *2
-                if (Player.GetSpellDamage(target, SpellSlot.Q)*2 > target.Health && Player.Distance(target) < Q.Range && Q.IsReady())
+                if (Player.GetSpellDamage(target, SpellSlot.Q)*2 > target.Health && Player.Distance(target.Position) < Q.Range && Q.IsReady())
                 {
                     Q.CastOnUnit(target, packets());
                     return;
                 }
                 //Q
-                if (Player.GetSpellDamage(target, SpellSlot.Q) > target.Health && Player.Distance(target) < Q.Range && Q.IsReady())
+                if (Player.GetSpellDamage(target, SpellSlot.Q) > target.Health && Player.Distance(target.Position) < Q.Range && Q.IsReady())
                 {
                     Q.CastOnUnit(target, packets());
                     return;
@@ -295,7 +295,7 @@ namespace xSaliceReligionAIO.Champions
 
                     var minDistance = menu.Item("Q_Min_Distance", true).GetValue<Slider>().Value;
 
-                    if (Player.Distance(target) > Q.Range && menu.Item("Q_Gap_Close", true).GetValue<bool>())
+                    if (Player.Distance(target.Position) > Q.Range && menu.Item("Q_Gap_Close", true).GetValue<bool>())
                     {
                         var allMinionQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All,
                             MinionTeam.NotAlly);
@@ -304,15 +304,15 @@ namespace xSaliceReligionAIO.Champions
 
                         foreach (var minion in allMinionQ)
                         {
-                            if (target.Distance(minion) < Q.Range && Player.Distance(minion) < Q.Range &&
-                                target.Distance(minion) < target.Distance(Player))
-                                if (target.Distance(minion) < target.Distance(bestMinion))
+                            if (target.Distance(minion.Position) < Q.Range && Player.Distance(minion.Position) < Q.Range &&
+                                target.Distance(minion.Position) < target.Distance(Player.Position))
+                                if (target.Distance(minion.Position) < target.Distance(bestMinion.Position))
                                     bestMinion = minion;
                         }
                     }
 
-                    if (Player.Distance(target) > minDistance &&
-                        Player.Distance(target) < Q.Range + target.BoundingRadius)
+                    if (Player.Distance(target.Position) > minDistance &&
+                        Player.Distance(target.Position) < Q.Range + target.BoundingRadius)
                     {
                         Q.CastOnUnit(target, packets());
                     }
@@ -323,7 +323,7 @@ namespace xSaliceReligionAIO.Champions
                 if (target == null)
                     return;
 
-                if (Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 4000 && Player.Distance(target) < Q.Range && Player.Distance(target) > Player.AttackRange)
+                if (Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 4000 && Player.Distance(target.Position) < Q.Range && Player.Distance(target.Position) > Player.AttackRange)
                     Q.CastOnUnit(target, packets());
             }
         }

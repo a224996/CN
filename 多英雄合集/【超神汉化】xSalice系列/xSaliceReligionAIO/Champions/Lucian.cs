@@ -306,12 +306,12 @@ namespace xSaliceReligionAIO.Champions
             foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(QExtend.Range) && !x.IsDead && !x.HasBuffOfType(BuffType.Invulnerability)))
             {
                 //Q
-                if (Q.IsKillable(target) && Player.Distance(target) < QExtend.Range && Q.IsReady())
+                if (Q.IsKillable(target) && Player.Distance(target.Position) < QExtend.Range && Q.IsReady())
                 {
                     Cast_Q(target);
                 }
                 //E
-                if (W.IsKillable(target) && Player.Distance(target) < W.Range && W.IsReady())
+                if (W.IsKillable(target) && Player.Distance(target.Position) < W.Range && W.IsReady())
                 {
                     W.Cast(target);
                 }
@@ -329,7 +329,7 @@ namespace xSaliceReligionAIO.Champions
             if (useQ)
             {
                 var allMinions = MinionManager.GetMinions(ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-                var minion = allMinions.FirstOrDefault(minionn => minionn.Distance(Player) <= Q.Range && HealthPrediction.LaneClearHealthPrediction(minionn, 500) > 0);
+                var minion = allMinions.FirstOrDefault(minionn => minionn.Distance(Player.Position) <= Q.Range && HealthPrediction.LaneClearHealthPrediction(minionn, 500) > 0);
                 if (minion == null)
                     return;
 

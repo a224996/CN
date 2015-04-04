@@ -274,7 +274,7 @@ namespace xSaliceReligionAIO.Champions
                     if (target.UnderTurret(true))
                         return;
 
-                if (Player.Distance(target) > Q.Range / 2 && menu.Item("Q_Gap_Close", true).GetValue<bool>())
+                if (Player.Distance(target.Position) > Q.Range / 2 && menu.Item("Q_Gap_Close", true).GetValue<bool>())
                 {
                     var allMinionQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
@@ -288,15 +288,15 @@ namespace xSaliceReligionAIO.Champions
                         if (W.IsReady() || Player.HasBuff("ireliahitenstylecharged", true))
                             dmg += Player.GetSpellDamage(minion, SpellSlot.W);
 
-                        if (target.Distance(minion) < Q.Range && Player.Distance(minion) < Q.Range && target.Distance(minion) < target.Distance(Player) && dmg > minion.Health + 40)
-                            if (target.Distance(minion) < target.Distance(bestMinion))
+                        if (target.Distance(minion.Position) < Q.Range && Player.Distance(minion.Position) < Q.Range && target.Distance(minion.Position) < target.Distance(Player.Position) && dmg > minion.Health + 40)
+                            if (target.Distance(minion.Position) < target.Distance(bestMinion.Position))
                                 bestMinion = minion;
                     }
 
                     //check if can Q without activating
                     if (bestMinion != null)
                     {
-                        if (target.Distance(bestMinion) < Q.Range && Player.Distance(bestMinion) < Q.Range)
+                        if (target.Distance(bestMinion.Position) < Q.Range && Player.Distance(bestMinion.Position) < Q.Range)
                         {
                             var dmg2 = Player.GetSpellDamage(bestMinion, SpellSlot.Q);
 
@@ -319,7 +319,7 @@ namespace xSaliceReligionAIO.Champions
                     }
                 }
 
-                if (Player.Distance(target) > minDistance && Player.Distance(target) < Q.Range + target.BoundingRadius)
+                if (Player.Distance(target.Position) > minDistance && Player.Distance(target.Position) < Q.Range + target.BoundingRadius)
                 {
                     Q.Cast(target, packets());
                 }
@@ -398,7 +398,7 @@ namespace xSaliceReligionAIO.Champions
                 {
                     var pred = Prediction.GetPrediction(target, 1f);
 
-                    if (Player.Distance(target) < Player.Distance(pred.UnitPosition) && Player.Distance(target) > 200)
+                    if (Player.Distance(target.Position) < Player.Distance(pred.UnitPosition) && Player.Distance(target.Position) > 200)
                         E.Cast(target, packets());
                 }
             }

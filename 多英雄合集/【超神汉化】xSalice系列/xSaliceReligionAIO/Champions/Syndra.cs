@@ -269,17 +269,17 @@ namespace xSaliceReligionAIO.Champions
              foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(_qe.Range) && x.IsEnemy && !x.IsDead).OrderByDescending(GetComboDamage))
             {
                 //Q
-                if (Q.IsKillable(target) && Player.Distance(target) < Q.Range)
+                if (Q.IsKillable(target) && Player.Distance(target.Position) < Q.Range)
                 {
                     Q.Cast(target);
                 }
                 //E
-                if (E.IsKillable(target) && Player.Distance(target) < E.Range)
+                if (E.IsKillable(target) && Player.Distance(target.Position) < E.Range)
                 {
                     E.Cast(target);
                 }
                 //QE
-                if (E.IsKillable(target) && Player.Distance(target) < _qe.Range)
+                if (E.IsKillable(target) && Player.Distance(target.Position) < _qe.Range)
                 {
                     Cast_QE(false, target);
                 }
@@ -314,7 +314,7 @@ namespace xSaliceReligionAIO.Champions
                 {
                     if (Environment.TickCount - W.LastCastAttemptT > Game.Ping && W.IsReady())
                     {
-                        if (grabbableObj.Distance(Player) < W.Range)
+                        if (grabbableObj.Distance(Player.Position) < W.Range)
                         {
                             W.Cast(grabbableObj.ServerPosition);
                             W.LastCastAttemptT = Environment.TickCount + 500;
@@ -328,7 +328,7 @@ namespace xSaliceReligionAIO.Champions
                     //W.UpdateSourcePosition(Get_Current_Orb().ServerPosition, Get_Current_Orb().ServerPosition);
                     W.From = Get_Current_Orb().ServerPosition;
 
-                    if (Player.Distance(wTarget) < E.Range - 100)
+                    if (Player.Distance(wTarget.Position) < E.Range - 100)
                     {
                         if (wToggleState != 1 && W.IsReady() &&
                             Environment.TickCount - W.LastCastAttemptT > -300 + Game.Ping)
@@ -385,13 +385,13 @@ namespace xSaliceReligionAIO.Champions
             if (target == null || Environment.TickCount - W.LastCastAttemptT < Game.Ping)
                 return;
 
-            foreach (var orb in getOrb().Where(x => Player.Distance(x) < E.Range && x != null))
+            foreach (var orb in getOrb().Where(x => Player.Distance(x.Position) < E.Range && x != null))
             {
                 double rangeLeft = 100 + (-0.6 * Player.Distance(orb.ServerPosition) + 950);
                 var startPos = orb.ServerPosition - Vector3.Normalize(orb.ServerPosition - Player.ServerPosition) * 100;
                 var endPos = startPos + Vector3.Normalize(startPos - Player.ServerPosition) * (float)rangeLeft;
 
-                _qe.Delay = E.Delay + Player.Distance(orb) / E.Speed + target.Distance(orb) / _qe.Speed;
+                _qe.Delay = E.Delay + Player.Distance(orb.Position) / E.Speed + target.Distance(orb.Position) / _qe.Speed;
                 _qe.From = startPos;
 
                 var targetPos = _qe.GetPrediction(target);
@@ -428,7 +428,7 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
-            if (Get_Ult_Dmg(rTarget) > rTarget.Health - 20 && rTarget.Distance(Player) < R.Range)
+            if (Get_Ult_Dmg(rTarget) > rTarget.Health - 20 && rTarget.Distance(Player.Position) < R.Range)
             {
                 R.CastOnUnit(rTarget);
             }
@@ -592,7 +592,7 @@ namespace xSaliceReligionAIO.Champions
             if (target == null)
                 return;
 
-            foreach (var orb in getOrb().Where(x => Player.Distance(x) < E.Range && x != null))
+            foreach (var orb in getOrb().Where(x => Player.Distance(x.Position) < E.Range && x != null))
             {
                 double rangeLeft = 100 + (-0.6 * Player.Distance(orb.ServerPosition) + 950);
                 var startPos = orb.ServerPosition - Vector3.Normalize(orb.ServerPosition - Player.ServerPosition) * 100;
@@ -652,7 +652,7 @@ namespace xSaliceReligionAIO.Champions
                 ObjectManager.Get<Obj_AI_Minion>()
                     .Where(obj => obj.IsValid && obj.Team == ObjectManager.Player.Team && obj.Name == "Seed")
                     .ToList()
-                    .OrderBy(x => Player.Distance(x))
+                    .OrderBy(x => Player.Distance(x.Position))
                     .FirstOrDefault();
             if (orb != null)
                 return orb;

@@ -53,7 +53,7 @@ namespace Oracle
         public static string FileName;
         public static bool CanManamune;
         public static string ChampionName;
-        public const string Revision = "229";
+        public const string Revision = "231";
 
         private static void OnGameLoad(EventArgs args)
         {
@@ -305,6 +305,11 @@ namespace Oracle
         {
             if (sender.IsMe && (Items.HasItem(3042) || Items.HasItem(3043)))
             {
+                //Console.WriteLine(args.SData.DelayCastOffsetPercent);
+                //Console.WriteLine(args.SData.TargettingType);
+                //Console.WriteLine(args.SData.HaveHitEffect);
+                //Console.WriteLine(args.SData.MissileSpeed);
+
                 foreach (var o in SkillshotDatabase.Spells.Where(x => x.SpellName == args.SData.Name))
                 {
                     foreach (var i in Damage.Spells.Where(d => d.Key == o.ChampionName)

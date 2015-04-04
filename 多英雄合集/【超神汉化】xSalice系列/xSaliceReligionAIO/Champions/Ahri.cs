@@ -231,7 +231,7 @@ namespace xSaliceReligionAIO.Champions
             //end items-------
 
             //E
-            if (useE && E.IsReady() && Player.Distance(eTarget) < E.Range)
+            if (useE && E.IsReady() && Player.Distance(eTarget.Position) < E.Range)
             {
                 if (E.GetPrediction(eTarget).Hitchance >= hitC || predOff)
                 {
@@ -245,7 +245,7 @@ namespace xSaliceReligionAIO.Champions
             }
 
             //W
-            if (useW && W.IsReady() && Player.Distance(eTarget) <= W.Range - 100 &&
+            if (useW && W.IsReady() && Player.Distance(eTarget.Position) <= W.Range - 100 &&
                 ShouldW(eTarget, source))
             {
                 W.Cast();
@@ -253,8 +253,8 @@ namespace xSaliceReligionAIO.Champions
 
             if (source == "Harass" && menu.Item("longQ", true).GetValue<bool>())
             {
-                if (useQ && Q.IsReady() && Player.Distance(eTarget) <= Q.Range &&
-                    ShouldQ(eTarget, source) && Player.Distance(eTarget) > 600)
+                if (useQ && Q.IsReady() && Player.Distance(eTarget.Position) <= Q.Range &&
+                    ShouldQ(eTarget, source) && Player.Distance(eTarget.Position) > 600)
                 {
                     if (Q.GetPrediction(eTarget).Hitchance >= hitC || predOff)
                     {
@@ -263,7 +263,7 @@ namespace xSaliceReligionAIO.Champions
                     }
                 }
             }
-            else if (useQ && Q.IsReady() && Player.Distance(eTarget) <= Q.Range &&
+            else if (useQ && Q.IsReady() && Player.Distance(eTarget.Position) <= Q.Range &&
                      ShouldQ(eTarget, source))
             {
                 if (Q.GetPrediction(eTarget).Hitchance >= hitC || predOff)
@@ -274,7 +274,7 @@ namespace xSaliceReligionAIO.Champions
             }
 
             //R
-            if (useR && R.IsReady() && Player.Distance(eTarget) < R.Range)
+            if (useR && R.IsReady() && Player.Distance(eTarget.Position) < R.Range)
             {
                 if (E.IsReady())
                 {
@@ -573,7 +573,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < E.Range && unit != null)
+            if (Player.Distance(unit.Position) < E.Range && unit != null)
             {
                 if (E.GetPrediction(unit).Hitchance >= HitChance.Medium && E.IsReady())
                     E.Cast(unit, packets());

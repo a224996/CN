@@ -240,6 +240,9 @@ namespace Oracle.Extensions
             }
 
             var slot = Me.GetSpellSlot(sname);
+            if (slot == SpellSlot.Unknown)
+                return;
+
             if (slot != SpellSlot.Unknown && !_mainMenu.Item("use" + menuvar).GetValue<bool>())
             {
                 return;
@@ -320,6 +323,9 @@ namespace Oracle.Extensions
                 return;
 
             var slot = Me.GetSpellSlot(sdataname);
+            if (slot == SpellSlot.Unknown)
+                return;
+
             if (slot != SpellSlot.Unknown && !_mainMenu.Item("use" + menuvar).GetValue<bool>())
                 return;
             
@@ -443,7 +449,10 @@ namespace Oracle.Extensions
             if (!menuvar.Contains(Oracle.ChampionName.ToLower()))
                 return;
             
-            var slot = Me.GetSpellSlot(sdataname);        
+            var slot = Me.GetSpellSlot(sdataname);
+            if (slot == SpellSlot.Unknown)
+                return;
+
             if (slot != SpellSlot.Unknown && !_mainMenu.Item("use" + menuvar).GetValue<bool>())
                 return;
          

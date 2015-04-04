@@ -26,7 +26,7 @@ namespace Support
                         Helpers.UpdateCheck();
                         Protector.Init();
                         //SpellDetector.Init();
-                        Activator.CreateInstance(type);
+                        DynamicInitializer.NewInstance(type);
                         return;
                     }
 
@@ -38,7 +38,7 @@ namespace Support
                 }
             };
 
-            Utils.EnableConsoleEditMode();
+            //Utils.EnableConsoleEditMode();
 
             //Drawing.OnDraw += a =>
             //{

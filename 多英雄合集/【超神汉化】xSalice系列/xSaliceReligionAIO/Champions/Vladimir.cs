@@ -229,7 +229,7 @@ namespace xSaliceReligionAIO.Champions
             {
                 foreach (var minion in allMinions)
                 {
-                    if (minion.IsValidTarget() && HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion) * 1000 / 1400)) < Player.GetSpellDamage(minion, SpellSlot.Q) - 10)
+                    if (minion.IsValidTarget() && HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 1400)) < Player.GetSpellDamage(minion, SpellSlot.Q) - 10)
                     {
                         Q.CastOnUnit(minion, packets());
                         return;
@@ -337,7 +337,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("W_Gap_Closer", true).GetValue<bool>()) return;
 
-            if (W.IsReady() && gapcloser.Sender.Distance(Player) < 300)
+            if (W.IsReady() && gapcloser.Sender.Distance(Player.Position) < 300)
                 W.Cast(packets());
         }
 

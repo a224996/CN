@@ -71,7 +71,8 @@ namespace KurisuRiven
 
                 damage = ad +
                          (float)
-                             ((Base.Me.FlatPhysicalDamageMod + Base.Me.BaseAttackDamage)*runicpassive[Base.Me.Level/3]);
+                             ((Base.Me.FlatPhysicalDamageMod + Base.Me.BaseAttackDamage)*
+                                    runicpassive[Base.Me.Level >= 18 ? 6 : Base.Me.Level/3]);
 
             }
 

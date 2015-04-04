@@ -262,7 +262,7 @@ namespace xSaliceReligionAIO.Champions
 
                             if (R.IsReady() && ShouldCastR(target, dmg) && useR)
                             { 
-                                _qDelay = (int)(Player.Distance(target) / 2.2);
+                                _qDelay = (int)(Player.Distance(target.Position) / 2.2);
                                 _qVec = Player.ServerPosition + Vector3.Normalize(target.ServerPosition - Player.ServerPosition) * Q.Range;
                                 _qLast = Environment.TickCount;
                             }
@@ -325,13 +325,13 @@ namespace xSaliceReligionAIO.Champions
                         (Items.HasItem(3100) ? Player.CalcDamage(target, Damage.DamageType.Magical, ActiveItems.LichDamage()) : 0)) >
                         target.Health && Q.IsReady() && W.IsReady())
                     {
-                        if (Player.Distance(target) < Q.Range)
+                        if (Player.Distance(target.Position) < Q.Range)
                         {
                             W.Cast(packets());
                             Q.CastOnUnit(target, packets());
                             return;
                         }
-                        if(Player.Distance(target) < range && !target.UnderTurret() && target.CountEnemiesInRange(600) < 2 && E.IsReady())
+                        if(Player.Distance(target.Position) < range && !target.UnderTurret() && target.CountEnemiesInRange(600) < 2 && E.IsReady())
                         {
                             E.Cast(target);
                             Obj_AI_Hero target1 = target;
@@ -341,7 +341,7 @@ namespace xSaliceReligionAIO.Champions
                     }
 
 
-                    if (Player.Distance(target) < Q.Range && Q.IsReady() && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.W) + Player.GetAutoAttackDamage(target) +
+                    if (Player.Distance(target.Position) < Q.Range && Q.IsReady() && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.W) + Player.GetAutoAttackDamage(target) +
                         (Items.HasItem(3100) ? Player.CalcDamage(target, Damage.DamageType.Magical, ActiveItems.LichDamage()) : 0)) >
                         target.Health)
                     {
@@ -349,7 +349,7 @@ namespace xSaliceReligionAIO.Champions
                         return;
                     }
 
-                    if (Player.Distance(target) < E.Range * 2 - 50 && E.IsReady() && E.IsKillable(target) && !target.UnderTurret() && target.CountEnemiesInRange(600) < 2)
+                    if (Player.Distance(target.Position) < E.Range * 2 - 50 && E.IsReady() && E.IsKillable(target) && !target.UnderTurret() && target.CountEnemiesInRange(600) < 2)
                     {
                         CastE(target);
                         return;
@@ -385,7 +385,7 @@ namespace xSaliceReligionAIO.Champions
 
         private bool ShouldCastQ(Obj_AI_Hero target)
         {
-            if (Player.Distance(target) > menu.Item("Q_Min_Dist", true).GetValue<Slider>().Value && Player.Distance(target) < Q.Range)
+            if (Player.Distance(target.Position) > menu.Item("Q_Min_Dist", true).GetValue<Slider>().Value && Player.Distance(target.Position) < Q.Range)
                 return true;
 
             return false;
@@ -393,10 +393,10 @@ namespace xSaliceReligionAIO.Champions
 
         private bool ShouldCastW(Obj_AI_Hero target)
         {
-            if (Player.Distance(target) < Q.Range + 100 && Q.IsReady())
+            if (Player.Distance(target.Position) < Q.Range + 100 && Q.IsReady())
                 return true;
 
-            if (Player.Distance(target) < 250)
+            if (Player.Distance(target.Position) < 250)
                 return true;
 
             return false;
@@ -407,10 +407,10 @@ namespace xSaliceReligionAIO.Champions
             if (Player.Spellbook.GetSpell(SpellSlot.E).Name == "fizzjumptwo")
                 return true;
 
-            if (Player.Distance(target) > menu.Item("E_Min_Dist", true).GetValue<Slider>().Value && Player.Distance(target) < E.Range*2 - 50)
+            if (Player.Distance(target.Position) > menu.Item("E_Min_Dist", true).GetValue<Slider>().Value && Player.Distance(target.Position) < E.Range*2 - 50)
                 return true;
 
-            if (gap && Player.Distance(target) < 1000)
+            if (gap && Player.Distance(target.Position) < 1000)
                 return true;
 
             return false;
@@ -470,7 +470,7 @@ namespace xSaliceReligionAIO.Champions
             }
 
             if (!Q.IsReady()) return;
-            foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(x => x.Distance(Player) < Q.Range && !x.IsAlly).OrderBy(x => x.Distance(Game.CursorPos)))
+            foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(x => x.Distance(Player.Position) < Q.Range && !x.IsAlly).OrderBy(x => x.Distance(Game.CursorPos)))
             {
                 Q.Cast(minion);
                 return;

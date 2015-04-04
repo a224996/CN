@@ -213,7 +213,7 @@ namespace xSaliceReligionAIO.Champions
 
             float dmg = GetComboDamage(target);
 
-            if (useE && E.IsReady() && Player.Distance(target) < E.Range && ShouldE(target))
+            if (useE && E.IsReady() && Player.Distance(target.Position) < E.Range && ShouldE(target))
             {
                 E.CastOnUnit(target, packets());
             }
@@ -241,12 +241,12 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
-            if (useW && W.IsReady() && Player.Distance(target) <= W.Range && ShouldUseW(target))
+            if (useW && W.IsReady() && Player.Distance(target.Position) <= W.Range && ShouldUseW(target))
             {
                 CastW(target);
             }
 
-            if (useR && R.IsReady() && Player.Distance(target) < R.Range &&
+            if (useR && R.IsReady() && Player.Distance(target.Position) < R.Range &&
                 R.GetPrediction(target).Hitchance >= HitChance.High)
             {
                 if (ShouldR(source))
@@ -348,7 +348,7 @@ namespace xSaliceReligionAIO.Champions
             if (Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
                 return true;
 
-            if (R.IsReady() && Player.Distance(target) <= R.Range - 25 && Player.Distance(target.ServerPosition) > 250)
+            if (R.IsReady() && Player.Distance(target.Position) <= R.Range - 25 && Player.Distance(target.ServerPosition) > 250)
                 return true;
 
             return false;
@@ -478,13 +478,13 @@ namespace xSaliceReligionAIO.Champions
 
             List<Obj_AI_Hero> enemy = (from champ in ObjectManager.Get<Obj_AI_Hero>() where champ.IsValidTarget(1500) select champ).ToList();
 
-            if (Q.IsReady() && Player.Distance(enemy.FirstOrDefault()) <= Q.Range &&
+            if (Q.IsReady() && Player.Distance(enemy.FirstOrDefault().Position) <= Q.Range &&
                 Q.GetPrediction(enemy.FirstOrDefault()).Hitchance >= HitChance.High && ShouldQ())
             {
                 Q.Cast(enemy.FirstOrDefault());
             }
 
-            if (W.IsReady() && Player.Distance(enemy.FirstOrDefault()) <= W.Range)
+            if (W.IsReady() && Player.Distance(enemy.FirstOrDefault().Position) <= W.Range)
             {
                 CastWEscape(enemy.FirstOrDefault());
             }

@@ -71,14 +71,14 @@ namespace Sharpshooter.Champions
                 DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
             };
 
-            Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter2.OnInterruptableTarget += Interrupter2_OnInterruptableTarget;
             Obj_AI_Hero.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
         }
 
-        static void Game_OnGameUpdate(EventArgs args)
+        static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
                 return;
@@ -246,7 +246,7 @@ namespace Sharpshooter.Champions
 
         static void Harass()
         {
-            if (!Orbwalking.CanMove(1) || !(Player.ManaPercentage() > SharpShooter.Menu.Item("harassMana", true).GetValue<Slider>().Value))
+            if (!Orbwalking.CanMove(1) || !(SharpShooter.getManaPer > SharpShooter.Menu.Item("harassMana", true).GetValue<Slider>().Value))
                 return;
 
             if (SharpShooter.Menu.Item("harassUseE", true).GetValue<Boolean>())
@@ -260,7 +260,7 @@ namespace Sharpshooter.Champions
 
         static void Laneclear()
         {
-            if (!Orbwalking.CanMove(1)) //|| !(Player.ManaPercentage() > SharpShooter.Menu.Item("laneclearMana", true).GetValue<Slider>().Value))
+            if (!Orbwalking.CanMove(1)) //|| !(SharpShooter.getManaPer > SharpShooter.Menu.Item("laneclearMana", true).GetValue<Slider>().Value))
                 return;
 
             var Minions = MinionManager.GetMinions(Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.Enemy);
@@ -285,7 +285,7 @@ namespace Sharpshooter.Champions
             if (Q.IsReady() && SharpShooter.Menu.Item("jungleclearUseQ", true).GetValue<Boolean>())
                 Q.Cast();
 
-            if (!Orbwalking.CanMove(1) || !(Player.ManaPercentage() > SharpShooter.Menu.Item("jungleclearMana", true).GetValue<Slider>().Value))
+            if (!Orbwalking.CanMove(1) || !(SharpShooter.getManaPer > SharpShooter.Menu.Item("jungleclearMana", true).GetValue<Slider>().Value))
                 return;
 
             if (E.IsReady() && SharpShooter.Menu.Item("jungleclearUseE", true).GetValue<Boolean>() && !Player.IsWindingUp)

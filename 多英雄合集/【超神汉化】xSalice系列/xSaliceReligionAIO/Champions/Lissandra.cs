@@ -175,13 +175,13 @@ namespace xSaliceReligionAIO.Champions
             var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
             //E
-            if (useE && eTarget != null && E.IsReady() && Player.Distance(eTarget) < E.Range && ShouldE(eTarget))
+            if (useE && eTarget != null && E.IsReady() && Player.Distance(eTarget.Position) < E.Range && ShouldE(eTarget))
             {
                 E.Cast(eTarget, packets());
             }
 
             //R
-            if (useR && qTarget != null && R.IsReady() && Player.Distance(qTarget) < R.Range)
+            if (useR && qTarget != null && R.IsReady() && Player.Distance(qTarget.Position) < R.Range)
             {
                 CastR(qTarget);
             }
@@ -203,7 +203,7 @@ namespace xSaliceReligionAIO.Champions
             if (useW && qTarget != null && W.IsReady())
             {
                 var wPred = GetPCircle(Player.ServerPosition, W, qTarget, true);
-                if (wPred.Hitchance > HitChance.High && Player.Distance(qTarget) <= W.Range)
+                if (wPred.Hitchance > HitChance.High && Player.Distance(qTarget.Position) <= W.Range)
                     W.Cast();
             }
 
@@ -213,12 +213,12 @@ namespace xSaliceReligionAIO.Champions
                 var qPred = Q2.GetPrediction(qTarget);
                 var collision = qPred.CollisionObjects;
 
-                if (collision.Count > 0 && Player.Distance(qTarget) <= Q2.Range)
+                if (collision.Count > 0 && Player.Distance(qTarget.Position) <= Q2.Range)
                 {
                     Q.Cast(qPred.CastPosition, packets());
                     return;
                 }
-                if (Q.GetPrediction(qTarget).Hitchance >= GetHitchance(source) && Player.Distance(qTarget) < Q.Range)
+                if (Q.GetPrediction(qTarget).Hitchance >= GetHitchance(source) && Player.Distance(qTarget.Position) < Q.Range)
                 {
                     Q.Cast(qTarget, packets());
                 }
@@ -328,7 +328,7 @@ namespace xSaliceReligionAIO.Champions
                 E.Cast();
             }
             else if (_eCreated && menu.Item("ComboActive", true).GetValue<KeyBind>().Active && menu.Item("UseEGap", true).GetValue<bool>()
-                && Player.Distance(enemy) > enemy.Distance(_eMissle.Position) && E.IsReady())
+                && Player.Distance(enemy.Position) > enemy.Distance(_eMissle.Position) && E.IsReady())
             {
                 if (_eMissle.EndPosition.Distance(_eMissle.Position) < 400 && enemy.Distance(_eMissle.Position) < enemy.Distance(_eMissle.EndPosition))
                     E.Cast();
@@ -362,7 +362,7 @@ namespace xSaliceReligionAIO.Champions
             {
                 foreach (var minion in allMinions)
                 {
-                    if (minion.IsValidTarget() && HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion) * 1000 / 1400)) < Damage.GetSpellDamage(Player, minion, SpellSlot.Q) - 10)
+                    if (minion.IsValidTarget() && HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 1400)) < Damage.GetSpellDamage(Player, minion, SpellSlot.Q) - 10)
                     {
                         if (Q.IsReady())
                         {
@@ -505,7 +505,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < R.Range && unit != null && R.IsReady())
+            if (Player.Distance(unit.Position) < R.Range && unit != null && R.IsReady())
             {
                 R.Cast(unit, packets());
             }

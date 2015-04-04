@@ -79,8 +79,8 @@ namespace Support
             Orbwalking.AfterAttack += OnAfterAttack;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += OnPossibleToInterrupt;
-            //Game.OnSendPacket += OnSendPacket;
-            //Game.OnProcessPacket += OnProcessPacket;
+            //Game.OnGameSendPacket += OnSendPacket;
+            //Game.OnGameProcessPacket += OnProcessPacket;
             OnLoad(new EventArgs());
         }
 

@@ -92,13 +92,13 @@ namespace Sharpshooter.Champions
                 DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
             };
 
-            Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
         }
 
-        static void Game_OnGameUpdate(EventArgs args)
+        static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
                 return;
@@ -349,7 +349,7 @@ namespace Sharpshooter.Champions
 
         static void Harass()
         {
-            if (!(Player.ManaPercentage() > SharpShooter.Menu.Item("harassMana", true).GetValue<Slider>().Value))
+            if (!(SharpShooter.getManaPer > SharpShooter.Menu.Item("harassMana", true).GetValue<Slider>().Value))
             {
                 if (SharpShooter.Menu.Item("harassUseQ", true).GetValue<Boolean>())
                     QSwitch(false);
@@ -382,7 +382,7 @@ namespace Sharpshooter.Champions
                 return;
             }
 
-            if (!(Player.ManaPercentage() > SharpShooter.Menu.Item("laneclearMana", true).GetValue<Slider>().Value))
+            if (!(SharpShooter.getManaPer > SharpShooter.Menu.Item("laneclearMana", true).GetValue<Slider>().Value))
             {
                 if (SharpShooter.Menu.Item("laneclearUseQ", true).GetValue<Boolean>()) 
                     QSwitch(false);
@@ -410,7 +410,7 @@ namespace Sharpshooter.Champions
                 return;
             }
 
-            if (!(Player.ManaPercentage() > SharpShooter.Menu.Item("jungleclearMana", true).GetValue<Slider>().Value))
+            if (!(SharpShooter.getManaPer > SharpShooter.Menu.Item("jungleclearMana", true).GetValue<Slider>().Value))
             {
                 if (SharpShooter.Menu.Item("jungleclearUseQ", true).GetValue<Boolean>())
                     QSwitch(false);

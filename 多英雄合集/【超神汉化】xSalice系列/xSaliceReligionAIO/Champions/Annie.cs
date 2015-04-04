@@ -350,7 +350,7 @@ namespace xSaliceReligionAIO.Champions
                 return false;
 
             var dmg = GetComboDamage(target);
-            if (Player.Distance(target) > 600 && FullManaCast() && Flash_Ready() && dmg > target.Health)
+            if (Player.Distance(target.Position) > 600 && FullManaCast() && Flash_Ready() && dmg > target.Health)
                 return true;
 
             return false;
@@ -367,7 +367,7 @@ namespace xSaliceReligionAIO.Champions
 
             var pred = R2.GetPrediction(target, true);
 
-            if (Player.Distance(target) > 600)
+            if (Player.Distance(target.Position) > 600)
             {
                 Player.Spellbook.CastSpell(_flashSlot, pred.CastPosition);
                 if (StunCount() == 3)
@@ -440,8 +440,8 @@ namespace xSaliceReligionAIO.Champions
                 return;
 
             foreach (var minion in MinionManager.GetMinions(Player.Position, Q.Range).Where(minion => HealthPrediction.GetHealthPrediction(minion,
-                       (int)(Q.Delay + (minion.Distance(Player) / Q.Speed))) < Player.GetSpellDamage(minion, SpellSlot.Q)
-                       && HealthPrediction.GetHealthPrediction(minion, (int)(Q.Delay + (minion.Distance(Player) / Q.Speed))) > 0))
+                       (int)(Q.Delay + (minion.Distance(Player.Position) / Q.Speed))) < Player.GetSpellDamage(minion, SpellSlot.Q)
+                       && HealthPrediction.GetHealthPrediction(minion, (int)(Q.Delay + (minion.Distance(Player.Position) / Q.Speed))) > 0))
                 Q.Cast(minion);
         }
 
@@ -491,7 +491,7 @@ namespace xSaliceReligionAIO.Champions
             if (mode == 0 && target.IsValidTarget(2000))
             {
                 Player.IssueOrder(
-                    Tibbers.Distance(target) > 210 ? GameObjectOrder.MovePet : GameObjectOrder.AutoAttackPet, target);
+                    Tibbers.Distance(target.Position) > 210 ? GameObjectOrder.MovePet : GameObjectOrder.AutoAttackPet, target);
             }
             else if(mode == 1)
             {
@@ -507,7 +507,6 @@ namespace xSaliceReligionAIO.Champions
             if (sender == null || !sender.IsValid || !sender.Name.Equals("Tibbers"))
                 return;
 
-            Game.PrintChat("SALICE SUMMONS TIBBERSSSS");
             Tibbers = (Obj_AI_Base)sender;
         }
 

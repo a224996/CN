@@ -211,10 +211,10 @@ namespace xSaliceReligionAIO.Champions
 
             //Game.PrintChat("ult dmg" + target.BaseSkinName + " " + div);
 
-            if (Player.Distance(target) < 600)
+            if (Player.Distance(target.Position) < 600)
                 div = 10;
 
-            if (Player.Distance(target) < 1550)
+            if (Player.Distance(target.Position) < 1550)
                 if (R.IsReady())
                 {
                     double ultDmg = Player.GetSpellDamage(target, SpellSlot.R) / 10;
@@ -270,14 +270,14 @@ namespace xSaliceReligionAIO.Champions
 
             useR = (menu.Item("DontUlt" + target.BaseSkinName, true) != null && menu.Item("DontUlt" + target.BaseSkinName, true).GetValue<bool>() == false) && useR;
 
-            if (useW && W.IsReady() && Player.Distance(target) <= W.Range &&
+            if (useW && W.IsReady() && Player.Distance(target.Position) <= W.Range &&
                 W.GetPrediction(target).Hitchance >= HitChance.High)
             {
                 W.Cast(target);
                 return;
             }
 
-            if (useE && E.IsReady() && Player.Distance(target) < E.Range &&
+            if (useE && E.IsReady() && Player.Distance(target.Position) < E.Range &&
                 E.GetPrediction(target).Hitchance >= HitChance.High)
             {
                 E.Cast(target, packets());
@@ -306,7 +306,7 @@ namespace xSaliceReligionAIO.Champions
                 return;
             }
 
-            if (useR && R.IsReady() && Player.Distance(target) < R.Range)
+            if (useR && R.IsReady() && Player.Distance(target.Position) < R.Range)
             {
                 if (GetUltDmg(target) >= target.Health)
                 {
@@ -359,7 +359,7 @@ namespace xSaliceReligionAIO.Champions
             int collision = pred.CollisionObjects.Count;
 
             //cast Q with no collision
-            if (Player.Distance(target) < 1050 && Q.Instance.Name == "VelkozQ")
+            if (Player.Distance(target.Position) < 1050 && Q.Instance.Name == "VelkozQ")
             {
                 if (collision == 0)
                 {
@@ -562,7 +562,7 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < E.Range && unit != null && E.IsReady())
+            if (Player.Distance(unit.Position) < E.Range && unit != null && E.IsReady())
             {
                 E.Cast(unit, packets());
             }

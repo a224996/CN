@@ -253,7 +253,7 @@ namespace xSaliceReligionAIO.Champions
                 return;
 
             //W
-            if (useW && W.IsReady() && Player.Distance(target) <= W.Range && ShouldW() &&
+            if (useW && W.IsReady() && Player.Distance(target.Position) <= W.Range && ShouldW() &&
                 W.GetPrediction(target).Hitchance >= HitChance.High)
             {
                 W.Cast(target, packets());
@@ -270,7 +270,7 @@ namespace xSaliceReligionAIO.Champions
             }
 
             //E
-            if (useE && E.IsReady() && Player.Distance(eTar) < E.Range && ESpell.ToggleState == 1 && HasManaForE(source) && Environment.TickCount - E.LastCastAttemptT > 500)
+            if (useE && E.IsReady() && Player.Distance(eTar.Position) < E.Range && ESpell.ToggleState == 1 && HasManaForE(source) && Environment.TickCount - E.LastCastAttemptT > 500)
             {
                 E.Cast(packets());
                 E.LastCastAttemptT = Environment.TickCount;
@@ -382,13 +382,13 @@ namespace xSaliceReligionAIO.Champions
 
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(Q.Range)))
             {
-                if ((Q.GetPrediction(target).Hitchance == HitChance.Immobile || IsStunned(target)) && qImmo && Player.Distance(target) < Q.Range)
+                if ((Q.GetPrediction(target).Hitchance == HitChance.Immobile || IsStunned(target)) && qImmo && Player.Distance(target.Position) < Q.Range)
                 {
                     Q.Cast(target, true);
                     return;
                 }
 
-                if (Q.GetPrediction(target).Hitchance == HitChance.Dashing && qDashing && Player.Distance(target) < Q.Range)
+                if (Q.GetPrediction(target).Hitchance == HitChance.Dashing && qDashing && Player.Distance(target.Position) < Q.Range)
                 {
                     Q.Cast(target, true);
                 }
@@ -397,7 +397,7 @@ namespace xSaliceReligionAIO.Champions
 
         private void CheckUnderTower()
         {
-            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) < W.Range && x.IsValidTarget(W.Range) && !x.IsDead && x.IsEnemy && x.IsVisible))
+            foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.Distance(x.Position) < W.Range && x.IsValidTarget(W.Range) && !x.IsDead && x.IsEnemy && x.IsVisible))
             {
                 if (enemy != null)
                 {

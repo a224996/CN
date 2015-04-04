@@ -89,6 +89,7 @@
     <Compile Include="Evade\SpellData.cs" />
     <Compile Include="Evade\SpellDatabase.cs" />
     <Compile Include="Evade\Utils.cs" />
+    <Compile Include="Util\DynamicInitializer.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Plugins\Alistar.cs" />
     <Compile Include="Plugins\Blitzcrank.cs" />

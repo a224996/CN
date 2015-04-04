@@ -44,7 +44,7 @@ namespace Support.Evade
         static SkillshotDetector()
         {
             //Detect when the skillshots are created.
-            //Game.OnProcessPacket += GameOnOnGameProcessPacket; // Used only for viktor's Laser :^)
+            //Game.OnGameProcessPacket += GameOnOnGameProcessPacket; // Used only for viktor's Laser :^)
             Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
 
             //Detect when projectiles collide.
@@ -96,10 +96,7 @@ namespace Support.Evade
 #if DEBUG
             if (missile.SpellCaster is Obj_AI_Hero)
             {
-                Console.WriteLine(
-                    Environment.TickCount + " Projectile Created: " + missile.SData.Name + " distance: " +
-                    missile.StartPosition.Distance(missile.EndPosition) + "Radius: " +
-                    missile.SData.CastRadiusSecondary[0] + " Speed: " + missile.SData.MissileSpeed);
+                
             }
 
 #endif

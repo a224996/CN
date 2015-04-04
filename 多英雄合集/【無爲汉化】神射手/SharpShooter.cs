@@ -14,16 +14,18 @@ namespace Sharpshooter
 
         internal static Menu Menu;
 
+        internal static float getManaPer { get { return Player.Mana / Player.MaxMana * 100; } }
+
         internal static void Load()
         {
             try 
 	        {
-                Console.WriteLine("[xcsoft] SharpShooter: " + Type.GetType("Sharpshooter.Champions." + Player.ChampionName).Name + " support");
+                Console.WriteLine("[xcsoft] SharpShooter: " + Type.GetType("Sharpshooter.Champions." + Player.ChampionName).Name + " Supported");
 	        }
 	        catch
 	        {
-                Console.WriteLine("[xcsoft] SharpShooter: " + Player.ChampionName + " does not support");
-                Game.PrintChat("<font color = \"#00D8FF\">[xcsoft] SharpShooter: </font><font color = \"#FF007F\">" + Player.ChampionName + "</font> does not support, Unload.");
+                Console.WriteLine("[xcsoft] SharpShooter: " + Player.ChampionName + " Not supported");
+                Game.PrintChat("<font color = \"#00D8FF\">[xcsoft] SharpShooter: </font><font color = \"#FF007F\">" + Player.ChampionName + "</font> Not supported");
 		        return;
 	        }
 
@@ -40,7 +42,50 @@ namespace Sharpshooter
             Menu.AddSubMenu(new Menu(Player.ChampionName + ": 杂项", "Misc"));
             Menu.AddSubMenu(new Menu(Player.ChampionName + ": 范围", "Drawings"));
 
-            Type.GetType("Sharpshooter.Champions." + Player.ChampionName).GetMethod("Load").Invoke(null, null);
+            //Type.GetType("Sharpshooter.Champions." + Player.ChampionName).GetMethod("Load").Invoke(null, null);
+
+            //ha........  sandbox pls...
+            switch (Player.ChampionName)
+            {
+                case "Ashe":
+                    Champions.Ashe.Load();
+                    break;
+                case "Caitlyn":
+                    Champions.Caitlyn.Load();
+                    break;
+                case "Ezreal":
+                    Champions.Ezreal.Load();
+                    break;
+                case "Kalista":
+                    Champions.Kalista.Load();
+                    break;
+                case "Graves":
+                    Champions.Graves.Load();
+                    break;
+                case "Jinx":
+                    Champions.Jinx.Load();
+                    break;
+                case "KogMaw":
+                    Champions.KogMaw.Load();
+                    break;
+                case "Sivir":
+                    Champions.Sivir.Load();
+                    break;
+                case "Teemo":
+                    Champions.Teemo.Load();
+                    break;
+                case "Tristana":
+                    Champions.Tristana.Load();
+                    break;
+                case "Twitch":
+                    Champions.Twitch.Load();
+                    break;
+                case "Vayne":
+                    Champions.Vayne.Load();
+                    break;
+                default:
+                    break;
+            }
 
             Menu.SubMenu("Drawings").AddItem(new MenuItem("brank", " "));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("potxt", "--公共选择--"));

@@ -276,7 +276,7 @@ namespace xSaliceReligionAIO.Champions
                 {
                     if (!menu.Item("Dont_R" + target.BaseSkinName, true).GetValue<bool>())
                     {
-                        if (Get_R_Dmg(target) > target.Health && Player.Distance(target) > minRange)
+                        if (Get_R_Dmg(target) > target.Health && Player.Distance(target.Position) > minRange)
                         {
                             R.Cast(target, packets());
                             return;
@@ -288,7 +288,7 @@ namespace xSaliceReligionAIO.Champions
             foreach (var unit in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range)).OrderByDescending(GetComboDamage))
             {
                 var pred = R.GetPrediction(unit, true);
-                if (Player.Distance(unit) > minRange && pred.AoeTargetsHitCount >= minHit && pred.Hitchance >= HitChance.Medium)
+                if (Player.Distance(unit.Position) > minRange && pred.AoeTargetsHitCount >= minHit && pred.Hitchance >= HitChance.Medium)
                 {
                     R.Cast(unit, packets());
                     return;

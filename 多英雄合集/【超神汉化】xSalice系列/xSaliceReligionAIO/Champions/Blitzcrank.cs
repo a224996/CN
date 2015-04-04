@@ -159,12 +159,12 @@ namespace xSaliceReligionAIO.Champions
             var qe = menu.Item("QE", true).GetValue<bool>();
 
 
-            if (useW && target != null && W.IsReady() && Player.Distance(target) <= 500)
+            if (useW && target != null && W.IsReady() && Player.Distance(target.Position) <= 500)
             {
                 W.Cast();
             }
 
-            if (useQ && Q.IsReady() && Player.Distance(target) <= Q.Range && target != null && (Q.GetPrediction(target).Hitchance >= GetHitchance(source) || ShouldUseQ(target)) && UseQonEnemy(target))
+            if (useQ && Q.IsReady() && Player.Distance(target.Position) <= Q.Range && target != null && (Q.GetPrediction(target).Hitchance >= GetHitchance(source) || ShouldUseQ(target)) && UseQonEnemy(target))
             {
                 if (qe && useE && E.IsReady())
                     E.Cast();
@@ -186,12 +186,12 @@ namespace xSaliceReligionAIO.Champions
                 ActiveItems.UseTargetted = true;
             }
 
-            if (useE && target != null && E.IsReady() && Player.Distance(target) < 300 && !menu.Item("resetE", true).GetValue<bool>())
+            if (useE && target != null && E.IsReady() && Player.Distance(target.Position) < 300 && !menu.Item("resetE", true).GetValue<bool>())
             {
                 E.Cast();
             }
 
-            if (useR && target != null && R.IsReady() && Player.Distance(target) < R.Range)
+            if (useR && target != null && R.IsReady() && Player.Distance(target.Position) < R.Range)
             {
                 if (rq && Q.IsReady())
                     return;
@@ -354,13 +354,13 @@ namespace xSaliceReligionAIO.Champions
         {
             if (!menu.Item("UseInt", true).GetValue<bool>()) return;
 
-            if (Player.Distance(unit) < Q.Range && unit != null && Q.IsReady())
+            if (Player.Distance(unit.Position) < Q.Range && unit != null && Q.IsReady())
             {
                 if (Q.GetPrediction(unit).Hitchance >= HitChance.High)
                     Q.Cast(unit, packets());
             }
 
-            if (Player.Distance(unit) < R.Range && unit != null & R.IsReady())
+            if (Player.Distance(unit.Position) < R.Range && unit != null & R.IsReady())
             {
                 R.Cast();
             }

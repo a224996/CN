@@ -300,7 +300,7 @@ namespace xSaliceReligionAIO.Champions
             {
                 if (!menu.Item("predMode", true).GetValue<bool>())
                 {
-                    if (Player.Distance(target) < 150)
+                    if (Player.Distance(target.Position) < 150)
                         Q.Cast(target.ServerPosition, packets());
                     else
                         Q.Cast(target, packets());
@@ -334,7 +334,7 @@ namespace xSaliceReligionAIO.Champions
             if (target == null || !E.IsReady() || !CanCastE(target))
                 return;
 
-            if (E.IsKillable(target) && Player.Distance(target) < E.Range + target.BoundingRadius && EturretCheck(target))
+            if (E.IsKillable(target) && Player.Distance(target.Position) < E.Range + target.BoundingRadius && EturretCheck(target))
                 E.CastOnUnit(target, packets());
 
             //EQ3
@@ -365,13 +365,13 @@ namespace xSaliceReligionAIO.Champions
                     {
                         var dashVec = Player.ServerPosition + Vector3.Normalize(minion.ServerPosition - Player.ServerPosition) * 475;
 
-                        if (target.Distance(Player) > target.Distance(bestVec) - 50 && target.Distance(bestVec) > target.Distance(dashVec))
+                        if (target.Distance(Player.Position) > target.Distance(bestVec) - 50 && target.Distance(bestVec) > target.Distance(dashVec))
                         {
                             bestMinion = minion;
                             bestVec = dashVec;
                         }
                     }
-                    if (target.Distance(Player) > target.Distance(bestVec) - 50 && bestMinion != null)
+                    if (target.Distance(Player.Position) > target.Distance(bestVec) - 50 && bestMinion != null)
                     {
                         if (EturretCheck(bestMinion))
                         {
@@ -382,8 +382,8 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
-            if (Q.IsReady() && Player.Distance(target) > menu.Item("E_Min_Dist", true).GetValue<Slider>().Value &&
-                Player.Distance(target) < E.Range)
+            if (Q.IsReady() && Player.Distance(target.Position) > menu.Item("E_Min_Dist", true).GetValue<Slider>().Value &&
+                Player.Distance(target.Position) < E.Range)
             {
                 if (EturretCheck(target))
                 {
@@ -393,7 +393,7 @@ namespace xSaliceReligionAIO.Champions
                 }
             }
 
-            if (Player.ServerPosition.To2D().Distance(target.ServerPosition.To2D()) > menu.Item("E_Min_Dist", true).GetValue<Slider>().Value && Player.Distance(target) < E.Range + target.BoundingRadius) 
+            if (Player.ServerPosition.To2D().Distance(target.ServerPosition.To2D()) > menu.Item("E_Min_Dist", true).GetValue<Slider>().Value && Player.Distance(target.Position) < E.Range + target.BoundingRadius) 
                 if(EturretCheck(target))
                 E.CastOnUnit(target, packets());
         }
@@ -432,7 +432,7 @@ namespace xSaliceReligionAIO.Champions
                     }
                 }
 
-                hit += ObjectManager.Get<Obj_AI_Hero>().Count(x => x.ChampionName != target.ChampionName && target.Distance(x) < 400 && isKnockedUp(x));
+                hit += ObjectManager.Get<Obj_AI_Hero>().Count(x => x.ChampionName != target.ChampionName && target.Distance(x.Position) < 400 && isKnockedUp(x));
             }
 
             if (hit >= menu.Item("ComboR_MEC", true).GetValue<Slider>().Value)
@@ -450,7 +450,7 @@ namespace xSaliceReligionAIO.Champions
             int hit = 1;
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(R.Range) && isKnockedUp(x)))
             {
-                hit += ObjectManager.Get<Obj_AI_Hero>().Count(x => x.ChampionName != target.ChampionName && target.Distance(x) < 400 && isKnockedUp(x));
+                hit += ObjectManager.Get<Obj_AI_Hero>().Count(x => x.ChampionName != target.ChampionName && target.Distance(x.Position) < 400 && isKnockedUp(x));
             }       
 
             if (hit >= menu.Item("R_MEC", true).GetValue<Slider>().Value)
@@ -487,7 +487,7 @@ namespace xSaliceReligionAIO.Champions
 
                 if (!menu.Item("predMode", true).GetValue<bool>())
                 {
-                    if (Player.Distance(target) < 150)
+                    if (Player.Distance(target.Position) < 150)
                         Q.Cast(target.ServerPosition, packets());
                     else
                         Q.Cast(target, packets());
@@ -635,7 +635,7 @@ namespace xSaliceReligionAIO.Champions
                     if (!menu.Item("E_UnderTower_Farm", true).GetValue<bool>() && dashVec.UnderTurret(true))
                         continue;
 
-                    var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion) * 1000 / 2000));
+                    var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 2000));
 
                     if (predHealth <= Player.GetSpellDamage(minion, SpellSlot.E))
                         E.CastOnUnit(minion, packets());
@@ -701,7 +701,7 @@ namespace xSaliceReligionAIO.Champions
                     if (!menu.Item("E_UnderTower_Farm", true).GetValue<bool>() && dashVec.UnderTurret(true))
                         continue;
 
-                    var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion) * 1000 / 2000));
+                    var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 2000));
 
                     if (predHealth <= Player.GetSpellDamage(minion, SpellSlot.E))
                         E.CastOnUnit(minion, packets());

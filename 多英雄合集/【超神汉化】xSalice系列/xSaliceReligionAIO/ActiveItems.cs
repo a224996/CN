@@ -336,7 +336,7 @@ namespace xSaliceReligionAIO
 
         private static void Use_Ignite(Obj_AI_Hero target)
         {
-            if (target != null && IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target) < 650)
+            if (target != null && IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.Spellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target.Position) < 650)
                 ObjectManager.Player.Spellbook.CastSpell(IgniteSlot, target);
         }
 

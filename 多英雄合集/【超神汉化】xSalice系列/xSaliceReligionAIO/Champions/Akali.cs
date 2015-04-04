@@ -275,19 +275,19 @@ namespace xSaliceReligionAIO.Champions
                 }
 
                 foreach (var minion in MinionManager.GetMinions(Player.Position, Q.Range).Where(minion => HealthPrediction.GetHealthPrediction(minion,
-                        (int)(E.Delay + (minion.Distance(Player) / E.Speed)) * 1000) <
+                        (int)(E.Delay + (minion.Distance(Player.Position) / E.Speed)) * 1000) <
                                                              Player.GetSpellDamage(minion, SpellSlot.Q) &&
                                                              HealthPrediction.GetHealthPrediction(minion,
-                                                                 (int)(E.Delay + (minion.Distance(Player) / E.Speed)) * 1000) > 0 &&
+                                                                 (int)(E.Delay + (minion.Distance(Player.Position) / E.Speed)) * 1000) > 0 &&
                                                              xSLxOrbwalker.InAutoAttackRange(minion)))
                     Q.Cast(minion);
 
                 foreach (var minion in MinionManager.GetMinions(Player.Position, Q.Range).Where(minion => HealthPrediction.GetHealthPrediction(minion,
-                        (int)(Q.Delay + (minion.Distance(Player) / Q.Speed))) <
+                        (int)(Q.Delay + (minion.Distance(Player.Position) / Q.Speed))) <
                                                              Player.GetSpellDamage(minion, SpellSlot.Q)))
                     Q.Cast(minion);
 
-                foreach (var minion in MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).Where(minion => Player.Distance(minion) <= Q.Range))
+                foreach (var minion in MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).Where(minion => Player.Distance(minion.Position) <= Q.Range))
                     Q.Cast(minion);
             }
         }
@@ -337,7 +337,7 @@ namespace xSaliceReligionAIO.Champions
             {
                 if (MinionManager.GetMinions(Player.Position, E.Range).Count >= menu.Item("LaneClear_useE_minHit", true).GetValue<Slider>().Value)
                     E.Cast();
-                foreach (var minion in MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All,MinionTeam.Neutral, MinionOrderTypes.MaxHealth).Where(minion => Player.Distance(minion) <= E.Range))
+                foreach (var minion in MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All,MinionTeam.Neutral, MinionOrderTypes.MaxHealth).Where(minion => Player.Distance(minion.Position) <= E.Range))
                     if(E.GetDamage(minion) > minion.Health + 35)
                         E.Cast();
             }
@@ -373,14 +373,14 @@ namespace xSaliceReligionAIO.Champions
             {
                 if (R.IsKillable(target) && menu.Item("R_If_Killable", true).GetValue<bool>())
                     R.Cast(target, packets());
-                else if (GetSimpleDmg(target) > target.Health && Player.Distance(target) > Q.Range - 50)
+                else if (GetSimpleDmg(target) > target.Health && Player.Distance(target.Position) > Q.Range - 50)
                     R.Cast(target, packets());
 
                 if (countEnemiesNearPosition(target.ServerPosition, 500) >=
                     menu.Item("Dont_R_If", true).GetValue<Slider>().Value)
                     return;
 
-                if(Player.Distance(target) < menu.Item("R_Min", true).GetValue<Slider>().Value)
+                if(Player.Distance(target.Position) < menu.Item("R_Min", true).GetValue<Slider>().Value)
                     return;
 
                 if (mode == 0)

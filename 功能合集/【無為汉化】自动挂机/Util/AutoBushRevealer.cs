@@ -71,7 +71,7 @@ namespace Support.Util
                 useWardsMenu.AddItem(new MenuItem("AutoBush" + ward.Key, ward.Value).SetValue(true));
             }
 
-            //Game.OnUpdate += Game_OnGameUpdate; // TODO: wait for update
+            //Game.OnGameUpdate += Game_OnGameUpdate; // TODO: wait for update
         }
 
         private InventorySlot GetWardSlot()
